@@ -6,29 +6,52 @@ import { Phone, Lock, ShoppingBasket, ArrowRight, Eye, EyeOff } from "lucide-rea
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 
+const ROLE_HOME: Record<string, string> = {
+  admin:     "/admin",
+  warehouse: "/warehouse",
+  driver:    "/driver",
+  retailer:  "/dashboard",
+};
+
 export default function LoginPage() {
   const router = useRouter();
-  const [phone, setPhone] = useState("");
+  const [phone, setPhone]     = useState("");
   const [password, setPassword] = useState("");
-  const [showPw, setShowPw] = useState(false);
+  const [showPw, setShowPw]   = useState(false);
   const [loading, setLoading] = useState(false);
-  const [error, setError] = useState("");
+  const [error, setError]     = useState("");
 
   async function handleLogin(e: React.FormEvent) {
     e.preventDefault();
     setError("");
-    if (!phone || !password) { setError("Please fill in all fields."); return; }
+
+    if (!phone || !password) {
+      setError("Please fill in all fields.");
+      return;
+    }
+
     setLoading(true);
-    await new Promise((r) => setTimeout(r, 1000));
-    // Demo routing
-    if (phone.startsWith("09") && password === "admin") {
-      router.push("/admin");
-    } else if (phone.startsWith("09") && password === "warehouse") {
-      router.push("/warehouse");
-    } else if (phone.startsWith("09") && password === "driver") {
-      router.push("/driver");
-    } else {
-      router.push("/dashboard");
+
+    try {
+      const res = await fetch("/api/auth/login", {
+        method:  "POST",
+        headers: { "Content-Type": "application/json" },
+        body:    JSON.stringify({ phone, password }),
+      });
+
+      const data = await res.json();
+
+      if (!res.ok) {
+        setError(data.error || "Login failed. Please try again.");
+        return;
+      }
+
+      const role = data.user?.role ?? "retailer";
+      router.push(ROLE_HOME[role] ?? "/dashboard");
+    } catch {
+      setError("Network error. Please try again.");
+    } finally {
+      setLoading(false);
     }
   }
 
@@ -103,11 +126,12 @@ export default function LoginPage() {
 
           {/* Demo hint */}
           <div className="mt-8 rounded-xl bg-surface-100 border border-border p-4 text-xs text-muted-foreground space-y-1">
-            <p className="font-medium text-foreground mb-1.5">Demo access</p>
-            <p>09XX + <span className="font-mono text-foreground">any password</span> → Retailer</p>
-            <p>09XX + <span className="font-mono text-foreground">admin</span> → Admin console</p>
-            <p>09XX + <span className="font-mono text-foreground">warehouse</span> → Warehouse staff</p>
-            <p>09XX + <span className="font-mono text-foreground">driver</span> → Driver app</p>
+            <p className="font-medium text-foreground mb-1.5">Demo accounts</p>
+            <p><span className="font-mono text-foreground">09171234567</span> + <span className="font-mono text-foreground">admin</span> → Admin</p>
+            <p><span className="font-mono text-foreground">09172345678</span> + <span className="font-mono text-foreground">warehouse</span> → Warehouse</p>
+            <p><span className="font-mono text-foreground">09173456789</span> + <span className="font-mono text-foreground">driver</span> → Driver</p>
+            <p><span className="font-mono text-foreground">09181234567</span> + <span className="font-mono text-foreground">demo1234</span> → Retailer</p>
+            <p className="text-muted-foreground/70 mt-1.5">Or use any 09XX number with any password to auto-register as a retailer.</p>
           </div>
         </div>
       </div>
