@@ -1,11 +1,89 @@
 "use client";
 import Link from "next/link";
-import { BarChart3, TrendingUp, Package, ShoppingBasket, Zap, RotateCcw } from "lucide-react";
+import { BarChart3, TrendingUp, Package, ShoppingBasket, Zap, RotateCcw, Calendar } from "lucide-react";
 import { RetailerTopBar, RetailerBottomNav } from "@/components/layout/retailer-nav";
 import { formatPHP } from "@/lib/utils";
 import { cn } from "@/lib/utils";
+import { MOCK_ORDERS, PRODUCTS, CATEGORIES } from "@/lib/mock-data";
 
-// ── Static data ──────────────────────────────────────────────────────────────
+// ── Computed stats from MOCK_ORDERS ──────────────────────────────────────────
+
+const totalSpent = MOCK_ORDERS.reduce((sum, o) => sum + o.total, 0);
+const orderCount = MOCK_ORDERS.length;
+const avgOrder = Math.round(totalSpent / orderCount);
+const srpPremium = 1.216; // Ka Sari-Sari saves ~21.6% vs SRP
+const savings = Math.round(totalSpent * (srpPremium - 1) / srpPremium);
+const srpTotal = Math.round(totalSpent * srpPremium);
+const savingsPct = Math.round((savings / srpTotal) * 100);
+
+// ── Order frequency stats ─────────────────────────────────────────────────────
+
+const sortedOrders = [...MOCK_ORDERS].sort(
+  (a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
+);
+
+const lastOrderDate = sortedOrders[0]?.createdAt
+  ? new Date(sortedOrders[0].createdAt)
+  : null;
+
+const lastOrderLabel = lastOrderDate
+  ? lastOrderDate.toLocaleDateString("en-PH", { month: "long", day: "numeric", year: "numeric" })
+  : "—";
+
+// Average days between orders
+let avgDaysBetween = 0;
+if (sortedOrders.length >= 2) {
+  const oldestDate = new Date(sortedOrders[sortedOrders.length - 1].createdAt);
+  const newestDate = new Date(sortedOrders[0].createdAt);
+  const totalDays = Math.round(
+    (newestDate.getTime() - oldestDate.getTime()) / (1000 * 60 * 60 * 24)
+  );
+  avgDaysBetween = Math.round(totalDays / (sortedOrders.length - 1));
+}
+
+// Orders this month (Jan 2026 is current per app context; data is Jan 2025 — match the year/month of most recent order)
+const mostRecentMonth = lastOrderDate ? lastOrderDate.getMonth() : -1;
+const mostRecentYear = lastOrderDate ? lastOrderDate.getFullYear() : -1;
+const ordersThisMonth = MOCK_ORDERS.filter((o) => {
+  const d = new Date(o.createdAt);
+  return d.getMonth() === mostRecentMonth && d.getFullYear() === mostRecentYear;
+}).length;
+
+// ── Category breakdown from order items ───────────────────────────────────────
+
+// Build productId → categoryId map
+const productCategoryMap = new Map<string, string>(
+  PRODUCTS.map((p) => [p.id, p.categoryId])
+);
+
+// Build categoryId → name map
+const categoryNameMap = new Map<string, string>(
+  CATEGORIES.map((c) => [c.id, c.name])
+);
+
+// Aggregate spending by category
+const categoryTotals = new Map<string, number>();
+for (const order of MOCK_ORDERS) {
+  for (const item of order.items) {
+    const catId = productCategoryMap.get(item.productId);
+    if (catId) {
+      categoryTotals.set(catId, (categoryTotals.get(catId) ?? 0) + item.totalPrice);
+    }
+  }
+}
+
+// Sort by total descending and take top 4
+const itemsTotal = Array.from(categoryTotals.values()).reduce((s, v) => s + v, 0);
+const TOP_CATEGORIES = Array.from(categoryTotals.entries())
+  .sort((a, b) => b[1] - a[1])
+  .slice(0, 4)
+  .map(([catId, total]) => ({
+    name: categoryNameMap.get(catId) ?? catId,
+    total,
+    pct: itemsTotal > 0 ? Math.round((total / itemsTotal) * 100) : 0,
+  }));
+
+// ── Static chart & display data ───────────────────────────────────────────────
 
 const MONTHLY_DATA = [
   { month: "Aug", value: 3200 },
@@ -38,6 +116,14 @@ const RANK_COLORS = [
   "bg-brand-300",
   "bg-brand-200",
   "bg-brand-100",
+];
+
+// Category bar opacity classes — brand-500 at decreasing opacity
+const CATEGORY_BAR_CLASSES = [
+  "bg-brand-500",
+  "bg-brand-500/70",
+  "bg-brand-500/50",
+  "bg-brand-500/30",
 ];
 
 // ── Stat card ────────────────────────────────────────────────────────────────
@@ -86,15 +172,15 @@ export default function AnalyticsPage() {
           <p className="text-sm text-muted-foreground mt-0.5">Track your spending and savings</p>
         </div>
 
-        {/* Key stats */}
+        {/* Key stats — computed from MOCK_ORDERS */}
         <div className="grid grid-cols-2 gap-3">
-          <StatCard label="Total Spent" value="₱45,280" sub="This year" />
-          <StatCard label="Orders" value="24" sub="This year" />
-          <StatCard label="Avg. Order" value="₱1,887" sub="Per order" />
+          <StatCard label="Total Spent" value={formatPHP(totalSpent)} sub="All orders" />
+          <StatCard label="Orders" value={orderCount.toString()} sub="Total placed" />
+          <StatCard label="Avg. Order" value={formatPHP(avgOrder)} sub="Per order" />
           <StatCard
             label="Savings vs SRP"
-            value="₱12,450"
-            sub="21.6% saved"
+            value={formatPHP(savings)}
+            sub={`${savingsPct}% saved`}
             accent
           />
         </div>
@@ -140,6 +226,40 @@ export default function AnalyticsPage() {
           </div>
         </div>
 
+        {/* Category breakdown */}
+        {TOP_CATEGORIES.length > 0 && (
+          <div className="rounded-2xl border border-border bg-card shadow-card p-5">
+            <h2 className="font-display text-sm font-bold text-foreground mb-4 flex items-center gap-2">
+              <BarChart3 className="h-4 w-4 text-brand-500" />
+              Category Breakdown
+            </h2>
+            <div className="space-y-3">
+              {TOP_CATEGORIES.map((cat, i) => (
+                <div key={cat.name}>
+                  <div className="flex items-center justify-between mb-1">
+                    <span className="text-xs font-semibold text-foreground">{cat.name}</span>
+                    <span className="text-xs font-bold text-foreground tabular-nums">{formatPHP(cat.total)}</span>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <div className="flex-1 h-2.5 rounded-full bg-surface-100 overflow-hidden">
+                      <div
+                        className={cn("h-full rounded-full transition-all", CATEGORY_BAR_CLASSES[i])}
+                        style={{ width: `${cat.pct}%` }}
+                      />
+                    </div>
+                    <span className="text-[11px] text-muted-foreground tabular-nums w-8 text-right">
+                      {cat.pct}%
+                    </span>
+                  </div>
+                </div>
+              ))}
+            </div>
+            <p className="text-[10px] text-muted-foreground mt-3 pt-3 border-t border-border">
+              Based on itemized orders · Top {TOP_CATEGORIES.length} categories shown
+            </p>
+          </div>
+        )}
+
         {/* Top products */}
         <div>
           <h2 className="font-display text-sm font-bold text-foreground mb-3 flex items-center gap-2">
@@ -168,6 +288,34 @@ export default function AnalyticsPage() {
                 </div>
               </div>
             ))}
+          </div>
+        </div>
+
+        {/* Order frequency */}
+        <div className="rounded-2xl border border-border bg-card shadow-card overflow-hidden">
+          <div className="px-5 pt-5 pb-3">
+            <h2 className="font-display text-sm font-bold text-foreground flex items-center gap-2">
+              <Calendar className="h-4 w-4 text-brand-500" />
+              Order Frequency
+            </h2>
+          </div>
+          <div className="divide-y divide-border">
+            <div className="flex items-center justify-between px-5 py-3.5">
+              <span className="text-sm text-muted-foreground">Avg. days between orders</span>
+              <span className="text-sm font-bold text-foreground tabular-nums">
+                {avgDaysBetween > 0 ? `${avgDaysBetween} days` : "—"}
+              </span>
+            </div>
+            <div className="flex items-center justify-between px-5 py-3.5">
+              <span className="text-sm text-muted-foreground">Last order placed</span>
+              <span className="text-sm font-bold text-foreground">{lastOrderLabel}</span>
+            </div>
+            <div className="flex items-center justify-between px-5 py-3.5">
+              <span className="text-sm text-muted-foreground">Orders this month</span>
+              <span className="text-sm font-bold text-foreground tabular-nums">
+                {ordersThisMonth} order{ordersThisMonth !== 1 ? "s" : ""}
+              </span>
+            </div>
           </div>
         </div>
 
@@ -227,18 +375,27 @@ export default function AnalyticsPage() {
             {/* Bar comparison */}
             <div className="space-y-2">
               <div className="flex items-center gap-3">
-                <div className="w-20 shrink-0 text-right text-xs font-bold text-brand-500">₱45,280</div>
-                <div className="flex-1 h-3 rounded-full bg-surface-100 overflow-hidden">
-                  <div className="h-full bg-brand-500 rounded-full" style={{ width: "78.4%" }} />
+                <div className="w-20 shrink-0 text-right text-xs font-bold text-brand-500">
+                  {formatPHP(totalSpent)}
                 </div>
-                <div className="w-4 shrink-0 text-[9px] text-muted-foreground">78%</div>
+                <div className="flex-1 h-3 rounded-full bg-surface-100 overflow-hidden">
+                  <div
+                    className="h-full bg-brand-500 rounded-full"
+                    style={{ width: `${Math.round((totalSpent / srpTotal) * 100)}%` }}
+                  />
+                </div>
+                <div className="w-8 shrink-0 text-[9px] text-muted-foreground">
+                  {Math.round((totalSpent / srpTotal) * 100)}%
+                </div>
               </div>
               <div className="flex items-center gap-3">
-                <div className="w-20 shrink-0 text-right text-xs font-medium text-muted-foreground">₱57,730</div>
+                <div className="w-20 shrink-0 text-right text-xs font-medium text-muted-foreground">
+                  {formatPHP(srpTotal)}
+                </div>
                 <div className="flex-1 h-3 rounded-full bg-surface-100 overflow-hidden">
                   <div className="h-full bg-surface-200 rounded-full" style={{ width: "100%" }} />
                 </div>
-                <div className="w-4 shrink-0 text-[9px] text-muted-foreground">SRP</div>
+                <div className="w-8 shrink-0 text-[9px] text-muted-foreground">SRP</div>
               </div>
             </div>
 
@@ -248,8 +405,8 @@ export default function AnalyticsPage() {
                 <p className="text-[11px] text-success-600 mt-0.5">Buying through Ka Sari-Sari</p>
               </div>
               <div className="text-right">
-                <p className="font-display text-lg font-black text-success-700">₱12,450</p>
-                <p className="text-xs text-success-600 font-semibold">21.6% saved</p>
+                <p className="font-display text-lg font-black text-success-700">{formatPHP(savings)}</p>
+                <p className="text-xs text-success-600 font-semibold">{savingsPct}% saved</p>
               </div>
             </div>
           </div>

@@ -3,19 +3,35 @@ import { useState } from "react";
 import { Crown, Star, Gift, Users, Copy, CheckCircle2, ChevronRight } from "lucide-react";
 import { RetailerTopBar, RetailerBottomNav } from "@/components/layout/retailer-nav";
 import { cn } from "@/lib/utils";
+import { useLoyaltyStore } from "@/store/loyalty";
 
-// ── Data ─────────────────────────────────────────────────────────────────────
+// ── Tier config ───────────────────────────────────────────────────────────────
 
-const POINTS_BALANCE = 2450;
-const POINTS_TO_NEXT = 550;
-const NEXT_TIER = "Gold";
-const PROGRESS_PCT = Math.round((POINTS_BALANCE / (POINTS_BALANCE + POINTS_TO_NEXT)) * 100); // 82%
+interface TierConfig {
+  name: string;
+  icon: string;
+  min: number;
+  max: number | null;
+  color: string;
+  badge: string;
+  perks: string[];
+}
 
-const TIERS = [
+const TIER_CONFIG: TierConfig[] = [
+  {
+    name: "Bronze",
+    icon: "🥉",
+    min: 0,
+    max: 999,
+    color: "border-orange-200 bg-orange-50",
+    badge: "bg-orange-100 text-orange-700",
+    perks: ["Access to bulk pricing", "Standard support"],
+  },
   {
     name: "Silver",
     icon: "🥈",
-    current: true,
+    min: 1000,
+    max: 2999,
     color: "border-slate-300 bg-slate-50",
     badge: "bg-slate-100 text-slate-600",
     perks: ["Early access to flash sales", "Priority support"],
@@ -23,7 +39,8 @@ const TIERS = [
   {
     name: "Gold",
     icon: "🥇",
-    current: false,
+    min: 3000,
+    max: 5999,
     color: "border-amber-300 bg-amber-50",
     badge: "bg-amber-100 text-amber-700",
     perks: ["Extra 5% discount on all orders", "Free delivery on Fridays"],
@@ -31,20 +48,28 @@ const TIERS = [
   {
     name: "Platinum",
     icon: "💎",
-    current: false,
+    min: 6000,
+    max: null,
     color: "border-violet-300 bg-violet-50",
     badge: "bg-violet-100 text-violet-700",
     perks: ["Personal account manager", "Custom pricing", "First pick on new arrivals"],
   },
 ];
 
-const HISTORY = [
-  { id: "h1", type: "earn" as const, pts: 125, label: "Order KSS-2025-00142", date: "Jan 20" },
-  { id: "h2", type: "earn" as const, pts: 87,  label: "Order KSS-2025-00141", date: "Jan 17" },
-  { id: "h3", type: "earn" as const, pts: 98,  label: "Order KSS-2025-00138", date: "Jan 12" },
-  { id: "h4", type: "earn" as const, pts: 65,  label: "Order KSS-2025-00135", date: "Jan 8" },
-  { id: "h5", type: "redeem" as const, pts: 500, label: "Redeemed for ₱50 off", date: "Jan 5" },
-];
+function getTierForBalance(balance: number): TierConfig {
+  return (
+    TIER_CONFIG.slice()
+      .reverse()
+      .find((t) => balance >= t.min) ?? TIER_CONFIG[0]
+  );
+}
+
+function getNextTier(current: TierConfig): TierConfig | null {
+  const idx = TIER_CONFIG.findIndex((t) => t.name === current.name);
+  return idx < TIER_CONFIG.length - 1 ? TIER_CONFIG[idx + 1] : null;
+}
+
+// ── Static data ───────────────────────────────────────────────────────────────
 
 const HOW_TO_EARN = [
   { icon: Star, text: "1 point per ₱10 spent on any order" },
@@ -58,6 +83,31 @@ const REFERRAL_CODE = "MARIA-SANTOS-2025";
 
 export default function LoyaltyPage() {
   const [copied, setCopied] = useState(false);
+
+  const { balance, transactions } = useLoyaltyStore();
+
+  // Derived tier data
+  const currentTier = getTierForBalance(balance);
+  const nextTier = getNextTier(currentTier);
+  const pointsToNext = nextTier ? nextTier.min - balance : 0;
+  const progressPct = nextTier
+    ? Math.round((balance - currentTier.min) / (nextTier.min - currentTier.min) * 100)
+    : 100;
+
+  // Build TIERS display list (Silver onward — always show Silver, Gold, Platinum for aspirational UX)
+  const displayTiers = TIER_CONFIG.filter((t) => t.name !== "Bronze").map((t) => ({
+    ...t,
+    current: t.name === currentTier.name,
+  }));
+
+  // Map store transactions to display shape
+  const HISTORY = transactions.map((tx) => ({
+    id: tx.id,
+    type: tx.type,
+    pts: tx.points,
+    label: tx.label,
+    date: tx.date,
+  }));
 
   function handleCopy() {
     navigator.clipboard.writeText(REFERRAL_CODE).catch(() => {});
@@ -78,7 +128,7 @@ export default function LoyaltyPage() {
         <div>
           <h1 className="font-display text-xl font-bold text-foreground flex items-center gap-2">
             <Crown className="h-5 w-5 text-brand-500" />
-            Rewards & Loyalty
+            Rewards &amp; Loyalty
           </h1>
           <p className="text-sm text-muted-foreground mt-0.5">Earn points with every order</p>
         </div>
@@ -98,32 +148,38 @@ export default function LoyaltyPage() {
                 <span className="text-sm text-brand-200 font-medium">Ka Sari-Sari Rewards</span>
               </div>
               <span className="rounded-full border border-white/30 bg-white/20 px-3 py-0.5 text-xs font-bold text-white">
-                🥈 Silver Member
+                {currentTier.icon} {currentTier.name} Member
               </span>
             </div>
 
             {/* Points */}
             <p className="text-xs text-brand-200 uppercase tracking-wide mb-1">Your points</p>
             <p className="font-display text-5xl font-black leading-none">
-              {POINTS_BALANCE.toLocaleString()}
+              {balance.toLocaleString()}
               <span className="text-2xl text-brand-200 ml-1 font-semibold">pts</span>
             </p>
 
-            {/* Progress to Gold */}
-            <div className="mt-5 space-y-2">
-              <div className="flex justify-between text-xs text-brand-200">
-                <span>Silver</span>
-                <span className="font-semibold text-white">{POINTS_TO_NEXT} pts to {NEXT_TIER}</span>
-                <span>{NEXT_TIER}</span>
+            {/* Progress to next tier */}
+            {nextTier ? (
+              <div className="mt-5 space-y-2">
+                <div className="flex justify-between text-xs text-brand-200">
+                  <span>{currentTier.name}</span>
+                  <span className="font-semibold text-white">{pointsToNext} pts to {nextTier.name}</span>
+                  <span>{nextTier.name}</span>
+                </div>
+                <div className="h-2.5 rounded-full bg-white/20 overflow-hidden">
+                  <div
+                    className="h-full bg-white rounded-full transition-all"
+                    style={{ width: `${progressPct}%` }}
+                  />
+                </div>
+                <p className="text-[10px] text-brand-200 text-center">{progressPct}% of the way to {nextTier.name}</p>
               </div>
-              <div className="h-2.5 rounded-full bg-white/20 overflow-hidden">
-                <div
-                  className="h-full bg-white rounded-full transition-all"
-                  style={{ width: `${PROGRESS_PCT}%` }}
-                />
+            ) : (
+              <div className="mt-5">
+                <p className="text-xs text-brand-200 text-center">You&apos;ve reached the highest tier!</p>
               </div>
-              <p className="text-[10px] text-brand-200 text-center">{PROGRESS_PCT}% of the way to {NEXT_TIER}</p>
-            </div>
+            )}
           </div>
         </div>
 
@@ -131,7 +187,7 @@ export default function LoyaltyPage() {
         <div>
           <h2 className="font-display text-sm font-bold text-foreground mb-3">Tier Benefits</h2>
           <div className="space-y-3">
-            {TIERS.map((tier) => (
+            {displayTiers.map((tier) => (
               <div
                 key={tier.name}
                 className={cn(

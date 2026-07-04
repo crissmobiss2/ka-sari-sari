@@ -1,10 +1,11 @@
 "use client";
 
-import { TrendingUp, Users, ShoppingCart, Package, Download, ArrowUpRight, ArrowDownRight } from "lucide-react";
+import { TrendingUp, Users, ShoppingCart, Package, Download, FileDown, ArrowUpRight, ArrowDownRight } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { formatPHP, cn } from "@/lib/utils";
+import { toastSuccess, toastInfo } from "@/store/toast";
 
 // ── Static mock data ─────────────────────────────────────────────────────────
 
@@ -34,6 +35,34 @@ const PAYMENT_METHODS = [
   { name: "COD",    pct: 27, count: 499,  barColor: "bg-brand-500" },
   { name: "Maya",   pct: 15, count: 277,  barColor: "bg-emerald-500" },
 ];
+
+// ── CSV / PDF export ─────────────────────────────────────────────────────────
+
+function downloadCSV() {
+  const rows = [
+    ["Month", "Revenue (PHP)", "Orders", "Avg Order (PHP)"],
+    ...MONTHLY_REVENUE.map((rev, i) => [
+      MONTHS[i],
+      rev.toString(),
+      Math.round(rev / 3200).toString(),
+      Math.round(rev / Math.round(rev / 3200)).toString(),
+    ]),
+  ];
+  const csv = rows.map((r) => r.join(",")).join("\n");
+  const blob = new Blob([csv], { type: "text/csv;charset=utf-8;" });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement("a");
+  a.href = url;
+  a.download = "ka-sari-sari-analytics.csv";
+  a.click();
+  URL.revokeObjectURL(url);
+  toastSuccess("Analytics exported as CSV");
+}
+
+function downloadPDF() {
+  toastInfo("Opening print dialog for PDF...");
+  window.print();
+}
 
 // ── Helpers ──────────────────────────────────────────────────────────────────
 
@@ -150,9 +179,13 @@ export default function AdminAnalyticsPage() {
           <Button variant="outline" size="sm">
             This Month ▼
           </Button>
-          <Button size="sm">
+          <Button size="sm" onClick={downloadCSV}>
             <Download className="h-4 w-4" />
             Export CSV
+          </Button>
+          <Button variant="outline" size="sm" onClick={downloadPDF}>
+            <FileDown className="h-4 w-4" />
+            Download PDF
           </Button>
         </div>
       </div>

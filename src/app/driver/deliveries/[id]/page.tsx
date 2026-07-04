@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useRef } from "react";
 import { useParams, useRouter } from "next/navigation";
 import Link from "next/link";
 import { Card } from "@/components/ui/card";
@@ -23,6 +23,15 @@ function CheckCircleIcon({ className }: { className?: string }) {
     <svg className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round">
       <path d="M22 11.08V12a10 10 0 11-5.93-9.14" />
       <polyline points="22 4 12 14.01 9 11.01" />
+    </svg>
+  );
+}
+
+function CameraIcon({ className }: { className?: string }) {
+  return (
+    <svg className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.75} strokeLinecap="round" strokeLinejoin="round">
+      <path d="M23 19a2 2 0 01-2 2H3a2 2 0 01-2-2V8a2 2 0 012-2h4l2-3h6l2 3h4a2 2 0 012 2z" />
+      <circle cx="12" cy="13" r="4" />
     </svg>
   );
 }
@@ -90,6 +99,39 @@ export default function DeliveryDetailPage() {
   const [delivered, setDelivered] = useState(false);
   const [deliveredAt, setDeliveredAt] = useState<string | null>(null);
 
+  // POD photo state
+  const [photoUrl, setPhotoUrl] = useState<string | null>(null);
+  const [captureTime, setCaptureTime] = useState<string | null>(null);
+  const photoInputRef = useRef<HTMLInputElement>(null);
+
+  const photoTaken = photoUrl !== null;
+
+  function handlePhotoChange(e: React.ChangeEvent<HTMLInputElement>) {
+    const file = e.target.files?.[0];
+    if (file) {
+      setPhotoUrl(URL.createObjectURL(file));
+      setCaptureTime(
+        new Intl.DateTimeFormat("en-PH", {
+          hour: "2-digit",
+          minute: "2-digit",
+        }).format(new Date())
+      );
+    }
+  }
+
+  function handleRetakePhoto() {
+    // Revoke old object URL to free memory
+    if (photoUrl) {
+      URL.revokeObjectURL(photoUrl);
+    }
+    setPhotoUrl(null);
+    setCaptureTime(null);
+    // Reset file input so the same file can be re-selected
+    if (photoInputRef.current) {
+      photoInputRef.current.value = "";
+    }
+  }
+
   function handleDeliver() {
     const now = new Intl.DateTimeFormat("en-PH", {
       hour: "2-digit",
@@ -99,6 +141,15 @@ export default function DeliveryDetailPage() {
     }).format(new Date());
     setDeliveredAt(now);
     setDelivered(true);
+  }
+
+  // Derive deliver button state
+  const isDeliverDisabled = (isCOD && !cashCollected) || !photoTaken;
+
+  function getDeliverButtonLabel(): string {
+    if (!photoTaken) return "Take photo first";
+    if (isCOD && !cashCollected) return "Collect cash first";
+    return "Mark as Delivered";
   }
 
   // Confirmation screen
@@ -113,8 +164,14 @@ export default function DeliveryDetailPage() {
           <p className="text-muted-foreground text-sm">{order.orderNumber}</p>
           <p className="text-muted-foreground text-sm">{deliveredAt}</p>
         </div>
-        <div className="w-full bg-success-50 rounded-2xl p-4 border border-success-500/20 text-center">
+        <div className="w-full bg-success-50 rounded-2xl p-4 border border-success-500/20 text-center flex flex-col gap-2">
           <p className="text-sm text-success-700 font-medium">Successfully delivered to {customer.name}</p>
+          <div className="flex items-center justify-center gap-1.5 text-xs text-success-600">
+            <svg className="w-3.5 h-3.5 flex-shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2.5} strokeLinecap="round" strokeLinejoin="round">
+              <polyline points="20 6 9 17 4 12" />
+            </svg>
+            <span>POD photo attached</span>
+          </div>
         </div>
         <Button
           variant="outline"
@@ -263,24 +320,89 @@ export default function DeliveryDetailPage() {
           </div>
         )}
 
+        {/* Proof of Delivery Photo */}
+        <Card className="p-4">
+          <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-3">
+            Proof of Delivery Photo
+          </p>
+
+          {/* Hidden file input */}
+          <input
+            ref={photoInputRef}
+            type="file"
+            accept="image/*"
+            capture="environment"
+            className="hidden"
+            onChange={handlePhotoChange}
+          />
+
+          {photoUrl ? (
+            /* Photo captured state */
+            <div className="flex flex-col gap-2">
+              <div className="relative border-2 border-dashed border-border rounded-xl overflow-hidden">
+                {/* Captured photo */}
+                <img
+                  src={photoUrl}
+                  alt="Proof of delivery"
+                  className="w-full max-h-48 object-cover block"
+                />
+                {/* Retake button */}
+                <div className="absolute top-2 right-2">
+                  <button
+                    onClick={handleRetakePhoto}
+                    className="px-3 py-1.5 rounded-lg bg-black/60 text-white text-xs font-medium hover:bg-black/75 transition-colors backdrop-blur-sm"
+                  >
+                    Retake
+                  </button>
+                </div>
+              </div>
+              {/* Captured badge and timestamp */}
+              <div className="flex items-center justify-between px-0.5">
+                <span className="inline-flex items-center gap-1 text-xs font-semibold" style={{ color: "#f47028" }}>
+                  <svg className="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2.5} strokeLinecap="round" strokeLinejoin="round">
+                    <polyline points="20 6 9 17 4 12" />
+                  </svg>
+                  Photo captured
+                </span>
+                {captureTime && (
+                  <span className="text-xs text-muted-foreground">Captured at {captureTime}</span>
+                )}
+              </div>
+            </div>
+          ) : (
+            /* Initial state — tap to open camera */
+            <button
+              type="button"
+              onClick={() => photoInputRef.current?.click()}
+              className="w-full border-2 border-dashed border-border rounded-xl flex flex-col items-center justify-center gap-2 py-8 px-4 hover:border-brand-400 hover:bg-brand-50/30 active:bg-brand-50/50 transition-colors"
+            >
+              <CameraIcon className="w-10 h-10 text-muted-foreground" />
+              <span className="text-sm font-semibold text-foreground">Take Photo</span>
+              <span className="text-xs text-muted-foreground text-center">Required before marking delivered</span>
+            </button>
+          )}
+        </Card>
+
         {/* Delivery actions */}
         <div className="flex flex-col gap-3 pt-2">
           <Button
             size="lg"
             className={cn(
               "w-full h-14 text-base font-semibold rounded-2xl transition-all",
-              isCOD && !cashCollected
+              isDeliverDisabled
                 ? "bg-surface-200 text-surface-500 cursor-not-allowed"
                 : "bg-success-600 hover:bg-success-700 text-white shadow-card-md"
             )}
-            disabled={isCOD && !cashCollected}
+            disabled={isDeliverDisabled}
             onClick={handleDeliver}
           >
-            {isCOD && !cashCollected ? "Collect cash first" : "Mark as Delivered"}
+            {getDeliverButtonLabel()}
           </Button>
-          {isCOD && !cashCollected && (
+          {isDeliverDisabled && (
             <p className="text-center text-xs text-muted-foreground">
-              Toggle "Cash Collected" above before marking delivered
+              {!photoTaken
+                ? "Take a proof of delivery photo above before marking delivered"
+                : "Toggle \"Cash Collected\" above before marking delivered"}
             </p>
           )}
           <Button

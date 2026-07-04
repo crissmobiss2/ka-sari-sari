@@ -1,15 +1,38 @@
 "use client";
 
 import { useState } from "react";
-import { Search, Plus, Minus } from "lucide-react";
+import { Search, Plus, Minus, Download } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { cn } from "@/lib/utils";
 import { PRODUCTS, CATEGORIES } from "@/lib/mock-data";
+import { toastSuccess } from "@/store/toast";
 
 function getStock(productId: string): number {
   const n = productId.split("").reduce((a, c) => a + c.charCodeAt(0), 0);
   return (n * 7 + 13) % 201;
+}
+
+function downloadInventoryCSV(products: Array<{ id: string; name: string; brand?: string; categoryId: string }>) {
+  const rows = [
+    ["Product ID", "Name", "Brand", "Category", "Stock (units)"],
+    ...products.map((p) => [
+      p.id,
+      `"${p.name}"`,
+      `"${p.brand || ''}"`,
+      p.categoryId,
+      getStock(p.id).toString(),
+    ]),
+  ];
+  const csv = rows.map((r) => r.join(",")).join("\n");
+  const blob = new Blob([csv], { type: "text/csv;charset=utf-8;" });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement("a");
+  a.href = url;
+  a.download = "ka-sari-sari-inventory.csv";
+  a.click();
+  URL.revokeObjectURL(url);
+  toastSuccess("Inventory exported as CSV");
 }
 
 export default function InventoryPage() {
@@ -40,7 +63,7 @@ export default function InventoryPage() {
     const matchesSearch =
       search.trim() === "" ||
       p.name.toLowerCase().includes(search.toLowerCase()) ||
-      p.brand.toLowerCase().includes(search.toLowerCase());
+      (p.brand ?? "").toLowerCase().includes(search.toLowerCase());
     const matchesCategory =
       activeCategory === "all" || p.categoryId === activeCategory;
     return matchesSearch && matchesCategory;
@@ -63,8 +86,8 @@ export default function InventoryPage() {
     return "In Stock";
   }
 
-  function stockBadgeVariant(stock: number): "success" | "warning" | "destructive" {
-    if (stock === 0) return "destructive";
+  function stockBadgeVariant(stock: number): "success" | "warning" | "danger" {
+    if (stock === 0) return "danger";
     if (stock <= 20) return "warning";
     return "success";
   }
@@ -73,7 +96,16 @@ export default function InventoryPage() {
     <div className="max-w-2xl mx-auto">
       {/* Header */}
       <div className="px-4 pt-6 pb-4 space-y-3">
-        <h1 className="font-display text-2xl font-bold text-foreground">Inventory</h1>
+        <div className="flex items-center justify-between gap-4">
+          <h1 className="font-display text-2xl font-bold text-foreground">Inventory</h1>
+          <button
+            onClick={() => downloadInventoryCSV(filtered)}
+            className="flex items-center gap-1.5 rounded-xl border border-border bg-card px-3 py-2 text-sm font-medium text-foreground hover:bg-surface-100 transition-colors"
+          >
+            <Download className="h-4 w-4" />
+            Export CSV
+          </button>
+        </div>
         <div className="relative">
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
           <input

@@ -1,9 +1,10 @@
 "use client";
 import { useSearchParams } from "next/navigation";
-import { Suspense } from "react";
+import { Suspense, useEffect, useRef, useState } from "react";
 import Link from "next/link";
-import { CheckCircle2, Package, ArrowRight, Home } from "lucide-react";
+import { CheckCircle2, Package, ArrowRight, Home, Star } from "lucide-react";
 import { ButtonLink } from "@/components/ui/button";
+import { earnPoints } from "@/store/loyalty";
 
 function SuccessContent() {
   const params = useSearchParams();
@@ -18,6 +19,17 @@ function SuccessContent() {
     bank: "Bank Transfer",
     wallet: "Ka Sari-Sari Wallet",
   };
+
+  const awardedRef = useRef(false);
+  const [ptsEarned, setPtsEarned] = useState(0);
+
+  useEffect(() => {
+    if (!awardedRef.current) {
+      awardedRef.current = true;
+      const pts = earnPoints(1500, orderId); // mock ₱1500 order total
+      setPtsEarned(pts);
+    }
+  }, [orderId]);
 
   return (
     <div className="min-h-screen bg-background flex flex-col items-center justify-center px-4 py-12 text-center">
@@ -35,7 +47,7 @@ function SuccessContent() {
       </p>
 
       {/* Order details */}
-      <div className="w-full max-w-sm rounded-2xl border border-border bg-card shadow-card p-5 space-y-3 text-left mb-8">
+      <div className="w-full max-w-sm rounded-2xl border border-border bg-card shadow-card p-5 space-y-3 text-left mb-4">
         <div className="flex justify-between text-sm">
           <span className="text-muted-foreground">Order number</span>
           <span className="font-bold text-foreground font-mono">{orderId}</span>
@@ -53,6 +65,19 @@ function SuccessContent() {
           <span className="font-semibold text-foreground">2–3 business days</span>
         </div>
       </div>
+
+      {/* Points earned banner */}
+      {ptsEarned > 0 && (
+        <div className="w-full max-w-sm rounded-2xl border border-brand-200 bg-brand-50 p-4 flex items-center gap-3 text-left mb-4">
+          <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-brand-100">
+            <Star className="h-5 w-5 text-brand-500" />
+          </div>
+          <div>
+            <p className="text-sm font-bold text-brand-700">+{ptsEarned} Loyalty Points Earned!</p>
+            <p className="text-xs text-brand-600 mt-0.5">Visit Rewards to see your balance</p>
+          </div>
+        </div>
+      )}
 
       {/* CTAs */}
       <div className="w-full max-w-sm space-y-3">

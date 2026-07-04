@@ -1,0 +1,22 @@
+{
+  "name": "Ka Sari-Sari",
+  "short_name": "Ka Sari-Sari",
+  "description": "Wholesale delivery for sari-sari stores",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#f47028",
+  "orientation": "portrait-primary",
+  "icons": [
+    { "src": "/icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any maskable" },
+    { "src": "/icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any maskable" },
+    { "src": "/apple-touch-icon.png", "sizes": "180x180", "type": "image/png" }
+  ],
+  "categories": ["shopping", "business"],
+  "lang": "en-PH",
+  "shortcuts": [
+    { "name": "My Orders", "url": "/orders", "description": "View your orders" },
+    { "name": "Browse Catalog", "url": "/catalog", "description": "Shop wholesale products" },
+    { "name": "Quick Reorder", "url": "/reorder", "description": "Repeat a past order" }
+  ]
+}

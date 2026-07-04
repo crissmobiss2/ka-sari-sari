@@ -1,12 +1,13 @@
 "use client";
 import { useState } from "react";
 import Link from "next/link";
-import { RotateCcw, Plus, ShoppingCart, CheckCircle2, ChevronRight, Package } from "lucide-react";
+import { RotateCcw, Plus, ShoppingCart, CheckCircle2, ChevronRight, Package, AlertTriangle } from "lucide-react";
 import { RetailerTopBar, RetailerBottomNav } from "@/components/layout/retailer-nav";
 import { useCartStore } from "@/store/cart";
 import { PRODUCTS } from "@/lib/mock-data";
 import { formatPHP, formatDate } from "@/lib/utils";
 import { cn } from "@/lib/utils";
+import { toastSuccess } from "@/store/toast";
 
 // ── Past order definitions ───────────────────────────────────────────────────
 // Product IDs mapped from mock-data.ts:
@@ -52,6 +53,15 @@ const PAST_ORDERS = [
   },
 ];
 
+// ── Urgent restock data ──────────────────────────────────────────────────────
+
+const URGENT = {
+  name: "Coca-Cola Regular 330ml",
+  daysSince: 12,
+  frequency: "every 2 weeks",
+  urgency: "high" as const,
+};
+
 // ── Toast ────────────────────────────────────────────────────────────────────
 
 function SuccessToast({ message, visible }: { message: string; visible: boolean }) {
@@ -70,6 +80,103 @@ function SuccessToast({ message, visible }: { message: string; visible: boolean 
   );
 }
 
+// ── Urgent restock banner ────────────────────────────────────────────────────
+
+function UrgentRestockBanner() {
+  const { addItem } = useCartStore();
+  const [added, setAdded] = useState(false);
+
+  function handleQuickAdd() {
+    const product = PRODUCTS.find((p) => p.id === "prod-1");
+    if (product) {
+      addItem(product, 24);
+      setAdded(true);
+      toastSuccess(`${product.name} added — 24 pcs`);
+      setTimeout(() => setAdded(false), 2500);
+    }
+  }
+
+  return (
+    <div className="rounded-2xl border border-brand-300 bg-brand-50 overflow-hidden">
+      {/* Urgency label */}
+      <div className="flex items-center gap-1.5 bg-brand-500 px-4 py-1.5">
+        <AlertTriangle className="h-3 w-3 text-white" />
+        <span className="text-[11px] font-bold text-white uppercase tracking-wide">Suggested Reorder</span>
+      </div>
+
+      {/* Body */}
+      <div className="px-4 py-4">
+        <div className="flex items-start gap-3">
+          <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-brand-100">
+            <RotateCcw className="h-5 w-5 text-brand-500" />
+          </div>
+          <div className="flex-1 min-w-0">
+            <p className="text-sm font-bold text-brand-900">You&apos;re overdue for a restock!</p>
+            <p className="text-sm font-semibold text-foreground mt-0.5 truncate">{URGENT.name}</p>
+            <p className="text-xs text-brand-700 mt-1">
+              Usually ordered {URGENT.frequency} — last ordered {URGENT.daysSince} days ago
+            </p>
+          </div>
+        </div>
+
+        <button
+          onClick={handleQuickAdd}
+          disabled={added}
+          className={cn(
+            "mt-4 flex w-full items-center justify-center gap-2 rounded-xl py-3 text-sm font-bold transition-all active:scale-[0.98]",
+            added
+              ? "bg-success-500 text-white cursor-default"
+              : "bg-brand-500 text-white hover:bg-brand-600"
+          )}
+        >
+          {added ? (
+            <>
+              <CheckCircle2 className="h-4 w-4" />
+              Added to cart!
+            </>
+          ) : (
+            <>
+              <Plus className="h-4 w-4" />
+              Quick Add 24 pcs
+            </>
+          )}
+        </button>
+      </div>
+    </div>
+  );
+}
+
+// ── Cart sticky footer ───────────────────────────────────────────────────────
+
+function CartStickyFooter() {
+  const { items } = useCartStore();
+  const count = items.reduce((acc, item) => acc + item.quantity, 0);
+
+  if (count === 0) return null;
+
+  return (
+    <div className="fixed bottom-16 left-0 right-0 z-40 px-4 pb-2">
+      <Link
+        href="/cart"
+        className="flex items-center justify-between rounded-2xl bg-brand-500 px-5 py-3.5 shadow-brand active:scale-[0.99] transition-all"
+      >
+        <div className="flex items-center gap-2.5">
+          <div className="relative">
+            <ShoppingCart className="h-5 w-5 text-white" />
+            <span className="absolute -top-1.5 -right-1.5 flex h-4 w-4 items-center justify-center rounded-full bg-white text-[10px] font-black text-brand-500 leading-none">
+              {count > 99 ? "99+" : count}
+            </span>
+          </div>
+          <span className="text-sm font-bold text-white">{count} item{count !== 1 ? "s" : ""} ready</span>
+        </div>
+        <span className="text-sm font-bold text-white flex items-center gap-1">
+          Go to Cart <ChevronRight className="h-4 w-4" />
+        </span>
+      </Link>
+    </div>
+  );
+}
+
 // ── Order card ───────────────────────────────────────────────────────────────
 
 function OrderCard({ order }: { order: typeof PAST_ORDERS[number] }) {
@@ -80,6 +187,7 @@ function OrderCard({ order }: { order: typeof PAST_ORDERS[number] }) {
   function showToast(msg: string) {
     setToastMsg(msg);
     setToastVisible(true);
+    toastSuccess(msg);
     setTimeout(() => setToastVisible(false), 2200);
   }
 
@@ -160,6 +268,9 @@ export default function ReorderPage() {
       <RetailerTopBar title="Quick Reorder" />
 
       <div className="px-4 py-5 space-y-5">
+        {/* Urgent restock banner */}
+        <UrgentRestockBanner />
+
         {/* Header */}
         <div>
           <h1 className="font-display text-xl font-bold text-foreground flex items-center gap-2">
@@ -202,6 +313,7 @@ export default function ReorderPage() {
         </Link>
       </div>
 
+      <CartStickyFooter />
       <RetailerBottomNav />
     </div>
   );

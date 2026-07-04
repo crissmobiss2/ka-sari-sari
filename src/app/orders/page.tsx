@@ -249,13 +249,14 @@ function OrderCard({ order }: { order: DisplayOrder }) {
             </span>
           )}
           {isDelivered && (
-            <button
-              onClick={(e) => { e.preventDefault(); window.location.href = "/catalog"; }}
+            <Link
+              href="/reorder"
+              onClick={(e) => e.stopPropagation()}
               className="rounded-lg bg-surface-100 px-3 py-1.5 text-xs font-semibold text-foreground flex items-center gap-1.5 hover:bg-surface-200 transition-colors"
             >
               <RotateCcw className="h-3 w-3" />
               Reorder
-            </button>
+            </Link>
           )}
           <ChevronRight className="h-4 w-4 text-muted-foreground" />
         </div>
