@@ -5,7 +5,7 @@ import {
   LayoutDashboard, Package, ShoppingCart, Users, BarChart3,
   Warehouse, Truck, CreditCard, Settings, ShoppingBasket,
   ClipboardList, Tag, ChevronRight, Map,
-  Banknote, Building2, FileText, Megaphone,
+  Banknote, Building2, FileText, Monitor,
   PackageCheck, Boxes, ScanLine,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
@@ -17,6 +17,7 @@ const navGroups = [
       { href: "/admin",             label: "Dashboard",   icon: LayoutDashboard },
       { href: "/admin/orders",      label: "Orders",      icon: ShoppingCart },
       { href: "/admin/fulfillment", label: "Fulfillment", icon: ClipboardList },
+      { href: "/admin/pos",         label: "POS",         icon: Monitor },
     ],
   },
   {

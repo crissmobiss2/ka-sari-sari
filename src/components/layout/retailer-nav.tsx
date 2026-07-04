@@ -2,15 +2,15 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import {
-  LayoutDashboard, Package, ShoppingCart, ClipboardList,
-  User, ShoppingBasket, Bell, Tag
+  LayoutDashboard, ShoppingCart, ClipboardList,
+  User, ShoppingBasket, Bell, BarChart3
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useCartStore } from "@/store/cart";
 
 const navItems = [
   { href: "/dashboard", label: "Home",    icon: LayoutDashboard },
-  { href: "/deals",     label: "Deals",   icon: Tag },
+  { href: "/catalog",   label: "Shop",    icon: ShoppingBasket },
   { href: "/cart",      label: "Cart",    icon: ShoppingCart, isCart: true },
   { href: "/orders",    label: "Orders",  icon: ClipboardList },
   { href: "/account",   label: "Account", icon: User },
@@ -68,6 +68,9 @@ export function RetailerTopBar({ title }: { title?: string }) {
           </span>
         </div>
         <div className="flex items-center gap-1">
+          <Link href="/analytics" className="relative flex h-9 w-9 items-center justify-center rounded-xl hover:bg-muted transition-colors" aria-label="Analytics">
+            <BarChart3 className="h-5 w-5 text-muted-foreground" />
+          </Link>
           <Link href="/notifications" className="relative flex h-9 w-9 items-center justify-center rounded-xl hover:bg-muted transition-colors">
             <Bell className="h-5 w-5 text-muted-foreground" />
             <span className="absolute top-1.5 right-1.5 h-2 w-2 rounded-full bg-brand-500" />
