@@ -328,7 +328,7 @@ export default function PickingPage() {
                             min={0}
                             max={item.quantity}
                             placeholder="0"
-                            value={partialQty[item.id] ?? item.pickedQty || ""}
+                            value={(partialQty[item.id] ?? item.pickedQty) || ""}
                             onChange={(e) =>
                               setPartialQty((prev) => ({ ...prev, [item.id]: e.target.value }))
                             }
