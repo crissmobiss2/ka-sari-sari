@@ -35,7 +35,7 @@ export const PRODUCTS: Product[] = [
     lowStockThreshold: 48,
     createdAt: "2024-01-01T00:00:00Z",
     description: "Classic Coca-Cola in 330ml can. 24 cans per case.",
-    imageUrl: "https://images.openfoodfacts.org/images/products/544/900/000/0965/front_fr.37.400.jpg",
+    imageUrl: "https://picsum.photos/seed/prod-1/400/400",
   },
   {
     id: "prod-9",
@@ -55,7 +55,7 @@ export const PRODUCTS: Product[] = [
     lowStockThreshold: 48,
     createdAt: "2024-01-01T00:00:00Z",
     description: "Wilkins distilled water, 500ml bottle.",
-    imageUrl: "https://images.openfoodfacts.org/images/products/480/198/110/7971/front_en.19.400.jpg",
+    imageUrl: "https://picsum.photos/seed/prod-9/400/400",
   },
   {
     id: "prod-11",
@@ -75,7 +75,7 @@ export const PRODUCTS: Product[] = [
     lowStockThreshold: 48,
     createdAt: "2024-01-01T00:00:00Z",
     description: "Royal True Orange carbonated drink in 355ml can. 24 cans per case.",
-    imageUrl: "https://images.openfoodfacts.org/images/products/480/198/111/8571/front_en.3.full.jpg",
+    imageUrl: "https://picsum.photos/seed/prod-11/400/400",
   },
   {
     id: "prod-12",
@@ -95,7 +95,7 @@ export const PRODUCTS: Product[] = [
     lowStockThreshold: 48,
     createdAt: "2024-01-01T00:00:00Z",
     description: "Sprite lemon-lime carbonated drink in 330ml can. 24 cans per case.",
-    imageUrl: "https://images.openfoodfacts.org/images/products/544/900/030/8740/front_it.15.400.jpg",
+    imageUrl: "https://picsum.photos/seed/prod-12/400/400",
   },
   {
     id: "prod-13",
@@ -115,7 +115,7 @@ export const PRODUCTS: Product[] = [
     lowStockThreshold: 48,
     createdAt: "2024-01-01T00:00:00Z",
     description: "C2 Cool & Clean ready-to-drink green tea, 500ml bottle.",
-    imageUrl: "https://images.openfoodfacts.org/images/products/480/001/664/4504/front_en.46.400.jpg",
+    imageUrl: "https://picsum.photos/seed/prod-13/400/400",
   },
   {
     id: "prod-14",
@@ -135,7 +135,7 @@ export const PRODUCTS: Product[] = [
     lowStockThreshold: 24,
     createdAt: "2024-01-01T00:00:00Z",
     description: "Gatorade sports drink in lemon-lime flavor, 500ml bottle.",
-    imageUrl: "https://images.openfoodfacts.org/images/products/885/899/858/7025/front_en.17.full.jpg",
+    imageUrl: "https://picsum.photos/seed/prod-14/400/400",
   },
 
   // ── Instant Noodles (cat-2) ───────────────────────────────────────────────
@@ -157,7 +157,7 @@ export const PRODUCTS: Product[] = [
     lowStockThreshold: 96,
     createdAt: "2024-01-01T00:00:00Z",
     description: "Lucky Me Pancit Canton Original flavor. 12 packs per box.",
-    imageUrl: "https://images.openfoodfacts.org/images/products/480/777/027/0123/front_en.50.400.jpg",
+    imageUrl: "https://picsum.photos/seed/prod-2/400/400",
   },
   {
     id: "prod-10",
@@ -197,7 +197,7 @@ export const PRODUCTS: Product[] = [
     lowStockThreshold: 96,
     createdAt: "2024-01-01T00:00:00Z",
     description: "Lucky Me! Chicken Mami instant noodle soup, 55g pack.",
-    imageUrl: "https://images.openfoodfacts.org/images/products/480/777/027/0024/front_en.56.400.jpg",
+    imageUrl: "https://picsum.photos/seed/prod-15/400/400",
   },
   {
     id: "prod-16",
@@ -239,7 +239,7 @@ export const PRODUCTS: Product[] = [
     lowStockThreshold: 30,
     createdAt: "2024-01-01T00:00:00Z",
     description: "Piattos potato crisps in cheese flavor.",
-    imageUrl: "https://images.openfoodfacts.org/images/products/480/001/667/1500/front_en.28.400.jpg",
+    imageUrl: "https://picsum.photos/seed/prod-3/400/400",
   },
   {
     id: "prod-17",
@@ -259,7 +259,7 @@ export const PRODUCTS: Product[] = [
     lowStockThreshold: 36,
     createdAt: "2024-01-01T00:00:00Z",
     description: "Nova Country Cheddar corn snacks, 78g pack.",
-    imageUrl: "https://images.openfoodfacts.org/images/products/480/001/666/3505/front_en.12.400.jpg",
+    imageUrl: "https://picsum.photos/seed/prod-17/400/400",
   },
   {
     id: "prod-18",
@@ -279,7 +279,7 @@ export const PRODUCTS: Product[] = [
     lowStockThreshold: 36,
     createdAt: "2024-01-01T00:00:00Z",
     description: "Clover Chips original flavored snack, 100g pack.",
-    imageUrl: "https://images.openfoodfacts.org/images/products/480/021/613/0029/front_en.3.400.jpg",
+    imageUrl: "https://picsum.photos/seed/prod-18/400/400",
   },
   {
     id: "prod-19",
@@ -299,7 +299,7 @@ export const PRODUCTS: Product[] = [
     lowStockThreshold: 36,
     createdAt: "2024-01-01T00:00:00Z",
     description: "Chippy corn chips in BBQ flavor, 100g pack.",
-    imageUrl: "https://images.openfoodfacts.org/images/products/480/001/677/1972/front_en.3.400.jpg",
+    imageUrl: "https://picsum.photos/seed/prod-19/400/400",
   },
   {
     id: "prod-20",
@@ -319,7 +319,7 @@ export const PRODUCTS: Product[] = [
     lowStockThreshold: 48,
     createdAt: "2024-01-01T00:00:00Z",
     description: "Boy Bawang garlic-flavored corn bits, 100g pack.",
-    imageUrl: "https://images.openfoodfacts.org/images/products/480/901/168/1095/front_en.33.400.jpg",
+    imageUrl: "https://picsum.photos/seed/prod-20/400/400",
   },
   {
     id: "prod-21",
@@ -361,7 +361,7 @@ export const PRODUCTS: Product[] = [
     lowStockThreshold: 48,
     createdAt: "2024-01-01T00:00:00Z",
     description: "555 Sardines in tomato sauce. 24 cans per case.",
-    imageUrl: "https://images.openfoodfacts.org/images/products/074/848/520/0026/front_en.17.400.jpg",
+    imageUrl: "https://picsum.photos/seed/prod-4/400/400",
   },
   {
     id: "prod-22",
@@ -381,7 +381,7 @@ export const PRODUCTS: Product[] = [
     lowStockThreshold: 48,
     createdAt: "2024-01-01T00:00:00Z",
     description: "Mega Sardines in spicy tomato sauce, 155g can.",
-    imageUrl: "https://images.openfoodfacts.org/images/products/480/650/471/0126/front_en.30.400.jpg",
+    imageUrl: "https://picsum.photos/seed/prod-22/400/400",
   },
   {
     id: "prod-23",
@@ -401,7 +401,7 @@ export const PRODUCTS: Product[] = [
     lowStockThreshold: 48,
     createdAt: "2024-01-01T00:00:00Z",
     description: "Argentina Corned Beef, 260g can. Classic sari-sari staple.",
-    imageUrl: "https://images.openfoodfacts.org/images/products/074/848/580/0035/front_en.19.400.jpg",
+    imageUrl: "https://picsum.photos/seed/prod-23/400/400",
   },
   {
     id: "prod-24",
@@ -421,7 +421,7 @@ export const PRODUCTS: Product[] = [
     lowStockThreshold: 48,
     createdAt: "2024-01-01T00:00:00Z",
     description: "Century Tuna flakes in oil, 180g can.",
-    imageUrl: "https://images.openfoodfacts.org/images/products/074/848/510/0081/front_en.41.400.jpg",
+    imageUrl: "https://picsum.photos/seed/prod-24/400/400",
   },
 
   // ── Condiments & Sauces (cat-5) ───────────────────────────────────────────
@@ -443,7 +443,7 @@ export const PRODUCTS: Product[] = [
     lowStockThreshold: 24,
     createdAt: "2024-01-01T00:00:00Z",
     description: "Silver Swan regular soy sauce, 1 liter bottle.",
-    imageUrl: "https://images.openfoodfacts.org/images/products/480/034/400/1420/front_fr.3.400.jpg",
+    imageUrl: "https://picsum.photos/seed/prod-7/400/400",
   },
   {
     id: "prod-25",
@@ -463,7 +463,7 @@ export const PRODUCTS: Product[] = [
     lowStockThreshold: 24,
     createdAt: "2024-01-01T00:00:00Z",
     description: "Datu Puti Sukang Maasim cane vinegar, 1 liter bottle.",
-    imageUrl: "https://images.openfoodfacts.org/images/products/480/166/860/1914/front_ro.3.400.jpg",
+    imageUrl: "https://picsum.photos/seed/prod-25/400/400",
   },
   {
     id: "prod-26",
@@ -483,7 +483,7 @@ export const PRODUCTS: Product[] = [
     lowStockThreshold: 24,
     createdAt: "2024-01-01T00:00:00Z",
     description: "UFC Banana Ketchup original sweet style, 320g bottle.",
-    imageUrl: "https://images.openfoodfacts.org/images/products/001/428/500/0068/front_fr.31.400.jpg",
+    imageUrl: "https://picsum.photos/seed/prod-26/400/400",
   },
   {
     id: "prod-27",
@@ -607,7 +607,7 @@ export const PRODUCTS: Product[] = [
     lowStockThreshold: 50,
     createdAt: "2024-01-01T00:00:00Z",
     description: "Nescafé 3-in-1 Original blend. 10 sachets per box.",
-    imageUrl: "https://images.openfoodfacts.org/images/products/888/808/212/9077/front_en.16.400.jpg",
+    imageUrl: "https://picsum.photos/seed/prod-5/400/400",
   },
   {
     id: "prod-31",
@@ -627,7 +627,7 @@ export const PRODUCTS: Product[] = [
     lowStockThreshold: 36,
     createdAt: "2024-01-01T00:00:00Z",
     description: "Kopiko 3-in-1 instant coffee mix, 25g sachets, 10 per box.",
-    imageUrl: "https://images.openfoodfacts.org/images/products/899/600/141/0226/front_en.40.full.jpg",
+    imageUrl: "https://picsum.photos/seed/prod-31/400/400",
   },
 
   // ── Laundry & Cleaning (cat-8) ────────────────────────────────────────────
@@ -699,7 +699,7 @@ export const PRODUCTS: Product[] = [
     unit: "can", unitSize: "330ml", price: 26, srp: 32, sku: "PEP-330-REG",
     minOrderQty: 24, isActive: true, isFeatured: false, stock: 360, lowStockThreshold: 48,
     createdAt: "2024-01-01T00:00:00Z", description: "Pepsi Cola classic cola drink in 330ml can.",
-    imageUrl: "https://images.openfoodfacts.org/images/products/590/049/731/0338/front_pl.10.400.jpg",
+    imageUrl: "https://picsum.photos/seed/prod-b01/400/400",
   },
   {
     id: "prod-b02", categoryId: "cat-1",
@@ -707,7 +707,7 @@ export const PRODUCTS: Product[] = [
     unit: "can", unitSize: "355ml", price: 30, srp: 38, sku: "MTN-355-DEW",
     minOrderQty: 24, isActive: true, isFeatured: false, stock: 288, lowStockThreshold: 48,
     createdAt: "2024-01-01T00:00:00Z", description: "Mountain Dew citrus soda in 355ml can.",
-    imageUrl: "https://images.openfoodfacts.org/images/products/740/100/590/5780/front_es.3.400.jpg",
+    imageUrl: "https://picsum.photos/seed/prod-b02/400/400",
   },
   {
     id: "prod-b03", categoryId: "cat-1",
@@ -723,7 +723,7 @@ export const PRODUCTS: Product[] = [
     unit: "bottle", unitSize: "500ml", price: 20, srp: 26, sku: "NST-LEM-500",
     minOrderQty: 24, isActive: true, isFeatured: false, stock: 288, lowStockThreshold: 48,
     createdAt: "2024-01-01T00:00:00Z", description: "Nestea lemon iced tea ready-to-drink, 500ml bottle.",
-    imageUrl: "https://images.openfoodfacts.org/images/products/480/001/453/6665/front_en.3.400.jpg",
+    imageUrl: "https://picsum.photos/seed/prod-b04/400/400",
   },
   {
     id: "prod-b05", categoryId: "cat-1",
@@ -731,7 +731,7 @@ export const PRODUCTS: Product[] = [
     unit: "can", unitSize: "330ml", price: 32, srp: 40, sku: "STG-330-RED",
     minOrderQty: 24, isActive: true, isFeatured: false, stock: 240, lowStockThreshold: 48,
     createdAt: "2024-01-01T00:00:00Z", description: "Sting berry-flavored energy drink, 330ml can.",
-    imageUrl: "https://images.openfoodfacts.org/images/products/480/392/503/3421/front_en.3.400.jpg",
+    imageUrl: "https://picsum.photos/seed/prod-b05/400/400",
   },
   {
     id: "prod-b06", categoryId: "cat-1",
@@ -739,7 +739,7 @@ export const PRODUCTS: Product[] = [
     unit: "bottle", unitSize: "500ml", price: 42, srp: 52, sku: "POC-SWT-500",
     minOrderQty: 24, isActive: true, isFeatured: false, stock: 144, lowStockThreshold: 24,
     createdAt: "2024-01-01T00:00:00Z", description: "Pocari Sweat isotonic sports drink for hydration, 500ml.",
-    imageUrl: "https://images.openfoodfacts.org/images/products/899/703/560/0041/front_en.24.full.jpg",
+    imageUrl: "https://picsum.photos/seed/prod-b06/400/400",
   },
   {
     id: "prod-b07", categoryId: "cat-1",
@@ -755,7 +755,7 @@ export const PRODUCTS: Product[] = [
     unit: "bottle", unitSize: "500ml", price: 52, srp: 65, sku: "RHB-500-STR",
     minOrderQty: 24, isActive: true, isFeatured: false, stock: 360, lowStockThreshold: 48,
     createdAt: "2024-01-01T00:00:00Z", description: "Red Horse Extra Strong beer, 500ml bottle.",
-    imageUrl: "https://images.openfoodfacts.org/images/products/480/103/221/1077/front_en.5.400.jpg",
+    imageUrl: "https://picsum.photos/seed/prod-b08/400/400",
   },
   {
     id: "prod-b09", categoryId: "cat-1",
@@ -763,7 +763,7 @@ export const PRODUCTS: Product[] = [
     unit: "pack", unitSize: "250ml", price: 10, srp: 13, sku: "ZST-ORA-250",
     minOrderQty: 24, isActive: true, isFeatured: false, stock: 480, lowStockThreshold: 48,
     createdAt: "2024-01-01T00:00:00Z", description: "Zesto orange juice drink, 250ml tetra pack.",
-    imageUrl: "https://images.openfoodfacts.org/images/products/480/488/888/9711/front_en.18.400.jpg",
+    imageUrl: "https://picsum.photos/seed/prod-b09/400/400",
   },
 
   // ── More Instant Noodles (cat-2) ──────────────────────────────────────────
@@ -773,7 +773,7 @@ export const PRODUCTS: Product[] = [
     unit: "pack", unitSize: "65g", price: 14, srp: 18, sku: "LM-PC-CLM",
     minOrderQty: 12, isActive: true, isFeatured: false, stock: 720, lowStockThreshold: 96,
     createdAt: "2024-01-01T00:00:00Z", description: "Lucky Me Pancit Canton Chili Mansi flavor with calamansi zing.",
-    imageUrl: "https://images.openfoodfacts.org/images/products/480/777/027/3698/front_en.54.400.jpg",
+    imageUrl: "https://picsum.photos/seed/prod-n01/400/400",
   },
   {
     id: "prod-n02", categoryId: "cat-2",
@@ -781,7 +781,7 @@ export const PRODUCTS: Product[] = [
     unit: "pack", unitSize: "65g", price: 15, srp: 19, sku: "LM-PC-EXH",
     minOrderQty: 12, isActive: true, isFeatured: false, stock: 600, lowStockThreshold: 96,
     createdAt: "2024-01-01T00:00:00Z", description: "Lucky Me Pancit Canton Extra Hot — for spice lovers.",
-    imageUrl: "https://images.openfoodfacts.org/images/products/480/777/027/1229/front_en.45.400.jpg",
+    imageUrl: "https://picsum.photos/seed/prod-n02/400/400",
   },
   {
     id: "prod-n03", categoryId: "cat-2",
@@ -789,7 +789,7 @@ export const PRODUCTS: Product[] = [
     unit: "pack", unitSize: "55g", price: 12, srp: 16, sku: "LM-LPB-55",
     minOrderQty: 12, isActive: true, isFeatured: false, stock: 480, lowStockThreshold: 48,
     createdAt: "2024-01-01T00:00:00Z", description: "Lucky Me La Paz Batchoy noodle soup, Iloilo-style.",
-    imageUrl: "https://images.openfoodfacts.org/images/products/480/777/027/2813/front_en.9.400.jpg",
+    imageUrl: "https://picsum.photos/seed/prod-n03/400/400",
   },
   {
     id: "prod-n04", categoryId: "cat-2",
@@ -813,7 +813,7 @@ export const PRODUCTS: Product[] = [
     unit: "cup", unitSize: "60g", price: 25, srp: 32, sku: "NIS-CUP-CHK",
     minOrderQty: 12, isActive: true, isFeatured: false, stock: 240, lowStockThreshold: 24,
     createdAt: "2024-01-01T00:00:00Z", description: "Nissin Cup Noodles chicken flavor, ready-to-eat cup.",
-    imageUrl: "https://images.openfoodfacts.org/images/products/480/001/655/2250/front_en.3.400.jpg",
+    imageUrl: "https://picsum.photos/seed/prod-n06/400/400",
   },
 
   // ── More Snacks & Chips (cat-3) ───────────────────────────────────────────
@@ -823,7 +823,7 @@ export const PRODUCTS: Product[] = [
     unit: "pack", unitSize: "100g", price: 24, srp: 30, sku: "BB-ADO-100",
     minOrderQty: 12, isActive: true, isFeatured: false, stock: 360, lowStockThreshold: 36,
     createdAt: "2024-01-01T00:00:00Z", description: "Boy Bawang adobo-flavored corn bits, 100g pack.",
-    imageUrl: "https://images.openfoodfacts.org/images/products/480/901/168/1095/front_en.33.400.jpg",
+    imageUrl: "https://picsum.photos/seed/prod-s01/400/400",
   },
   {
     id: "prod-s02", categoryId: "cat-3",
@@ -831,7 +831,7 @@ export const PRODUCTS: Product[] = [
     unit: "pack", unitSize: "90g", price: 32, srp: 40, sku: "OSH-PRW-90",
     minOrderQty: 12, isActive: true, isFeatured: false, stock: 240, lowStockThreshold: 36,
     createdAt: "2024-01-01T00:00:00Z", description: "Oishi original prawn crackers, light and crunchy, 90g.",
-    imageUrl: "https://images.openfoodfacts.org/images/products/480/019/417/7955/front_en.3.400.jpg",
+    imageUrl: "https://picsum.photos/seed/prod-s02/400/400",
   },
   {
     id: "prod-s03", categoryId: "cat-3",
@@ -839,7 +839,7 @@ export const PRODUCTS: Product[] = [
     unit: "pack", unitSize: "85g", price: 38, srp: 45, sku: "PIT-SCO-85",
     minOrderQty: 10, isActive: true, isFeatured: false, stock: 200, lowStockThreshold: 30,
     createdAt: "2024-01-01T00:00:00Z", description: "Piattos potato crisps in sour cream & onion flavor.",
-    imageUrl: "https://images.openfoodfacts.org/images/products/480/001/664/4504/front_en.46.400.jpg",
+    imageUrl: "https://picsum.photos/seed/prod-s03/400/400",
   },
   {
     id: "prod-s04", categoryId: "cat-3",
@@ -847,7 +847,7 @@ export const PRODUCTS: Product[] = [
     unit: "pack", unitSize: "78g", price: 35, srp: 42, sku: "NOV-BBQ-78",
     minOrderQty: 12, isActive: true, isFeatured: false, stock: 288, lowStockThreshold: 36,
     createdAt: "2024-01-01T00:00:00Z", description: "Nova Barbeque flavored corn snack, 78g pack.",
-    imageUrl: "https://images.openfoodfacts.org/images/products/480/001/666/3505/front_en.12.400.jpg",
+    imageUrl: "https://picsum.photos/seed/prod-s04/400/400",
   },
   {
     id: "prod-s05", categoryId: "cat-3",
@@ -855,7 +855,7 @@ export const PRODUCTS: Product[] = [
     unit: "pack", unitSize: "10pcs", price: 28, srp: 35, sku: "REB-SCH-10",
     minOrderQty: 12, isActive: true, isFeatured: false, stock: 300, lowStockThreshold: 36,
     createdAt: "2024-01-01T00:00:00Z", description: "Rebisco chocolate sandwich cookies, 10 pieces per pack.",
-    imageUrl: "https://images.openfoodfacts.org/images/products/480/009/211/0030/front_it.24.400.jpg",
+    imageUrl: "https://picsum.photos/seed/prod-s05/400/400",
   },
   {
     id: "prod-s06", categoryId: "cat-3",
@@ -863,7 +863,7 @@ export const PRODUCTS: Product[] = [
     unit: "pack", unitSize: "33g", price: 18, srp: 24, sku: "JNJ-MFC-33",
     minOrderQty: 12, isActive: true, isFeatured: false, stock: 480, lowStockThreshold: 48,
     createdAt: "2024-01-01T00:00:00Z", description: "Jack 'n Jill Magic Flakes chocolate-filled wafer snack.",
-    imageUrl: "https://images.openfoodfacts.org/images/products/480/001/608/2603/front_fr.3.400.jpg",
+    imageUrl: "https://picsum.photos/seed/prod-s06/400/400",
   },
 
   // ── More Canned Goods (cat-4) ─────────────────────────────────────────────
@@ -873,7 +873,7 @@ export const PRODUCTS: Product[] = [
     unit: "can", unitSize: "155g", price: 25, srp: 32, sku: "LIG-SAR-TOM",
     minOrderQty: 24, isActive: true, isFeatured: false, stock: 480, lowStockThreshold: 48,
     createdAt: "2024-01-01T00:00:00Z", description: "Ligo sardines in tomato sauce, 155g can.",
-    imageUrl: "https://images.openfoodfacts.org/images/products/480/016/344/3043/front_en.12.400.jpg",
+    imageUrl: "https://picsum.photos/seed/prod-c01/400/400",
   },
   {
     id: "prod-c02", categoryId: "cat-4",
@@ -881,7 +881,7 @@ export const PRODUCTS: Product[] = [
     unit: "can", unitSize: "155g", price: 35, srp: 42, sku: "555-SAR-SPA",
     minOrderQty: 24, isActive: true, isFeatured: false, stock: 360, lowStockThreshold: 48,
     createdAt: "2024-01-01T00:00:00Z", description: "555 Sardines Spanish style with olive oil, 155g can.",
-    imageUrl: "https://images.openfoodfacts.org/images/products/074/848/520/0040/front_en.23.400.jpg",
+    imageUrl: "https://picsum.photos/seed/prod-c02/400/400",
   },
   {
     id: "prod-c03", categoryId: "cat-4",
@@ -889,7 +889,7 @@ export const PRODUCTS: Product[] = [
     unit: "can", unitSize: "150g", price: 42, srp: 52, sku: "ARG-CB-150",
     minOrderQty: 24, isActive: true, isFeatured: false, stock: 360, lowStockThreshold: 48,
     createdAt: "2024-01-01T00:00:00Z", description: "Argentina Corned Beef smaller 150g can, perfect for single servings.",
-    imageUrl: "https://images.openfoodfacts.org/images/products/074/848/580/0035/front_en.19.400.jpg",
+    imageUrl: "https://picsum.photos/seed/prod-c03/400/400",
   },
   {
     id: "prod-c04", categoryId: "cat-4",
@@ -897,7 +897,7 @@ export const PRODUCTS: Product[] = [
     unit: "can", unitSize: "180g", price: 46, srp: 58, sku: "CTF-HAS-180",
     minOrderQty: 24, isActive: true, isFeatured: false, stock: 288, lowStockThreshold: 48,
     createdAt: "2024-01-01T00:00:00Z", description: "Century Tuna hot and spicy flavored in oil, 180g can.",
-    imageUrl: "https://images.openfoodfacts.org/images/products/074/848/510/0098/front_en.26.400.jpg",
+    imageUrl: "https://picsum.photos/seed/prod-c04/400/400",
   },
   {
     id: "prod-c05", categoryId: "cat-4",
@@ -905,7 +905,7 @@ export const PRODUCTS: Product[] = [
     unit: "can", unitSize: "210g", price: 55, srp: 68, sku: "CDO-KNB-210",
     minOrderQty: 24, isActive: true, isFeatured: false, stock: 240, lowStockThreshold: 24,
     createdAt: "2024-01-01T00:00:00Z", description: "CDO Karne Norte beef loaf, great for silog meals, 210g.",
-    imageUrl: "https://images.openfoodfacts.org/images/products/202/000/048/6084/front_en.3.400.jpg",
+    imageUrl: "https://picsum.photos/seed/prod-c05/400/400",
   },
   {
     id: "prod-c06", categoryId: "cat-4",
@@ -913,7 +913,7 @@ export const PRODUCTS: Product[] = [
     unit: "can", unitSize: "250g", price: 28, srp: 35, sku: "DM-TOM-250",
     minOrderQty: 24, isActive: true, isFeatured: false, stock: 420, lowStockThreshold: 48,
     createdAt: "2024-01-01T00:00:00Z", description: "Del Monte tomato sauce for pasta and Filipino dishes, 250g.",
-    imageUrl: "https://images.openfoodfacts.org/images/products/480/002/455/6165/front_en.3.400.jpg",
+    imageUrl: "https://picsum.photos/seed/prod-c06/400/400",
   },
   {
     id: "prod-c07", categoryId: "cat-4",
@@ -921,7 +921,7 @@ export const PRODUCTS: Product[] = [
     unit: "can", unitSize: "410g", price: 42, srp: 52, sku: "HNT-PBN-410",
     minOrderQty: 24, isActive: true, isFeatured: false, stock: 300, lowStockThreshold: 48,
     createdAt: "2024-01-01T00:00:00Z", description: "Hunts pork and beans in tomato sauce, 410g can.",
-    imageUrl: "https://images.openfoodfacts.org/images/products/480/002/210/0070/front_en.18.400.jpg",
+    imageUrl: "https://picsum.photos/seed/prod-c07/400/400",
   },
 
   // ── More Condiments & Sauces (cat-5) ─────────────────────────────────────
@@ -931,7 +931,7 @@ export const PRODUCTS: Product[] = [
     unit: "bottle", unitSize: "200ml", price: 22, srp: 28, sku: "SS-SOY-200",
     minOrderQty: 24, isActive: true, isFeatured: false, stock: 360, lowStockThreshold: 48,
     createdAt: "2024-01-01T00:00:00Z", description: "Silver Swan soy sauce 200ml, convenient size for sari-sari stores.",
-    imageUrl: "https://images.openfoodfacts.org/images/products/480/034/400/1420/front_fr.3.400.jpg",
+    imageUrl: "https://picsum.photos/seed/prod-co1/400/400",
   },
   {
     id: "prod-co2", categoryId: "cat-5",
@@ -947,7 +947,7 @@ export const PRODUCTS: Product[] = [
     unit: "bottle", unitSize: "550g", price: 58, srp: 72, sku: "MT-AAS-550",
     minOrderQty: 12, isActive: true, isFeatured: false, stock: 144, lowStockThreshold: 24,
     createdAt: "2024-01-01T00:00:00Z", description: "Mang Tomas All-Around Sarsa lechon sauce, 550g bottle.",
-    imageUrl: "https://images.openfoodfacts.org/images/products/480/166/860/0641/front_en.17.400.jpg",
+    imageUrl: "https://picsum.photos/seed/prod-co3/400/400",
   },
   {
     id: "prod-co4", categoryId: "cat-5",
@@ -955,7 +955,7 @@ export const PRODUCTS: Product[] = [
     unit: "pack", unitSize: "20g", price: 10, srp: 14, sku: "KNR-SIN-20",
     minOrderQty: 24, isActive: true, isFeatured: false, stock: 600, lowStockThreshold: 48,
     createdAt: "2024-01-01T00:00:00Z", description: "Knorr Sinigang sa Sampaloc original mix, 20g sachet.",
-    imageUrl: "https://images.openfoodfacts.org/images/products/480/088/860/0790/front_en.24.400.jpg",
+    imageUrl: "https://picsum.photos/seed/prod-co4/400/400",
   },
   {
     id: "prod-co5", categoryId: "cat-5",
@@ -971,7 +971,7 @@ export const PRODUCTS: Product[] = [
     unit: "pack", unitSize: "8g x 12", price: 28, srp: 35, sku: "MGI-MAS-8X12",
     minOrderQty: 12, isActive: true, isFeatured: false, stock: 420, lowStockThreshold: 48,
     createdAt: "2024-01-01T00:00:00Z", description: "Maggi Magic Sarap all-in-one seasoning, 8g sachets, 12 per pack.",
-    imageUrl: "https://images.openfoodfacts.org/images/products/000/004/802/5522/front_en.56.400.jpg",
+    imageUrl: "https://picsum.photos/seed/prod-co6/400/400",
   },
   {
     id: "prod-co7", categoryId: "cat-5",
@@ -987,7 +987,7 @@ export const PRODUCTS: Product[] = [
     unit: "bottle", unitSize: "320g", price: 48, srp: 60, sku: "UFC-HBK-320",
     minOrderQty: 12, isActive: true, isFeatured: false, stock: 160, lowStockThreshold: 24,
     createdAt: "2024-01-01T00:00:00Z", description: "UFC Hot Banana Ketchup spicy style, 320g bottle.",
-    imageUrl: "https://images.openfoodfacts.org/images/products/001/428/500/0068/front_fr.31.400.jpg",
+    imageUrl: "https://picsum.photos/seed/prod-co8/400/400",
   },
 
   // ── More Personal Care (cat-6) ────────────────────────────────────────────
@@ -1005,7 +1005,7 @@ export const PRODUCTS: Product[] = [
     unit: "bar", unitSize: "75g", price: 18, srp: 24, sku: "BIO-ANT-75",
     minOrderQty: 24, isActive: true, isFeatured: false, stock: 360, lowStockThreshold: 48,
     createdAt: "2024-01-01T00:00:00Z", description: "Bioderm antibacterial bar soap, value pick for sari-sari, 75g.",
-    imageUrl: "https://images.openfoodfacts.org/images/products/480/001/111/4965/front_en.3.400.jpg",
+    imageUrl: "https://picsum.photos/seed/prod-p02/400/400",
   },
   {
     id: "prod-p03", categoryId: "cat-6",
@@ -1045,7 +1045,7 @@ export const PRODUCTS: Product[] = [
     unit: "bottle", unitSize: "100g", price: 45, srp: 56, sku: "JOH-BPW-100",
     minOrderQty: 12, isActive: true, isFeatured: false, stock: 240, lowStockThreshold: 24,
     createdAt: "2024-01-01T00:00:00Z", description: "Johnson's Baby Powder for soft, fresh skin, 100g bottle.",
-    imageUrl: "https://images.openfoodfacts.org/images/products/899/111/110/1415/front_en.5.400.jpg",
+    imageUrl: "https://picsum.photos/seed/prod-p07/400/400",
   },
   {
     id: "prod-p08", categoryId: "cat-6",
@@ -1071,7 +1071,7 @@ export const PRODUCTS: Product[] = [
     unit: "box", unitSize: "20g x 10", price: 88, srp: 105, sku: "NES-3IN1-BCR",
     minOrderQty: 10, isActive: true, isFeatured: false, stock: 240, lowStockThreshold: 30,
     createdAt: "2024-01-01T00:00:00Z", description: "Nescafé 3-in-1 Brown & Creamy richer coffee blend, 10 sachets.",
-    imageUrl: "https://images.openfoodfacts.org/images/products/888/808/212/9077/front_en.16.400.jpg",
+    imageUrl: "https://picsum.photos/seed/prod-cf1/400/400",
   },
   {
     id: "prod-cf2", categoryId: "cat-7",
@@ -1079,7 +1079,7 @@ export const PRODUCTS: Product[] = [
     unit: "box", unitSize: "25g x 10", price: 95, srp: 115, sku: "KPK-BLK-25",
     minOrderQty: 12, isActive: true, isFeatured: false, stock: 200, lowStockThreshold: 24,
     createdAt: "2024-01-01T00:00:00Z", description: "Kopiko Black strong unsweetened coffee, 25g sachets, 10 per box.",
-    imageUrl: "https://images.openfoodfacts.org/images/products/899/600/141/0547/front_en.10.400.jpg",
+    imageUrl: "https://picsum.photos/seed/prod-cf2/400/400",
   },
   {
     id: "prod-cf3", categoryId: "cat-7",
@@ -1087,7 +1087,7 @@ export const PRODUCTS: Product[] = [
     unit: "box", unitSize: "20g x 10", price: 90, srp: 108, sku: "GT-WHT-20X10",
     minOrderQty: 10, isActive: true, isFeatured: false, stock: 220, lowStockThreshold: 30,
     createdAt: "2024-01-01T00:00:00Z", description: "Great Taste White 3-in-1 coffee with creamer, 10 sachets per box.",
-    imageUrl: "https://images.openfoodfacts.org/images/products/480/001/602/2265/front_en.36.full.jpg",
+    imageUrl: "https://picsum.photos/seed/prod-cf3/400/400",
   },
   {
     id: "prod-cf4", categoryId: "cat-7",
@@ -1103,7 +1103,7 @@ export const PRODUCTS: Product[] = [
     unit: "pack", unitSize: "155g", price: 68, srp: 82, sku: "BB-PWD-155",
     minOrderQty: 12, isActive: true, isFeatured: false, stock: 240, lowStockThreshold: 36,
     createdAt: "2024-01-01T00:00:00Z", description: "Bear Brand sterilized powdered full cream milk, 155g pack.",
-    imageUrl: "https://images.openfoodfacts.org/images/products/480/036/141/0892/front_fr.3.400.jpg",
+    imageUrl: "https://picsum.photos/seed/prod-cf5/400/400",
   },
   {
     id: "prod-cf6", categoryId: "cat-7",
@@ -1187,7 +1187,7 @@ export const PRODUCTS: Product[] = [
     unit: "loaf", unitSize: "400g", price: 55, srp: 68, sku: "GAR-WHT-400",
     minOrderQty: 6, isActive: true, isFeatured: true, stock: 120, lowStockThreshold: 12,
     createdAt: "2024-01-01T00:00:00Z", description: "Gardenia classic white sandwich bread, soft and fresh, 400g loaf.",
-    imageUrl: "https://images.openfoodfacts.org/images/products/888/824/711/1114/front_en.7.400.jpg",
+    imageUrl: "https://picsum.photos/seed/prod-bb1/400/400",
   },
   {
     id: "prod-bb2", categoryId: "cat-9",
@@ -1195,7 +1195,7 @@ export const PRODUCTS: Product[] = [
     unit: "loaf", unitSize: "400g", price: 62, srp: 75, sku: "GAR-WHE-400",
     minOrderQty: 6, isActive: true, isFeatured: false, stock: 96, lowStockThreshold: 12,
     createdAt: "2024-01-01T00:00:00Z", description: "Gardenia wheat bread with added fiber, 400g loaf.",
-    imageUrl: "https://images.openfoodfacts.org/images/products/480/650/272/1452/front_en.24.400.jpg",
+    imageUrl: "https://picsum.photos/seed/prod-bb2/400/400",
   },
   {
     id: "prod-bb3", categoryId: "cat-9",
@@ -1203,7 +1203,7 @@ export const PRODUCTS: Product[] = [
     unit: "pack", unitSize: "33g x 10", price: 35, srp: 42, sku: "SKF-CRK-330",
     minOrderQty: 12, isActive: true, isFeatured: false, stock: 360, lowStockThreshold: 48,
     createdAt: "2024-01-01T00:00:00Z", description: "M.Y. San Skyflakes crackers, 10 individually-wrapped packs.",
-    imageUrl: "https://images.openfoodfacts.org/images/products/075/051/501/8303/front_en.3.400.jpg",
+    imageUrl: "https://picsum.photos/seed/prod-bb3/400/400",
   },
   {
     id: "prod-bb4", categoryId: "cat-9",
@@ -1211,7 +1211,7 @@ export const PRODUCTS: Product[] = [
     unit: "pack", unitSize: "200g", price: 42, srp: 52, sku: "MYS-GRH-200",
     minOrderQty: 12, isActive: true, isFeatured: false, stock: 240, lowStockThreshold: 24,
     createdAt: "2024-01-01T00:00:00Z", description: "M.Y. San Graham crackers honey flavor, great for desserts, 200g.",
-    imageUrl: "https://images.openfoodfacts.org/images/products/075/051/502/1228/front_en.28.400.jpg",
+    imageUrl: "https://picsum.photos/seed/prod-bb4/400/400",
   },
   {
     id: "prod-bb5", categoryId: "cat-9",
@@ -1219,7 +1219,7 @@ export const PRODUCTS: Product[] = [
     unit: "pack", unitSize: "250g", price: 35, srp: 44, sku: "HNS-CRC-250",
     minOrderQty: 12, isActive: true, isFeatured: false, stock: 280, lowStockThreshold: 36,
     createdAt: "2024-01-01T00:00:00Z", description: "Hansel Cream-O chocolate sandwich cookies, 250g pack.",
-    imageUrl: "https://images.openfoodfacts.org/images/products/480/009/211/3307/front_en.20.full.jpg",
+    imageUrl: "https://picsum.photos/seed/prod-bb5/400/400",
   },
   {
     id: "prod-bb6", categoryId: "cat-9",
@@ -1227,7 +1227,7 @@ export const PRODUCTS: Product[] = [
     unit: "pack", unitSize: "225g", price: 38, srp: 48, sku: "FIT-ORI-225",
     minOrderQty: 12, isActive: true, isFeatured: false, stock: 300, lowStockThreshold: 36,
     createdAt: "2024-01-01T00:00:00Z", description: "M.Y. San Fita crackers lightly salted, goes great with any spread.",
-    imageUrl: "https://images.openfoodfacts.org/images/products/075/051/501/7429/front_en.70.400.jpg",
+    imageUrl: "https://picsum.photos/seed/prod-bb6/400/400",
   },
   {
     id: "prod-bb7", categoryId: "cat-9",
@@ -1245,7 +1245,7 @@ export const PRODUCTS: Product[] = [
     unit: "bar", unitSize: "40g", price: 18, srp: 24, sku: "CL9-CHO-40",
     minOrderQty: 24, isActive: true, isFeatured: false, stock: 480, lowStockThreshold: 48,
     createdAt: "2024-01-01T00:00:00Z", description: "Cloud 9 chocolate bar with caramel and biscuit, 40g — a Filipino classic.",
-    imageUrl: "https://images.openfoodfacts.org/images/products/480/001/607/2482/front_en.4.400.jpg",
+    imageUrl: "https://picsum.photos/seed/prod-sw1/400/400",
   },
   {
     id: "prod-sw2", categoryId: "cat-10",
@@ -1253,7 +1253,7 @@ export const PRODUCTS: Product[] = [
     unit: "box", unitSize: "24pcs", price: 48, srp: 60, sku: "FLT-CHO-24",
     minOrderQty: 12, isActive: true, isFeatured: false, stock: 360, lowStockThreshold: 36,
     createdAt: "2024-01-01T00:00:00Z", description: "Flat Tops bite-sized milk chocolate pieces, 24pcs per box.",
-    imageUrl: "https://images.openfoodfacts.org/images/products/480/004/021/1222/front_en.3.full.jpg",
+    imageUrl: "https://picsum.photos/seed/prod-sw2/400/400",
   },
   {
     id: "prod-sw3", categoryId: "cat-10",
@@ -1261,7 +1261,7 @@ export const PRODUCTS: Product[] = [
     unit: "pack", unitSize: "24pcs", price: 55, srp: 68, sku: "CHN-PNT-24",
     minOrderQty: 12, isActive: true, isFeatured: false, stock: 300, lowStockThreshold: 36,
     createdAt: "2024-01-01T00:00:00Z", description: "Choc Nut chocolate-coated peanut candy, 24pcs per pack.",
-    imageUrl: "https://images.openfoodfacts.org/images/products/480/653/702/6805/front_en.24.400.jpg",
+    imageUrl: "https://picsum.photos/seed/prod-sw3/400/400",
   },
   {
     id: "prod-sw4", categoryId: "cat-10",
@@ -1269,7 +1269,7 @@ export const PRODUCTS: Product[] = [
     unit: "pack", unitSize: "100g", price: 28, srp: 35, sku: "KPK-CAF-100",
     minOrderQty: 12, isActive: true, isFeatured: false, stock: 400, lowStockThreshold: 48,
     createdAt: "2024-01-01T00:00:00Z", description: "Kopiko cappuccino coffee candy, strong and rich flavor, 100g.",
-    imageUrl: "https://images.openfoodfacts.org/images/products/899/600/132/0846/front_en.39.400.jpg",
+    imageUrl: "https://picsum.photos/seed/prod-sw4/400/400",
   },
   {
     id: "prod-sw5", categoryId: "cat-10",
@@ -1277,7 +1277,7 @@ export const PRODUCTS: Product[] = [
     unit: "pack", unitSize: "108g", price: 32, srp: 40, sku: "WR-MLK-108",
     minOrderQty: 12, isActive: true, isFeatured: false, stock: 280, lowStockThreshold: 36,
     createdAt: "2024-01-01T00:00:00Z", description: "White Rabbit creamy milk candy, 108g — a classic Asian treat.",
-    imageUrl: "https://images.openfoodfacts.org/images/products/692/202/473/0036/front_fr.8.400.jpg",
+    imageUrl: "https://picsum.photos/seed/prod-sw5/400/400",
   },
   {
     id: "prod-sw6", categoryId: "cat-10",
@@ -1285,7 +1285,7 @@ export const PRODUCTS: Product[] = [
     unit: "bar", unitSize: "38g", price: 22, srp: 28, sku: "GOY-DRK-38",
     minOrderQty: 24, isActive: true, isFeatured: false, stock: 360, lowStockThreshold: 48,
     createdAt: "2024-01-01T00:00:00Z", description: "Goya dark chocolate tablea bar, smooth and rich, 38g.",
-    imageUrl: "https://images.openfoodfacts.org/images/products/480/651/704/2085/front_en.20.400.jpg",
+    imageUrl: "https://picsum.photos/seed/prod-sw6/400/400",
   },
   {
     id: "prod-sw7", categoryId: "cat-10",
@@ -1293,7 +1293,7 @@ export const PRODUCTS: Product[] = [
     unit: "box", unitSize: "48pcs", price: 85, srp: 105, sku: "RCO-FLT-48",
     minOrderQty: 6, isActive: true, isFeatured: false, stock: 180, lowStockThreshold: 12,
     createdAt: "2024-01-01T00:00:00Z", description: "Ricoa Flat Tops milk chocolate discs, 48pcs bulk box.",
-    imageUrl: "https://images.openfoodfacts.org/images/products/480/004/021/1222/front_en.3.full.jpg",
+    imageUrl: "https://picsum.photos/seed/prod-sw7/400/400",
   },
 
   // ── Dairy & Eggs (cat-11) ─────────────────────────────────────────────────
@@ -1311,7 +1311,7 @@ export const PRODUCTS: Product[] = [
     unit: "can", unitSize: "370ml", price: 48, srp: 60, sku: "ALK-EVM-370",
     minOrderQty: 12, isActive: true, isFeatured: false, stock: 280, lowStockThreshold: 36,
     createdAt: "2024-01-01T00:00:00Z", description: "Alaska evaporated filled milk, great for coffee or cooking, 370ml.",
-    imageUrl: "https://images.openfoodfacts.org/images/products/480/057/511/0373/front_en.4.400.jpg",
+    imageUrl: "https://picsum.photos/seed/prod-d02/400/400",
   },
   {
     id: "prod-d03", categoryId: "cat-11",
@@ -1319,7 +1319,7 @@ export const PRODUCTS: Product[] = [
     unit: "can", unitSize: "300ml", price: 45, srp: 56, sku: "ALK-CON-300",
     minOrderQty: 12, isActive: true, isFeatured: false, stock: 300, lowStockThreshold: 36,
     createdAt: "2024-01-01T00:00:00Z", description: "Alaska sweetened condensed milk for desserts and coffee, 300ml.",
-    imageUrl: "https://images.openfoodfacts.org/images/products/480/057/512/0303/front_en.21.full.jpg",
+    imageUrl: "https://picsum.photos/seed/prod-d03/400/400",
   },
   {
     id: "prod-d04", categoryId: "cat-11",
@@ -1327,7 +1327,7 @@ export const PRODUCTS: Product[] = [
     unit: "can", unitSize: "250ml", price: 58, srp: 72, sku: "NES-APC-250",
     minOrderQty: 12, isActive: true, isFeatured: false, stock: 200, lowStockThreshold: 24,
     createdAt: "2024-01-01T00:00:00Z", description: "Nestlé All Purpose Cream for Filipino desserts and pasta, 250ml.",
-    imageUrl: "https://images.openfoodfacts.org/images/products/480/036/106/1322/front_en.30.400.jpg",
+    imageUrl: "https://picsum.photos/seed/prod-d04/400/400",
   },
   {
     id: "prod-d05", categoryId: "cat-11",
@@ -1343,7 +1343,7 @@ export const PRODUCTS: Product[] = [
     unit: "bottle", unitSize: "220ml", price: 78, srp: 96, sku: "LC-MAY-220",
     minOrderQty: 12, isActive: true, isFeatured: false, stock: 160, lowStockThreshold: 24,
     createdAt: "2024-01-01T00:00:00Z", description: "Lady's Choice real mayonnaise for salads and sandwiches, 220ml.",
-    imageUrl: "https://images.openfoodfacts.org/images/products/480/088/860/2268/front_en.3.400.jpg",
+    imageUrl: "https://picsum.photos/seed/prod-d06/400/400",
   },
   {
     id: "prod-d07", categoryId: "cat-11",
@@ -1351,7 +1351,7 @@ export const PRODUCTS: Product[] = [
     unit: "pack", unitSize: "165g", price: 88, srp: 108, sku: "EDN-CHE-165",
     minOrderQty: 12, isActive: true, isFeatured: true, stock: 200, lowStockThreshold: 24,
     createdAt: "2024-01-01T00:00:00Z", description: "Eden cheese food loaf, Filipino favorite for pandesal and spaghetti.",
-    imageUrl: "https://images.openfoodfacts.org/images/products/480/864/702/0094/front_en.35.400.jpg",
+    imageUrl: "https://picsum.photos/seed/prod-d07/400/400",
   },
   {
     id: "prod-d08", categoryId: "cat-11",
@@ -1401,7 +1401,7 @@ export const PRODUCTS: Product[] = [
     unit: "pack", unitSize: "1kg", price: 45, srp: 56, sku: "MY-APF-1KG",
     minOrderQty: 12, isActive: true, isFeatured: false, stock: 200, lowStockThreshold: 24,
     createdAt: "2024-01-01T00:00:00Z", description: "Maya all-purpose flour for baking and cooking, 1kg pack.",
-    imageUrl: "https://images.openfoodfacts.org/images/products/480/013/726/1116/front_en.4.400.jpg",
+    imageUrl: "https://picsum.photos/seed/prod-k05/400/400",
   },
   {
     id: "prod-k06", categoryId: "cat-12",
@@ -1417,7 +1417,7 @@ export const PRODUCTS: Product[] = [
     unit: "bottle", unitSize: "500ml", price: 35, srp: 44, sku: "NA-COV-500",
     minOrderQty: 12, isActive: true, isFeatured: false, stock: 200, lowStockThreshold: 24,
     createdAt: "2024-01-01T00:00:00Z", description: "NutriAsia coconut vinegar, mild and tangy for dipping and marinades.",
-    imageUrl: "https://images.openfoodfacts.org/images/products/480/166/860/1914/front_ro.3.400.jpg",
+    imageUrl: "https://picsum.photos/seed/prod-k07/400/400",
   },
   {
     id: "prod-k08", categoryId: "cat-12",
@@ -1425,7 +1425,7 @@ export const PRODUCTS: Product[] = [
     unit: "pack", unitSize: "40g", price: 18, srp: 24, sku: "KNR-SIN-40",
     minOrderQty: 24, isActive: true, isFeatured: false, stock: 480, lowStockThreshold: 48,
     createdAt: "2024-01-01T00:00:00Z", description: "Knorr Sinigang sa Sampaloc tamarind soup base mix, 40g pack.",
-    imageUrl: "https://images.openfoodfacts.org/images/products/480/088/860/2251/front_en.3.400.jpg",
+    imageUrl: "https://picsum.photos/seed/prod-k08/400/400",
   },
 ];
 
