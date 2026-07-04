@@ -4,9 +4,9 @@ import { usePathname } from "next/navigation";
 import {
   LayoutDashboard, Package, ShoppingCart, Users, BarChart3,
   Warehouse, Truck, CreditCard, Settings, ShoppingBasket,
-  ClipboardList, Tag, ChevronRight, UserCheck, Navigation,
-  Monitor, Banknote, Building2, ReceiptText, Megaphone, PackageSearch,
-  PackageCheck, Boxes,
+  ClipboardList, Tag, ChevronRight, Map,
+  Banknote, Building2, FileText, Megaphone,
+  PackageCheck, Boxes, ScanLine,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 
@@ -17,23 +17,22 @@ const navGroups = [
       { href: "/admin",             label: "Dashboard",   icon: LayoutDashboard },
       { href: "/admin/orders",      label: "Orders",      icon: ShoppingCart },
       { href: "/admin/fulfillment", label: "Fulfillment", icon: ClipboardList },
-      { href: "/admin/delivery",    label: "Dispatch",    icon: Truck },
-      { href: "/admin/pos",         label: "POS",         icon: Monitor },
     ],
   },
   {
     label: "Warehouse",
     items: [
-      { href: "/admin/warehouse",           label: "Overview",  icon: Warehouse },
+      { href: "/admin/warehouse",           label: "Warehouse",  icon: Warehouse },
       { href: "/admin/warehouse/receiving", label: "Receiving", icon: PackageCheck },
-      { href: "/admin/warehouse/picking",   label: "Picking",   icon: PackageSearch },
+      { href: "/admin/warehouse/picking",   label: "Picking",   icon: ScanLine },
     ],
   },
   {
     label: "Logistics",
     items: [
-      { href: "/admin/drivers", label: "Drivers", icon: UserCheck },
-      { href: "/admin/routes",  label: "Routes",  icon: Navigation },
+      { href: "/admin/drivers",  label: "Drivers",  icon: Users },
+      { href: "/admin/routes",   label: "Routes",   icon: Map },
+      { href: "/admin/delivery", label: "Dispatch", icon: Truck },
     ],
   },
   {
@@ -47,13 +46,13 @@ const navGroups = [
   {
     label: "Business",
     items: [
-      { href: "/admin/retailers",      label: "Retailers",      icon: Users },
-      { href: "/admin/subscriptions",  label: "Subscriptions",  icon: CreditCard },
-      { href: "/admin/suppliers",      label: "Suppliers",      icon: Building2 },
-      { href: "/admin/purchase-orders",label: "Purchase Orders",icon: ReceiptText },
-      { href: "/admin/promotions",     label: "Promotions",     icon: Megaphone },
-      { href: "/admin/payments",       label: "Payments",       icon: Banknote },
-      { href: "/admin/reports",        label: "Reports",        icon: BarChart3 },
+      { href: "/admin/retailers",       label: "Retailers",       icon: Users },
+      { href: "/admin/suppliers",       label: "Suppliers",       icon: Building2 },
+      { href: "/admin/purchase-orders", label: "Purchase Orders", icon: FileText },
+      { href: "/admin/promotions",      label: "Promotions",      icon: Tag },
+      { href: "/admin/subscriptions",   label: "Subscriptions",   icon: CreditCard },
+      { href: "/admin/payments",        label: "Payments",        icon: Banknote },
+      { href: "/admin/reports",         label: "Reports",         icon: BarChart3 },
     ],
   },
   {

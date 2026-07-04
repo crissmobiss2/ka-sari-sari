@@ -1,124 +1,127 @@
 "use client";
 import Link from "next/link";
-import { Plus, Minus, ShoppingCart, AlertTriangle, Heart } from "lucide-react";
+import { ShoppingCart } from "lucide-react";
 import { cn, formatPHP } from "@/lib/utils";
 import { useCartStore } from "@/store/cart";
-import { useFavoritesStore } from "@/store/favorites";
 import type { Product } from "@/types";
-import { Button } from "@/components/ui/button";
 
 interface ProductCardProps {
   product: Product;
   className?: string;
 }
 
+const CATEGORY_DISPLAY: Record<string, { gradient: string; emoji: string }> = {
+  "cat-1": { gradient: "from-blue-400 to-cyan-500",     emoji: "🥤" },
+  "cat-2": { gradient: "from-yellow-400 to-orange-500", emoji: "🍜" },
+  "cat-3": { gradient: "from-red-400 to-pink-500",      emoji: "🍿" },
+  "cat-4": { gradient: "from-orange-400 to-red-500",    emoji: "🥫" },
+  "cat-5": { gradient: "from-green-400 to-emerald-500", emoji: "🧂" },
+  "cat-6": { gradient: "from-purple-400 to-violet-500", emoji: "🧴" },
+  "cat-7": { gradient: "from-amber-500 to-yellow-600",  emoji: "☕" },
+  "cat-8": { gradient: "from-teal-400 to-green-500",    emoji: "🧺" },
+};
+
 export function ProductCard({ product, className }: ProductCardProps) {
-  const { items, addItem, updateQty } = useCartStore();
-  const { isFavorite, toggle } = useFavoritesStore();
-  const cartItem = items.find((i) => i.productId === product.id);
-  const qty = cartItem?.quantity ?? 0;
-  const inCart = qty > 0;
+  const { addItem } = useCartStore();
   const outOfStock = product.stock === 0;
   const lowStock = product.stock > 0 && product.stock <= product.lowStockThreshold;
-  const favorited = isFavorite(product.id);
+  const display = CATEGORY_DISPLAY[product.categoryId] || { gradient: "from-gray-400 to-slate-500", emoji: "📦" };
+
+  const hasSavings = product.srp && product.price < product.srp;
+  const savingsPct = hasSavings
+    ? Math.round(((product.srp! - product.price) / product.srp!) * 100)
+    : 0;
 
   return (
-    <div
+    <Link
+      href={`/catalog/${product.id}`}
       className={cn(
-        "group relative flex flex-col rounded-2xl border border-border bg-card overflow-hidden shadow-card hover:shadow-card-md transition-shadow",
-        outOfStock && "opacity-60",
+        "group block rounded-2xl border border-border bg-card shadow-card overflow-hidden hover:shadow-card-md active:scale-[0.98] transition-all",
         className
       )}
     >
-      {/* Image - tap goes to product detail */}
-      <Link href={`/catalog/${product.id}`} className="relative aspect-square bg-surface-100 overflow-hidden block">
-        <div className="absolute inset-0 flex items-center justify-center text-surface-300">
-          <ShoppingCart className="h-12 w-12" strokeWidth={1} />
-        </div>
-        {product.isFeatured && (
-          <span className="absolute top-2 left-2 rounded-lg bg-brand-500 px-2 py-0.5 text-[10px] font-semibold text-white">
-            Popular
+      {/* Image area */}
+      <div className={cn("relative h-32 bg-gradient-to-br flex items-center justify-center rounded-t-2xl", display.gradient)}>
+        <span className="text-4xl select-none" role="img">{display.emoji}</span>
+
+        {/* Savings badge */}
+        {hasSavings && (
+          <span className="absolute top-2 right-2 rounded-lg bg-danger-500 px-1.5 py-0.5 text-[10px] font-bold text-white shadow">
+            Save {savingsPct}%
           </span>
         )}
+
+        {/* Out of stock overlay */}
         {outOfStock && (
-          <div className="absolute inset-0 flex items-center justify-center bg-surface-950/30">
-            <span className="rounded-lg bg-surface-900 px-2.5 py-1 text-xs font-medium text-white">
+          <div className="absolute inset-0 flex items-center justify-center bg-black/40 rounded-t-2xl">
+            <span className="rounded-lg bg-surface-900/90 px-3 py-1 text-xs font-semibold text-white">
               Out of Stock
             </span>
           </div>
         )}
+
+        {/* Low stock badge */}
         {lowStock && !outOfStock && (
-          <span className="absolute top-2 right-2 flex items-center gap-1 rounded-lg bg-warning-50 border border-warning-500/25 px-1.5 py-0.5 text-[10px] font-medium text-warning-600">
-            <AlertTriangle className="h-2.5 w-2.5" />
-            Low
+          <span className="absolute top-2 left-2 rounded-lg bg-warning-500 px-2 py-0.5 text-[10px] font-bold text-white shadow">
+            Low Stock
           </span>
         )}
-        {/* Favorite button */}
-        <button
-          onClick={(e) => { e.preventDefault(); toggle(product); }}
-          className="absolute bottom-2 right-2 flex h-7 w-7 items-center justify-center rounded-full bg-card/90 backdrop-blur-sm shadow-sm hover:scale-110 transition-transform"
-          aria-label={favorited ? "Remove from favorites" : "Save to favorites"}
-        >
-          <Heart className={cn("h-4 w-4", favorited ? "fill-danger-500 text-danger-500" : "text-muted-foreground")} />
-        </button>
-      </Link>
+      </div>
 
-      {/* Info */}
-      <div className="flex flex-col flex-1 p-3.5 gap-2">
-        <Link href={`/catalog/${product.id}`} className="block">
-          {product.brand && (
-            <p className="text-[10px] font-medium uppercase tracking-wide text-muted-foreground mb-0.5">
-              {product.brand}
-            </p>
-          )}
-          <p className="text-sm font-semibold text-foreground leading-snug line-clamp-2">
-            {product.name}
+      {/* Info area */}
+      <div className="p-3 flex flex-col gap-2">
+        {/* Brand */}
+        {product.brand && (
+          <p className="text-[10px] font-semibold text-brand-500 uppercase tracking-wider leading-none">
+            {product.brand}
           </p>
-          <p className="mt-0.5 text-xs text-muted-foreground">
-            Min. {product.minOrderQty} {product.unit}
-            {product.stock > 0 && ` · ${product.stock} avail`}
-          </p>
-        </Link>
+        )}
 
-        <div className="flex items-end justify-between mt-auto">
-          <div>
-            <p className="text-base font-bold text-foreground">{formatPHP(product.price)}</p>
-            {product.srp && (
-              <p className="text-[10px] text-muted-foreground line-through">{formatPHP(product.srp)} SRP</p>
-            )}
-          </div>
+        {/* Name */}
+        <p className="text-sm font-semibold text-foreground line-clamp-2 leading-tight -mt-1">
+          {product.name}
+        </p>
 
-          {/* Cart controls */}
-          {outOfStock ? (
-            <Button variant="outline" size="sm" disabled className="text-xs">
-              Unavailable
-            </Button>
-          ) : inCart ? (
-            <div className="flex items-center gap-1.5">
-              <button
-                onClick={() => updateQty(product.id, qty - 1)}
-                className="flex h-7 w-7 items-center justify-center rounded-xl border border-border bg-muted hover:bg-surface-200 transition-colors"
-              >
-                <Minus className="h-3 w-3" />
-              </button>
-              <span className="w-8 text-center text-sm font-semibold text-foreground">{qty}</span>
-              <button
-                onClick={() => updateQty(product.id, qty + 1)}
-                className="flex h-7 w-7 items-center justify-center rounded-xl bg-brand-500 text-white hover:bg-brand-600 transition-colors"
-              >
-                <Plus className="h-3 w-3" />
-              </button>
-            </div>
-          ) : (
-            <button
-              onClick={() => addItem(product, product.minOrderQty)}
-              className="flex h-8 w-8 items-center justify-center rounded-xl bg-brand-500 text-white hover:bg-brand-600 transition-colors shadow-brand active:scale-95"
-            >
-              <Plus className="h-4 w-4" />
-            </button>
+        {/* Unit size */}
+        {product.unitSize && (
+          <p className="text-xs text-muted-foreground -mt-1">{product.unitSize}</p>
+        )}
+
+        {/* Price row */}
+        <div className="flex items-baseline gap-1.5">
+          <span className="text-base font-black text-brand-500">{formatPHP(product.price)}</span>
+          {product.srp && product.srp > product.price && (
+            <span className="text-[11px] text-muted-foreground line-through">{formatPHP(product.srp)}</span>
           )}
         </div>
+
+        {/* Min order */}
+        <p className="text-xs text-muted-foreground -mt-1">
+          Min. {product.minOrderQty} {product.unit}
+        </p>
+
+        {/* Add to cart button */}
+        {outOfStock ? (
+          <button
+            disabled
+            onClick={(e) => e.preventDefault()}
+            className="mt-1 w-full flex items-center justify-center gap-1.5 rounded-xl bg-muted text-muted-foreground text-xs font-semibold py-2 cursor-not-allowed"
+          >
+            Out of Stock
+          </button>
+        ) : (
+          <button
+            onClick={(e) => {
+              e.preventDefault();
+              addItem(product, product.minOrderQty);
+            }}
+            className="mt-1 w-full flex items-center justify-center gap-1.5 rounded-xl bg-brand-500 text-white text-xs font-semibold py-2 hover:bg-brand-600 active:scale-95 transition-all shadow-brand"
+          >
+            <ShoppingCart className="h-3.5 w-3.5" />
+            Add to Cart
+          </button>
+        )}
       </div>
-    </div>
+    </Link>
   );
 }
