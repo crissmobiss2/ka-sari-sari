@@ -7,6 +7,7 @@ import {
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useCartStore } from "@/store/cart";
+import { ThemeToggle } from "@/components/ui/theme-toggle";
 
 const navItems = [
   { href: "/dashboard", label: "Home",    icon: LayoutDashboard },
@@ -68,9 +69,7 @@ export function RetailerTopBar({ title }: { title?: string }) {
           </span>
         </div>
         <div className="flex items-center gap-1">
-          <Link href="/analytics" className="relative flex h-9 w-9 items-center justify-center rounded-xl hover:bg-muted transition-colors" aria-label="Analytics">
-            <BarChart3 className="h-5 w-5 text-muted-foreground" />
-          </Link>
+          <ThemeToggle />
           <Link href="/notifications" className="relative flex h-9 w-9 items-center justify-center rounded-xl hover:bg-muted transition-colors">
             <Bell className="h-5 w-5 text-muted-foreground" />
             <span className="absolute top-1.5 right-1.5 h-2 w-2 rounded-full bg-brand-500" />

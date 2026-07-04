@@ -1,17 +1,55 @@
 "use client";
-import { Minus, Plus, Trash2, ShoppingCart, ArrowRight } from "lucide-react";
+import { useState } from "react";
+import Image from "next/image";
+import { Minus, Plus, Trash2, ShoppingCart, ArrowRight, Truck, Gift } from "lucide-react";
 import { RetailerTopBar, RetailerBottomNav } from "@/components/layout/retailer-nav";
 import { Button, ButtonLink } from "@/components/ui/button";
 import { EmptyState } from "@/components/ui/empty-state";
 import { useCartStore } from "@/store/cart";
-import { formatPHP } from "@/lib/utils";
+import { formatPHP, cn } from "@/lib/utils";
 
 const DELIVERY_FEE = 80;
+const FREE_DELIVERY_THRESHOLD = 1500;
+
+const CATEGORY_EMOJI: Record<string, string> = {
+  "cat-1": "🥤", "cat-2": "🍜", "cat-3": "🍿", "cat-4": "🥫",
+  "cat-5": "🧂", "cat-6": "🧴", "cat-7": "☕", "cat-8": "🧺",
+  "cat-9": "🍞", "cat-10": "🍫", "cat-11": "🥛", "cat-12": "🫙",
+};
+
+function ProductThumb({ product }: { product: { imageUrl?: string; categoryId: string; name: string } }) {
+  const [err, setErr] = useState(false);
+  const emoji = CATEGORY_EMOJI[product.categoryId] ?? "📦";
+
+  if (product.imageUrl && !err) {
+    return (
+      <div className="relative h-14 w-14 rounded-xl overflow-hidden shrink-0 bg-surface-100">
+        <Image
+          src={product.imageUrl}
+          alt={product.name}
+          fill
+          className="object-cover"
+          sizes="56px"
+          onError={() => setErr(true)}
+        />
+      </div>
+    );
+  }
+  return (
+    <div className="h-14 w-14 rounded-xl shrink-0 bg-gradient-to-br from-surface-100 to-surface-200 flex items-center justify-center text-2xl">
+      {emoji}
+    </div>
+  );
+}
 
 export default function CartPage() {
   const { items, updateQty, removeItem, clearCart } = useCartStore();
-  const subtotal = items.reduce((s, i) => s + i.product.price * i.quantity, 0);
-  const total = subtotal + (items.length > 0 ? DELIVERY_FEE : 0);
+  const subtotal    = items.reduce((s, i) => s + i.product.price * i.quantity, 0);
+  const freeDelivery = subtotal >= FREE_DELIVERY_THRESHOLD;
+  const toFree      = FREE_DELIVERY_THRESHOLD - subtotal;
+  const progress    = Math.min(100, (subtotal / FREE_DELIVERY_THRESHOLD) * 100);
+  const deliveryFee = freeDelivery ? 0 : DELIVERY_FEE;
+  const total       = subtotal + deliveryFee;
 
   return (
     <div className="min-h-screen bg-background pb-24">
@@ -27,16 +65,39 @@ export default function CartPage() {
         />
       ) : (
         <div className="px-4 py-5 space-y-4">
+          {/* Free delivery progress */}
+          <div className={cn(
+            "rounded-2xl border px-4 py-3.5 space-y-2.5",
+            freeDelivery
+              ? "border-success-500/30 bg-success-50 dark:bg-success-500/10"
+              : "border-border bg-card"
+          )}>
+            <div className="flex items-center justify-between text-sm">
+              <div className="flex items-center gap-2">
+                <Truck className={cn("h-4 w-4", freeDelivery ? "text-success-600" : "text-muted-foreground")} />
+                <span className={cn("font-medium", freeDelivery ? "text-success-700 dark:text-success-400" : "text-foreground")}>
+                  {freeDelivery ? "Free delivery unlocked!" : `Add ${formatPHP(toFree)} for free delivery`}
+                </span>
+              </div>
+              {freeDelivery && <Gift className="h-4 w-4 text-success-500" />}
+            </div>
+            <div className="w-full h-1.5 bg-muted rounded-full overflow-hidden">
+              <div
+                className={cn("h-full rounded-full transition-all duration-500", freeDelivery ? "bg-success-500" : "bg-brand-500")}
+                style={{ width: `${progress}%` }}
+              />
+            </div>
+          </div>
+
           {/* Items */}
           <div className="rounded-2xl border border-border bg-card shadow-card overflow-hidden divide-y divide-border">
             {items.map(({ product, quantity }) => (
               <div key={product.id} className="flex items-center gap-3 px-4 py-3.5">
-                <div className="h-14 w-14 rounded-xl bg-surface-100 shrink-0 flex items-center justify-center text-muted-foreground">
-                  <ShoppingCart className="h-6 w-6" strokeWidth={1.2} />
-                </div>
+                <ProductThumb product={product} />
                 <div className="flex-1 min-w-0">
+                  <p className="text-[11px] font-semibold text-brand-500 uppercase tracking-wide">{product.brand}</p>
                   <p className="text-sm font-semibold text-foreground leading-snug line-clamp-1">{product.name}</p>
-                  <p className="text-xs text-muted-foreground mt-0.5">{formatPHP(product.price)} each</p>
+                  <p className="text-xs text-muted-foreground">{formatPHP(product.price)} each</p>
                   <div className="flex items-center gap-2 mt-2">
                     <button
                       onClick={() => updateQty(product.id, quantity - 1)}
@@ -44,7 +105,7 @@ export default function CartPage() {
                     >
                       <Minus className="h-3 w-3" />
                     </button>
-                    <span className="w-8 text-center text-sm font-semibold">{quantity}</span>
+                    <span className="w-8 text-center text-sm font-bold tabular-nums">{quantity}</span>
                     <button
                       onClick={() => updateQty(product.id, quantity + 1)}
                       disabled={product.stock !== undefined && quantity >= product.stock}
@@ -54,7 +115,7 @@ export default function CartPage() {
                     </button>
                   </div>
                 </div>
-                <div className="flex flex-col items-end gap-2">
+                <div className="flex flex-col items-end gap-2 shrink-0">
                   <p className="text-sm font-bold text-foreground">{formatPHP(product.price * quantity)}</p>
                   <button onClick={() => removeItem(product.id)} className="text-muted-foreground hover:text-danger-500 transition-colors">
                     <Trash2 className="h-4 w-4" />
@@ -64,7 +125,7 @@ export default function CartPage() {
             ))}
           </div>
 
-          {/* Summary */}
+          {/* Order summary */}
           <div className="rounded-2xl border border-border bg-card shadow-card p-5 space-y-3">
             <h3 className="font-display text-sm font-semibold text-foreground">Order Summary</h3>
             <div className="space-y-2 text-sm">
@@ -74,17 +135,24 @@ export default function CartPage() {
               </div>
               <div className="flex justify-between text-muted-foreground">
                 <span>Delivery fee</span>
-                <span>{formatPHP(DELIVERY_FEE)}</span>
+                {freeDelivery ? (
+                  <span className="text-success-600 font-medium line-through-none flex items-center gap-1">
+                    <span className="line-through text-muted-foreground/60">{formatPHP(DELIVERY_FEE)}</span>
+                    <span className="text-success-600">FREE</span>
+                  </span>
+                ) : (
+                  <span>{formatPHP(DELIVERY_FEE)}</span>
+                )}
               </div>
-              <div className="border-t border-border pt-2 flex justify-between font-semibold text-foreground">
+              <div className="border-t border-border pt-2 flex justify-between font-bold text-foreground text-base">
                 <span>Total</span>
-                <span>{formatPHP(total)}</span>
+                <span className="text-brand-500">{formatPHP(total)}</span>
               </div>
             </div>
           </div>
 
           <ButtonLink size="lg" href="/checkout" className="w-full">
-            Proceed to Checkout - {formatPHP(total)}
+            Proceed to Checkout — {formatPHP(total)}
             <ArrowRight className="h-4 w-4" />
           </ButtonLink>
 

@@ -9,6 +9,7 @@ import {
   PackageCheck, Boxes, ScanLine,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { ThemeToggle } from "@/components/ui/theme-toggle";
 
 const navGroups = [
   {
@@ -113,7 +114,11 @@ export function AdminSidebar() {
       </nav>
 
       {/* Bottom user */}
-      <div className="border-t border-border p-3">
+      <div className="border-t border-border p-3 space-y-1">
+        <div className="flex items-center justify-between px-3 py-1.5">
+          <span className="text-xs text-muted-foreground">Dark mode</span>
+          <ThemeToggle />
+        </div>
         <div className="flex items-center gap-3 rounded-xl px-3 py-2 hover:bg-muted cursor-pointer transition-colors">
           <div className="flex h-7 w-7 items-center justify-center rounded-full bg-brand-100 text-brand-600 text-xs font-bold shrink-0">
             A

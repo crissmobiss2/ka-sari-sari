@@ -7,14 +7,13 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { cn } from "@/lib/utils";
 
-const STEPS = ["Phone", "Account", "Store", "Payment"];
+const STEPS = ["Phone", "Account", "Store", "Activate"];
 
 export default function RegisterPage() {
   const router = useRouter();
   const [step, setStep] = useState(0);
   const [loading, setLoading] = useState(false);
-  const [otpSent, setOtpSent] = useState(false);
-  const [otp, setOtp] = useState("");
+  const [error, setError] = useState("");
   const [form, setForm] = useState({
     phone: "", name: "", password: "",
     storeName: "", barangay: "", city: "", province: "",
@@ -22,30 +21,41 @@ export default function RegisterPage() {
 
   function set(k: string, v: string) { setForm((p) => ({ ...p, [k]: v })); }
 
-  async function handleSendOtp() {
-    setLoading(true);
-    await new Promise((r) => setTimeout(r, 800));
-    setOtpSent(true);
-    setLoading(false);
+  function handleNext() {
+    if (step < 3) { setStep((s) => s + 1); }
   }
 
-  async function handleVerifyOtp() {
+  async function handleSubmit() {
     setLoading(true);
-    await new Promise((r) => setTimeout(r, 600));
-    setStep(1);
-    setLoading(false);
-  }
-
-  async function handleNext() {
-    if (step < 3) { setStep((s) => s + 1); return; }
-    setLoading(true);
-    await new Promise((r) => setTimeout(r, 1200));
-    router.push("/dashboard?welcome=1");
+    setError("");
+    try {
+      const address = [form.barangay, form.city, form.province].filter(Boolean).join(", ");
+      const res = await fetch("/api/auth/register", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          phone: form.phone,
+          password: form.password,
+          name: form.name,
+          storeName: form.storeName,
+          address,
+        }),
+      });
+      const data = await res.json();
+      if (!res.ok) {
+        setError(data.error || "Registration failed. Please try again.");
+        return;
+      }
+      router.push("/dashboard?welcome=1");
+    } catch {
+      setError("Network error. Please try again.");
+    } finally {
+      setLoading(false);
+    }
   }
 
   return (
     <div className="min-h-screen bg-background flex flex-col">
-      {/* Header */}
       <div className="flex items-center gap-2.5 px-5 py-4 border-b border-border bg-card">
         <Link href="/" className="flex items-center gap-2.5">
           <div className="flex h-7 w-7 items-center justify-center rounded-xl bg-brand-500">
@@ -56,62 +66,58 @@ export default function RegisterPage() {
       </div>
 
       <div className="flex flex-1 flex-col items-center px-4 py-10">
-        {/* Progress */}
+        {/* Step progress */}
         <div className="w-full max-w-sm mb-8">
           <div className="flex items-center gap-2">
             {STEPS.map((label, i) => (
               <div key={label} className="flex items-center gap-2 flex-1 last:flex-none">
                 <div className={cn(
                   "flex h-7 w-7 shrink-0 items-center justify-center rounded-full text-xs font-semibold transition-colors",
-                  i < step ? "bg-brand-500 text-white" : i === step ? "border-2 border-brand-500 text-brand-500" : "border-2 border-border text-muted-foreground"
+                  i < step  ? "bg-brand-500 text-white"
+                  : i === step ? "border-2 border-brand-500 text-brand-500"
+                  : "border-2 border-border text-muted-foreground"
                 )}>
                   {i < step ? <Check className="h-3.5 w-3.5" /> : i + 1}
                 </div>
                 <span className={cn("text-xs hidden sm:block", i === step ? "font-medium text-foreground" : "text-muted-foreground")}>
                   {label}
                 </span>
-                {i < STEPS.length - 1 && <div className={cn("h-px flex-1", i < step ? "bg-brand-500" : "bg-border")} />}
+                {i < STEPS.length - 1 && (
+                  <div className={cn("h-px flex-1", i < step ? "bg-brand-500" : "bg-border")} />
+                )}
               </div>
             ))}
           </div>
         </div>
 
         <div className="w-full max-w-sm">
+          {/* Step 0 — Phone */}
           {step === 0 && (
             <div className="space-y-5">
               <div>
-                <h1 className="font-display text-2xl font-bold text-foreground">Verify your number</h1>
-                <p className="mt-1 text-sm text-muted-foreground">We&apos;ll send a one-time code to confirm it&apos;s you.</p>
+                <h1 className="font-display text-2xl font-bold text-foreground">Enter your number</h1>
+                <p className="mt-1 text-sm text-muted-foreground">We'll use this as your login.</p>
               </div>
-              {!otpSent ? (
-                <>
-                  <Input label="Mobile number" type="tel" placeholder="09XX XXX XXXX" value={form.phone}
-                    onChange={(e) => set("phone", e.target.value)} leftIcon={<Phone className="h-4 w-4" />} />
-                  <Button size="lg" className="w-full" onClick={handleSendOtp} loading={loading}
-                    disabled={form.phone.length < 11}>
-                    Send OTP <ArrowRight className="h-4 w-4" />
-                  </Button>
-                </>
-              ) : (
-                <>
-                  <div className="rounded-xl bg-surface-100 border border-border px-4 py-3 text-sm text-muted-foreground">
-                    Code sent to <span className="font-medium text-foreground">{form.phone}</span>
-                  </div>
-                  <Input label="Enter 6-digit code" type="tel" placeholder="000000" value={otp}
-                    onChange={(e) => setOtp(e.target.value)} maxLength={6} />
-                  <Button size="lg" className="w-full" onClick={handleVerifyOtp} loading={loading}
-                    disabled={otp.length < 6}>
-                    Verify <ArrowRight className="h-4 w-4" />
-                  </Button>
-                  <p className="text-center text-sm text-muted-foreground">
-                    Didn&apos;t receive it?{" "}
-                    <button className="text-brand-500 font-medium" onClick={handleSendOtp}>Resend code</button>
-                  </p>
-                </>
-              )}
+              <Input
+                label="Mobile number"
+                type="tel"
+                placeholder="09XX XXX XXXX"
+                value={form.phone}
+                onChange={(e) => set("phone", e.target.value)}
+                leftIcon={<Phone className="h-4 w-4" />}
+              />
+              <Button
+                size="lg"
+                className="w-full"
+                onClick={handleNext}
+                disabled={!form.phone.startsWith("09") || form.phone.length < 11}
+              >
+                Continue <ArrowRight className="h-4 w-4" />
+              </Button>
             </div>
           )}
 
+          {/* Step 1 — Account */}
           {step === 1 && (
             <div className="space-y-5">
               <div>
@@ -120,14 +126,16 @@ export default function RegisterPage() {
               </div>
               <Input label="Full name" placeholder="Maria Santos" value={form.name}
                 onChange={(e) => set("name", e.target.value)} leftIcon={<User className="h-4 w-4" />} />
-              <Input label="Password" type="password" placeholder="At least 8 characters" value={form.password}
+              <Input label="Password" type="password" placeholder="At least 6 characters" value={form.password}
                 onChange={(e) => set("password", e.target.value)} leftIcon={<Lock className="h-4 w-4" />} />
-              <Button size="lg" className="w-full" onClick={handleNext} disabled={!form.name || !form.password}>
+              <Button size="lg" className="w-full" onClick={handleNext}
+                disabled={!form.name || form.password.length < 6}>
                 Continue <ArrowRight className="h-4 w-4" />
               </Button>
             </div>
           )}
 
+          {/* Step 2 — Store */}
           {step === 2 && (
             <div className="space-y-5">
               <div>
@@ -149,13 +157,14 @@ export default function RegisterPage() {
             </div>
           )}
 
+          {/* Step 3 — Activate */}
           {step === 3 && (
             <div className="space-y-6">
               <div>
                 <h1 className="font-display text-2xl font-bold text-foreground">Activate your account</h1>
                 <p className="mt-1 text-sm text-muted-foreground">One annual platform fee unlocks unlimited ordering.</p>
               </div>
-              <div className="rounded-2xl border border-brand-200 bg-brand-50 p-6">
+              <div className="rounded-2xl border border-brand-200 bg-brand-50 dark:bg-brand-500/10 dark:border-brand-500/30 p-6">
                 <div className="flex items-start justify-between mb-4">
                   <div>
                     <p className="font-display text-3xl font-bold text-foreground">₱1,000</p>
@@ -184,7 +193,13 @@ export default function RegisterPage() {
                 ))}
               </div>
 
-              <Button size="lg" className="w-full" onClick={handleNext} loading={loading}>
+              {error && (
+                <div className="rounded-xl bg-danger-50 border border-danger-500/25 px-4 py-3 text-sm text-danger-600">
+                  {error}
+                </div>
+              )}
+
+              <Button size="lg" className="w-full" onClick={handleSubmit} loading={loading}>
                 Pay ₱1,000 and start ordering <ArrowRight className="h-4 w-4" />
               </Button>
               <p className="text-center text-xs text-muted-foreground">
