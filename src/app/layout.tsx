@@ -49,11 +49,24 @@ export const metadata: Metadata = {
     title: "Ka Sari-Sari: Warehouse Ordering Platform",
     description: "Order warehouse stock direct to your sari-sari store. Fast delivery, fair prices, 500+ products.",
     siteName: "Ka Sari-Sari",
+    images: [
+      {
+        url: "https://ka-sari-sari.vercel.app/opengraph-image",
+        width: 1200,
+        height: 630,
+        alt: "Ka Sari-Sari — Wholesale Ordering for Sari-Sari Stores",
+      },
+    ],
   },
   twitter: {
     card: "summary_large_image",
     title: "Ka Sari-Sari: Warehouse Ordering Platform",
     description: "Order warehouse stock direct to your sari-sari store. Fast delivery, fair prices, 500+ products.",
+    images: ["https://ka-sari-sari.vercel.app/opengraph-image"],
+  },
+  icons: {
+    icon: "/icon.svg",
+    apple: "/apple-touch-icon.png",
   },
 };
 
@@ -63,11 +76,21 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       <head>
         <link rel="manifest" href="/manifest.json" />
         <meta name="theme-color" content="#f47028" />
+        {/* Favicon — SVG scales perfectly at any size */}
+        <link rel="icon" href="/icon.svg" type="image/svg+xml" />
         <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
         <link rel="apple-touch-icon" sizes="180x180" href="/icon-192.png" />
         <meta name="mobile-web-app-capable" content="yes" />
         <meta name="apple-mobile-web-app-capable" content="yes" />
         <meta name="apple-mobile-web-app-status-bar-style" content="default" />
+        {/* Open Graph / link preview image */}
+        <meta property="og:image" content="https://ka-sari-sari.vercel.app/opengraph-image" />
+        <meta property="og:image:width" content="1200" />
+        <meta property="og:image:height" content="630" />
+        <meta property="og:url" content="https://ka-sari-sari.vercel.app" />
+        {/* Twitter card */}
+        <meta name="twitter:card" content="summary_large_image" />
+        <meta name="twitter:image" content="https://ka-sari-sari.vercel.app/opengraph-image" />
       </head>
       <body className="min-h-screen antialiased">
         <Providers>{children}</Providers>
