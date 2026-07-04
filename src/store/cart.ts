@@ -2,6 +2,7 @@
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
 import type { CartItem, Product } from "@/types";
+import { toastSuccess } from "@/store/toast";
 
 interface CartStore {
   items: CartItem[];
@@ -35,6 +36,7 @@ export const useCartStore = create<CartStore>()(
           }
           return { items: [...s.items, { productId: product.id, product, quantity: qty }] };
         });
+        toastSuccess(`${product.name} added to cart`);
       },
       removeItem(productId) {
         set((s) => ({ items: s.items.filter((i) => i.productId !== productId) }));

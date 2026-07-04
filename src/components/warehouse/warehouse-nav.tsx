@@ -2,13 +2,15 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { LayoutDashboard, ScanLine, PackageCheck } from "lucide-react";
+import { LayoutDashboard, ScanLine, PackageCheck, Package, QrCode } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 const NAV_ITEMS = [
   { href: "/warehouse", icon: LayoutDashboard, label: "Home", exact: true },
   { href: "/warehouse/picking", icon: ScanLine, label: "Picking", exact: false },
   { href: "/warehouse/receiving", icon: PackageCheck, label: "Receiving", exact: false },
+  { href: "/warehouse/inventory", icon: Package, label: "Inventory", exact: false },
+  { href: "/warehouse/scan", icon: QrCode, label: "Scan", exact: false },
 ];
 
 export function WarehouseNav() {

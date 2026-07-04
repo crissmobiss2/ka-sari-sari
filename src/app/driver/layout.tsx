@@ -36,11 +36,21 @@ function UserIcon({ className }: { className?: string }) {
     </svg>
   );
 }
+function WalletIcon({ className }: { className?: string }) {
+  return (
+    <svg className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round">
+      <path d="M21 12V7H5a2 2 0 010-4h14a1 1 0 011 1v4" />
+      <path d="M3 5v14a2 2 0 002 2h16v-4" />
+      <path d="M18 12a2 2 0 000 4h4v-4z" />
+    </svg>
+  );
+}
 
 const NAV_ITEMS = [
   { href: "/driver",            label: "Home",       Icon: HomeIcon },
   { href: "/driver/deliveries", label: "Deliveries", Icon: PackageIcon },
   { href: "/driver/route",      label: "Route",      Icon: MapIcon },
+  { href: "/driver/earnings",   label: "Earnings",   Icon: WalletIcon },
   { href: "/driver/profile",    label: "Profile",    Icon: UserIcon },
 ];
 
