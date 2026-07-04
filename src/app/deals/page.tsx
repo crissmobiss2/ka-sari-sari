@@ -1,0 +1,171 @@
+"use client";
+import { useState, useEffect } from "react";
+import Link from "next/link";
+import { Zap, Clock, Tag, ChevronRight, ShoppingCart, Flame } from "lucide-react";
+import { RetailerTopBar, RetailerBottomNav } from "@/components/layout/retailer-nav";
+import { ProductCard } from "@/components/products/product-card";
+import { PRODUCTS, CATEGORIES } from "@/lib/mock-data";
+import { formatPHP } from "@/lib/utils";
+import { useCartStore } from "@/store/cart";
+import { cn } from "@/lib/utils";
+
+// Compute deal price
+const DEALS = PRODUCTS.map((p, i) => ({
+  ...p,
+  originalPrice: p.price,
+  discountPct: [15, 20, 10, 25, 12, 18, 22, 8, 30, 15][i % 10],
+  price: Math.round(p.price * [0.85, 0.80, 0.90, 0.75, 0.88, 0.82, 0.78, 0.92, 0.70, 0.85][i % 10]),
+  dealLabel: ["Flash Sale", "Bundle Deal", "Weekend Special", "Clearance", "Hot Pick"][i % 5],
+  expiresIn: [3600 * 2 + 1800, 3600 * 5, 3600 * 12, 3600 * 24, 3600 * 8][i % 5],
+}));
+
+const FLASH_DEALS = DEALS.filter((_, i) => i < 4);
+const ALL_DEALS = DEALS;
+
+function Countdown({ seconds }: { seconds: number }) {
+  const [remaining, setRemaining] = useState(seconds);
+  useEffect(() => {
+    const interval = setInterval(() => setRemaining((r) => Math.max(0, r - 1)), 1000);
+    return () => clearInterval(interval);
+  }, []);
+  const h = Math.floor(remaining / 3600);
+  const m = Math.floor((remaining % 3600) / 60);
+  const s = remaining % 60;
+  const pad = (n: number) => String(n).padStart(2, "0");
+  return (
+    <span className="font-mono font-bold tabular-nums">
+      {pad(h)}:{pad(m)}:{pad(s)}
+    </span>
+  );
+}
+
+function DealCard({ deal }: { deal: typeof DEALS[0] }) {
+  const { addItem, items, updateQty } = useCartStore();
+  const cartItem = items.find((i) => i.product.id === deal.id);
+
+  return (
+    <div className="rounded-2xl border border-border bg-card shadow-card overflow-hidden flex flex-col">
+      <div className="relative">
+        <div className="h-28 bg-gradient-to-br from-surface-100 to-surface-200 flex items-center justify-center">
+          <ShoppingCart className="h-10 w-10 text-muted-foreground/40" strokeWidth={1} />
+        </div>
+        <div className="absolute top-2 left-2 rounded-full bg-danger-500 px-2 py-0.5 text-[10px] font-bold text-white">
+          -{deal.discountPct}%
+        </div>
+        <div className="absolute top-2 right-2 rounded-full bg-card/90 backdrop-blur-sm border border-border px-2 py-0.5 text-[10px] font-medium text-muted-foreground flex items-center gap-1">
+          <Clock className="h-3 w-3" />
+          <Countdown seconds={deal.expiresIn} />
+        </div>
+      </div>
+      <div className="p-3 flex-1 flex flex-col gap-1">
+        <span className="text-[10px] font-semibold text-brand-500 uppercase tracking-wide">{deal.dealLabel}</span>
+        <p className="text-sm font-semibold text-foreground leading-snug line-clamp-2">{deal.name}</p>
+        <div className="flex items-baseline gap-1.5 mt-auto pt-1">
+          <span className="text-base font-bold text-foreground">{formatPHP(deal.price)}</span>
+          <span className="text-xs text-muted-foreground line-through">{formatPHP(deal.originalPrice)}</span>
+        </div>
+        {cartItem ? (
+          <div className="flex items-center justify-between mt-1">
+            <button onClick={() => updateQty(deal.id, cartItem.quantity - 1)} className="flex h-7 w-7 items-center justify-center rounded-lg border border-border bg-muted text-sm font-bold">−</button>
+            <span className="text-sm font-semibold">{cartItem.quantity}</span>
+            <button onClick={() => updateQty(deal.id, cartItem.quantity + 1)} className="flex h-7 w-7 items-center justify-center rounded-lg bg-brand-500 text-white text-sm font-bold">+</button>
+          </div>
+        ) : (
+          <button
+            onClick={() => addItem(deal as any)}
+            className="mt-1 w-full rounded-xl bg-brand-500 py-2 text-xs font-semibold text-white hover:bg-brand-600 transition-colors active:scale-95"
+          >
+            Add to Cart
+          </button>
+        )}
+      </div>
+    </div>
+  );
+}
+
+export default function DealsPage() {
+  const [activeCategory, setActiveCategory] = useState("all");
+
+  const filtered = activeCategory === "all"
+    ? ALL_DEALS
+    : ALL_DEALS.filter((d) => d.categoryId === activeCategory);
+
+  return (
+    <div className="min-h-screen bg-background pb-24">
+      <RetailerTopBar title="Today's Deals" />
+
+      <div className="px-4 py-5 space-y-6">
+        {/* Hero banner */}
+        <div className="relative overflow-hidden rounded-2xl bg-gradient-to-r from-danger-500 to-brand-500 p-5 text-white">
+          <div className="absolute -top-4 -right-4 h-24 w-24 rounded-full bg-white/10" />
+          <div className="absolute -bottom-6 -right-8 h-32 w-32 rounded-full bg-white/5" />
+          <div className="relative">
+            <div className="flex items-center gap-2 mb-1">
+              <Flame className="h-5 w-5 text-yellow-300" />
+              <span className="text-xs font-semibold uppercase tracking-wider text-white/80">Flash Sale Today</span>
+            </div>
+            <h2 className="font-display text-2xl font-black leading-tight">Up to 30% Off</h2>
+            <p className="text-sm text-white/80 mt-1">Exclusive deals for Ka Sari-Sari members</p>
+            <div className="mt-3 flex items-center gap-2">
+              <span className="text-xs font-medium text-white/70">Ends in:</span>
+              <span className="rounded-lg bg-white/20 px-2 py-1 text-sm font-bold">
+                <Countdown seconds={3600 * 8 + 1234} />
+              </span>
+            </div>
+          </div>
+        </div>
+
+        {/* Flash deals horizontal scroll */}
+        <div>
+          <div className="flex items-center gap-2 mb-3">
+            <Zap className="h-4 w-4 text-danger-500" />
+            <h2 className="font-display text-base font-bold text-foreground">Flash Deals</h2>
+          </div>
+          <div className="flex gap-3 overflow-x-auto pb-2 scrollbar-hide -mx-4 px-4">
+            {FLASH_DEALS.map((deal) => (
+              <div key={deal.id} className="w-44 shrink-0">
+                <DealCard deal={deal} />
+              </div>
+            ))}
+          </div>
+        </div>
+
+        {/* Category filter */}
+        <div className="flex gap-2 overflow-x-auto pb-1 scrollbar-hide -mx-4 px-4">
+          {[{ id: "all", name: "All Deals" }, ...CATEGORIES].map((cat) => (
+            <button
+              key={cat.id}
+              onClick={() => setActiveCategory(cat.id)}
+              className={cn(
+                "shrink-0 rounded-full px-4 py-2 text-xs font-semibold transition-colors",
+                activeCategory === cat.id
+                  ? "bg-brand-500 text-white"
+                  : "border border-border bg-card text-muted-foreground hover:border-brand-300"
+              )}
+            >
+              {cat.name}
+            </button>
+          ))}
+        </div>
+
+        {/* All deals grid */}
+        <div>
+          <div className="flex items-center justify-between mb-3">
+            <h2 className="font-display text-base font-bold text-foreground flex items-center gap-2">
+              <Tag className="h-4 w-4 text-brand-500" />
+              All Deals
+              <span className="text-xs font-normal text-muted-foreground">({filtered.length})</span>
+            </h2>
+          </div>
+          <div className="grid grid-cols-2 gap-3">
+            {filtered.map((deal) => (
+              <DealCard key={deal.id} deal={deal} />
+            ))}
+          </div>
+        </div>
+      </div>
+
+      <RetailerBottomNav />
+    </div>
+  );
+}

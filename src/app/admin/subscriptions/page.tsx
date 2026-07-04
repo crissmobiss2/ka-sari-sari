@@ -1,0 +1,90 @@
+"use client";
+import { CreditCard, CheckCircle2, Clock, XCircle } from "lucide-react";
+import { Card } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
+import { formatPHP, formatDate } from "@/lib/utils";
+
+const MOCK_SUBSCRIPTIONS = [
+  { id: "s1", retailer: "Maria Santos", store: "Santos Sari-Sari Store", status: "active", paid: 1000, startDate: "2025-02-01", endDate: "2026-02-01", method: "GCash" },
+  { id: "s2", retailer: "Jun Dela Cruz", store: "Dela Cruz Tindahan", status: "active", paid: 1000, startDate: "2024-09-15", endDate: "2025-09-15", method: "Maya" },
+  { id: "s3", retailer: "Nena Reyes", store: "Ate Nena Store", status: "active", paid: 1000, startDate: "2024-07-20", endDate: "2025-07-20", method: "GCash" },
+  { id: "s4", retailer: "Lito Garcia", store: "Garcia Grocery", status: "expired", paid: 1000, startDate: "2023-11-01", endDate: "2024-11-01", method: "COD" },
+  { id: "s5", retailer: "Elena Cruz", store: "Cruz Corner Store", status: "pending_payment", paid: 0, startDate: "", endDate: "", method: "" },
+];
+
+const statusMap = {
+  active:          { label: "Active",          variant: "success"  as const, icon: CheckCircle2 },
+  expired:         { label: "Expired",         variant: "danger"   as const, icon: XCircle },
+  pending_payment: { label: "Pending Payment", variant: "warning"  as const, icon: Clock },
+  cancelled:       { label: "Cancelled",       variant: "neutral"  as const, icon: XCircle },
+};
+
+export default function AdminSubscriptionsPage() {
+  const totalRevenue = MOCK_SUBSCRIPTIONS.reduce((s, r) => s + r.paid, 0);
+  const active = MOCK_SUBSCRIPTIONS.filter((s) => s.status === "active").length;
+  const pending = MOCK_SUBSCRIPTIONS.filter((s) => s.status === "pending_payment").length;
+
+  return (
+    <div className="p-6 space-y-5 max-w-7xl mx-auto">
+      <div>
+        <h1 className="font-display text-2xl font-bold text-foreground">Subscriptions</h1>
+        <p className="text-sm text-muted-foreground mt-0.5">Platform access fee management</p>
+      </div>
+
+      <div className="grid grid-cols-3 gap-4">
+        {[
+          { label: "Total Revenue", value: formatPHP(totalRevenue), icon: CreditCard, color: "text-success-600 bg-success-50" },
+          { label: "Active", value: active.toString(), icon: CheckCircle2, color: "text-brand-600 bg-brand-50" },
+          { label: "Pending", value: pending.toString(), icon: Clock, color: "text-warning-600 bg-warning-50" },
+        ].map((s) => (
+          <Card key={s.label} className="p-5">
+            <div className={`flex h-9 w-9 items-center justify-center rounded-xl ${s.color} mb-3`}>
+              <s.icon className="h-4.5 w-4.5" />
+            </div>
+            <p className="font-display text-2xl font-bold text-foreground">{s.value}</p>
+            <p className="text-xs text-muted-foreground mt-0.5">{s.label}</p>
+          </Card>
+        ))}
+      </div>
+
+      <Card className="overflow-hidden">
+        <div className="overflow-x-auto">
+          <table className="w-full text-sm">
+            <thead>
+              <tr className="border-b border-border bg-muted/30">
+                <th className="text-left px-5 py-3 text-xs font-semibold text-muted-foreground">Retailer</th>
+                <th className="text-left px-5 py-3 text-xs font-semibold text-muted-foreground hidden md:table-cell">Period</th>
+                <th className="text-left px-5 py-3 text-xs font-semibold text-muted-foreground hidden lg:table-cell">Method</th>
+                <th className="text-right px-5 py-3 text-xs font-semibold text-muted-foreground">Amount</th>
+                <th className="text-right px-5 py-3 text-xs font-semibold text-muted-foreground">Status</th>
+              </tr>
+            </thead>
+            <tbody className="divide-y divide-border">
+              {MOCK_SUBSCRIPTIONS.map((sub) => {
+                const { label, variant, icon: Icon } = statusMap[sub.status as keyof typeof statusMap];
+                return (
+                  <tr key={sub.id} className="hover:bg-muted/30 transition-colors">
+                    <td className="px-5 py-3.5">
+                      <p className="font-medium text-foreground">{sub.retailer}</p>
+                      <p className="text-xs text-muted-foreground">{sub.store}</p>
+                    </td>
+                    <td className="px-5 py-3.5 text-xs text-muted-foreground hidden md:table-cell">
+                      {sub.startDate ? `${formatDate(sub.startDate)} - ${formatDate(sub.endDate)}` : "-"}
+                    </td>
+                    <td className="px-5 py-3.5 text-xs text-muted-foreground hidden lg:table-cell">{sub.method || "-"}</td>
+                    <td className="px-5 py-3.5 text-right font-semibold text-foreground">{sub.paid > 0 ? formatPHP(sub.paid) : "-"}</td>
+                    <td className="px-5 py-3.5 text-right">
+                      <Badge variant={variant}>
+                        <Icon className="h-3 w-3" /> {label}
+                      </Badge>
+                    </td>
+                  </tr>
+                );
+              })}
+            </tbody>
+          </table>
+        </div>
+      </Card>
+    </div>
+  );
+}
