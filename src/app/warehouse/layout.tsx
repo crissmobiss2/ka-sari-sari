@@ -1,6 +1,6 @@
-import Link from "next/link";
-import { ShoppingBasket, LogOut } from "lucide-react";
+import { ShoppingBasket } from "lucide-react";
 import { WarehouseNav } from "@/components/warehouse/warehouse-nav";
+import { LogoutButton } from "@/components/ui/logout-button";
 
 export default function WarehouseLayout({ children }: { children: React.ReactNode }) {
   return (
@@ -22,13 +22,7 @@ export default function WarehouseLayout({ children }: { children: React.ReactNod
             <p className="text-sm font-semibold text-foreground leading-tight">Juan Dela Cruz</p>
             <p className="text-xs text-muted-foreground leading-tight">Warehouse Staff</p>
           </div>
-          <Link
-            href="/login"
-            className="flex items-center justify-center w-10 h-10 rounded-xl border border-border hover:bg-muted transition-colors"
-            aria-label="Logout"
-          >
-            <LogOut className="h-5 w-5 text-muted-foreground" />
-          </Link>
+          <LogoutButton />
         </div>
       </header>
 

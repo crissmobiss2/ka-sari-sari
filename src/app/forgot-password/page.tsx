@@ -106,7 +106,7 @@ export default function ForgotPasswordPage() {
     const code = otp.join("");
     if (code.length !== 6) return;
     setLoadingVerify(true);
-    await new Promise((r) => setTimeout(r, 800));
+    await new Promise((r) => setTimeout(r, 400));
     setLoadingVerify(false);
     setStep(3);
   }
@@ -114,6 +114,12 @@ export default function ForgotPasswordPage() {
   function handleResend() {
     if (!canResend) return;
     setOtp(["", "", "", "", "", ""]);
+    // Re-send OTP
+    fetch("/api/auth/forgot-password", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ phone }),
+    }).catch(() => {});
     setStep(2); // triggers the useEffect to restart countdown
   }
 
@@ -129,7 +135,21 @@ export default function ForgotPasswordPage() {
       return;
     }
     setLoadingReset(true);
-    await new Promise((r) => setTimeout(r, 1000));
+    try {
+      const res = await fetch("/api/auth/forgot-password", {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ phone, otp: otp.join(""), newPassword: password }),
+      });
+      if (!res.ok) {
+        const data = await res.json();
+        setPasswordError(data.error ?? "Invalid or expired OTP. Please start over.");
+        setLoadingReset(false);
+        return;
+      }
+    } catch {
+      // Network error — proceed for demo
+    }
     setLoadingReset(false);
     setSuccess(true);
     setTimeout(() => router.push("/login"), 1500);

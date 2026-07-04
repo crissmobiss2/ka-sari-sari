@@ -313,7 +313,7 @@ interface StopPopupProps {
 }
 
 function StopPopup({ stop, onClose }: StopPopupProps) {
-  const gmapsUrl = `https://maps.google.com/?q=${encodeURIComponent(stop.address)}`;
+  const gmapsUrl = `https://www.google.com/maps/dir/?api=1&destination=${encodeURIComponent(stop.address)}`;
   const isNext = stop.stopNumber === nextStop?.stopNumber;
 
   return (

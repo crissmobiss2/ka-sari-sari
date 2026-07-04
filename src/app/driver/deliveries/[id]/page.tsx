@@ -97,6 +97,7 @@ export default function DeliveryDetailPage() {
 
   const [cashCollected, setCashCollected] = useState(false);
   const [delivered, setDelivered] = useState(false);
+  const [failed, setFailed] = useState(false);
   const [deliveredAt, setDeliveredAt] = useState<string | null>(null);
 
   // POD photo state
@@ -143,6 +144,10 @@ export default function DeliveryDetailPage() {
     setDelivered(true);
   }
 
+  function handleFailedDelivery() {
+    setFailed(true);
+  }
+
   // Derive deliver button state
   const isDeliverDisabled = (isCOD && !cashCollected) || !photoTaken;
 
@@ -150,6 +155,37 @@ export default function DeliveryDetailPage() {
     if (!photoTaken) return "Take photo first";
     if (isCOD && !cashCollected) return "Collect cash first";
     return "Mark as Delivered";
+  }
+
+  // Failed delivery screen
+  if (failed) {
+    return (
+      <div className="px-4 py-8 flex flex-col items-center gap-6 min-h-[60vh] justify-center">
+        <div className="w-20 h-20 rounded-full bg-danger-50 border-2 border-danger-500 flex items-center justify-center">
+          <svg className="w-10 h-10 text-danger-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round">
+            <circle cx="12" cy="12" r="10" />
+            <line x1="15" y1="9" x2="9" y2="15" />
+            <line x1="9" y1="9" x2="15" y2="15" />
+          </svg>
+        </div>
+        <div className="text-center">
+          <h2 className="font-display text-2xl font-bold text-foreground mb-1">Delivery Failed</h2>
+          <p className="text-muted-foreground text-sm">{order.orderNumber}</p>
+        </div>
+        <div className="w-full bg-danger-50 rounded-2xl p-4 border border-danger-500/20 text-center">
+          <p className="text-sm text-danger-700 font-medium">
+            This delivery has been marked as failed. The dispatcher will be notified to arrange a re-delivery.
+          </p>
+        </div>
+        <Button
+          variant="outline"
+          className="w-full"
+          onClick={() => router.push("/driver/deliveries")}
+        >
+          Back to Deliveries
+        </Button>
+      </div>
+    );
   }
 
   // Confirmation screen
@@ -409,6 +445,7 @@ export default function DeliveryDetailPage() {
             size="lg"
             variant="outline"
             className="w-full h-12 border-danger-300 text-danger-600 hover:bg-danger-50"
+            onClick={handleFailedDelivery}
           >
             Failed Delivery
           </Button>

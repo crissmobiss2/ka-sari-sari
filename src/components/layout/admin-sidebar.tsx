@@ -6,7 +6,7 @@ import {
   Warehouse, Truck, CreditCard, Settings, ShoppingBasket,
   ClipboardList, Tag, ChevronRight, Map,
   Banknote, Building2, FileText, Monitor,
-  PackageCheck, Boxes, ScanLine,
+  PackageCheck, Boxes, ScanLine, TrendingUp, Brain, MessageCircle, UserCog,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { ThemeToggle } from "@/components/ui/theme-toggle";
@@ -54,13 +54,22 @@ const navGroups = [
       { href: "/admin/promotions",      label: "Promotions",      icon: Tag },
       { href: "/admin/subscriptions",   label: "Subscriptions",   icon: CreditCard },
       { href: "/admin/payments",        label: "Payments",        icon: Banknote },
-      { href: "/admin/reports",         label: "Reports",         icon: BarChart3 },
+    ],
+  },
+  {
+    label: "Intelligence",
+    items: [
+      { href: "/admin/analytics", label: "Analytics",  icon: TrendingUp },
+      { href: "/admin/forecast",  label: "AI Forecast", icon: Brain },
+      { href: "/admin/reports",   label: "Reports",     icon: BarChart3 },
     ],
   },
   {
     label: "System",
     items: [
-      { href: "/admin/settings", label: "Settings", icon: Settings },
+      { href: "/admin/staff",              label: "Staff",    icon: UserCog },
+      { href: "/admin/settings/whatsapp",  label: "WhatsApp", icon: MessageCircle },
+      { href: "/admin/settings",           label: "Settings", icon: Settings },
     ],
   },
 ];
