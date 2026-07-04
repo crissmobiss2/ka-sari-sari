@@ -45,9 +45,15 @@ export const metadata: Metadata = {
   openGraph: {
     type: "website",
     locale: "fil_PH",
+    url: "https://ka-sari-sari.vercel.app",
     title: "Ka Sari-Sari: Warehouse Ordering Platform",
     description: "Order warehouse stock direct to your sari-sari store. Fast delivery, fair prices, 500+ products.",
     siteName: "Ka Sari-Sari",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Ka Sari-Sari: Warehouse Ordering Platform",
+    description: "Order warehouse stock direct to your sari-sari store. Fast delivery, fair prices, 500+ products.",
   },
 };
 
