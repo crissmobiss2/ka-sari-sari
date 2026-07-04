@@ -1,4 +1,6 @@
 "use client";
+import { useState } from "react";
+import Image from "next/image";
 import Link from "next/link";
 import { ShoppingCart } from "lucide-react";
 import { cn, formatPHP } from "@/lib/utils";
@@ -11,26 +13,34 @@ interface ProductCardProps {
 }
 
 const CATEGORY_DISPLAY: Record<string, { gradient: string; emoji: string }> = {
-  "cat-1": { gradient: "from-blue-400 to-cyan-500",     emoji: "🥤" },
-  "cat-2": { gradient: "from-yellow-400 to-orange-500", emoji: "🍜" },
-  "cat-3": { gradient: "from-red-400 to-pink-500",      emoji: "🍿" },
-  "cat-4": { gradient: "from-orange-400 to-red-500",    emoji: "🥫" },
-  "cat-5": { gradient: "from-green-400 to-emerald-500", emoji: "🧂" },
-  "cat-6": { gradient: "from-purple-400 to-violet-500", emoji: "🧴" },
-  "cat-7": { gradient: "from-amber-500 to-yellow-600",  emoji: "☕" },
-  "cat-8": { gradient: "from-teal-400 to-green-500",    emoji: "🧺" },
+  "cat-1":  { gradient: "from-blue-400 to-cyan-500",      emoji: "🥤" },
+  "cat-2":  { gradient: "from-yellow-400 to-orange-500",  emoji: "🍜" },
+  "cat-3":  { gradient: "from-red-400 to-pink-500",       emoji: "🍿" },
+  "cat-4":  { gradient: "from-orange-400 to-red-500",     emoji: "🥫" },
+  "cat-5":  { gradient: "from-green-400 to-emerald-500",  emoji: "🧂" },
+  "cat-6":  { gradient: "from-purple-400 to-violet-500",  emoji: "🧴" },
+  "cat-7":  { gradient: "from-amber-500 to-yellow-600",   emoji: "☕" },
+  "cat-8":  { gradient: "from-teal-400 to-green-500",     emoji: "🧺" },
+  "cat-9":  { gradient: "from-yellow-300 to-amber-400",   emoji: "🍞" },
+  "cat-10": { gradient: "from-pink-400 to-rose-500",      emoji: "🍫" },
+  "cat-11": { gradient: "from-sky-300 to-blue-400",       emoji: "🥛" },
+  "cat-12": { gradient: "from-lime-400 to-green-500",     emoji: "🫙" },
 };
 
 export function ProductCard({ product, className }: ProductCardProps) {
   const { addItem } = useCartStore();
+  const [imgError, setImgError] = useState(false);
+
   const outOfStock = product.stock === 0;
-  const lowStock = product.stock > 0 && product.stock <= product.lowStockThreshold;
-  const display = CATEGORY_DISPLAY[product.categoryId] || { gradient: "from-gray-400 to-slate-500", emoji: "📦" };
+  const lowStock   = product.stock > 0 && product.stock <= product.lowStockThreshold;
+  const display    = CATEGORY_DISPLAY[product.categoryId] || { gradient: "from-gray-400 to-slate-500", emoji: "📦" };
 
   const hasSavings = product.srp && product.price < product.srp;
   const savingsPct = hasSavings
     ? Math.round(((product.srp! - product.price) / product.srp!) * 100)
     : 0;
+
+  const showRealImage = !!product.imageUrl && !imgError;
 
   return (
     <Link
@@ -41,19 +51,33 @@ export function ProductCard({ product, className }: ProductCardProps) {
       )}
     >
       {/* Image area */}
-      <div className={cn("relative h-32 bg-gradient-to-br flex items-center justify-center rounded-t-2xl", display.gradient)}>
-        <span className="text-4xl select-none" role="img">{display.emoji}</span>
+      <div className={cn(
+        "relative h-32 overflow-hidden rounded-t-2xl",
+        !showRealImage && `bg-gradient-to-br ${display.gradient} flex items-center justify-center`
+      )}>
+        {showRealImage ? (
+          <Image
+            src={product.imageUrl!}
+            alt={product.name}
+            fill
+            className="object-cover group-hover:scale-105 transition-transform duration-300"
+            onError={() => setImgError(true)}
+            sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 25vw"
+          />
+        ) : (
+          <span className="text-4xl select-none" role="img">{display.emoji}</span>
+        )}
 
         {/* Savings badge */}
         {hasSavings && (
-          <span className="absolute top-2 right-2 rounded-lg bg-danger-500 px-1.5 py-0.5 text-[10px] font-bold text-white shadow">
+          <span className="absolute top-2 right-2 rounded-lg bg-danger-500 px-1.5 py-0.5 text-[10px] font-bold text-white shadow z-10">
             Save {savingsPct}%
           </span>
         )}
 
         {/* Out of stock overlay */}
         {outOfStock && (
-          <div className="absolute inset-0 flex items-center justify-center bg-black/40 rounded-t-2xl">
+          <div className="absolute inset-0 flex items-center justify-center bg-black/40 rounded-t-2xl z-10">
             <span className="rounded-lg bg-surface-900/90 px-3 py-1 text-xs font-semibold text-white">
               Out of Stock
             </span>
@@ -62,7 +86,7 @@ export function ProductCard({ product, className }: ProductCardProps) {
 
         {/* Low stock badge */}
         {lowStock && !outOfStock && (
-          <span className="absolute top-2 left-2 rounded-lg bg-warning-500 px-2 py-0.5 text-[10px] font-bold text-white shadow">
+          <span className="absolute top-2 left-2 rounded-lg bg-warning-500 px-2 py-0.5 text-[10px] font-bold text-white shadow z-10">
             Low Stock
           </span>
         )}

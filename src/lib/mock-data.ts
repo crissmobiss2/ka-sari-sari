@@ -31,6 +31,7 @@ export const PRODUCTS: Product[] = [
     lowStockThreshold: 48,
     createdAt: "2024-01-01T00:00:00Z",
     description: "Classic Coca-Cola in 330ml can. 24 cans per case.",
+    imageUrl: "https://images.unsplash.com/photo-1554866585-cd94860890b7?w=400&q=80&auto=format&fit=crop",
   },
   {
     id: "prod-9",
@@ -50,6 +51,7 @@ export const PRODUCTS: Product[] = [
     lowStockThreshold: 48,
     createdAt: "2024-01-01T00:00:00Z",
     description: "Wilkins distilled water, 500ml bottle.",
+    imageUrl: "https://images.unsplash.com/photo-1548839140-29a749e1cf4d?w=400&q=80&auto=format&fit=crop",
   },
   {
     id: "prod-11",
@@ -69,6 +71,7 @@ export const PRODUCTS: Product[] = [
     lowStockThreshold: 48,
     createdAt: "2024-01-01T00:00:00Z",
     description: "Royal True Orange carbonated drink in 355ml can. 24 cans per case.",
+    imageUrl: "https://images.unsplash.com/photo-1600271886742-f049cd451bba?w=400&q=80&auto=format&fit=crop",
   },
   {
     id: "prod-12",
@@ -88,6 +91,7 @@ export const PRODUCTS: Product[] = [
     lowStockThreshold: 48,
     createdAt: "2024-01-01T00:00:00Z",
     description: "Sprite lemon-lime carbonated drink in 330ml can. 24 cans per case.",
+    imageUrl: "https://images.unsplash.com/photo-1625772299848-391b6a87d7b3?w=400&q=80&auto=format&fit=crop",
   },
   {
     id: "prod-13",
@@ -107,6 +111,7 @@ export const PRODUCTS: Product[] = [
     lowStockThreshold: 48,
     createdAt: "2024-01-01T00:00:00Z",
     description: "C2 Cool & Clean ready-to-drink green tea, 500ml bottle.",
+    imageUrl: "https://images.unsplash.com/photo-1556679343-c7306c1976bc?w=400&q=80&auto=format&fit=crop",
   },
   {
     id: "prod-14",
@@ -126,6 +131,7 @@ export const PRODUCTS: Product[] = [
     lowStockThreshold: 24,
     createdAt: "2024-01-01T00:00:00Z",
     description: "Gatorade sports drink in lemon-lime flavor, 500ml bottle.",
+    imageUrl: "https://images.unsplash.com/photo-1563227812-0ea4c22e6cc8?w=400&q=80&auto=format&fit=crop",
   },
 
   // ── Instant Noodles (cat-2) ───────────────────────────────────────────────
@@ -147,6 +153,7 @@ export const PRODUCTS: Product[] = [
     lowStockThreshold: 96,
     createdAt: "2024-01-01T00:00:00Z",
     description: "Lucky Me Pancit Canton Original flavor. 12 packs per box.",
+    imageUrl: "https://images.unsplash.com/photo-1569718212165-3a8278d5f624?w=400&q=80&auto=format&fit=crop",
   },
   {
     id: "prod-10",
@@ -166,6 +173,7 @@ export const PRODUCTS: Product[] = [
     lowStockThreshold: 24,
     createdAt: "2024-01-01T00:00:00Z",
     description: "Nissin wafer sticks, vanilla cream filling.",
+    imageUrl: "https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=400&q=80&auto=format&fit=crop",
   },
   {
     id: "prod-15",
@@ -185,6 +193,7 @@ export const PRODUCTS: Product[] = [
     lowStockThreshold: 96,
     createdAt: "2024-01-01T00:00:00Z",
     description: "Lucky Me! Chicken Mami instant noodle soup, 55g pack.",
+    imageUrl: "https://images.unsplash.com/photo-1585032226651-759b368d7246?w=400&q=80&auto=format&fit=crop",
   },
   {
     id: "prod-16",
@@ -204,6 +213,7 @@ export const PRODUCTS: Product[] = [
     lowStockThreshold: 48,
     createdAt: "2024-01-01T00:00:00Z",
     description: "Quickchow Pancit Canton stir-fry noodles, 100g pack.",
+    imageUrl: "https://images.unsplash.com/photo-1578662996442-48f60103fc96?w=400&q=80&auto=format&fit=crop",
   },
 
   // ── Snacks & Chips (cat-3) ────────────────────────────────────────────────
@@ -225,6 +235,7 @@ export const PRODUCTS: Product[] = [
     lowStockThreshold: 30,
     createdAt: "2024-01-01T00:00:00Z",
     description: "Piattos potato crisps in cheese flavor.",
+    imageUrl: "https://images.unsplash.com/photo-1566478989037-eec170784d0b?w=400&q=80&auto=format&fit=crop",
   },
   {
     id: "prod-17",
@@ -244,6 +255,7 @@ export const PRODUCTS: Product[] = [
     lowStockThreshold: 36,
     createdAt: "2024-01-01T00:00:00Z",
     description: "Nova Country Cheddar corn snacks, 78g pack.",
+    imageUrl: "https://images.unsplash.com/photo-1621996346565-e3dbc646d9a9?w=400&q=80&auto=format&fit=crop",
   },
   {
     id: "prod-18",
@@ -263,6 +275,7 @@ export const PRODUCTS: Product[] = [
     lowStockThreshold: 36,
     createdAt: "2024-01-01T00:00:00Z",
     description: "Clover Chips original flavored snack, 100g pack.",
+    imageUrl: "https://images.unsplash.com/photo-1600952841320-db92ec4047ca?w=400&q=80&auto=format&fit=crop",
   },
   {
     id: "prod-19",
@@ -282,6 +295,7 @@ export const PRODUCTS: Product[] = [
     lowStockThreshold: 36,
     createdAt: "2024-01-01T00:00:00Z",
     description: "Chippy corn chips in BBQ flavor, 100g pack.",
+    imageUrl: "https://images.unsplash.com/photo-1566478989037-eec170784d0b?w=400&q=80&auto=format&fit=crop",
   },
   {
     id: "prod-20",
@@ -301,6 +315,7 @@ export const PRODUCTS: Product[] = [
     lowStockThreshold: 48,
     createdAt: "2024-01-01T00:00:00Z",
     description: "Boy Bawang garlic-flavored corn bits, 100g pack.",
+    imageUrl: "https://images.unsplash.com/photo-1621996346565-e3dbc646d9a9?w=400&q=80&auto=format&fit=crop",
   },
   {
     id: "prod-21",
@@ -320,6 +335,7 @@ export const PRODUCTS: Product[] = [
     lowStockThreshold: 36,
     createdAt: "2024-01-01T00:00:00Z",
     description: "Ricoa Curls cheese-flavored corn puffs, 68g pack.",
+    imageUrl: "https://images.unsplash.com/photo-1542435503-956c469947f6?w=400&q=80&auto=format&fit=crop",
   },
 
   // ── Canned Goods (cat-4) ──────────────────────────────────────────────────
@@ -341,6 +357,7 @@ export const PRODUCTS: Product[] = [
     lowStockThreshold: 48,
     createdAt: "2024-01-01T00:00:00Z",
     description: "555 Sardines in tomato sauce. 24 cans per case.",
+    imageUrl: "https://images.unsplash.com/photo-1615485500704-8e990f9900f7?w=400&q=80&auto=format&fit=crop",
   },
   {
     id: "prod-22",
@@ -360,6 +377,7 @@ export const PRODUCTS: Product[] = [
     lowStockThreshold: 48,
     createdAt: "2024-01-01T00:00:00Z",
     description: "Mega Sardines in spicy tomato sauce, 155g can.",
+    imageUrl: "https://images.unsplash.com/photo-1584949602334-4e32a8d5ac46?w=400&q=80&auto=format&fit=crop",
   },
   {
     id: "prod-23",
@@ -379,6 +397,7 @@ export const PRODUCTS: Product[] = [
     lowStockThreshold: 48,
     createdAt: "2024-01-01T00:00:00Z",
     description: "Argentina Corned Beef, 260g can. Classic sari-sari staple.",
+    imageUrl: "https://images.unsplash.com/photo-1608198093002-ad4e005484ec?w=400&q=80&auto=format&fit=crop",
   },
   {
     id: "prod-24",
@@ -398,6 +417,7 @@ export const PRODUCTS: Product[] = [
     lowStockThreshold: 48,
     createdAt: "2024-01-01T00:00:00Z",
     description: "Century Tuna flakes in oil, 180g can.",
+    imageUrl: "https://images.unsplash.com/photo-1559622214-f8a9850965bb?w=400&q=80&auto=format&fit=crop",
   },
 
   // ── Condiments & Sauces (cat-5) ───────────────────────────────────────────
@@ -419,6 +439,7 @@ export const PRODUCTS: Product[] = [
     lowStockThreshold: 24,
     createdAt: "2024-01-01T00:00:00Z",
     description: "Silver Swan regular soy sauce, 1 liter bottle.",
+    imageUrl: "https://images.unsplash.com/photo-1472476443507-c7a5948772fc?w=400&q=80&auto=format&fit=crop",
   },
   {
     id: "prod-25",
@@ -438,6 +459,7 @@ export const PRODUCTS: Product[] = [
     lowStockThreshold: 24,
     createdAt: "2024-01-01T00:00:00Z",
     description: "Datu Puti Sukang Maasim cane vinegar, 1 liter bottle.",
+    imageUrl: "https://images.unsplash.com/photo-1614041984404-40d462f1a1f7?w=400&q=80&auto=format&fit=crop",
   },
   {
     id: "prod-26",
@@ -457,6 +479,7 @@ export const PRODUCTS: Product[] = [
     lowStockThreshold: 24,
     createdAt: "2024-01-01T00:00:00Z",
     description: "UFC Banana Ketchup original sweet style, 320g bottle.",
+    imageUrl: "https://images.unsplash.com/photo-1503764654157-72d979d9af2f?w=400&q=80&auto=format&fit=crop",
   },
   {
     id: "prod-27",
@@ -476,6 +499,7 @@ export const PRODUCTS: Product[] = [
     lowStockThreshold: 24,
     createdAt: "2024-01-01T00:00:00Z",
     description: "Minola refined coconut cooking oil, 1 liter bottle.",
+    imageUrl: "https://images.unsplash.com/photo-1474979266404-7eaacbcd87c5?w=400&q=80&auto=format&fit=crop",
   },
 
   // ── Personal Care (cat-6) ─────────────────────────────────────────────────
@@ -497,6 +521,7 @@ export const PRODUCTS: Product[] = [
     lowStockThreshold: 48,
     createdAt: "2024-01-01T00:00:00Z",
     description: "Safeguard antibacterial bar soap, classic white.",
+    imageUrl: "https://images.unsplash.com/photo-1608248543803-ba4f8c70ae0b?w=400&q=80&auto=format&fit=crop",
   },
   {
     id: "prod-28",
@@ -516,6 +541,7 @@ export const PRODUCTS: Product[] = [
     lowStockThreshold: 36,
     createdAt: "2024-01-01T00:00:00Z",
     description: "Head & Shoulders Classic Clean anti-dandruff shampoo, 100ml bottle.",
+    imageUrl: "https://images.unsplash.com/photo-1585231929568-9b0f2871c48e?w=400&q=80&auto=format&fit=crop",
   },
   {
     id: "prod-29",
@@ -535,6 +561,7 @@ export const PRODUCTS: Product[] = [
     lowStockThreshold: 36,
     createdAt: "2024-01-01T00:00:00Z",
     description: "Palmolive Naturals shampoo with milk and honey, 100ml bottle.",
+    imageUrl: "https://images.unsplash.com/photo-1543363950-b1e4e17dc7c5?w=400&q=80&auto=format&fit=crop",
   },
   {
     id: "prod-30",
@@ -554,6 +581,7 @@ export const PRODUCTS: Product[] = [
     lowStockThreshold: 48,
     createdAt: "2024-01-01T00:00:00Z",
     description: "Colgate Fluoride toothpaste cavity protection, 75ml tube.",
+    imageUrl: "https://images.unsplash.com/photo-1559086648-f0bfcfed8db0?w=400&q=80&auto=format&fit=crop",
   },
 
   // ── Coffee & Milo (cat-7) ─────────────────────────────────────────────────
@@ -575,6 +603,7 @@ export const PRODUCTS: Product[] = [
     lowStockThreshold: 50,
     createdAt: "2024-01-01T00:00:00Z",
     description: "Nescafé 3-in-1 Original blend. 10 sachets per box.",
+    imageUrl: "https://images.unsplash.com/photo-1461023058943-362d33763543?w=400&q=80&auto=format&fit=crop",
   },
   {
     id: "prod-31",
@@ -594,6 +623,7 @@ export const PRODUCTS: Product[] = [
     lowStockThreshold: 36,
     createdAt: "2024-01-01T00:00:00Z",
     description: "Kopiko 3-in-1 instant coffee mix, 25g sachets, 10 per box.",
+    imageUrl: "https://images.unsplash.com/photo-1514432324607-a09d9b4aefdd?w=400&q=80&auto=format&fit=crop",
   },
 
   // ── Laundry & Cleaning (cat-8) ────────────────────────────────────────────
@@ -615,6 +645,7 @@ export const PRODUCTS: Product[] = [
     lowStockThreshold: 60,
     createdAt: "2024-01-01T00:00:00Z",
     description: "Surf powder detergent in 80g sachets. 6 sachets per pack.",
+    imageUrl: "https://images.unsplash.com/photo-1582735689369-4fe89db7114c?w=400&q=80&auto=format&fit=crop",
   },
   {
     id: "prod-32",
@@ -634,6 +665,7 @@ export const PRODUCTS: Product[] = [
     lowStockThreshold: 48,
     createdAt: "2024-01-01T00:00:00Z",
     description: "Ariel powder detergent with Odor Eliminator, 57g sachets, 6 per pack.",
+    imageUrl: "https://images.unsplash.com/photo-1610557892470-55d9e80c0bce?w=400&q=80&auto=format&fit=crop",
   },
   {
     id: "prod-33",
@@ -653,6 +685,7 @@ export const PRODUCTS: Product[] = [
     lowStockThreshold: 48,
     createdAt: "2024-01-01T00:00:00Z",
     description: "Downy Sunrise Fresh fabric conditioner, 27ml sachets, 6 per pack.",
+    imageUrl: "https://images.unsplash.com/photo-1631729371254-42c2892f0e6e?w=400&q=80&auto=format&fit=crop",
   },
 ];
 

@@ -23,6 +23,10 @@ export default function LoginPage() {
     // Demo routing
     if (phone.startsWith("09") && password === "admin") {
       router.push("/admin");
+    } else if (phone.startsWith("09") && password === "warehouse") {
+      router.push("/warehouse");
+    } else if (phone.startsWith("09") && password === "driver") {
+      router.push("/driver");
     } else {
       router.push("/dashboard");
     }
@@ -98,10 +102,12 @@ export default function LoginPage() {
           </div>
 
           {/* Demo hint */}
-          <div className="mt-8 rounded-xl bg-surface-100 border border-border p-4 text-xs text-muted-foreground">
-            <p className="font-medium text-foreground mb-1">Demo access</p>
-            <p>Any phone + password → Retailer app</p>
-            <p>Phone starting 09XX + &quot;admin&quot; → Admin console</p>
+          <div className="mt-8 rounded-xl bg-surface-100 border border-border p-4 text-xs text-muted-foreground space-y-1">
+            <p className="font-medium text-foreground mb-1.5">Demo access</p>
+            <p>09XX + <span className="font-mono text-foreground">any password</span> → Retailer</p>
+            <p>09XX + <span className="font-mono text-foreground">admin</span> → Admin console</p>
+            <p>09XX + <span className="font-mono text-foreground">warehouse</span> → Warehouse staff</p>
+            <p>09XX + <span className="font-mono text-foreground">driver</span> → Driver app</p>
           </div>
         </div>
       </div>

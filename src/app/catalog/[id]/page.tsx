@@ -1,6 +1,7 @@
 "use client";
 import { useParams, useRouter } from "next/navigation";
 import { useState } from "react";
+import Image from "next/image";
 import { ArrowLeft, Heart, Share2, ShoppingCart, Star, Package, CheckCircle2, Truck, Shield } from "lucide-react";
 import { RetailerBottomNav } from "@/components/layout/retailer-nav";
 import { Button } from "@/components/ui/button";
@@ -27,6 +28,7 @@ export default function ProductDetailPage() {
   const { isFavorite, toggle } = useFavoritesStore();
   const [qty, setQty] = useState(product?.minOrderQty || 1);
   const [added, setAdded] = useState(false);
+  const [imgError, setImgError] = useState(false);
 
   if (!product) {
     return (
@@ -69,8 +71,22 @@ export default function ProductDetailPage() {
       </div>
 
       {/* Product image */}
-      <div className="h-64 bg-gradient-to-br from-surface-100 to-surface-200 flex items-center justify-center">
-        <Package className="h-24 w-24 text-muted-foreground/30" strokeWidth={0.8} />
+      <div className="h-64 md:h-80 bg-gradient-to-br from-surface-100 to-surface-200 flex items-center justify-center">
+        {product.imageUrl && !imgError ? (
+          <div className="relative h-full w-full rounded-2xl overflow-hidden">
+            <Image
+              src={product.imageUrl}
+              alt={product.name}
+              fill
+              className="object-contain"
+              sizes="100vw"
+              priority
+              onError={() => setImgError(true)}
+            />
+          </div>
+        ) : (
+          <Package className="h-24 w-24 text-muted-foreground/30" strokeWidth={0.8} />
+        )}
       </div>
 
       <div className="px-4 py-5 space-y-6">
