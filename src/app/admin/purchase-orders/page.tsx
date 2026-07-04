@@ -1,8 +1,8 @@
 "use client";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import {
   Plus, X, Send, CheckCheck, Eye, Trash2, FileText,
-  Package, Building2, CalendarClock,
+  Package, Building2, CalendarClock, Zap, CheckCircle2, Loader2,
 } from "lucide-react";
 import { Card } from "@/components/ui/card";
 import { cn, formatPHP } from "@/lib/utils";
@@ -57,6 +57,267 @@ const TABS = [
 ];
 
 type POItem = { name: string; sku: string; qty: string; unitCost: string };
+
+type AutoPOEntry = {
+  supplier: string;
+  reason: string;
+  items: number;
+  total: number;
+  urgency: "critical" | "high" | "medium";
+};
+
+const AUTO_POS: AutoPOEntry[] = [
+  {
+    supplier: "PhilBev Distribution Inc.",
+    reason: "Coca-Cola (142 units → needs 168 in 14 days)",
+    items: 2,
+    total: 15840,
+    urgency: "high",
+  },
+  {
+    supplier: "P&G Philippines",
+    reason: "Safeguard (34 units → needs 67 in 14 days, critically low)",
+    items: 1,
+    total: 8640,
+    urgency: "critical",
+  },
+  {
+    supplier: "Nestlé Philippines",
+    reason: "Milo Active Go (23 units → needs 51 in 14 days)",
+    items: 1,
+    total: 11520,
+    urgency: "critical",
+  },
+  {
+    supplier: "Lucky Me Foods Corp",
+    reason: "Lucky Me! Pancit Canton (89 units → needs 112 in 14 days)",
+    items: 3,
+    total: 6720,
+    urgency: "medium",
+  },
+];
+
+const URGENCY_BADGE: Record<AutoPOEntry["urgency"], string> = {
+  critical: "bg-danger-50 text-danger-600 border-danger-200",
+  high:     "bg-brand-50 text-brand-600 border-brand-200",
+  medium:   "bg-warning-50 text-warning-600 border-warning-200",
+};
+
+const URGENCY_LABEL: Record<AutoPOEntry["urgency"], string> = {
+  critical: "Critical",
+  high:     "High",
+  medium:   "Medium",
+};
+
+// ─── Auto-Generate POs Modal ──────────────────────────────────────────────────
+
+interface AutoPOModalProps {
+  onClose: () => void;
+  onViewDrafts: () => void;
+}
+
+function AutoPOModal({ onClose, onViewDrafts }: AutoPOModalProps) {
+  const [step, setStep] = useState<1 | 2 | 3>(1);
+  const [selectedPOs, setSelectedPOs] = useState<Set<number>>(
+    new Set(AUTO_POS.map((_, i) => i))
+  );
+  const [isCreating, setIsCreating] = useState(false);
+
+  // Auto-advance from step 1 → step 2 after 1500ms
+  useEffect(() => {
+    if (step !== 1) return;
+    const timer = setTimeout(() => setStep(2), 1500);
+    return () => clearTimeout(timer);
+  }, [step]);
+
+  const togglePO = (index: number) => {
+    setSelectedPOs((prev) => {
+      const next = new Set(prev);
+      if (next.has(index)) {
+        next.delete(index);
+      } else {
+        next.add(index);
+      }
+      return next;
+    });
+  };
+
+  const selectedCount = selectedPOs.size;
+  const selectedTotal = Array.from(selectedPOs).reduce(
+    (sum, i) => sum + AUTO_POS[i].total,
+    0
+  );
+
+  const handleCreate = () => {
+    setIsCreating(true);
+    setTimeout(() => {
+      setIsCreating(false);
+      setStep(3);
+    }, 800);
+  };
+
+  const handleViewDrafts = () => {
+    onViewDrafts();
+    onClose();
+  };
+
+  return (
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50">
+      <div className="max-w-lg w-full rounded-2xl bg-card shadow-xl p-6 relative">
+        {/* Close button */}
+        <button
+          onClick={onClose}
+          className="absolute top-4 right-4 rounded-xl p-1.5 text-muted-foreground hover:bg-muted/50 transition-colors"
+          aria-label="Close"
+        >
+          <X className="h-4 w-4" />
+        </button>
+
+        {/* ── Step 1: Analyzing ─────────────────────────────────────── */}
+        {step === 1 && (
+          <div className="flex flex-col items-center py-8 gap-5 text-center">
+            <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-brand-50 text-brand-500">
+              <Loader2 className="h-7 w-7 animate-spin" />
+            </div>
+            <div>
+              <h2 className="font-display text-lg font-bold text-foreground">
+                Analyzing inventory…
+              </h2>
+              <div className="mt-3 space-y-1.5 text-sm text-muted-foreground">
+                <p>Scanning 122 products across 12 categories…</p>
+                <p>Checking supplier availability…</p>
+                <p>Calculating reorder points…</p>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* ── Step 2: Recommendations ───────────────────────────────── */}
+        {step === 2 && (
+          <div className="space-y-4">
+            <div>
+              <h2 className="font-display text-lg font-bold text-foreground">
+                Generated PO recommendations
+              </h2>
+              <p className="text-sm text-muted-foreground mt-0.5">
+                AI detected {AUTO_POS.length} items needing restocking. Select which drafts to create.
+              </p>
+            </div>
+
+            <div className="space-y-3 max-h-72 overflow-y-auto pr-1">
+              {AUTO_POS.map((po, i) => (
+                <label
+                  key={i}
+                  className={cn(
+                    "flex items-start gap-3 rounded-xl border p-3.5 cursor-pointer transition-colors",
+                    selectedPOs.has(i)
+                      ? "border-brand-300 bg-brand-50/50"
+                      : "border-border bg-card hover:bg-muted/30"
+                  )}
+                >
+                  <input
+                    type="checkbox"
+                    checked={selectedPOs.has(i)}
+                    onChange={() => togglePO(i)}
+                    className="mt-0.5 h-4 w-4 rounded accent-brand-500 shrink-0"
+                  />
+                  <div className="flex-1 min-w-0">
+                    <div className="flex items-start justify-between gap-2">
+                      <p className="font-semibold text-sm text-foreground leading-tight">
+                        {po.supplier}
+                      </p>
+                      <span className={cn(
+                        "inline-flex items-center rounded-full border px-2 py-0.5 text-xs font-medium shrink-0",
+                        URGENCY_BADGE[po.urgency]
+                      )}>
+                        {URGENCY_LABEL[po.urgency]}
+                      </span>
+                    </div>
+                    <p className="text-xs text-muted-foreground italic mt-0.5 leading-snug">
+                      {po.reason}
+                    </p>
+                    <div className="flex items-center gap-1.5 mt-1.5 text-xs text-muted-foreground">
+                      <Package className="h-3 w-3" />
+                      <span>{po.items} item{po.items !== 1 ? "s" : ""}</span>
+                      <span className="text-border">·</span>
+                      <span className="font-semibold text-foreground tabular-nums">
+                        {formatPHP(po.total)}
+                      </span>
+                    </div>
+                  </div>
+                </label>
+              ))}
+            </div>
+
+            {/* Summary row */}
+            <div className="flex items-center justify-between rounded-xl bg-surface-50 border border-border px-4 py-3 text-sm">
+              <span className="text-muted-foreground">
+                <span className="font-semibold text-foreground">{selectedCount} PO{selectedCount !== 1 ? "s" : ""}</span> selected
+              </span>
+              <span className="text-muted-foreground">
+                Total value:{" "}
+                <span className="font-bold text-foreground tabular-nums">
+                  {formatPHP(selectedTotal)}
+                </span>
+              </span>
+            </div>
+
+            <button
+              onClick={handleCreate}
+              disabled={selectedCount === 0 || isCreating}
+              className="w-full flex items-center justify-center gap-2 rounded-xl bg-brand-500 py-3 text-sm font-medium text-white hover:bg-brand-600 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+            >
+              {isCreating ? (
+                <>
+                  <Loader2 className="h-4 w-4 animate-spin" />
+                  Creating…
+                </>
+              ) : (
+                <>
+                  <Zap className="h-4 w-4" />
+                  Create {selectedCount} Draft PO{selectedCount !== 1 ? "s" : ""}
+                </>
+              )}
+            </button>
+          </div>
+        )}
+
+        {/* ── Step 3: Success ────────────────────────────────────────── */}
+        {step === 3 && (
+          <div className="flex flex-col items-center py-8 gap-5 text-center">
+            <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-success-50 text-success-500">
+              <CheckCircle2 className="h-8 w-8" />
+            </div>
+            <div>
+              <h2 className="font-display text-lg font-bold text-foreground">
+                {selectedCount} Draft PO{selectedCount !== 1 ? "s" : ""} created successfully
+              </h2>
+              <p className="text-sm text-muted-foreground mt-1.5 max-w-xs mx-auto">
+                They appear in your Drafts tab. Review and send to suppliers.
+              </p>
+            </div>
+            <div className="flex gap-3 w-full pt-2">
+              <button
+                onClick={handleViewDrafts}
+                className="flex-1 rounded-xl border border-border py-2.5 text-sm font-medium text-foreground hover:bg-muted/50 transition-colors"
+              >
+                View Drafts
+              </button>
+              <button
+                onClick={onClose}
+                className="flex-1 rounded-xl bg-brand-500 py-2.5 text-sm font-medium text-white hover:bg-brand-600 transition-colors"
+              >
+                Done
+              </button>
+            </div>
+          </div>
+        )}
+      </div>
+    </div>
+  );
+}
+
+// ─── Create PO Modal ──────────────────────────────────────────────────────────
 
 function CreatePOModal({ onClose }: { onClose: () => void }) {
   const [supplier, setSupplier] = useState("");
@@ -198,6 +459,8 @@ function CreatePOModal({ onClose }: { onClose: () => void }) {
   );
 }
 
+// ─── PO Card ──────────────────────────────────────────────────────────────────
+
 function POCard({ po }: { po: typeof PO_DATA[number] }) {
   const status = po.status as POStatus;
   return (
@@ -274,25 +537,42 @@ function POCard({ po }: { po: typeof PO_DATA[number] }) {
   );
 }
 
+// ─── Page ─────────────────────────────────────────────────────────────────────
+
 export default function AdminPurchaseOrdersPage() {
   const [activeTab, setActiveTab] = useState("all");
   const [showCreate, setShowCreate] = useState(false);
+  const [showAutoModal, setShowAutoModal] = useState(false);
 
   const filtered = PO_DATA.filter((p) => activeTab === "all" || p.status === activeTab);
 
   return (
     <div className="p-6 space-y-5 max-w-7xl mx-auto">
       {showCreate && <CreatePOModal onClose={() => setShowCreate(false)} />}
+      {showAutoModal && (
+        <AutoPOModal
+          onClose={() => setShowAutoModal(false)}
+          onViewDrafts={() => setActiveTab("draft")}
+        />
+      )}
 
       {/* Header */}
-      <div className="flex items-center justify-between">
+      <div className="flex items-center justify-between gap-3">
         <h1 className="font-display text-2xl font-bold text-foreground">Purchase Orders</h1>
-        <button
-          onClick={() => setShowCreate(true)}
-          className="flex items-center gap-2 rounded-xl bg-brand-500 px-4 py-2.5 text-sm font-medium text-white hover:bg-brand-600 transition-colors"
-        >
-          <Plus className="h-4 w-4" /> Create PO
-        </button>
+        <div className="flex items-center gap-2">
+          <button
+            onClick={() => setShowAutoModal(true)}
+            className="flex items-center gap-2 rounded-xl border border-brand-300 bg-brand-50 px-4 py-2.5 text-sm font-medium text-brand-600 hover:bg-brand-100 transition-colors"
+          >
+            <Zap className="h-4 w-4" /> Auto-Generate POs
+          </button>
+          <button
+            onClick={() => setShowCreate(true)}
+            className="flex items-center gap-2 rounded-xl bg-brand-500 px-4 py-2.5 text-sm font-medium text-white hover:bg-brand-600 transition-colors"
+          >
+            <Plus className="h-4 w-4" /> Create PO
+          </button>
+        </div>
       </div>
 
       {/* Status tabs */}

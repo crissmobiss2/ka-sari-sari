@@ -8,18 +8,20 @@ import {
 import { cn } from "@/lib/utils";
 import { useCartStore } from "@/store/cart";
 import { ThemeToggle } from "@/components/ui/theme-toggle";
-
-const navItems = [
-  { href: "/dashboard", label: "Home",    icon: LayoutDashboard },
-  { href: "/catalog",   label: "Shop",    icon: ShoppingBasket },
-  { href: "/cart",      label: "Cart",    icon: ShoppingCart, isCart: true },
-  { href: "/orders",    label: "Orders",  icon: ClipboardList },
-  { href: "/account",   label: "Account", icon: User },
-];
+import { useLanguageStore } from "@/store/language";
 
 export function RetailerBottomNav() {
   const pathname = usePathname();
   const totalItems = useCartStore((s) => s.items.reduce((sum, i) => sum + i.quantity, 0));
+  const { t } = useLanguageStore();
+
+  const navItems = [
+    { href: "/dashboard", label: t("Home", "Tahanan"),    icon: LayoutDashboard },
+    { href: "/catalog",   label: t("Shop", "Pamimili"),   icon: ShoppingBasket },
+    { href: "/cart",      label: t("Cart", "Basket"),     icon: ShoppingCart, isCart: true },
+    { href: "/orders",    label: t("Orders", "Mga Order"), icon: ClipboardList },
+    { href: "/account",   label: t("Account", "Account"), icon: User },
+  ];
 
   return (
     <nav className="fixed bottom-0 left-0 right-0 z-40 border-t border-border bg-card/95 backdrop-blur-md md:hidden">
@@ -57,6 +59,7 @@ export function RetailerBottomNav() {
 
 export function RetailerTopBar({ title }: { title?: string }) {
   const totalItems = useCartStore((s) => s.items.reduce((sum, i) => sum + i.quantity, 0));
+  const { lang, setLang } = useLanguageStore();
   return (
     <header className="sticky top-0 z-30 border-b border-border bg-card/90 backdrop-blur-md">
       <div className="flex h-14 items-center justify-between px-4">
@@ -70,6 +73,16 @@ export function RetailerTopBar({ title }: { title?: string }) {
         </div>
         <div className="flex items-center gap-1">
           <ThemeToggle />
+          <button
+            onClick={() => setLang(lang === "en" ? "tl" : "en")}
+            title={lang === "tl" ? "Switch to English" : "Switch to Filipino"}
+            className={cn(
+              "flex h-9 w-9 items-center justify-center rounded-xl hover:bg-muted transition-colors text-xs font-bold",
+              lang === "tl" ? "text-brand-500" : "text-muted-foreground"
+            )}
+          >
+            {lang === "tl" ? "TL" : "EN"}
+          </button>
           <Link href="/notifications" className="relative flex h-9 w-9 items-center justify-center rounded-xl hover:bg-muted transition-colors">
             <Bell className="h-5 w-5 text-muted-foreground" />
             <span className="absolute top-1.5 right-1.5 h-2 w-2 rounded-full bg-brand-500" />

@@ -1,14 +1,15 @@
 "use client";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import {
   MapPin, Clock, Navigation, Plus, CheckCircle2, AlertTriangle,
-  Copy, Play, UserCheck, X, Radio,
+  Copy, Play, UserCheck, X, Radio, Zap, Loader2, TrendingDown,
 } from "lucide-react";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 
 type RouteStatus = "active" | "planned" | "completed";
+type OptimizeStep = 1 | 2 | 3;
 
 interface RouteData {
   id: string;
@@ -20,6 +21,14 @@ interface RouteData {
   distance: string;
   duration: string;
   orderCount: number;
+}
+
+interface OptimizationResult {
+  name: string;
+  driver: string;
+  before: { distance: string; time: string; stops: number };
+  after: { distance: string; time: string; stops: number };
+  savings: { distance: string; time: string; fuel: string };
 }
 
 const ROUTES_DATA: RouteData[] = [
@@ -52,6 +61,36 @@ const STATUS_CONFIG: Record<RouteStatus, { label: string; badgeClass: string; he
     headerClass: "border-t-success-400",
   },
 };
+
+const OPTIMIZATION_RESULTS: OptimizationResult[] = [
+  {
+    name: "Caloocan North",
+    driver: "Rodrigo Delos Santos",
+    before: { distance: "34 km", time: "4 hrs", stops: 12 },
+    after:  { distance: "28 km", time: "3.2 hrs", stops: 12 },
+    savings: { distance: "6 km", time: "48 min", fuel: "₱85" },
+  },
+  {
+    name: "Marikina – Pasig",
+    driver: "Benjamin Cruz",
+    before: { distance: "28 km", time: "3.5 hrs", stops: 9 },
+    after:  { distance: "22 km", time: "2.8 hrs", stops: 9 },
+    savings: { distance: "6 km", time: "42 min", fuel: "₱65" },
+  },
+  {
+    name: "Quezon City South",
+    driver: "Unassigned",
+    before: { distance: "41 km", time: "5 hrs", stops: 15 },
+    after:  { distance: "33 km", time: "4.1 hrs", stops: 15 },
+    savings: { distance: "8 km", time: "54 min", fuel: "₱110" },
+  },
+];
+
+const PROGRESS_LINES = [
+  "✓ Loaded 36 delivery stops across 4 active routes",
+  "✓ Calculating optimal sequence using nearest-neighbor heuristic",
+  "✓ Applying time-window constraints for each stop",
+];
 
 // Pseudo-map dot positions for each route — static decorative layout
 const ROUTE_MAP_DOTS: Record<string, { x: string; y: string; type: "warehouse" | "delivered" | "pending" | "current" }[]> = {
@@ -165,11 +204,231 @@ function MapPlaceholder({ routeId, status }: { routeId: string; status: RouteSta
   );
 }
 
+function OptimizeModal({
+  step,
+  visibleLines,
+  applying,
+  onApply,
+  onClose,
+}: {
+  step: OptimizeStep;
+  visibleLines: number;
+  applying: boolean;
+  onApply: () => void;
+  onClose: () => void;
+}) {
+  return (
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50">
+      <div className="max-w-2xl w-full rounded-2xl bg-card shadow-xl max-h-[90vh] overflow-y-auto">
+        {/* Step 1 — Running */}
+        {step === 1 && (
+          <div className="p-8 flex flex-col items-center gap-6 text-center">
+            <div className="flex h-16 w-16 items-center justify-center rounded-2xl bg-brand-50">
+              <Loader2 className="h-8 w-8 text-brand-500 animate-spin" />
+            </div>
+            <div>
+              <h2 className="font-display text-xl font-bold text-foreground">Running TSP optimization...</h2>
+              <p className="text-sm text-muted-foreground mt-1">Analyzing delivery stops and calculating optimal sequences</p>
+            </div>
+            <div className="w-full max-w-md space-y-2.5 text-left">
+              {PROGRESS_LINES.map((line, i) => (
+                <div
+                  key={i}
+                  className={cn(
+                    "text-sm transition-all duration-300",
+                    i < visibleLines
+                      ? "text-success-600 opacity-100 translate-y-0"
+                      : "text-muted-foreground opacity-0 translate-y-1"
+                  )}
+                >
+                  {line}
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
+
+        {/* Step 2 — Results */}
+        {step === 2 && (
+          <div className="p-6 space-y-5">
+            {/* Modal header */}
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-2">
+                <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-brand-50">
+                  <Zap className="h-4 w-4 text-brand-500" />
+                </div>
+                <h2 className="font-display text-lg font-bold text-foreground">Optimization Results</h2>
+              </div>
+              <button
+                onClick={onClose}
+                className="rounded-lg p-1.5 hover:bg-muted transition-colors text-muted-foreground"
+              >
+                <X className="h-4 w-4" />
+              </button>
+            </div>
+
+            {/* Route result cards */}
+            <div className="space-y-3">
+              {OPTIMIZATION_RESULTS.map((result) => (
+                <div key={result.name} className="rounded-xl border border-border bg-card p-4 space-y-3">
+                  {/* Route name + driver */}
+                  <div>
+                    <p className="font-medium text-sm text-foreground">{result.name}</p>
+                    <p className="text-xs text-muted-foreground">{result.driver}</p>
+                  </div>
+
+                  {/* Before / After columns */}
+                  <div className="grid grid-cols-2 gap-2">
+                    <div className="rounded-lg bg-muted/50 px-3 py-2.5 space-y-1">
+                      <p className="text-[10px] font-semibold uppercase tracking-wide text-muted-foreground">Before</p>
+                      <p className="text-sm font-semibold text-foreground">{result.before.distance}</p>
+                      <p className="text-xs text-muted-foreground">{result.before.time}</p>
+                    </div>
+                    <div className="rounded-lg bg-success-50 px-3 py-2.5 space-y-1">
+                      <p className="text-[10px] font-semibold uppercase tracking-wide text-success-600">After</p>
+                      <p className="text-sm font-semibold text-success-700">{result.after.distance}</p>
+                      <p className="text-xs text-success-600">{result.after.time}</p>
+                    </div>
+                  </div>
+
+                  {/* Savings row */}
+                  <div className="flex items-center gap-1.5 text-xs text-success-600 font-medium">
+                    <TrendingDown className="h-3.5 w-3.5 shrink-0" />
+                    <span>
+                      -{result.savings.distance} · -{result.savings.time} · Saves {result.savings.fuel} in fuel
+                    </span>
+                  </div>
+
+                  {/* Efficiency progress bar */}
+                  <div className="space-y-1.5">
+                    <div className="flex items-center justify-between text-[10px] text-muted-foreground">
+                      <span>Route efficiency</span>
+                      <span className="text-success-600 font-semibold">65% → 82%</span>
+                    </div>
+                    <div className="relative h-2 rounded-full bg-surface-100 overflow-hidden">
+                      {/* Before bar (gray, underneath) */}
+                      <div className="absolute inset-y-0 left-0 rounded-full bg-surface-300" style={{ width: "65%" }} />
+                      {/* After bar (success, on top, animated) */}
+                      <div
+                        className="absolute inset-y-0 left-0 rounded-full bg-success-500 transition-all duration-700"
+                        style={{ width: "82%" }}
+                      />
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+
+            {/* Total savings banner */}
+            <div className="rounded-xl border border-success-200 bg-success-50 px-4 py-3 flex items-center gap-3">
+              <CheckCircle2 className="h-5 w-5 text-success-500 shrink-0" />
+              <p className="text-sm font-medium text-success-700">
+                Total savings: 20 km less · 2h 24min saved · ₱260 fuel saved
+              </p>
+            </div>
+
+            {/* Action buttons */}
+            <div className="flex gap-3">
+              <Button
+                variant="outline"
+                className="flex-1"
+                onClick={onClose}
+                disabled={applying}
+              >
+                Cancel
+              </Button>
+              <Button
+                className="flex-1 bg-brand-500 hover:bg-brand-600 text-white"
+                onClick={onApply}
+                disabled={applying}
+              >
+                {applying ? (
+                  <>
+                    <Loader2 className="h-4 w-4 animate-spin" />
+                    Applying...
+                  </>
+                ) : (
+                  <>
+                    <Zap className="h-4 w-4" />
+                    Apply Optimized Routes
+                  </>
+                )}
+              </Button>
+            </div>
+          </div>
+        )}
+
+        {/* Step 3 — Success */}
+        {step === 3 && (
+          <div className="p-8 flex flex-col items-center gap-5 text-center">
+            <div className="flex h-16 w-16 items-center justify-center rounded-2xl bg-success-50">
+              <CheckCircle2 className="h-8 w-8 text-success-500" />
+            </div>
+            <div className="space-y-1.5">
+              <h2 className="font-display text-xl font-bold text-foreground">Routes optimized and applied!</h2>
+              <p className="text-sm text-muted-foreground max-w-sm mx-auto">
+                Drivers have been notified of updated stop sequences via the app.
+              </p>
+            </div>
+            <Button className="bg-brand-500 hover:bg-brand-600 text-white px-8" onClick={onClose}>
+              Close
+            </Button>
+          </div>
+        )}
+      </div>
+    </div>
+  );
+}
+
 export default function AdminRoutesPage() {
   const [routes, setRoutes] = useState(ROUTES_DATA);
   const [toast, setToast] = useState<string | null>(null);
-  const [assignModal, setAssignModal] = useState<string | null>(null); // routeId
+  const [assignModal, setAssignModal] = useState<string | null>(null);
   const [selectedDriver, setSelectedDriver] = useState<string>("");
+
+  // Optimize Routes state
+  const [showModal, setShowModal] = useState(false);
+  const [step, setStep] = useState<OptimizeStep>(1);
+  const [visibleLines, setVisibleLines] = useState(0);
+  const [applying, setApplying] = useState(false);
+
+  // Auto-advance step 1 → 2 with staggered progress lines
+  useEffect(() => {
+    if (!showModal || step !== 1) return;
+
+    setVisibleLines(0);
+
+    const timers: ReturnType<typeof setTimeout>[] = [];
+
+    // Show each line at 400ms intervals
+    PROGRESS_LINES.forEach((_, i) => {
+      timers.push(setTimeout(() => setVisibleLines(i + 1), 400 * (i + 1)));
+    });
+
+    // Advance to step 2 after 2000ms
+    timers.push(setTimeout(() => setStep(2), 2000));
+
+    return () => timers.forEach(clearTimeout);
+  }, [showModal, step]);
+
+  function openOptimizeModal() {
+    setStep(1);
+    setVisibleLines(0);
+    setApplying(false);
+    setShowModal(true);
+  }
+
+  function closeOptimizeModal() {
+    setShowModal(false);
+  }
+
+  function handleApply() {
+    setApplying(true);
+    setTimeout(() => {
+      setApplying(false);
+      setStep(3);
+    }, 1200);
+  }
 
   function showToast(msg: string) {
     setToast(msg);
@@ -276,16 +535,37 @@ export default function AdminRoutesPage() {
         </div>
       )}
 
+      {/* Optimize Routes Modal */}
+      {showModal && (
+        <OptimizeModal
+          step={step}
+          visibleLines={visibleLines}
+          applying={applying}
+          onApply={handleApply}
+          onClose={closeOptimizeModal}
+        />
+      )}
+
       {/* Header */}
       <div className="flex items-start justify-between gap-4">
         <div>
           <h1 className="font-display text-2xl font-bold text-foreground">Routes</h1>
           <p className="text-sm text-muted-foreground mt-0.5">{today}</p>
         </div>
-        <Button variant="outline" size="sm" onClick={() => showToast("Route builder coming soon")}>
-          <Plus className="h-4 w-4" />
-          Create Route
-        </Button>
+        <div className="flex items-center gap-2">
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={openOptimizeModal}
+          >
+            <Zap className="h-4 w-4" />
+            Optimize Routes
+          </Button>
+          <Button variant="outline" size="sm" onClick={() => showToast("Route builder coming soon")}>
+            <Plus className="h-4 w-4" />
+            Create Route
+          </Button>
+        </div>
       </div>
 
       {/* Overview stats */}
