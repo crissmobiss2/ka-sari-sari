@@ -217,7 +217,7 @@ export const PRODUCTS: Product[] = [
     lowStockThreshold: 48,
     createdAt: "2024-01-01T00:00:00Z",
     description: "Quickchow Pancit Canton stir-fry noodles, 100g pack.",
-    imageUrl: "https://images.unsplash.com/photo-1569996042817-7f63fbd62000?w=400&q=80&auto=format&fit=crop",
+    imageUrl: "https://images.unsplash.com/photo-1547592180-85f173990554?w=400&q=80&auto=format&fit=crop",
   },
 
   // ── Snacks & Chips (cat-3) ────────────────────────────────────────────────
@@ -797,7 +797,7 @@ export const PRODUCTS: Product[] = [
     unit: "pack", unitSize: "60g", price: 10, srp: 14, sku: "PYL-PC-60",
     minOrderQty: 12, isActive: true, isFeatured: false, stock: 840, lowStockThreshold: 96,
     createdAt: "2024-01-01T00:00:00Z", description: "Payless Pancit Canton budget stir-fry noodles, 60g pack.",
-    imageUrl: "https://images.unsplash.com/photo-1569996042817-7f63fbd62000?w=400&q=80&auto=format&fit=crop",
+    imageUrl: "https://images.unsplash.com/photo-1585032226651-759b368d7246?w=400&q=80&auto=format&fit=crop",
   },
   {
     id: "prod-n05", categoryId: "cat-2",

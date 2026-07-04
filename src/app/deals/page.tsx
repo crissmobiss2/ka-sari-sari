@@ -1,13 +1,27 @@
 "use client";
 import { useState, useEffect } from "react";
-import Link from "next/link";
-import { Zap, Clock, Tag, ChevronRight, ShoppingCart, Flame } from "lucide-react";
+import Image from "next/image";
+import { Zap, Clock, Tag, ShoppingCart, Flame } from "lucide-react";
 import { RetailerTopBar, RetailerBottomNav } from "@/components/layout/retailer-nav";
-import { ProductCard } from "@/components/products/product-card";
 import { PRODUCTS, CATEGORIES } from "@/lib/mock-data";
 import { formatPHP } from "@/lib/utils";
 import { useCartStore } from "@/store/cart";
 import { cn } from "@/lib/utils";
+
+const CATEGORY_DISPLAY: Record<string, { gradient: string; emoji: string }> = {
+  "cat-1":  { gradient: "from-blue-400 to-cyan-500",      emoji: "🥤" },
+  "cat-2":  { gradient: "from-yellow-400 to-orange-500",  emoji: "🍜" },
+  "cat-3":  { gradient: "from-red-400 to-pink-500",       emoji: "🍿" },
+  "cat-4":  { gradient: "from-orange-400 to-red-500",     emoji: "🥫" },
+  "cat-5":  { gradient: "from-green-400 to-emerald-500",  emoji: "🧂" },
+  "cat-6":  { gradient: "from-purple-400 to-violet-500",  emoji: "🧴" },
+  "cat-7":  { gradient: "from-amber-500 to-yellow-600",   emoji: "☕" },
+  "cat-8":  { gradient: "from-teal-400 to-green-500",     emoji: "🧺" },
+  "cat-9":  { gradient: "from-yellow-300 to-amber-400",   emoji: "🍞" },
+  "cat-10": { gradient: "from-pink-400 to-rose-500",      emoji: "🍫" },
+  "cat-11": { gradient: "from-sky-300 to-blue-400",       emoji: "🥛" },
+  "cat-12": { gradient: "from-lime-400 to-green-500",     emoji: "🫙" },
+};
 
 // Compute deal price
 const DEALS = PRODUCTS.map((p, i) => ({
@@ -42,12 +56,29 @@ function Countdown({ seconds }: { seconds: number }) {
 function DealCard({ deal }: { deal: typeof DEALS[0] }) {
   const { addItem, items, updateQty } = useCartStore();
   const cartItem = items.find((i) => i.product.id === deal.id);
+  const [imgError, setImgError] = useState(false);
+  const display = CATEGORY_DISPLAY[deal.categoryId] || { gradient: "from-gray-400 to-slate-500", emoji: "📦" };
+  const showRealImage = !!deal.imageUrl && !imgError;
 
   return (
     <div className="rounded-2xl border border-border bg-card shadow-card overflow-hidden flex flex-col">
       <div className="relative">
-        <div className="h-28 bg-gradient-to-br from-surface-100 to-surface-200 flex items-center justify-center">
-          <ShoppingCart className="h-10 w-10 text-muted-foreground/40" strokeWidth={1} />
+        <div className={cn(
+          "relative h-28 overflow-hidden",
+          !showRealImage && `bg-gradient-to-br ${display.gradient} flex items-center justify-center`
+        )}>
+          {showRealImage ? (
+            <Image
+              src={deal.imageUrl!}
+              alt={deal.name}
+              fill
+              className="object-cover"
+              onError={() => setImgError(true)}
+              sizes="(max-width: 640px) 50vw, 25vw"
+            />
+          ) : (
+            <span className="text-4xl select-none" role="img">{display.emoji}</span>
+          )}
         </div>
         <div className="absolute top-2 left-2 rounded-full bg-danger-500 px-2 py-0.5 text-[10px] font-bold text-white">
           -{deal.discountPct}%
