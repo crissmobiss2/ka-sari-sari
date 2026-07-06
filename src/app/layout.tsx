@@ -33,7 +33,7 @@ export const metadata: Metadata = {
     "Order directly from our warehouse. Fair prices, reliable stock, fast delivery for your sari-sari store.",
   keywords: ["sari-sari store", "wholesale", "ordering platform", "Philippines", "MSME", "warehouse"],
   authors: [{ name: "Ka Sari-Sari" }],
-  manifest: "/manifest.webmanifest",
+  manifest: "/manifest.json",
   appleWebApp: {
     capable: true,
     statusBarStyle: "default",

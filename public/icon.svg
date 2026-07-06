@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
+  <!-- Orange rounded square background -->
+  <rect width="64" height="64" rx="14" fill="#f47028"/>
+  <!-- Basket handle (arch) -->
+  <path d="M16 30 Q16 13 32 13 Q48 13 48 30"
+        stroke="white" stroke-width="5" fill="none"
+        stroke-linecap="round" stroke-linejoin="round"/>
+  <!-- Basket body -->
+  <path d="M9 30 L55 30 L52 51 Q51 55 47 55 L17 55 Q13 55 12 51 Z"
+        fill="white"/>
+  <!-- Weave vertical lines -->
+  <line x1="23" y1="30" x2="23" y2="55" stroke="#f47028" stroke-width="3" stroke-opacity="0.55"/>
+  <line x1="32" y1="30" x2="32" y2="55" stroke="#f47028" stroke-width="3" stroke-opacity="0.55"/>
+  <line x1="41" y1="30" x2="41" y2="55" stroke="#f47028" stroke-width="3" stroke-opacity="0.55"/>
+  <!-- Weave horizontal line -->
+  <line x1="9" y1="42" x2="55" y2="42" stroke="#f47028" stroke-width="2.5" stroke-opacity="0.4"/>
+</svg>

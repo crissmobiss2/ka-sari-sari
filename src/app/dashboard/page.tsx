@@ -1,16 +1,18 @@
 "use client";
+// v2
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
 import {
   Package, ArrowRight, RotateCcw, ChevronRight, Zap, TrendingUp,
-  Flame, Tag, Wallet, Bell, Star, Clock
+  Flame, Tag, Wallet, Bell, Star, Clock, ShoppingCart, AlertTriangle
 } from "lucide-react";
 import { RetailerTopBar, RetailerBottomNav } from "@/components/layout/retailer-nav";
 import { ProductCard } from "@/components/products/product-card";
 import { StatusBadge } from "@/components/ui/status-badge";
-import { formatPHP, formatDate, type OrderStatus } from "@/lib/utils";
+import { formatPHP, formatDate, cn, type OrderStatus } from "@/lib/utils";
 import { PRODUCTS, MOCK_ORDERS, CATEGORIES } from "@/lib/mock-data";
 import { useWalletStore } from "@/store/wallet";
+import { useCartStore } from "@/store/cart";
 import { Suspense } from "react";
 
 const PROMO_BANNERS = [
@@ -59,7 +61,13 @@ export default function DashboardPage() {
   const popularProducts = PRODUCTS.filter((p) => p.isFeatured).slice(0, 4);
   const newArrivals = PRODUCTS.slice(0, 4);
   const walletBalance = useWalletStore((s) => s.balance);
+  const { addItem, items: cartItems } = useCartStore();
   const activeOrder = recentOrders.find((o) => o.status === "out_for_delivery" || o.status === "picking" || o.status === "packed");
+
+  const lowStockProducts = PRODUCTS
+    .filter((p) => p.isActive && p.stock < p.lowStockThreshold)
+    .sort((a, b) => (a.stock / a.lowStockThreshold) - (b.stock / b.lowStockThreshold))
+    .slice(0, 4);
 
   return (
     <div className="min-h-screen bg-background pb-24">
@@ -242,23 +250,66 @@ export default function DashboardPage() {
           </div>
         </div>
 
-        {/* Smart restock teaser */}
-        <div className="px-4">
-          <div className="rounded-2xl border border-dashed border-brand-300 bg-brand-50/50 p-5">
-            <div className="flex items-start gap-3">
-              <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-xl bg-brand-100 text-brand-500">
-                <Zap className="h-4 w-4" />
-              </div>
-              <div>
-                <p className="text-sm font-semibold text-foreground">Smart restock suggestions</p>
-                <p className="text-xs text-muted-foreground mt-0.5">AI predicts what to reorder and when based on your sales patterns.</p>
-                <span className="mt-2 inline-block rounded-full border border-brand-200 bg-brand-100 px-2.5 py-0.5 text-[10px] font-medium text-brand-600">
-                  Coming soon
-                </span>
-              </div>
+        {/* Smart restock suggestions */}
+        {lowStockProducts.length > 0 && (
+          <div className="px-4">
+            <div className="flex items-center justify-between mb-3">
+              <h2 className="font-display text-base font-semibold text-foreground flex items-center gap-2">
+                <Zap className="h-4 w-4 text-warning-500" />
+                Restock Suggestions
+              </h2>
+              <Link href="/reorder" className="flex items-center gap-1 text-sm text-brand-500 font-medium">
+                View all <ChevronRight className="h-4 w-4" />
+              </Link>
             </div>
+            <div className="rounded-2xl border border-warning-200 bg-warning-50/50 overflow-hidden divide-y divide-warning-100">
+              {lowStockProducts.map((p) => {
+                const pctLeft = Math.round((p.stock / p.lowStockThreshold) * 100);
+                const inCart = cartItems.find((c) => c.product.id === p.id);
+                const urgency = pctLeft < 20 ? "critical" : "low";
+                return (
+                  <div key={p.id} className="flex items-center gap-3 px-4 py-3">
+                    <div className="h-12 w-12 rounded-xl bg-white overflow-hidden shrink-0 border border-warning-100">
+                      {p.imageUrl ? (
+                        <img src={p.imageUrl} alt={p.name} className="h-full w-full object-cover" />
+                      ) : (
+                        <div className="h-full w-full flex items-center justify-center">
+                          <Package className="h-5 w-5 text-muted-foreground/40" />
+                        </div>
+                      )}
+                    </div>
+                    <div className="flex-1 min-w-0">
+                      <div className="flex items-center gap-1.5 mb-0.5">
+                        {urgency === "critical" && <AlertTriangle className="h-3 w-3 text-danger-500 shrink-0" />}
+                        <p className="text-xs font-semibold text-foreground truncate">{p.name}</p>
+                      </div>
+                      <div className="flex items-center gap-2">
+                        <div className="h-1.5 flex-1 rounded-full bg-warning-100 overflow-hidden max-w-[80px]">
+                          <div
+                            className={cn("h-full rounded-full", urgency === "critical" ? "bg-danger-500" : "bg-warning-400")}
+                            style={{ width: `${Math.max(4, pctLeft)}%` }}
+                          />
+                        </div>
+                        <span className="text-[10px] text-muted-foreground">{p.stock} left</span>
+                      </div>
+                      <p className="text-xs text-brand-600 font-bold mt-0.5">{formatPHP(p.price)} · min {p.minOrderQty} {p.unit}s</p>
+                    </div>
+                    <button
+                      onClick={() => addItem(p)}
+                      className="flex items-center gap-1 rounded-xl bg-brand-500 px-3 py-2 text-xs font-semibold text-white hover:bg-brand-600 active:scale-95 transition-all shrink-0"
+                    >
+                      <ShoppingCart className="h-3.5 w-3.5" />
+                      {inCart ? "Add more" : "Add"}
+                    </button>
+                  </div>
+                );
+              })}
+            </div>
+            <p className="text-[11px] text-muted-foreground mt-2 px-1">
+              Based on your stock levels · {lowStockProducts.length} item{lowStockProducts.length > 1 ? "s" : ""} need restocking
+            </p>
           </div>
-        </div>
+        )}
       </div>
 
       <RetailerBottomNav />

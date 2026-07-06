@@ -1,6 +1,7 @@
 import type { ReactNode } from "react";
 import { DriverBottomNav } from "@/components/driver/driver-bottom-nav";
 import { LogoutButton } from "@/components/ui/logout-button";
+import { NexoflowFooter } from "@/components/ui/nexoflow-footer";
 
 export default function DriverLayout({ children }: { children: ReactNode }) {
   return (
@@ -33,6 +34,7 @@ export default function DriverLayout({ children }: { children: ReactNode }) {
         {children}
       </main>
 
+      <NexoflowFooter className="max-w-md mx-auto w-full" />
       <DriverBottomNav />
     </div>
   );

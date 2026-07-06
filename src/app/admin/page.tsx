@@ -1,4 +1,6 @@
 "use client";
+// v2
+import { useState } from "react";
 import { TrendingUp, TrendingDown, Package, Users, ShoppingCart, AlertTriangle, ArrowRight, Clock } from "lucide-react";
 import Link from "next/link";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -44,6 +46,56 @@ const STAT_CARDS = [
     color: "text-warning-600 bg-warning-50",
   },
 ];
+
+const MONTHS = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
+const REVENUE_VALUES = [312000, 428000, 541000, 380000, 623000, 568000, 657000, 485000, 610000, 519000, 637000, 693000];
+
+function RevenueChart() {
+  const [hovered, setHovered] = useState<number | null>(null);
+  const maxVal = Math.max(...REVENUE_VALUES);
+  const currentMonth = new Date().getMonth();
+  return (
+    <div>
+      <div className="flex items-end gap-1.5 h-28 mt-1">
+        {REVENUE_VALUES.map((v, i) => {
+          const pct = (v / maxVal) * 100;
+          const isCurrent = i === currentMonth;
+          const isHovered = hovered === i;
+          return (
+            <div
+              key={i}
+              className="flex-1 flex flex-col items-end justify-end h-full cursor-default"
+              onMouseEnter={() => setHovered(i)}
+              onMouseLeave={() => setHovered(null)}
+            >
+              {isHovered && (
+                <span className="text-[9px] font-bold text-foreground mb-0.5 text-center leading-none">
+                  {(v / 1000).toFixed(0)}k
+                </span>
+              )}
+              <div
+                className={`w-full rounded-t-md transition-all duration-150 ${isCurrent ? "bg-brand-500" : isHovered ? "bg-brand-400" : "bg-brand-200"}`}
+                style={{ height: `${pct}%`, minHeight: "4px" }}
+              />
+            </div>
+          );
+        })}
+      </div>
+      <div className="flex mt-1.5">
+        {MONTHS.map((m, i) => (
+          <span key={m} className={`text-[9px] font-medium flex-1 text-center ${i === currentMonth ? "text-brand-500" : "text-muted-foreground"}`}>
+            {m.slice(0, 1)}
+          </span>
+        ))}
+      </div>
+      {hovered !== null ? (
+        <p className="text-xs text-foreground font-semibold mt-1.5">{MONTHS[hovered]}: {formatPHP(REVENUE_VALUES[hovered])}</p>
+      ) : (
+        <p className="text-[11px] text-muted-foreground mt-1.5">Hover a bar for monthly total</p>
+      )}
+    </div>
+  );
+}
 
 export default function AdminDashboardPage() {
   return (
@@ -97,19 +149,7 @@ export default function AdminDashboardPage() {
             </div>
           </CardHeader>
           <CardContent>
-            {/* Simple bar chart placeholder */}
-            <div className="flex items-end gap-2 h-24">
-              {[45, 62, 78, 55, 90, 82, 95, 70, 88, 75, 92, 100].map((h, i) => (
-                <div
-                  key={i}
-                  className="flex-1 rounded-t-lg bg-brand-200 hover:bg-brand-400 transition-colors"
-                  style={{ height: `${h}%` }}
-                />
-              ))}
-            </div>
-            <div className="flex justify-between mt-2 text-xs text-muted-foreground">
-              <span>Jan</span><span>Jun</span><span>Dec</span>
-            </div>
+            <RevenueChart />
           </CardContent>
         </Card>
 

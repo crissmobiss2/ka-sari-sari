@@ -35,7 +35,7 @@ export const PRODUCTS: Product[] = [
     lowStockThreshold: 48,
     createdAt: "2024-01-01T00:00:00Z",
     description: "Classic Coca-Cola in 330ml can. 24 cans per case.",
-    imageUrl: "https://picsum.photos/seed/prod-1/400/400",
+    imageUrl: "https://images.unsplash.com/photo-1548940740-204726a19be3?w=400&q=80&auto=format&fit=crop",
   },
   {
     id: "prod-9",
@@ -55,7 +55,7 @@ export const PRODUCTS: Product[] = [
     lowStockThreshold: 48,
     createdAt: "2024-01-01T00:00:00Z",
     description: "Wilkins distilled water, 500ml bottle.",
-    imageUrl: "https://picsum.photos/seed/prod-9/400/400",
+    imageUrl: "https://images.unsplash.com/photo-1613478223719-2ab802602423?w=400&q=80&auto=format&fit=crop",
   },
   {
     id: "prod-11",
@@ -75,7 +75,7 @@ export const PRODUCTS: Product[] = [
     lowStockThreshold: 48,
     createdAt: "2024-01-01T00:00:00Z",
     description: "Royal True Orange carbonated drink in 355ml can. 24 cans per case.",
-    imageUrl: "https://picsum.photos/seed/prod-11/400/400",
+    imageUrl: "https://images.unsplash.com/photo-1559839734-2b71ea197ec2?w=400&q=80&auto=format&fit=crop",
   },
   {
     id: "prod-12",
@@ -95,7 +95,7 @@ export const PRODUCTS: Product[] = [
     lowStockThreshold: 48,
     createdAt: "2024-01-01T00:00:00Z",
     description: "Sprite lemon-lime carbonated drink in 330ml can. 24 cans per case.",
-    imageUrl: "https://picsum.photos/seed/prod-12/400/400",
+    imageUrl: "https://images.unsplash.com/photo-1608270586620-248524c67de9?w=400&q=80&auto=format&fit=crop",
   },
   {
     id: "prod-13",
@@ -115,7 +115,7 @@ export const PRODUCTS: Product[] = [
     lowStockThreshold: 48,
     createdAt: "2024-01-01T00:00:00Z",
     description: "C2 Cool & Clean ready-to-drink green tea, 500ml bottle.",
-    imageUrl: "https://picsum.photos/seed/prod-13/400/400",
+    imageUrl: "https://images.unsplash.com/photo-1613478223719-2ab802602423?w=400&q=80&auto=format&fit=crop",
   },
   {
     id: "prod-14",
@@ -135,7 +135,7 @@ export const PRODUCTS: Product[] = [
     lowStockThreshold: 24,
     createdAt: "2024-01-01T00:00:00Z",
     description: "Gatorade sports drink in lemon-lime flavor, 500ml bottle.",
-    imageUrl: "https://picsum.photos/seed/prod-14/400/400",
+    imageUrl: "https://images.unsplash.com/photo-1556679343-c7306c1976bc?w=400&q=80&auto=format&fit=crop",
   },
 
   // ── Instant Noodles (cat-2) ───────────────────────────────────────────────
@@ -157,7 +157,7 @@ export const PRODUCTS: Product[] = [
     lowStockThreshold: 96,
     createdAt: "2024-01-01T00:00:00Z",
     description: "Lucky Me Pancit Canton Original flavor. 12 packs per box.",
-    imageUrl: "https://picsum.photos/seed/prod-2/400/400",
+    imageUrl: "https://images.unsplash.com/photo-1547592180-85f173990554?w=400&q=80&auto=format&fit=crop",
   },
   {
     id: "prod-10",
@@ -197,7 +197,7 @@ export const PRODUCTS: Product[] = [
     lowStockThreshold: 96,
     createdAt: "2024-01-01T00:00:00Z",
     description: "Lucky Me! Chicken Mami instant noodle soup, 55g pack.",
-    imageUrl: "https://picsum.photos/seed/prod-15/400/400",
+    imageUrl: "https://images.unsplash.com/photo-1585032226651-759b368d7246?w=400&q=80&auto=format&fit=crop",
   },
   {
     id: "prod-16",
@@ -239,7 +239,7 @@ export const PRODUCTS: Product[] = [
     lowStockThreshold: 30,
     createdAt: "2024-01-01T00:00:00Z",
     description: "Piattos potato crisps in cheese flavor.",
-    imageUrl: "https://picsum.photos/seed/prod-3/400/400",
+    imageUrl: "https://images.unsplash.com/photo-1566478989037-eec170784d0b?w=400&q=80&auto=format&fit=crop",
   },
   {
     id: "prod-17",
@@ -259,7 +259,7 @@ export const PRODUCTS: Product[] = [
     lowStockThreshold: 36,
     createdAt: "2024-01-01T00:00:00Z",
     description: "Nova Country Cheddar corn snacks, 78g pack.",
-    imageUrl: "https://picsum.photos/seed/prod-17/400/400",
+    imageUrl: "https://images.unsplash.com/photo-1621939514649-280e2ee25f60?w=400&q=80&auto=format&fit=crop",
   },
   {
     id: "prod-18",
@@ -279,7 +279,7 @@ export const PRODUCTS: Product[] = [
     lowStockThreshold: 36,
     createdAt: "2024-01-01T00:00:00Z",
     description: "Clover Chips original flavored snack, 100g pack.",
-    imageUrl: "https://picsum.photos/seed/prod-18/400/400",
+    imageUrl: "https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=400&q=80&auto=format&fit=crop",
   },
   {
     id: "prod-19",
@@ -299,7 +299,7 @@ export const PRODUCTS: Product[] = [
     lowStockThreshold: 36,
     createdAt: "2024-01-01T00:00:00Z",
     description: "Chippy corn chips in BBQ flavor, 100g pack.",
-    imageUrl: "https://picsum.photos/seed/prod-19/400/400",
+    imageUrl: "https://images.unsplash.com/photo-1599490659213-e2b9527bd087?w=400&q=80&auto=format&fit=crop",
   },
   {
     id: "prod-20",
@@ -319,7 +319,7 @@ export const PRODUCTS: Product[] = [
     lowStockThreshold: 48,
     createdAt: "2024-01-01T00:00:00Z",
     description: "Boy Bawang garlic-flavored corn bits, 100g pack.",
-    imageUrl: "https://picsum.photos/seed/prod-20/400/400",
+    imageUrl: "https://images.unsplash.com/photo-1504544750208-dc0358e63f7f?w=400&q=80&auto=format&fit=crop",
   },
   {
     id: "prod-21",
@@ -361,7 +361,7 @@ export const PRODUCTS: Product[] = [
     lowStockThreshold: 48,
     createdAt: "2024-01-01T00:00:00Z",
     description: "555 Sardines in tomato sauce. 24 cans per case.",
-    imageUrl: "https://picsum.photos/seed/prod-4/400/400",
+    imageUrl: "https://images.unsplash.com/photo-1562802378-063ec186a863?w=400&q=80&auto=format&fit=crop",
   },
   {
     id: "prod-22",
@@ -381,7 +381,7 @@ export const PRODUCTS: Product[] = [
     lowStockThreshold: 48,
     createdAt: "2024-01-01T00:00:00Z",
     description: "Mega Sardines in spicy tomato sauce, 155g can.",
-    imageUrl: "https://picsum.photos/seed/prod-22/400/400",
+    imageUrl: "https://images.unsplash.com/photo-1611143669185-af224c5e3252?w=400&q=80&auto=format&fit=crop",
   },
   {
     id: "prod-23",
@@ -401,7 +401,7 @@ export const PRODUCTS: Product[] = [
     lowStockThreshold: 48,
     createdAt: "2024-01-01T00:00:00Z",
     description: "Argentina Corned Beef, 260g can. Classic sari-sari staple.",
-    imageUrl: "https://picsum.photos/seed/prod-23/400/400",
+    imageUrl: "https://images.unsplash.com/photo-1547592180-85f173990554?w=400&q=80&auto=format&fit=crop",
   },
   {
     id: "prod-24",
@@ -421,7 +421,7 @@ export const PRODUCTS: Product[] = [
     lowStockThreshold: 48,
     createdAt: "2024-01-01T00:00:00Z",
     description: "Century Tuna flakes in oil, 180g can.",
-    imageUrl: "https://picsum.photos/seed/prod-24/400/400",
+    imageUrl: "https://images.unsplash.com/photo-1562802378-063ec186a863?w=400&q=80&auto=format&fit=crop",
   },
 
   // ── Condiments & Sauces (cat-5) ───────────────────────────────────────────
@@ -443,7 +443,7 @@ export const PRODUCTS: Product[] = [
     lowStockThreshold: 24,
     createdAt: "2024-01-01T00:00:00Z",
     description: "Silver Swan regular soy sauce, 1 liter bottle.",
-    imageUrl: "https://picsum.photos/seed/prod-7/400/400",
+    imageUrl: "https://images.unsplash.com/photo-1474979266404-7eaacbcd87c5?w=400&q=80&auto=format&fit=crop",
   },
   {
     id: "prod-25",
@@ -463,7 +463,7 @@ export const PRODUCTS: Product[] = [
     lowStockThreshold: 24,
     createdAt: "2024-01-01T00:00:00Z",
     description: "Datu Puti Sukang Maasim cane vinegar, 1 liter bottle.",
-    imageUrl: "https://picsum.photos/seed/prod-25/400/400",
+    imageUrl: "https://images.unsplash.com/photo-1618774855690-f2de2ffab0e3?w=400&q=80&auto=format&fit=crop",
   },
   {
     id: "prod-26",
@@ -483,7 +483,7 @@ export const PRODUCTS: Product[] = [
     lowStockThreshold: 24,
     createdAt: "2024-01-01T00:00:00Z",
     description: "UFC Banana Ketchup original sweet style, 320g bottle.",
-    imageUrl: "https://picsum.photos/seed/prod-26/400/400",
+    imageUrl: "https://images.unsplash.com/photo-1565299624946-b28f40a0ae38?w=400&q=80&auto=format&fit=crop",
   },
   {
     id: "prod-27",
@@ -607,7 +607,7 @@ export const PRODUCTS: Product[] = [
     lowStockThreshold: 50,
     createdAt: "2024-01-01T00:00:00Z",
     description: "Nescafé 3-in-1 Original blend. 10 sachets per box.",
-    imageUrl: "https://picsum.photos/seed/prod-5/400/400",
+    imageUrl: "https://images.unsplash.com/photo-1544787219-7f47ccb76574?w=400&q=80&auto=format&fit=crop",
   },
   {
     id: "prod-31",
@@ -627,7 +627,7 @@ export const PRODUCTS: Product[] = [
     lowStockThreshold: 36,
     createdAt: "2024-01-01T00:00:00Z",
     description: "Kopiko 3-in-1 instant coffee mix, 25g sachets, 10 per box.",
-    imageUrl: "https://picsum.photos/seed/prod-31/400/400",
+    imageUrl: "https://images.unsplash.com/photo-1504630083234-14187a9df0f5?w=400&q=80&auto=format&fit=crop",
   },
 
   // ── Laundry & Cleaning (cat-8) ────────────────────────────────────────────
@@ -699,7 +699,7 @@ export const PRODUCTS: Product[] = [
     unit: "can", unitSize: "330ml", price: 26, srp: 32, sku: "PEP-330-REG",
     minOrderQty: 24, isActive: true, isFeatured: false, stock: 360, lowStockThreshold: 48,
     createdAt: "2024-01-01T00:00:00Z", description: "Pepsi Cola classic cola drink in 330ml can.",
-    imageUrl: "https://picsum.photos/seed/prod-b01/400/400",
+    imageUrl: "https://images.unsplash.com/photo-1548940740-204726a19be3?w=400&q=80&auto=format&fit=crop",
   },
   {
     id: "prod-b02", categoryId: "cat-1",
@@ -707,7 +707,7 @@ export const PRODUCTS: Product[] = [
     unit: "can", unitSize: "355ml", price: 30, srp: 38, sku: "MTN-355-DEW",
     minOrderQty: 24, isActive: true, isFeatured: false, stock: 288, lowStockThreshold: 48,
     createdAt: "2024-01-01T00:00:00Z", description: "Mountain Dew citrus soda in 355ml can.",
-    imageUrl: "https://picsum.photos/seed/prod-b02/400/400",
+    imageUrl: "https://images.unsplash.com/photo-1556679343-c7306c1976bc?w=400&q=80&auto=format&fit=crop",
   },
   {
     id: "prod-b03", categoryId: "cat-1",
@@ -723,7 +723,7 @@ export const PRODUCTS: Product[] = [
     unit: "bottle", unitSize: "500ml", price: 20, srp: 26, sku: "NST-LEM-500",
     minOrderQty: 24, isActive: true, isFeatured: false, stock: 288, lowStockThreshold: 48,
     createdAt: "2024-01-01T00:00:00Z", description: "Nestea lemon iced tea ready-to-drink, 500ml bottle.",
-    imageUrl: "https://picsum.photos/seed/prod-b04/400/400",
+    imageUrl: "https://images.unsplash.com/photo-1548940740-204726a19be3?w=400&q=80&auto=format&fit=crop",
   },
   {
     id: "prod-b05", categoryId: "cat-1",
@@ -731,7 +731,7 @@ export const PRODUCTS: Product[] = [
     unit: "can", unitSize: "330ml", price: 32, srp: 40, sku: "STG-330-RED",
     minOrderQty: 24, isActive: true, isFeatured: false, stock: 240, lowStockThreshold: 48,
     createdAt: "2024-01-01T00:00:00Z", description: "Sting berry-flavored energy drink, 330ml can.",
-    imageUrl: "https://picsum.photos/seed/prod-b05/400/400",
+    imageUrl: "https://images.unsplash.com/photo-1613478223719-2ab802602423?w=400&q=80&auto=format&fit=crop",
   },
   {
     id: "prod-b06", categoryId: "cat-1",
@@ -739,7 +739,7 @@ export const PRODUCTS: Product[] = [
     unit: "bottle", unitSize: "500ml", price: 42, srp: 52, sku: "POC-SWT-500",
     minOrderQty: 24, isActive: true, isFeatured: false, stock: 144, lowStockThreshold: 24,
     createdAt: "2024-01-01T00:00:00Z", description: "Pocari Sweat isotonic sports drink for hydration, 500ml.",
-    imageUrl: "https://picsum.photos/seed/prod-b06/400/400",
+    imageUrl: "https://images.unsplash.com/photo-1559839734-2b71ea197ec2?w=400&q=80&auto=format&fit=crop",
   },
   {
     id: "prod-b07", categoryId: "cat-1",
@@ -755,7 +755,7 @@ export const PRODUCTS: Product[] = [
     unit: "bottle", unitSize: "500ml", price: 52, srp: 65, sku: "RHB-500-STR",
     minOrderQty: 24, isActive: true, isFeatured: false, stock: 360, lowStockThreshold: 48,
     createdAt: "2024-01-01T00:00:00Z", description: "Red Horse Extra Strong beer, 500ml bottle.",
-    imageUrl: "https://picsum.photos/seed/prod-b08/400/400",
+    imageUrl: "https://images.unsplash.com/photo-1608270586620-248524c67de9?w=400&q=80&auto=format&fit=crop",
   },
   {
     id: "prod-b09", categoryId: "cat-1",
@@ -763,7 +763,7 @@ export const PRODUCTS: Product[] = [
     unit: "pack", unitSize: "250ml", price: 10, srp: 13, sku: "ZST-ORA-250",
     minOrderQty: 24, isActive: true, isFeatured: false, stock: 480, lowStockThreshold: 48,
     createdAt: "2024-01-01T00:00:00Z", description: "Zesto orange juice drink, 250ml tetra pack.",
-    imageUrl: "https://picsum.photos/seed/prod-b09/400/400",
+    imageUrl: "https://images.unsplash.com/photo-1613478223719-2ab802602423?w=400&q=80&auto=format&fit=crop",
   },
 
   // ── More Instant Noodles (cat-2) ──────────────────────────────────────────
@@ -773,7 +773,7 @@ export const PRODUCTS: Product[] = [
     unit: "pack", unitSize: "65g", price: 14, srp: 18, sku: "LM-PC-CLM",
     minOrderQty: 12, isActive: true, isFeatured: false, stock: 720, lowStockThreshold: 96,
     createdAt: "2024-01-01T00:00:00Z", description: "Lucky Me Pancit Canton Chili Mansi flavor with calamansi zing.",
-    imageUrl: "https://picsum.photos/seed/prod-n01/400/400",
+    imageUrl: "https://images.unsplash.com/photo-1569718212165-3a8278d5f624?w=400&q=80&auto=format&fit=crop",
   },
   {
     id: "prod-n02", categoryId: "cat-2",
@@ -781,7 +781,7 @@ export const PRODUCTS: Product[] = [
     unit: "pack", unitSize: "65g", price: 15, srp: 19, sku: "LM-PC-EXH",
     minOrderQty: 12, isActive: true, isFeatured: false, stock: 600, lowStockThreshold: 96,
     createdAt: "2024-01-01T00:00:00Z", description: "Lucky Me Pancit Canton Extra Hot — for spice lovers.",
-    imageUrl: "https://picsum.photos/seed/prod-n02/400/400",
+    imageUrl: "https://images.unsplash.com/photo-1607532941433-304659e8198a?w=400&q=80&auto=format&fit=crop",
   },
   {
     id: "prod-n03", categoryId: "cat-2",
@@ -789,7 +789,7 @@ export const PRODUCTS: Product[] = [
     unit: "pack", unitSize: "55g", price: 12, srp: 16, sku: "LM-LPB-55",
     minOrderQty: 12, isActive: true, isFeatured: false, stock: 480, lowStockThreshold: 48,
     createdAt: "2024-01-01T00:00:00Z", description: "Lucky Me La Paz Batchoy noodle soup, Iloilo-style.",
-    imageUrl: "https://picsum.photos/seed/prod-n03/400/400",
+    imageUrl: "https://images.unsplash.com/photo-1534482421-64566f976cfa?w=400&q=80&auto=format&fit=crop",
   },
   {
     id: "prod-n04", categoryId: "cat-2",
@@ -813,7 +813,7 @@ export const PRODUCTS: Product[] = [
     unit: "cup", unitSize: "60g", price: 25, srp: 32, sku: "NIS-CUP-CHK",
     minOrderQty: 12, isActive: true, isFeatured: false, stock: 240, lowStockThreshold: 24,
     createdAt: "2024-01-01T00:00:00Z", description: "Nissin Cup Noodles chicken flavor, ready-to-eat cup.",
-    imageUrl: "https://picsum.photos/seed/prod-n06/400/400",
+    imageUrl: "https://images.unsplash.com/photo-1547592180-85f173990554?w=400&q=80&auto=format&fit=crop",
   },
 
   // ── More Snacks & Chips (cat-3) ───────────────────────────────────────────
@@ -823,7 +823,7 @@ export const PRODUCTS: Product[] = [
     unit: "pack", unitSize: "100g", price: 24, srp: 30, sku: "BB-ADO-100",
     minOrderQty: 12, isActive: true, isFeatured: false, stock: 360, lowStockThreshold: 36,
     createdAt: "2024-01-01T00:00:00Z", description: "Boy Bawang adobo-flavored corn bits, 100g pack.",
-    imageUrl: "https://picsum.photos/seed/prod-s01/400/400",
+    imageUrl: "https://images.unsplash.com/photo-1515162305285-0293e4767cc2?w=400&q=80&auto=format&fit=crop",
   },
   {
     id: "prod-s02", categoryId: "cat-3",
@@ -831,7 +831,7 @@ export const PRODUCTS: Product[] = [
     unit: "pack", unitSize: "90g", price: 32, srp: 40, sku: "OSH-PRW-90",
     minOrderQty: 12, isActive: true, isFeatured: false, stock: 240, lowStockThreshold: 36,
     createdAt: "2024-01-01T00:00:00Z", description: "Oishi original prawn crackers, light and crunchy, 90g.",
-    imageUrl: "https://picsum.photos/seed/prod-s02/400/400",
+    imageUrl: "https://images.unsplash.com/photo-1566478989037-eec170784d0b?w=400&q=80&auto=format&fit=crop",
   },
   {
     id: "prod-s03", categoryId: "cat-3",
@@ -839,7 +839,7 @@ export const PRODUCTS: Product[] = [
     unit: "pack", unitSize: "85g", price: 38, srp: 45, sku: "PIT-SCO-85",
     minOrderQty: 10, isActive: true, isFeatured: false, stock: 200, lowStockThreshold: 30,
     createdAt: "2024-01-01T00:00:00Z", description: "Piattos potato crisps in sour cream & onion flavor.",
-    imageUrl: "https://picsum.photos/seed/prod-s03/400/400",
+    imageUrl: "https://images.unsplash.com/photo-1621939514649-280e2ee25f60?w=400&q=80&auto=format&fit=crop",
   },
   {
     id: "prod-s04", categoryId: "cat-3",
@@ -847,7 +847,7 @@ export const PRODUCTS: Product[] = [
     unit: "pack", unitSize: "78g", price: 35, srp: 42, sku: "NOV-BBQ-78",
     minOrderQty: 12, isActive: true, isFeatured: false, stock: 288, lowStockThreshold: 36,
     createdAt: "2024-01-01T00:00:00Z", description: "Nova Barbeque flavored corn snack, 78g pack.",
-    imageUrl: "https://picsum.photos/seed/prod-s04/400/400",
+    imageUrl: "https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=400&q=80&auto=format&fit=crop",
   },
   {
     id: "prod-s05", categoryId: "cat-3",
@@ -855,7 +855,7 @@ export const PRODUCTS: Product[] = [
     unit: "pack", unitSize: "10pcs", price: 28, srp: 35, sku: "REB-SCH-10",
     minOrderQty: 12, isActive: true, isFeatured: false, stock: 300, lowStockThreshold: 36,
     createdAt: "2024-01-01T00:00:00Z", description: "Rebisco chocolate sandwich cookies, 10 pieces per pack.",
-    imageUrl: "https://picsum.photos/seed/prod-s05/400/400",
+    imageUrl: "https://images.unsplash.com/photo-1599490659213-e2b9527bd087?w=400&q=80&auto=format&fit=crop",
   },
   {
     id: "prod-s06", categoryId: "cat-3",
@@ -863,7 +863,7 @@ export const PRODUCTS: Product[] = [
     unit: "pack", unitSize: "33g", price: 18, srp: 24, sku: "JNJ-MFC-33",
     minOrderQty: 12, isActive: true, isFeatured: false, stock: 480, lowStockThreshold: 48,
     createdAt: "2024-01-01T00:00:00Z", description: "Jack 'n Jill Magic Flakes chocolate-filled wafer snack.",
-    imageUrl: "https://picsum.photos/seed/prod-s06/400/400",
+    imageUrl: "https://images.unsplash.com/photo-1504544750208-dc0358e63f7f?w=400&q=80&auto=format&fit=crop",
   },
 
   // ── More Canned Goods (cat-4) ─────────────────────────────────────────────
@@ -873,7 +873,7 @@ export const PRODUCTS: Product[] = [
     unit: "can", unitSize: "155g", price: 25, srp: 32, sku: "LIG-SAR-TOM",
     minOrderQty: 24, isActive: true, isFeatured: false, stock: 480, lowStockThreshold: 48,
     createdAt: "2024-01-01T00:00:00Z", description: "Ligo sardines in tomato sauce, 155g can.",
-    imageUrl: "https://picsum.photos/seed/prod-c01/400/400",
+    imageUrl: "https://images.unsplash.com/photo-1611143669185-af224c5e3252?w=400&q=80&auto=format&fit=crop",
   },
   {
     id: "prod-c02", categoryId: "cat-4",
@@ -881,7 +881,7 @@ export const PRODUCTS: Product[] = [
     unit: "can", unitSize: "155g", price: 35, srp: 42, sku: "555-SAR-SPA",
     minOrderQty: 24, isActive: true, isFeatured: false, stock: 360, lowStockThreshold: 48,
     createdAt: "2024-01-01T00:00:00Z", description: "555 Sardines Spanish style with olive oil, 155g can.",
-    imageUrl: "https://picsum.photos/seed/prod-c02/400/400",
+    imageUrl: "https://images.unsplash.com/photo-1534482421-64566f976cfa?w=400&q=80&auto=format&fit=crop",
   },
   {
     id: "prod-c03", categoryId: "cat-4",
@@ -889,7 +889,7 @@ export const PRODUCTS: Product[] = [
     unit: "can", unitSize: "150g", price: 42, srp: 52, sku: "ARG-CB-150",
     minOrderQty: 24, isActive: true, isFeatured: false, stock: 360, lowStockThreshold: 48,
     createdAt: "2024-01-01T00:00:00Z", description: "Argentina Corned Beef smaller 150g can, perfect for single servings.",
-    imageUrl: "https://picsum.photos/seed/prod-c03/400/400",
+    imageUrl: "https://images.unsplash.com/photo-1562802378-063ec186a863?w=400&q=80&auto=format&fit=crop",
   },
   {
     id: "prod-c04", categoryId: "cat-4",
@@ -897,7 +897,7 @@ export const PRODUCTS: Product[] = [
     unit: "can", unitSize: "180g", price: 46, srp: 58, sku: "CTF-HAS-180",
     minOrderQty: 24, isActive: true, isFeatured: false, stock: 288, lowStockThreshold: 48,
     createdAt: "2024-01-01T00:00:00Z", description: "Century Tuna hot and spicy flavored in oil, 180g can.",
-    imageUrl: "https://picsum.photos/seed/prod-c04/400/400",
+    imageUrl: "https://images.unsplash.com/photo-1611143669185-af224c5e3252?w=400&q=80&auto=format&fit=crop",
   },
   {
     id: "prod-c05", categoryId: "cat-4",
@@ -905,7 +905,7 @@ export const PRODUCTS: Product[] = [
     unit: "can", unitSize: "210g", price: 55, srp: 68, sku: "CDO-KNB-210",
     minOrderQty: 24, isActive: true, isFeatured: false, stock: 240, lowStockThreshold: 24,
     createdAt: "2024-01-01T00:00:00Z", description: "CDO Karne Norte beef loaf, great for silog meals, 210g.",
-    imageUrl: "https://picsum.photos/seed/prod-c05/400/400",
+    imageUrl: "https://images.unsplash.com/photo-1547592180-85f173990554?w=400&q=80&auto=format&fit=crop",
   },
   {
     id: "prod-c06", categoryId: "cat-4",
@@ -913,7 +913,7 @@ export const PRODUCTS: Product[] = [
     unit: "can", unitSize: "250g", price: 28, srp: 35, sku: "DM-TOM-250",
     minOrderQty: 24, isActive: true, isFeatured: false, stock: 420, lowStockThreshold: 48,
     createdAt: "2024-01-01T00:00:00Z", description: "Del Monte tomato sauce for pasta and Filipino dishes, 250g.",
-    imageUrl: "https://picsum.photos/seed/prod-c06/400/400",
+    imageUrl: "https://images.unsplash.com/photo-1562802378-063ec186a863?w=400&q=80&auto=format&fit=crop",
   },
   {
     id: "prod-c07", categoryId: "cat-4",
@@ -921,7 +921,7 @@ export const PRODUCTS: Product[] = [
     unit: "can", unitSize: "410g", price: 42, srp: 52, sku: "HNT-PBN-410",
     minOrderQty: 24, isActive: true, isFeatured: false, stock: 300, lowStockThreshold: 48,
     createdAt: "2024-01-01T00:00:00Z", description: "Hunts pork and beans in tomato sauce, 410g can.",
-    imageUrl: "https://picsum.photos/seed/prod-c07/400/400",
+    imageUrl: "https://images.unsplash.com/photo-1611143669185-af224c5e3252?w=400&q=80&auto=format&fit=crop",
   },
 
   // ── More Condiments & Sauces (cat-5) ─────────────────────────────────────
@@ -931,7 +931,7 @@ export const PRODUCTS: Product[] = [
     unit: "bottle", unitSize: "200ml", price: 22, srp: 28, sku: "SS-SOY-200",
     minOrderQty: 24, isActive: true, isFeatured: false, stock: 360, lowStockThreshold: 48,
     createdAt: "2024-01-01T00:00:00Z", description: "Silver Swan soy sauce 200ml, convenient size for sari-sari stores.",
-    imageUrl: "https://picsum.photos/seed/prod-co1/400/400",
+    imageUrl: "https://images.unsplash.com/photo-1588964895597-cfccd6e2dbf9?w=400&q=80&auto=format&fit=crop",
   },
   {
     id: "prod-co2", categoryId: "cat-5",
@@ -947,7 +947,7 @@ export const PRODUCTS: Product[] = [
     unit: "bottle", unitSize: "550g", price: 58, srp: 72, sku: "MT-AAS-550",
     minOrderQty: 12, isActive: true, isFeatured: false, stock: 144, lowStockThreshold: 24,
     createdAt: "2024-01-01T00:00:00Z", description: "Mang Tomas All-Around Sarsa lechon sauce, 550g bottle.",
-    imageUrl: "https://picsum.photos/seed/prod-co3/400/400",
+    imageUrl: "https://images.unsplash.com/photo-1505253716362-afaea1d3d1af?w=400&q=80&auto=format&fit=crop",
   },
   {
     id: "prod-co4", categoryId: "cat-5",
@@ -955,7 +955,7 @@ export const PRODUCTS: Product[] = [
     unit: "pack", unitSize: "20g", price: 10, srp: 14, sku: "KNR-SIN-20",
     minOrderQty: 24, isActive: true, isFeatured: false, stock: 600, lowStockThreshold: 48,
     createdAt: "2024-01-01T00:00:00Z", description: "Knorr Sinigang sa Sampaloc original mix, 20g sachet.",
-    imageUrl: "https://picsum.photos/seed/prod-co4/400/400",
+    imageUrl: "https://images.unsplash.com/photo-1588964895597-cfccd6e2dbf9?w=400&q=80&auto=format&fit=crop",
   },
   {
     id: "prod-co5", categoryId: "cat-5",
@@ -971,7 +971,7 @@ export const PRODUCTS: Product[] = [
     unit: "pack", unitSize: "8g x 12", price: 28, srp: 35, sku: "MGI-MAS-8X12",
     minOrderQty: 12, isActive: true, isFeatured: false, stock: 420, lowStockThreshold: 48,
     createdAt: "2024-01-01T00:00:00Z", description: "Maggi Magic Sarap all-in-one seasoning, 8g sachets, 12 per pack.",
-    imageUrl: "https://picsum.photos/seed/prod-co6/400/400",
+    imageUrl: "https://images.unsplash.com/photo-1474979266404-7eaacbcd87c5?w=400&q=80&auto=format&fit=crop",
   },
   {
     id: "prod-co7", categoryId: "cat-5",
@@ -987,7 +987,7 @@ export const PRODUCTS: Product[] = [
     unit: "bottle", unitSize: "320g", price: 48, srp: 60, sku: "UFC-HBK-320",
     minOrderQty: 12, isActive: true, isFeatured: false, stock: 160, lowStockThreshold: 24,
     createdAt: "2024-01-01T00:00:00Z", description: "UFC Hot Banana Ketchup spicy style, 320g bottle.",
-    imageUrl: "https://picsum.photos/seed/prod-co8/400/400",
+    imageUrl: "https://images.unsplash.com/photo-1618774855690-f2de2ffab0e3?w=400&q=80&auto=format&fit=crop",
   },
 
   // ── More Personal Care (cat-6) ────────────────────────────────────────────
@@ -1005,7 +1005,7 @@ export const PRODUCTS: Product[] = [
     unit: "bar", unitSize: "75g", price: 18, srp: 24, sku: "BIO-ANT-75",
     minOrderQty: 24, isActive: true, isFeatured: false, stock: 360, lowStockThreshold: 48,
     createdAt: "2024-01-01T00:00:00Z", description: "Bioderm antibacterial bar soap, value pick for sari-sari, 75g.",
-    imageUrl: "https://picsum.photos/seed/prod-p02/400/400",
+    imageUrl: "https://images.unsplash.com/photo-1584305574647-0cc949a2bb9f?w=400&q=80&auto=format&fit=crop",
   },
   {
     id: "prod-p03", categoryId: "cat-6",
@@ -1045,7 +1045,7 @@ export const PRODUCTS: Product[] = [
     unit: "bottle", unitSize: "100g", price: 45, srp: 56, sku: "JOH-BPW-100",
     minOrderQty: 12, isActive: true, isFeatured: false, stock: 240, lowStockThreshold: 24,
     createdAt: "2024-01-01T00:00:00Z", description: "Johnson's Baby Powder for soft, fresh skin, 100g bottle.",
-    imageUrl: "https://picsum.photos/seed/prod-p07/400/400",
+    imageUrl: "https://images.unsplash.com/photo-1556228578-8c89e6adf883?w=400&q=80&auto=format&fit=crop",
   },
   {
     id: "prod-p08", categoryId: "cat-6",
@@ -1071,7 +1071,7 @@ export const PRODUCTS: Product[] = [
     unit: "box", unitSize: "20g x 10", price: 88, srp: 105, sku: "NES-3IN1-BCR",
     minOrderQty: 10, isActive: true, isFeatured: false, stock: 240, lowStockThreshold: 30,
     createdAt: "2024-01-01T00:00:00Z", description: "Nescafé 3-in-1 Brown & Creamy richer coffee blend, 10 sachets.",
-    imageUrl: "https://picsum.photos/seed/prod-cf1/400/400",
+    imageUrl: "https://images.unsplash.com/photo-1550583724-b2692b85b150?w=400&q=80&auto=format&fit=crop",
   },
   {
     id: "prod-cf2", categoryId: "cat-7",
@@ -1079,7 +1079,7 @@ export const PRODUCTS: Product[] = [
     unit: "box", unitSize: "25g x 10", price: 95, srp: 115, sku: "KPK-BLK-25",
     minOrderQty: 12, isActive: true, isFeatured: false, stock: 200, lowStockThreshold: 24,
     createdAt: "2024-01-01T00:00:00Z", description: "Kopiko Black strong unsweetened coffee, 25g sachets, 10 per box.",
-    imageUrl: "https://picsum.photos/seed/prod-cf2/400/400",
+    imageUrl: "https://images.unsplash.com/photo-1504630083234-14187a9df0f5?w=400&q=80&auto=format&fit=crop",
   },
   {
     id: "prod-cf3", categoryId: "cat-7",
@@ -1087,7 +1087,7 @@ export const PRODUCTS: Product[] = [
     unit: "box", unitSize: "20g x 10", price: 90, srp: 108, sku: "GT-WHT-20X10",
     minOrderQty: 10, isActive: true, isFeatured: false, stock: 220, lowStockThreshold: 30,
     createdAt: "2024-01-01T00:00:00Z", description: "Great Taste White 3-in-1 coffee with creamer, 10 sachets per box.",
-    imageUrl: "https://picsum.photos/seed/prod-cf3/400/400",
+    imageUrl: "https://images.unsplash.com/photo-1507226537819-b53e58b59ac6?w=400&q=80&auto=format&fit=crop",
   },
   {
     id: "prod-cf4", categoryId: "cat-7",
@@ -1103,7 +1103,7 @@ export const PRODUCTS: Product[] = [
     unit: "pack", unitSize: "155g", price: 68, srp: 82, sku: "BB-PWD-155",
     minOrderQty: 12, isActive: true, isFeatured: false, stock: 240, lowStockThreshold: 36,
     createdAt: "2024-01-01T00:00:00Z", description: "Bear Brand sterilized powdered full cream milk, 155g pack.",
-    imageUrl: "https://picsum.photos/seed/prod-cf5/400/400",
+    imageUrl: "https://images.unsplash.com/photo-1473093295043-cdd812d0e601?w=400&q=80&auto=format&fit=crop",
   },
   {
     id: "prod-cf6", categoryId: "cat-7",
@@ -1187,7 +1187,7 @@ export const PRODUCTS: Product[] = [
     unit: "loaf", unitSize: "400g", price: 55, srp: 68, sku: "GAR-WHT-400",
     minOrderQty: 6, isActive: true, isFeatured: true, stock: 120, lowStockThreshold: 12,
     createdAt: "2024-01-01T00:00:00Z", description: "Gardenia classic white sandwich bread, soft and fresh, 400g loaf.",
-    imageUrl: "https://picsum.photos/seed/prod-bb1/400/400",
+    imageUrl: "https://images.unsplash.com/photo-1509440159596-0249088772ff?w=400&q=80&auto=format&fit=crop",
   },
   {
     id: "prod-bb2", categoryId: "cat-9",
@@ -1195,7 +1195,7 @@ export const PRODUCTS: Product[] = [
     unit: "loaf", unitSize: "400g", price: 62, srp: 75, sku: "GAR-WHE-400",
     minOrderQty: 6, isActive: true, isFeatured: false, stock: 96, lowStockThreshold: 12,
     createdAt: "2024-01-01T00:00:00Z", description: "Gardenia wheat bread with added fiber, 400g loaf.",
-    imageUrl: "https://picsum.photos/seed/prod-bb2/400/400",
+    imageUrl: "https://images.unsplash.com/photo-1549931319-a545dcf3bc73?w=400&q=80&auto=format&fit=crop",
   },
   {
     id: "prod-bb3", categoryId: "cat-9",
@@ -1203,7 +1203,7 @@ export const PRODUCTS: Product[] = [
     unit: "pack", unitSize: "33g x 10", price: 35, srp: 42, sku: "SKF-CRK-330",
     minOrderQty: 12, isActive: true, isFeatured: false, stock: 360, lowStockThreshold: 48,
     createdAt: "2024-01-01T00:00:00Z", description: "M.Y. San Skyflakes crackers, 10 individually-wrapped packs.",
-    imageUrl: "https://picsum.photos/seed/prod-bb3/400/400",
+    imageUrl: "https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=400&q=80&auto=format&fit=crop",
   },
   {
     id: "prod-bb4", categoryId: "cat-9",
@@ -1211,7 +1211,7 @@ export const PRODUCTS: Product[] = [
     unit: "pack", unitSize: "200g", price: 42, srp: 52, sku: "MYS-GRH-200",
     minOrderQty: 12, isActive: true, isFeatured: false, stock: 240, lowStockThreshold: 24,
     createdAt: "2024-01-01T00:00:00Z", description: "M.Y. San Graham crackers honey flavor, great for desserts, 200g.",
-    imageUrl: "https://picsum.photos/seed/prod-bb4/400/400",
+    imageUrl: "https://images.unsplash.com/photo-1486427944299-d1955d23e34d?w=400&q=80&auto=format&fit=crop",
   },
   {
     id: "prod-bb5", categoryId: "cat-9",
@@ -1219,7 +1219,7 @@ export const PRODUCTS: Product[] = [
     unit: "pack", unitSize: "250g", price: 35, srp: 44, sku: "HNS-CRC-250",
     minOrderQty: 12, isActive: true, isFeatured: false, stock: 280, lowStockThreshold: 36,
     createdAt: "2024-01-01T00:00:00Z", description: "Hansel Cream-O chocolate sandwich cookies, 250g pack.",
-    imageUrl: "https://picsum.photos/seed/prod-bb5/400/400",
+    imageUrl: "https://images.unsplash.com/photo-1486427944299-d1955d23e34d?w=400&q=80&auto=format&fit=crop",
   },
   {
     id: "prod-bb6", categoryId: "cat-9",
@@ -1227,7 +1227,7 @@ export const PRODUCTS: Product[] = [
     unit: "pack", unitSize: "225g", price: 38, srp: 48, sku: "FIT-ORI-225",
     minOrderQty: 12, isActive: true, isFeatured: false, stock: 300, lowStockThreshold: 36,
     createdAt: "2024-01-01T00:00:00Z", description: "M.Y. San Fita crackers lightly salted, goes great with any spread.",
-    imageUrl: "https://picsum.photos/seed/prod-bb6/400/400",
+    imageUrl: "https://images.unsplash.com/photo-1509440159596-0249088772ff?w=400&q=80&auto=format&fit=crop",
   },
   {
     id: "prod-bb7", categoryId: "cat-9",
@@ -1245,7 +1245,7 @@ export const PRODUCTS: Product[] = [
     unit: "bar", unitSize: "40g", price: 18, srp: 24, sku: "CL9-CHO-40",
     minOrderQty: 24, isActive: true, isFeatured: false, stock: 480, lowStockThreshold: 48,
     createdAt: "2024-01-01T00:00:00Z", description: "Cloud 9 chocolate bar with caramel and biscuit, 40g — a Filipino classic.",
-    imageUrl: "https://picsum.photos/seed/prod-sw1/400/400",
+    imageUrl: "https://images.unsplash.com/photo-1515037893149-de7f840978e2?w=400&q=80&auto=format&fit=crop",
   },
   {
     id: "prod-sw2", categoryId: "cat-10",
@@ -1253,7 +1253,7 @@ export const PRODUCTS: Product[] = [
     unit: "box", unitSize: "24pcs", price: 48, srp: 60, sku: "FLT-CHO-24",
     minOrderQty: 12, isActive: true, isFeatured: false, stock: 360, lowStockThreshold: 36,
     createdAt: "2024-01-01T00:00:00Z", description: "Flat Tops bite-sized milk chocolate pieces, 24pcs per box.",
-    imageUrl: "https://picsum.photos/seed/prod-sw2/400/400",
+    imageUrl: "https://images.unsplash.com/photo-1576618148400-f54bed99fcfd?w=400&q=80&auto=format&fit=crop",
   },
   {
     id: "prod-sw3", categoryId: "cat-10",
@@ -1261,7 +1261,7 @@ export const PRODUCTS: Product[] = [
     unit: "pack", unitSize: "24pcs", price: 55, srp: 68, sku: "CHN-PNT-24",
     minOrderQty: 12, isActive: true, isFeatured: false, stock: 300, lowStockThreshold: 36,
     createdAt: "2024-01-01T00:00:00Z", description: "Choc Nut chocolate-coated peanut candy, 24pcs per pack.",
-    imageUrl: "https://picsum.photos/seed/prod-sw3/400/400",
+    imageUrl: "https://images.unsplash.com/photo-1515037893149-de7f840978e2?w=400&q=80&auto=format&fit=crop",
   },
   {
     id: "prod-sw4", categoryId: "cat-10",
@@ -1269,7 +1269,7 @@ export const PRODUCTS: Product[] = [
     unit: "pack", unitSize: "100g", price: 28, srp: 35, sku: "KPK-CAF-100",
     minOrderQty: 12, isActive: true, isFeatured: false, stock: 400, lowStockThreshold: 48,
     createdAt: "2024-01-01T00:00:00Z", description: "Kopiko cappuccino coffee candy, strong and rich flavor, 100g.",
-    imageUrl: "https://picsum.photos/seed/prod-sw4/400/400",
+    imageUrl: "https://images.unsplash.com/photo-1515037893149-de7f840978e2?w=400&q=80&auto=format&fit=crop",
   },
   {
     id: "prod-sw5", categoryId: "cat-10",
@@ -1277,7 +1277,7 @@ export const PRODUCTS: Product[] = [
     unit: "pack", unitSize: "108g", price: 32, srp: 40, sku: "WR-MLK-108",
     minOrderQty: 12, isActive: true, isFeatured: false, stock: 280, lowStockThreshold: 36,
     createdAt: "2024-01-01T00:00:00Z", description: "White Rabbit creamy milk candy, 108g — a classic Asian treat.",
-    imageUrl: "https://picsum.photos/seed/prod-sw5/400/400",
+    imageUrl: "https://images.unsplash.com/photo-1576618148400-f54bed99fcfd?w=400&q=80&auto=format&fit=crop",
   },
   {
     id: "prod-sw6", categoryId: "cat-10",
@@ -1285,7 +1285,7 @@ export const PRODUCTS: Product[] = [
     unit: "bar", unitSize: "38g", price: 22, srp: 28, sku: "GOY-DRK-38",
     minOrderQty: 24, isActive: true, isFeatured: false, stock: 360, lowStockThreshold: 48,
     createdAt: "2024-01-01T00:00:00Z", description: "Goya dark chocolate tablea bar, smooth and rich, 38g.",
-    imageUrl: "https://picsum.photos/seed/prod-sw6/400/400",
+    imageUrl: "https://images.unsplash.com/photo-1515037893149-de7f840978e2?w=400&q=80&auto=format&fit=crop",
   },
   {
     id: "prod-sw7", categoryId: "cat-10",
@@ -1293,7 +1293,7 @@ export const PRODUCTS: Product[] = [
     unit: "box", unitSize: "48pcs", price: 85, srp: 105, sku: "RCO-FLT-48",
     minOrderQty: 6, isActive: true, isFeatured: false, stock: 180, lowStockThreshold: 12,
     createdAt: "2024-01-01T00:00:00Z", description: "Ricoa Flat Tops milk chocolate discs, 48pcs bulk box.",
-    imageUrl: "https://picsum.photos/seed/prod-sw7/400/400",
+    imageUrl: "https://images.unsplash.com/photo-1576618148400-f54bed99fcfd?w=400&q=80&auto=format&fit=crop",
   },
 
   // ── Dairy & Eggs (cat-11) ─────────────────────────────────────────────────
@@ -1311,7 +1311,7 @@ export const PRODUCTS: Product[] = [
     unit: "can", unitSize: "370ml", price: 48, srp: 60, sku: "ALK-EVM-370",
     minOrderQty: 12, isActive: true, isFeatured: false, stock: 280, lowStockThreshold: 36,
     createdAt: "2024-01-01T00:00:00Z", description: "Alaska evaporated filled milk, great for coffee or cooking, 370ml.",
-    imageUrl: "https://picsum.photos/seed/prod-d02/400/400",
+    imageUrl: "https://images.unsplash.com/photo-1550583724-b2692b85b150?w=400&q=80&auto=format&fit=crop",
   },
   {
     id: "prod-d03", categoryId: "cat-11",
@@ -1319,7 +1319,7 @@ export const PRODUCTS: Product[] = [
     unit: "can", unitSize: "300ml", price: 45, srp: 56, sku: "ALK-CON-300",
     minOrderQty: 12, isActive: true, isFeatured: false, stock: 300, lowStockThreshold: 36,
     createdAt: "2024-01-01T00:00:00Z", description: "Alaska sweetened condensed milk for desserts and coffee, 300ml.",
-    imageUrl: "https://picsum.photos/seed/prod-d03/400/400",
+    imageUrl: "https://images.unsplash.com/photo-1558642452-9d2a7deb7f62?w=400&q=80&auto=format&fit=crop",
   },
   {
     id: "prod-d04", categoryId: "cat-11",
@@ -1327,7 +1327,7 @@ export const PRODUCTS: Product[] = [
     unit: "can", unitSize: "250ml", price: 58, srp: 72, sku: "NES-APC-250",
     minOrderQty: 12, isActive: true, isFeatured: false, stock: 200, lowStockThreshold: 24,
     createdAt: "2024-01-01T00:00:00Z", description: "Nestlé All Purpose Cream for Filipino desserts and pasta, 250ml.",
-    imageUrl: "https://picsum.photos/seed/prod-d04/400/400",
+    imageUrl: "https://images.unsplash.com/photo-1563636619-e9143da7973b?w=400&q=80&auto=format&fit=crop",
   },
   {
     id: "prod-d05", categoryId: "cat-11",
@@ -1343,7 +1343,7 @@ export const PRODUCTS: Product[] = [
     unit: "bottle", unitSize: "220ml", price: 78, srp: 96, sku: "LC-MAY-220",
     minOrderQty: 12, isActive: true, isFeatured: false, stock: 160, lowStockThreshold: 24,
     createdAt: "2024-01-01T00:00:00Z", description: "Lady's Choice real mayonnaise for salads and sandwiches, 220ml.",
-    imageUrl: "https://picsum.photos/seed/prod-d06/400/400",
+    imageUrl: "https://images.unsplash.com/photo-1563636619-e9143da7973b?w=400&q=80&auto=format&fit=crop",
   },
   {
     id: "prod-d07", categoryId: "cat-11",
@@ -1351,7 +1351,7 @@ export const PRODUCTS: Product[] = [
     unit: "pack", unitSize: "165g", price: 88, srp: 108, sku: "EDN-CHE-165",
     minOrderQty: 12, isActive: true, isFeatured: true, stock: 200, lowStockThreshold: 24,
     createdAt: "2024-01-01T00:00:00Z", description: "Eden cheese food loaf, Filipino favorite for pandesal and spaghetti.",
-    imageUrl: "https://picsum.photos/seed/prod-d07/400/400",
+    imageUrl: "https://images.unsplash.com/photo-1589985270826-4b7bb135bc9d?w=400&q=80&auto=format&fit=crop",
   },
   {
     id: "prod-d08", categoryId: "cat-11",
@@ -1385,7 +1385,7 @@ export const PRODUCTS: Product[] = [
     unit: "pack", unitSize: "50g", price: 22, srp: 28, sku: "MS-KRK-50",
     minOrderQty: 24, isActive: true, isFeatured: false, stock: 360, lowStockThreshold: 36,
     createdAt: "2024-01-01T00:00:00Z", description: "Mama Sita's Kare-Kare mix for easy Filipino peanut stew, 50g.",
-    imageUrl: "https://images.unsplash.com/photo-1612871689893-da0e6d1bc9e5?w=400&q=80&auto=format&fit=crop",
+    imageUrl: "https://images.unsplash.com/photo-1517686469429-8bdb88b9f907?w=400&q=80&auto=format&fit=crop",
   },
   {
     id: "prod-k04", categoryId: "cat-12",
@@ -1393,7 +1393,7 @@ export const PRODUCTS: Product[] = [
     unit: "pack", unitSize: "50g", price: 22, srp: 28, sku: "MS-CAL-50",
     minOrderQty: 24, isActive: true, isFeatured: false, stock: 340, lowStockThreshold: 36,
     createdAt: "2024-01-01T00:00:00Z", description: "Mama Sita's Caldereta mix for rich Filipino beef stew, 50g.",
-    imageUrl: "https://images.unsplash.com/photo-1612871689893-da0e6d1bc9e5?w=400&q=80&auto=format&fit=crop",
+    imageUrl: "https://images.unsplash.com/photo-1517686469429-8bdb88b9f907?w=400&q=80&auto=format&fit=crop",
   },
   {
     id: "prod-k05", categoryId: "cat-12",
@@ -1401,7 +1401,7 @@ export const PRODUCTS: Product[] = [
     unit: "pack", unitSize: "1kg", price: 45, srp: 56, sku: "MY-APF-1KG",
     minOrderQty: 12, isActive: true, isFeatured: false, stock: 200, lowStockThreshold: 24,
     createdAt: "2024-01-01T00:00:00Z", description: "Maya all-purpose flour for baking and cooking, 1kg pack.",
-    imageUrl: "https://picsum.photos/seed/prod-k05/400/400",
+    imageUrl: "https://images.unsplash.com/photo-1588943211346-0908a1fb0b01?w=400&q=80&auto=format&fit=crop",
   },
   {
     id: "prod-k06", categoryId: "cat-12",
@@ -1417,7 +1417,7 @@ export const PRODUCTS: Product[] = [
     unit: "bottle", unitSize: "500ml", price: 35, srp: 44, sku: "NA-COV-500",
     minOrderQty: 12, isActive: true, isFeatured: false, stock: 200, lowStockThreshold: 24,
     createdAt: "2024-01-01T00:00:00Z", description: "NutriAsia coconut vinegar, mild and tangy for dipping and marinades.",
-    imageUrl: "https://picsum.photos/seed/prod-k07/400/400",
+    imageUrl: "https://images.unsplash.com/photo-1569842083998-65c93a5de51a?w=400&q=80&auto=format&fit=crop",
   },
   {
     id: "prod-k08", categoryId: "cat-12",
@@ -1425,7 +1425,7 @@ export const PRODUCTS: Product[] = [
     unit: "pack", unitSize: "40g", price: 18, srp: 24, sku: "KNR-SIN-40",
     minOrderQty: 24, isActive: true, isFeatured: false, stock: 480, lowStockThreshold: 48,
     createdAt: "2024-01-01T00:00:00Z", description: "Knorr Sinigang sa Sampaloc tamarind soup base mix, 40g pack.",
-    imageUrl: "https://picsum.photos/seed/prod-k08/400/400",
+    imageUrl: "https://images.unsplash.com/photo-1517686469429-8bdb88b9f907?w=400&q=80&auto=format&fit=crop",
   },
 ];
 

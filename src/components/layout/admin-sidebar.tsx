@@ -6,7 +6,7 @@ import {
   Warehouse, Truck, CreditCard, Settings, ShoppingBasket,
   ClipboardList, Tag, ChevronRight, Map,
   Banknote, Building2, FileText, Monitor,
-  PackageCheck, Boxes, ScanLine, TrendingUp, Brain, MessageCircle, UserCog,
+  PackageCheck, Boxes, ScanLine, TrendingUp, Brain, MessageCircle, UserCog, Landmark,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { ThemeToggle } from "@/components/ui/theme-toggle";
@@ -54,14 +54,16 @@ const navGroups = [
       { href: "/admin/promotions",      label: "Promotions",      icon: Tag },
       { href: "/admin/subscriptions",   label: "Subscriptions",   icon: CreditCard },
       { href: "/admin/payments",        label: "Payments",        icon: Banknote },
+      { href: "/admin/credit",          label: "Credit Terms",    icon: Landmark },
     ],
   },
   {
     label: "Intelligence",
     items: [
-      { href: "/admin/analytics", label: "Analytics",  icon: TrendingUp },
+      { href: "/admin/analytics", label: "Analytics",   icon: TrendingUp },
       { href: "/admin/forecast",  label: "AI Forecast", icon: Brain },
       { href: "/admin/reports",   label: "Reports",     icon: BarChart3 },
+      { href: "/admin/coverage",  label: "Coverage",    icon: Map },
     ],
   },
   {
@@ -121,6 +123,14 @@ export function AdminSidebar() {
           </div>
         ))}
       </nav>
+
+      {/* NexoFlow attribution */}
+      <div className="px-3 pt-2 pb-1 text-center">
+        <p className="text-[9px] text-muted-foreground/40 leading-snug">
+          Powered by <span className="font-semibold text-brand-400/60">⚡ NexoFlow</span><br />
+          <span className="text-[8px]">Pacific Nexus Global Supply Chain</span>
+        </p>
+      </div>
 
       {/* Bottom user */}
       <div className="border-t border-border p-3 space-y-1">

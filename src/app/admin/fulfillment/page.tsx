@@ -1,35 +1,23 @@
 "use client";
-import { useState } from "react";
-import { Package, CheckCircle2, ChevronRight, Clock } from "lucide-react";
+import { Package, CheckCircle2, Clock } from "lucide-react";
 import { Card } from "@/components/ui/card";
 import { StatusBadge } from "@/components/ui/status-badge";
 import { Button } from "@/components/ui/button";
 import { formatPHP, formatDateTime, type OrderStatus } from "@/lib/utils";
-import { ADMIN_RECENT_ORDERS } from "@/lib/mock-data";
 import { cn } from "@/lib/utils";
+import { useOrdersStore, NEXT_STATUS } from "@/store/orders";
+import Link from "next/link";
 
 const LANES: { status: OrderStatus; label: string; color: string }[] = [
-  { status: "confirmed", label: "To Pick",      color: "border-t-warning-400" },
-  { status: "picking",   label: "Picking",       color: "border-t-purple-400" },
-  { status: "packed",    label: "Ready to Ship", color: "border-t-info-400" },
+  { status: "confirmed",        label: "To Pick",         color: "border-t-warning-400" },
+  { status: "picking",          label: "Picking",          color: "border-t-purple-400" },
+  { status: "packed",           label: "Ready to Ship",    color: "border-t-info-400" },
   { status: "out_for_delivery", label: "Out for Delivery", color: "border-t-brand-400" },
 ];
 
-const NEXT_STATUS: Partial<Record<OrderStatus, OrderStatus>> = {
-  confirmed: "picking",
-  picking: "packed",
-  packed: "out_for_delivery",
-  out_for_delivery: "delivered",
-};
-
 export default function FulfillmentPage() {
-  const [orders, setOrders] = useState(ADMIN_RECENT_ORDERS);
-
-  function advance(orderId: string, current: OrderStatus) {
-    const next = NEXT_STATUS[current];
-    if (!next) return;
-    setOrders((prev) => prev.map((o) => o.id === orderId ? { ...o, status: next } : o));
-  }
+  const orders = useOrdersStore((s) => s.orders);
+  const advance = useOrdersStore((s) => s.advance);
 
   return (
     <div className="p-6 space-y-5 max-w-7xl mx-auto">
@@ -77,7 +65,7 @@ export default function FulfillmentPage() {
                         <Button
                           size="sm"
                           className="w-full text-xs h-8"
-                          onClick={() => advance(order.id, order.status)}
+                          onClick={() => advance(order.id)}
                         >
                           <CheckCircle2 className="h-3.5 w-3.5" />
                           Mark as {NEXT_STATUS[order.status]?.replace(/_/g, " ")}

@@ -3,7 +3,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import {
   LayoutDashboard, ShoppingCart, ClipboardList,
-  User, ShoppingBasket, Bell, BarChart3
+  User, ShoppingBasket, Bell, BarChart3, MonitorSmartphone, MessageSquare,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useCartStore } from "@/store/cart";
@@ -19,7 +19,8 @@ export function RetailerBottomNav() {
     { href: "/dashboard", label: t("Home", "Tahanan"),    icon: LayoutDashboard },
     { href: "/catalog",   label: t("Shop", "Pamimili"),   icon: ShoppingBasket },
     { href: "/cart",      label: t("Cart", "Basket"),     icon: ShoppingCart, isCart: true },
-    { href: "/orders",    label: t("Orders", "Mga Order"), icon: ClipboardList },
+    { href: "/pos",       label: "POS",                   icon: MonitorSmartphone },
+    { href: "/orders",    label: t("Orders", "Orders"),   icon: ClipboardList },
     { href: "/account",   label: t("Account", "Account"), icon: User },
   ];
 
@@ -33,7 +34,7 @@ export function RetailerBottomNav() {
               key={href}
               href={href}
               className={cn(
-                "relative flex flex-col items-center gap-0.5 px-3 py-2 rounded-xl transition-colors min-w-[56px]",
+                "relative flex flex-col items-center gap-0.5 px-1 py-2 rounded-xl transition-colors flex-1 min-w-0",
                 active ? "text-brand-500" : "text-muted-foreground hover:text-foreground"
               )}
             >
@@ -52,25 +53,69 @@ export function RetailerBottomNav() {
           );
         })}
       </div>
+      <p className="text-center text-[9px] text-muted-foreground/40 leading-none pb-0.5">
+        Powered by <span className="font-semibold">NexoFlow</span>
+      </p>
       <div className="pb-safe" style={{ paddingBottom: "env(safe-area-inset-bottom)" }} />
     </nav>
   );
 }
 
 export function RetailerTopBar({ title }: { title?: string }) {
+  const pathname = usePathname();
   const totalItems = useCartStore((s) => s.items.reduce((sum, i) => sum + i.quantity, 0));
-  const { lang, setLang } = useLanguageStore();
+  const { lang, setLang, t } = useLanguageStore();
+
+  const navItems = [
+    { href: "/dashboard", label: t("Home", "Tahanan"),     icon: LayoutDashboard },
+    { href: "/catalog",   label: t("Shop", "Pamimili"),    icon: ShoppingBasket },
+    { href: "/orders",    label: t("Orders", "Mga Order"), icon: ClipboardList },
+    { href: "/pos",       label: t("POS", "POS"),          icon: MonitorSmartphone },
+    { href: "/account",   label: t("Account", "Account"),  icon: User },
+  ];
+
   return (
     <header className="sticky top-0 z-30 border-b border-border bg-card/90 backdrop-blur-md">
-      <div className="flex h-14 items-center justify-between px-4">
-        <div className="flex items-center gap-2">
+      <div className="flex h-14 items-center gap-4 px-4 md:px-6">
+        {/* Logo */}
+        <Link href="/dashboard" className="flex items-center gap-2 shrink-0">
           <div className="flex h-8 w-8 items-center justify-center rounded-xl bg-brand-500">
             <ShoppingBasket className="h-4 w-4 text-white" />
           </div>
-          <span className="font-display text-sm font-bold text-foreground">
+          <span className="font-display text-sm font-bold text-foreground hidden md:block">
             {title || "Ka Sari-Sari"}
           </span>
-        </div>
+          <span className="font-display text-sm font-bold text-foreground md:hidden">
+            {title || "Ka Sari-Sari"}
+          </span>
+        </Link>
+
+        {/* Desktop nav links — hidden on mobile (BottomNav handles mobile) */}
+        <nav className="hidden md:flex items-center gap-1 ml-2">
+          {navItems.map(({ href, label, icon: Icon }) => {
+            const active = pathname === href || (href !== "/dashboard" && pathname.startsWith(href + "/"));
+            return (
+              <Link
+                key={href}
+                href={href}
+                className={cn(
+                  "flex items-center gap-1.5 px-3 py-2 rounded-lg text-sm font-medium transition-colors",
+                  active
+                    ? "bg-brand-500/10 text-brand-500"
+                    : "text-muted-foreground hover:text-foreground hover:bg-muted"
+                )}
+              >
+                <Icon className="h-4 w-4" strokeWidth={active ? 2.2 : 1.8} />
+                {label}
+              </Link>
+            );
+          })}
+        </nav>
+
+        {/* Spacer */}
+        <div className="flex-1" />
+
+        {/* Right-side icons */}
         <div className="flex items-center gap-1">
           <ThemeToggle />
           <button
@@ -83,6 +128,9 @@ export function RetailerTopBar({ title }: { title?: string }) {
           >
             {lang === "tl" ? "TL" : "EN"}
           </button>
+          <Link href="/chat" className="relative flex h-9 w-9 items-center justify-center rounded-xl hover:bg-muted transition-colors" title="Voice Order">
+            <MessageSquare className="h-5 w-5 text-muted-foreground" />
+          </Link>
           <Link href="/notifications" className="relative flex h-9 w-9 items-center justify-center rounded-xl hover:bg-muted transition-colors">
             <Bell className="h-5 w-5 text-muted-foreground" />
             <span className="absolute top-1.5 right-1.5 h-2 w-2 rounded-full bg-brand-500" />

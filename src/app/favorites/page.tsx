@@ -30,8 +30,14 @@ export default function FavoritesPage() {
             const inCart = cartItems.find((c) => c.product.id === product.id);
             return (
               <div key={product.id} className="flex items-center gap-3 rounded-2xl border border-border bg-card shadow-card p-3">
-                <div className="h-16 w-16 rounded-xl bg-surface-100 shrink-0 flex items-center justify-center">
-                  <Package className="h-7 w-7 text-muted-foreground/50" />
+                <div className="h-16 w-16 rounded-xl bg-surface-100 shrink-0 overflow-hidden">
+                  {product.imageUrl ? (
+                    <img src={product.imageUrl} alt={product.name} className="h-full w-full object-cover" />
+                  ) : (
+                    <div className="h-full w-full flex items-center justify-center">
+                      <Package className="h-7 w-7 text-muted-foreground/50" />
+                    </div>
+                  )}
                 </div>
                 <div className="flex-1 min-w-0">
                   <p className="text-sm font-semibold text-foreground line-clamp-1">{product.name}</p>

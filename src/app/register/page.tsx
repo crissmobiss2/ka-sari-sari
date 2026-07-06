@@ -1,11 +1,12 @@
 "use client";
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { Phone, User, Store, MapPin, Lock, ShoppingBasket, ArrowRight, Check } from "lucide-react";
+import { Phone, User, Store, MapPin, Lock, ShoppingBasket, ArrowRight, Check, ChevronDown, Search, CheckCircle2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { cn } from "@/lib/utils";
+import { NEXOFLOW_CITIES, isCovered, type NexoflowCity } from "@/lib/nexoflow-cities";
 
 const STEPS = ["Phone", "Account", "Store", "Activate"];
 
@@ -18,8 +19,27 @@ export default function RegisterPage() {
     phone: "", name: "", password: "",
     storeName: "", barangay: "", city: "", province: "",
   });
+  const [citySearch, setCitySearch] = useState("");
+  const [cityOpen, setCityOpen] = useState(false);
 
   function set(k: string, v: string) { setForm((p) => ({ ...p, [k]: v })); }
+
+  const filteredCities = useMemo(() => {
+    const q = citySearch.toLowerCase();
+    if (!q) return NEXOFLOW_CITIES.slice(0, 20);
+    return NEXOFLOW_CITIES.filter(
+      (c) => c.city.toLowerCase().includes(q) || c.province.toLowerCase().includes(q)
+    ).slice(0, 20);
+  }, [citySearch]);
+
+  function selectCity(c: NexoflowCity) {
+    set("city", c.city);
+    set("province", c.province);
+    setCityOpen(false);
+    setCitySearch("");
+  }
+
+  const covered = isCovered(form.city);
 
   function handleNext() {
     if (step < 3) { setStep((s) => s + 1); }
@@ -144,12 +164,68 @@ export default function RegisterPage() {
               </div>
               <Input label="Store name" placeholder="Santos Sari-Sari Store" value={form.storeName}
                 onChange={(e) => set("storeName", e.target.value)} leftIcon={<Store className="h-4 w-4" />} />
-              <Input label="Barangay" placeholder="Brgy. San Jose" value={form.barangay}
+              <Input label="Barangay / Street" placeholder="Brgy. San Jose" value={form.barangay}
                 onChange={(e) => set("barangay", e.target.value)} leftIcon={<MapPin className="h-4 w-4" />} />
-              <Input label="City / Municipality" placeholder="Caloocan City" value={form.city}
-                onChange={(e) => set("city", e.target.value)} />
-              <Input label="Province" placeholder="Metro Manila" value={form.province}
-                onChange={(e) => set("province", e.target.value)} />
+
+              {/* City picker with Nexoflow coverage */}
+              <div className="space-y-1.5">
+                <div className="flex items-center justify-between">
+                  <label className="block text-xs font-semibold text-foreground">City / Municipality</label>
+                  {covered && form.city && (
+                    <span className="flex items-center gap-1 text-[11px] font-semibold text-success-700">
+                      <CheckCircle2 className="h-3 w-3" /> Delivery available
+                    </span>
+                  )}
+                </div>
+                <div className="relative">
+                  <button
+                    type="button"
+                    onClick={() => setCityOpen((o) => !o)}
+                    className="flex h-11 w-full items-center justify-between rounded-xl border border-input bg-card px-3.5 text-sm focus:outline-none focus:ring-2 focus:ring-brand-500"
+                  >
+                    <span className={cn("truncate", form.city ? "text-foreground" : "text-muted-foreground")}>
+                      {form.city || "Select your city…"}
+                    </span>
+                    <ChevronDown className={cn("h-4 w-4 text-muted-foreground transition-transform shrink-0", cityOpen && "rotate-180")} />
+                  </button>
+                  {cityOpen && (
+                    <div className="absolute top-full mt-1 left-0 right-0 z-50 rounded-xl border border-border bg-card shadow-lg overflow-hidden">
+                      <div className="p-2 border-b border-border">
+                        <div className="relative">
+                          <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-3.5 w-3.5 text-muted-foreground" />
+                          <input autoFocus value={citySearch} onChange={(e) => setCitySearch(e.target.value)}
+                            placeholder="Search cities…"
+                            className="h-9 w-full rounded-lg border border-input bg-background pl-9 pr-3 text-sm focus:outline-none focus:ring-1 focus:ring-brand-500" />
+                        </div>
+                      </div>
+                      <div className="max-h-48 overflow-y-auto divide-y divide-border/50">
+                        {filteredCities.map((c) => (
+                          <button key={c.city + c.province} type="button" onClick={() => selectCity(c)}
+                            className="flex w-full items-center justify-between px-4 py-2.5 text-sm hover:bg-muted/50 transition-colors">
+                            <div className="text-left">
+                              <p className="font-medium text-foreground">{c.city}</p>
+                              <p className="text-[11px] text-muted-foreground">{c.province}</p>
+                            </div>
+                            <span className="text-[10px] font-semibold text-brand-500 bg-brand-50 border border-brand-100 rounded-full px-1.5 py-0.5 shrink-0">
+                              {c.hub}
+                            </span>
+                          </button>
+                        ))}
+                        {!citySearch && (
+                          <p className="py-2 text-center text-[11px] text-muted-foreground">Showing 20 of 137. Type to search.</p>
+                        )}
+                      </div>
+                    </div>
+                  )}
+                </div>
+              </div>
+
+              <div>
+                <label className="block text-xs font-semibold text-foreground mb-1.5">Province</label>
+                <div className="flex h-11 items-center rounded-xl border border-input bg-muted/50 px-3.5 text-sm text-muted-foreground">
+                  {form.province || "Auto-filled from city"}
+                </div>
+              </div>
               <Button size="lg" className="w-full" onClick={handleNext}
                 disabled={!form.storeName || !form.barangay || !form.city}>
                 Continue <ArrowRight className="h-4 w-4" />

@@ -1,6 +1,7 @@
 import { ShoppingBasket } from "lucide-react";
 import { WarehouseNav } from "@/components/warehouse/warehouse-nav";
 import { LogoutButton } from "@/components/ui/logout-button";
+import { NexoflowFooter } from "@/components/ui/nexoflow-footer";
 
 export default function WarehouseLayout({ children }: { children: React.ReactNode }) {
   return (
@@ -31,6 +32,7 @@ export default function WarehouseLayout({ children }: { children: React.ReactNod
         {children}
       </main>
 
+      <NexoflowFooter />
       {/* Bottom Navigation — client component for active state */}
       <WarehouseNav />
     </div>

@@ -5,53 +5,8 @@ import Link from "next/link";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { cn, formatPHP } from "@/lib/utils";
-import { MOCK_ORDERS } from "@/lib/mock-data";
-import type { Order } from "@/types";
-
-// Use first 4 orders as today's deliveries with mock stop numbers and statuses
-const TODAY_DELIVERIES: Array<Order & { stopNumber: number; deliveryStatus: "pending" | "delivered" | "failed" }> = [
-  { ...MOCK_ORDERS[0], stopNumber: 1, deliveryStatus: "pending" },
-  { ...MOCK_ORDERS[1], stopNumber: 2, deliveryStatus: "delivered" },
-  { ...MOCK_ORDERS[2], stopNumber: 3, deliveryStatus: "pending" },
-  // Extra synthetic entries from admin orders mock
-  {
-    id: "ord-004",
-    orderNumber: "KSS-2025-00139",
-    storeId: "store-2",
-    userId: "user-2",
-    status: "out_for_delivery",
-    paymentStatus: "paid",
-    paymentMethod: "maya",
-    subtotal: 860,
-    deliveryFee: 80,
-    total: 940,
-    deliveryAddress: "88 Sampaguita St., Brgy. Bagong Barrio, Caloocan",
-    items: [
-      { id: "oi-7", orderId: "ord-004", productId: "prod-3", quantity: 10, unitPrice: 38, totalPrice: 380, status: "picked" as const, fulfilledQty: 10 },
-      { id: "oi-8", orderId: "ord-004", productId: "prod-5", quantity: 5, unitPrice: 85, totalPrice: 425, status: "picked" as const, fulfilledQty: 5 },
-    ],
-    fulfillmentEvents: [],
-    createdAt: new Date(Date.now() - 1000 * 60 * 180).toISOString(),
-    updatedAt: new Date(Date.now() - 1000 * 60 * 60).toISOString(),
-    stopNumber: 4,
-    deliveryStatus: "failed",
-  },
-];
-
-// Derive customer names from a mock map
-const CUSTOMER_NAMES: Record<string, string> = {
-  "ord-001": "Maria Santos",
-  "ord-002": "Roberto Cruz",
-  "ord-003": "Lina Reyes",
-  "ord-004": "Fernando Delos Reyes",
-};
-
-const AREA_LABELS: Record<string, string> = {
-  "ord-001": "Brgy. 5, Caloocan",
-  "ord-002": "Brgy. 5, Caloocan",
-  "ord-003": "Brgy. 5, Caloocan",
-  "ord-004": "Brgy. Bagong Barrio, Caloocan",
-};
+import { useOrdersStore } from "@/store/orders";
+import { CheckCircle2, XCircle, Package, MapPin, Banknote } from "lucide-react";
 
 type FilterTab = "all" | "pending" | "delivered" | "failed";
 
@@ -62,146 +17,175 @@ const TABS: { id: FilterTab; label: string }[] = [
   { id: "failed",    label: "Failed" },
 ];
 
-function statusVariant(s: string): "success" | "danger" | "warning" | "neutral" {
-  if (s === "delivered") return "success";
-  if (s === "failed")    return "danger";
-  return "warning";
-}
+const STATUS_BADGE: Record<string, { label: string; className: string }> = {
+  pending:   { label: "Pending",   className: "bg-warning-100 text-warning-700 border-warning-200" },
+  delivered: { label: "Delivered", className: "bg-success-100 text-success-700 border-success-200" },
+  failed:    { label: "Failed",    className: "bg-danger-100 text-danger-700 border-danger-200" },
+};
 
-function paymentBadge(method: string): { label: string; variant: "default" | "info" | "success" | "neutral" } {
-  if (method === "cod")   return { label: "COD",   variant: "default" };
-  if (method === "gcash") return { label: "GCash", variant: "info" };
-  if (method === "maya")  return { label: "Maya",  variant: "success" };
-  return { label: method.toUpperCase(), variant: "neutral" };
-}
+export default function DriverDeliveriesPage() {
+  const allOrders = useOrdersStore((s) => s.orders);
+  const markDelivered = useOrdersStore((s) => s.markDelivered);
+  const markFailed = useOrdersStore((s) => s.markFailed);
 
-export default function DeliveriesPage() {
   const [activeTab, setActiveTab] = useState<FilterTab>("all");
+  const [toast, setToast] = useState<string | null>(null);
 
-  const filtered = TODAY_DELIVERIES.filter((d) =>
-    activeTab === "all" ? true : d.deliveryStatus === activeTab
-  ).sort((a, b) => {
-    // Pending first, delivered/failed last
-    if (a.deliveryStatus === "pending" && b.deliveryStatus !== "pending") return -1;
-    if (a.deliveryStatus !== "pending" && b.deliveryStatus === "pending") return 1;
-    return a.stopNumber - b.stopNumber;
+  function showToast(msg: string) {
+    setToast(msg);
+    setTimeout(() => setToast(null), 2500);
+  }
+
+  // Driver sees: out_for_delivery (pending), delivered, failed_delivery
+  const deliveries = allOrders
+    .filter((o) => ["out_for_delivery", "delivered", "failed_delivery"].includes(o.status))
+    .map((o, i) => ({
+      ...o,
+      stopNumber: i + 1,
+      deliveryStatus:
+        o.status === "out_for_delivery"
+          ? "pending"
+          : o.status === "delivered"
+          ? "delivered"
+          : "failed",
+    }));
+
+  const filtered = deliveries.filter((d) => {
+    if (activeTab === "all") return true;
+    return d.deliveryStatus === activeTab;
   });
 
-  const counts = {
-    all:       TODAY_DELIVERIES.length,
-    pending:   TODAY_DELIVERIES.filter(d => d.deliveryStatus === "pending").length,
-    delivered: TODAY_DELIVERIES.filter(d => d.deliveryStatus === "delivered").length,
-    failed:    TODAY_DELIVERIES.filter(d => d.deliveryStatus === "failed").length,
-  };
+  const pendingCount   = deliveries.filter((d) => d.deliveryStatus === "pending").length;
+  const deliveredCount = deliveries.filter((d) => d.deliveryStatus === "delivered").length;
+  const failedCount    = deliveries.filter((d) => d.deliveryStatus === "failed").length;
 
   return (
-    <div className="flex flex-col h-full">
-      {/* Page header */}
-      <div className="px-4 pt-5 pb-3">
-        <h1 className="font-display text-xl font-bold text-foreground">Today's Deliveries</h1>
-        <p className="text-sm text-muted-foreground mt-0.5">{counts.pending} pending · {counts.delivered} done</p>
-      </div>
+    <div className="min-h-screen bg-background pb-24">
+      <div className="sticky top-0 z-20 bg-card border-b border-border">
+        <div className="px-4 pt-4 pb-3">
+          <h1 className="font-display text-xl font-bold text-foreground">My Deliveries</h1>
+          <p className="text-xs text-muted-foreground mt-0.5">Today · {deliveries.length} stops</p>
+        </div>
 
-      {/* Filter tabs */}
-      <div className="px-4 mb-4">
-        <div className="flex gap-2 p-1 bg-muted rounded-xl">
-          {TABS.map((tab) => (
+        {/* Summary pills */}
+        <div className="flex gap-2 px-4 pb-3">
+          {[
+            { label: "Pending",   count: pendingCount,   color: "bg-warning-100 text-warning-700" },
+            { label: "Delivered", count: deliveredCount, color: "bg-success-100 text-success-700" },
+            { label: "Failed",    count: failedCount,    color: "bg-danger-100 text-danger-700" },
+          ].map(({ label, count, color }) => (
+            <div key={label} className={cn("flex items-center gap-1 rounded-full px-2.5 py-1 text-xs font-semibold", color)}>
+              <span>{count}</span>
+              <span className="opacity-70">{label}</span>
+            </div>
+          ))}
+        </div>
+
+        {/* Filter tabs */}
+        <div className="flex gap-1 px-4 pb-3">
+          {TABS.map(({ id, label }) => (
             <button
-              key={tab.id}
-              onClick={() => setActiveTab(tab.id)}
+              key={id}
+              onClick={() => setActiveTab(id)}
               className={cn(
-                "flex-1 py-2 rounded-lg text-sm font-medium transition-all",
-                activeTab === tab.id
-                  ? "bg-card text-foreground shadow-card"
-                  : "text-muted-foreground"
+                "px-3 py-1.5 rounded-lg text-xs font-semibold transition-colors",
+                activeTab === id
+                  ? "bg-brand-500 text-white"
+                  : "bg-surface-100 text-muted-foreground hover:text-foreground"
               )}
             >
-              {tab.label}
-              {counts[tab.id] > 0 && (
-                <span className={cn(
-                  "ml-1.5 inline-flex items-center justify-center w-4 h-4 rounded-full text-2xs font-bold",
-                  activeTab === tab.id ? "bg-brand-500 text-white" : "bg-surface-200 text-surface-600"
-                )}>
-                  {counts[tab.id]}
-                </span>
-              )}
+              {label}
             </button>
           ))}
         </div>
       </div>
 
-      {/* Delivery list */}
-      <div className="px-4 flex flex-col gap-3 pb-4">
+      <div className="p-4 space-y-3">
         {filtered.length === 0 && (
-          <div className="py-12 text-center">
-            <p className="text-muted-foreground text-sm">No {activeTab} deliveries</p>
+          <div className="rounded-2xl border border-dashed border-border p-10 text-center">
+            <Package className="h-8 w-8 text-muted-foreground/40 mx-auto mb-2" />
+            <p className="text-sm text-muted-foreground">No deliveries in this category</p>
           </div>
         )}
+
         {filtered.map((delivery) => {
-          const pm = paymentBadge(delivery.paymentMethod);
+          const badgeInfo = STATUS_BADGE[delivery.deliveryStatus];
           const isCOD = delivery.paymentMethod === "cod";
-
           return (
-            <Link key={delivery.id} href={`/driver/deliveries/${delivery.id}`}>
-              <Card
-                className={cn(
-                  "p-4 active:scale-[0.98] transition-transform",
-                  isCOD && delivery.deliveryStatus === "pending" && "border-brand-300 bg-brand-50/30"
-                )}
-              >
-                <div className="flex items-start gap-3">
-                  {/* Stop number badge */}
-                  <div className={cn(
-                    "w-9 h-9 rounded-full flex items-center justify-center flex-shrink-0 font-display text-sm font-bold",
-                    delivery.deliveryStatus === "delivered" ? "bg-success-50 text-success-700" :
-                    delivery.deliveryStatus === "failed"    ? "bg-danger-50 text-danger-600" :
-                    "bg-brand-500 text-white"
-                  )}>
-                    {delivery.stopNumber}
-                  </div>
-
-                  <div className="flex-1 min-w-0">
-                    <div className="flex items-start justify-between gap-2 mb-1">
-                      <div className="min-w-0">
-                        <p className="font-semibold text-sm text-foreground truncate">
-                          {CUSTOMER_NAMES[delivery.id] ?? "Customer"}
-                        </p>
-                        <p className="text-xs text-muted-foreground truncate">
-                          {AREA_LABELS[delivery.id] ?? delivery.deliveryAddress}
-                        </p>
-                      </div>
-                      <Badge variant={statusVariant(delivery.deliveryStatus)} className="flex-shrink-0 capitalize">
-                        {delivery.deliveryStatus}
-                      </Badge>
-                    </div>
-
-                    <div className="flex items-center justify-between mt-2">
-                      <p className="text-xs text-muted-foreground">{delivery.orderNumber}</p>
-                      <div className="flex items-center gap-2">
-                        <Badge variant={pm.variant}>{pm.label}</Badge>
-                        <span className={cn(
-                          "text-sm font-bold tabular-nums",
-                          isCOD && delivery.deliveryStatus === "pending" ? "text-brand-500" : "text-foreground"
-                        )}>
-                          {formatPHP(delivery.total)}
+            <Card key={delivery.id} className="overflow-hidden">
+              <div className="p-4 space-y-3">
+                <div className="flex items-start justify-between gap-3">
+                  <div>
+                    <div className="flex items-center gap-2 mb-1">
+                      <span className="text-xs font-bold text-muted-foreground">Stop {delivery.stopNumber}</span>
+                      <span className={cn("inline-flex items-center rounded-full border px-2 py-0.5 text-[10px] font-semibold", badgeInfo.className)}>
+                        {badgeInfo.label}
+                      </span>
+                      {isCOD && (
+                        <span className="inline-flex items-center gap-0.5 rounded-full bg-warning-100 border border-warning-200 text-warning-700 px-2 py-0.5 text-[10px] font-semibold">
+                          <Banknote className="h-2.5 w-2.5" /> COD
                         </span>
-                      </div>
+                      )}
                     </div>
-
-                    {/* COD collect hint */}
-                    {isCOD && delivery.deliveryStatus === "pending" && (
-                      <div className="mt-2 flex items-center gap-1.5">
-                        <div className="w-1.5 h-1.5 rounded-full bg-brand-500 animate-pulse" />
-                        <p className="text-xs font-medium text-brand-600">Collect cash on delivery</p>
-                      </div>
-                    )}
+                    <p className="text-sm font-bold text-foreground">{delivery.orderNumber}</p>
                   </div>
+                  <p className="text-sm font-black text-brand-500 shrink-0">{formatPHP(delivery.total)}</p>
                 </div>
-              </Card>
-            </Link>
+
+                <div className="flex items-start gap-2 text-xs text-muted-foreground">
+                  <MapPin className="h-3.5 w-3.5 shrink-0 mt-0.5 text-brand-400" />
+                  <span>{delivery.deliveryAddress}</span>
+                </div>
+
+                <div className="flex items-center gap-2">
+                  {delivery.deliveryStatus === "pending" && (
+                    <>
+                      <Link
+                        href={`/driver/deliveries/${delivery.id}`}
+                        className="flex-1 flex items-center justify-center gap-1.5 rounded-xl bg-brand-500 hover:bg-brand-600 text-white text-xs font-semibold h-9 transition-colors"
+                      >
+                        View Details
+                      </Link>
+                      <button
+                        onClick={() => { markDelivered(delivery.id); showToast("Marked as delivered!"); }}
+                        className="flex items-center gap-1 rounded-xl bg-success-500 hover:bg-success-600 text-white text-xs font-semibold h-9 px-3 transition-colors"
+                      >
+                        <CheckCircle2 className="h-3.5 w-3.5" />
+                        Done
+                      </button>
+                      <button
+                        onClick={() => { markFailed(delivery.id, "No one home"); showToast("Marked as failed"); }}
+                        className="flex items-center gap-1 rounded-xl bg-danger-100 hover:bg-danger-200 text-danger-700 text-xs font-semibold h-9 px-3 transition-colors"
+                      >
+                        <XCircle className="h-3.5 w-3.5" />
+                        Failed
+                      </button>
+                    </>
+                  )}
+                  {delivery.deliveryStatus === "delivered" && (
+                    <div className="flex items-center gap-1.5 text-xs text-success-600 font-medium">
+                      <CheckCircle2 className="h-4 w-4" />
+                      Delivered successfully
+                    </div>
+                  )}
+                  {delivery.deliveryStatus === "failed" && (
+                    <div className="flex items-center gap-1.5 text-xs text-danger-600 font-medium">
+                      <XCircle className="h-4 w-4" />
+                      {delivery.failReason ?? "Delivery failed"}
+                    </div>
+                  )}
+                </div>
+              </div>
+            </Card>
           );
         })}
       </div>
+
+      {toast && (
+        <div className="fixed bottom-24 left-1/2 -translate-x-1/2 z-50 bg-foreground text-background text-sm px-4 py-2.5 rounded-xl shadow-lg whitespace-nowrap">
+          {toast}
+        </div>
+      )}
     </div>
   );
 }
