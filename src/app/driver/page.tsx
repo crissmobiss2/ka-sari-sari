@@ -6,27 +6,44 @@ import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { formatPHP } from "@/lib/utils";
-import { DRIVERS, ROUTES, MOCK_ORDERS } from "@/lib/mock-data";
+import { DRIVERS, ROUTES } from "@/lib/mock-data";
+import { useOrdersStore } from "@/store/orders";
 
 const driver = DRIVERS[0]; // Rodrigo Delos Santos
 const route = ROUTES[0];   // Caloocan North
 
-// Mock today's summary data derived from route + orders
-const TODAY = {
-  assigned: 8,
-  delivered: 5,
-  codToCollect: MOCK_ORDERS.filter(o => o.paymentMethod === "cod").reduce((s, o) => s + o.total, 0),
-  earnings: 620,
-  distanceKm: "18.4",
-  successRate: "96%",
-};
-
 export default function DriverHomePage() {
-  const [onDuty, setOnDuty] = useState(true);
+  // Persist duty state to sessionStorage so it survives page navigation within the session
+  const [onDuty, setOnDuty] = useState(() =>
+    typeof window !== "undefined" ? sessionStorage.getItem("driver-duty") === "1" : false
+  );
+
   const hour = new Date().getHours();
   const greeting = hour < 12 ? "Good morning" : hour < 18 ? "Good afternoon" : "Good evening";
 
   const progressPct = Math.round((route.completedStops / route.stops) * 100);
+
+  // Derive real metrics from the orders store
+  const orders = useOrdersStore((s) => s.orders);
+  const myDeliveries = orders.filter((o) =>
+    ["out_for_delivery", "delivered", "failed_delivery"].includes(o.status)
+  );
+  const pendingDeliveries = myDeliveries.filter((o) => o.status === "out_for_delivery");
+  const deliveredToday = myDeliveries.filter((o) => o.status === "delivered").length;
+  const codToCollect = pendingDeliveries
+    .filter((o) => o.paymentMethod === "cod")
+    .reduce((s, o) => s + o.total, 0);
+  const nextStop = pendingDeliveries[0] ?? null; // first pending delivery
+
+  // Hardcoded — no real data source yet for earnings and distance
+  const HARDCODED_EARNINGS = 620;
+  const HARDCODED_DISTANCE = "18.4";
+
+  const handleDutyToggle = () => {
+    const next = !onDuty;
+    sessionStorage.setItem("driver-duty", next ? "1" : "0");
+    setOnDuty(next);
+  };
 
   return (
     <div className="px-4 py-5 flex flex-col gap-4">
@@ -49,7 +66,7 @@ export default function DriverHomePage() {
             ? "border-danger-500 text-danger-600 hover:bg-danger-50"
             : "bg-brand-500 text-white"
         }`}
-        onClick={() => setOnDuty(!onDuty)}
+        onClick={handleDutyToggle}
       >
         {onDuty ? "Go Off-Duty" : "Go On-Duty"}
       </Button>
@@ -62,26 +79,26 @@ export default function DriverHomePage() {
         <div className="grid grid-cols-2 gap-3">
           <SummaryCard
             label="Assigned"
-            value={TODAY.assigned}
-            badge={`${TODAY.delivered} done`}
+            value={myDeliveries.length}
+            badge={`${deliveredToday} done`}
             badgeVariant="success"
           />
           <SummaryCard
             label="Delivered"
-            value={TODAY.delivered}
-            badge={`${TODAY.assigned - TODAY.delivered} left`}
+            value={deliveredToday}
+            badge={`${pendingDeliveries.length} left`}
             badgeVariant="warning"
           />
           <SummaryCard
             label="COD to Collect"
-            value={formatPHP(TODAY.codToCollect)}
+            value={formatPHP(codToCollect)}
             valueClass="text-brand-500"
             badge="cash"
             badgeVariant="default"
           />
           <SummaryCard
             label="Est. Earnings"
-            value={formatPHP(TODAY.earnings)}
+            value={formatPHP(HARDCODED_EARNINGS)} // no real data source yet
             valueClass="text-success-600"
             badge="today"
             badgeVariant="success"
@@ -92,9 +109,9 @@ export default function DriverHomePage() {
       {/* Quick stats row */}
       <Card className="p-4">
         <div className="grid grid-cols-3 divide-x divide-border">
-          <StatCell label="Distance" value={`${TODAY.distanceKm} km`} />
-          <StatCell label="Done" value={String(TODAY.delivered)} />
-          <StatCell label="Success" value={TODAY.successRate} valueClass="text-success-600" />
+          <StatCell label="Distance" value={`${HARDCODED_DISTANCE} km`} /> {/* no real data source yet */}
+          <StatCell label="Done" value={String(deliveredToday)} />
+          <StatCell label="Success" value={myDeliveries.length > 0 ? `${Math.round((deliveredToday / myDeliveries.length) * 100)}%` : "—"} valueClass="text-success-600" />
         </div>
       </Card>
 
@@ -134,19 +151,38 @@ export default function DriverHomePage() {
 
       {/* Next delivery hint */}
       <Card className="p-4">
-        <div className="flex items-center gap-3">
-          <div className="w-10 h-10 rounded-full bg-brand-100 flex items-center justify-center flex-shrink-0">
-            <span className="font-display text-sm font-bold text-brand-600">{route.completedStops + 1}</span>
+        {nextStop ? (
+          <div className="flex items-center gap-3">
+            <div className="w-10 h-10 rounded-full bg-brand-100 flex items-center justify-center flex-shrink-0">
+              <span className="font-display text-sm font-bold text-brand-600">
+                {pendingDeliveries.indexOf(nextStop) + 1}
+              </span>
+            </div>
+            <div className="min-w-0">
+              <p className="text-xs text-muted-foreground">Next stop</p>
+              <p className="text-sm font-semibold text-foreground truncate">
+                {nextStop.deliveryAddress}
+              </p>
+              <p className="text-xs text-muted-foreground">
+                {nextStop.orderNumber}
+                {nextStop.paymentMethod === "cod" ? ` · COD ${formatPHP(nextStop.total)}` : ""}
+              </p>
+            </div>
+            <Link href="/driver/deliveries" className="flex-shrink-0">
+              <Button size="sm" variant="outline">Go</Button>
+            </Link>
           </div>
-          <div className="min-w-0">
-            <p className="text-xs text-muted-foreground">Next stop</p>
-            <p className="text-sm font-semibold text-foreground truncate">Maria Santos · Brgy. 7, Caloocan</p>
-            <p className="text-xs text-muted-foreground">#KSS-2025-00145 · COD ₱1,920</p>
+        ) : (
+          <div className="flex items-center gap-3">
+            <div className="w-10 h-10 rounded-full bg-muted flex items-center justify-center flex-shrink-0">
+              <span className="font-display text-sm font-bold text-muted-foreground">—</span>
+            </div>
+            <div className="min-w-0">
+              <p className="text-xs text-muted-foreground">Next stop</p>
+              <p className="text-sm font-semibold text-foreground">No pending stops</p>
+            </div>
           </div>
-          <Link href="/driver/deliveries" className="flex-shrink-0">
-            <Button size="sm" variant="outline">Go</Button>
-          </Link>
-        </div>
+        )}
       </Card>
     </div>
   );

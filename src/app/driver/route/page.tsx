@@ -8,6 +8,7 @@ import {
 } from "lucide-react";
 import { Card } from "@/components/ui/card";
 import { cn, formatPHP } from "@/lib/utils";
+import { toastSuccess } from "@/store/toast";
 
 type StopStatus = "done" | "next" | "pending" | "failed";
 
@@ -137,12 +138,13 @@ export default function RouteMapPage() {
     setExpanded(null);
   }
 
-  function markFailed(num: number) {
+  function markFailed(stop: Stop) {
+    const num = stop.stopNumber;
     setStops((prev) =>
-      prev.map((s, i, arr) => {
-        if (s.stopNumber === num) return { ...s, status: "failed" };
+      prev.map((s, _i, arr) => {
+        if (s.stopNumber === num) return { ...s, status: "failed" as StopStatus };
         const nextPending = arr.find((x) => x.stopNumber > num && x.status === "pending");
-        if (nextPending && s.stopNumber === nextPending.stopNumber) return { ...s, status: "next" };
+        if (nextPending && s.stopNumber === nextPending.stopNumber) return { ...s, status: "next" as StopStatus };
         return s;
       })
     );
@@ -160,7 +162,7 @@ export default function RouteMapPage() {
             <p className="text-xs font-medium opacity-80 uppercase tracking-wider">Today's Route</p>
             <h1 className="font-display text-xl font-bold mt-0.5">Caloocan North</h1>
             <p className="text-sm opacity-80 mt-0.5">
-              {doneStops}/{totalStops} stops · {formatPHP(stops.filter(s=>s.status==="done"||s.status==="failed").reduce((s,x)=>s+x.total,0))} delivered
+              {doneStops}/{totalStops} stops · {formatPHP(stops.filter(s=>s.status==="done").reduce((s,x)=>s+x.total,0))} delivered
             </p>
           </div>
           <div className="text-right">
@@ -224,7 +226,7 @@ export default function RouteMapPage() {
                 "overflow-hidden transition-all",
                 isNext && "border-brand-300 ring-1 ring-brand-300 shadow-md",
                 isDone && "opacity-60",
-                isFailed && "opacity-50 border-danger-200"
+                isFailed && "opacity-50 border-l-4 border-danger-500"
               )}
             >
               {/* Stop header */}
@@ -330,7 +332,7 @@ export default function RouteMapPage() {
                         Call
                       </a>
                       <button
-                        onClick={() => markFailed(stop.stopNumber)}
+                        onClick={() => { if (window.confirm("Mark this stop as failed delivery?")) { markFailed(stop); } }}
                         className="flex flex-col items-center gap-1 rounded-xl bg-danger-50 hover:bg-danger-100 px-2 py-2.5 text-xs font-semibold text-danger-600 transition-colors"
                       >
                         <XCircle className="h-4 w-4" />
@@ -394,7 +396,10 @@ export default function RouteMapPage() {
             </div>
 
             <button
-              onClick={() => setShowReconcile(false)}
+              onClick={() => {
+                toastSuccess(`EOD report submitted — ${formatPHP(collectedCOD)} COD collected`);
+                setShowReconcile(false);
+              }}
               className="w-full rounded-2xl bg-brand-500 hover:bg-brand-600 text-white font-bold h-12 transition-colors"
             >
               Confirm & Submit Report

@@ -13,6 +13,8 @@ import { Badge } from "@/components/ui/badge";
 import { cn } from "@/lib/utils";
 import { PICK_LISTS, GOODS_RECEIPTS } from "@/lib/mock-data";
 import { getCitiesByHub } from "@/lib/nexoflow-cities";
+import { toastSuccess } from "@/store/toast";
+import { useOrdersStore } from "@/store/orders";
 
 type HubKey = "NCR" | "North Luzon" | "South Luzon" | "Visayas" | "Mindanao";
 
@@ -95,6 +97,10 @@ function timeAgo(isoString: string) {
 export default function WarehouseDashboard() {
   const [now, setNow] = useState<Date | null>(null);
   const [activeHub, setActiveHub] = useState<HubKey>("NCR");
+  const [preppedTransfers, setPreppedTransfers] = useState<number[]>([]);
+
+  const storeOrders = useOrdersStore(s => s.orders);
+  const packedCount = storeOrders.filter(o => o.status === "packed").length;
 
   useEffect(() => {
     setNow(new Date());
@@ -211,12 +217,13 @@ export default function WarehouseDashboard() {
       </Card>
 
       {/* KPI stats */}
-      <div className="grid grid-cols-2 gap-3">
+      <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
         {[
           { label: "Open Pick Lists", value: openPickLists, icon: ClipboardList, color: "text-brand-500", bg: "bg-brand-500/10" },
           { label: "Items to Pick",   value: itemsToPick,   icon: ScanLine,       color: "text-blue-500",  bg: "bg-blue-500/10" },
           { label: "Receiving Queue", value: receivingQueue, icon: PackageCheck,  color: "text-warning-600",bg: "bg-warning-50" },
           { label: "Completed Today", value: completedToday, icon: CheckCircle2,  color: "text-success-700",bg: "bg-success-50" },
+          { label: "Packed & Ready",  value: packedCount,    icon: PackageCheck,  color: "text-amber-600",  bg: "bg-amber-50" },
         ].map(({ label, value, icon: Icon, color, bg }) => (
           <Card key={label}>
             <CardContent className="p-4">
@@ -233,6 +240,9 @@ export default function WarehouseDashboard() {
           </Card>
         ))}
       </div>
+      <p className="text-xs text-muted-foreground -mt-1">
+        Showing global data · {hub.label} operational stats coming soon
+      </p>
 
       {/* Quick Actions */}
       <div className="space-y-2">
@@ -264,25 +274,40 @@ export default function WarehouseDashboard() {
             <ArrowRightLeft className="h-4 w-4 text-brand-500" />
             Transfer Requests
           </h2>
-          {TRANSFER_REQUESTS.map((t, i) => (
-            <Card key={i} className={cn(t.urgent && "border-warning-200")}>
-              <CardContent className="p-3.5 flex items-center gap-3">
-                <div className={cn("flex h-8 w-8 shrink-0 items-center justify-center rounded-xl", t.urgent ? "bg-warning-100" : "bg-surface-100")}>
-                  <Truck className={cn("h-4 w-4", t.urgent ? "text-warning-600" : "text-muted-foreground")} />
-                </div>
-                <div className="flex-1 min-w-0">
-                  <div className="flex items-center gap-1.5 mb-0.5">
-                    {t.urgent && <AlertTriangle className="h-3 w-3 text-warning-500" />}
-                    <p className="text-xs font-semibold text-foreground truncate">{t.product}</p>
+          {TRANSFER_REQUESTS.map((t, i) => {
+            const isPrepped = preppedTransfers.includes(i);
+            return (
+              <Card key={i} className={cn(t.urgent && "border-warning-200")}>
+                <CardContent className="p-3.5 flex items-center gap-3">
+                  <div className={cn("flex h-8 w-8 shrink-0 items-center justify-center rounded-xl", t.urgent ? "bg-warning-100" : "bg-surface-100")}>
+                    <Truck className={cn("h-4 w-4", t.urgent ? "text-warning-600" : "text-muted-foreground")} />
                   </div>
-                  <p className="text-[11px] text-muted-foreground">{t.from} → {t.to} · {t.qty} units</p>
-                </div>
-                <button className="shrink-0 rounded-lg bg-brand-500 text-white text-xs font-semibold px-2.5 py-1.5">
-                  Prep
-                </button>
-              </CardContent>
-            </Card>
-          ))}
+                  <div className="flex-1 min-w-0">
+                    <div className="flex items-center gap-1.5 mb-0.5">
+                      {t.urgent && <AlertTriangle className="h-3 w-3 text-warning-500" />}
+                      <p className="text-xs font-semibold text-foreground truncate">{t.product}</p>
+                    </div>
+                    <p className="text-[11px] text-muted-foreground">{t.from} → {t.to} · {t.qty} units</p>
+                  </div>
+                  <button
+                    disabled={isPrepped}
+                    onClick={() => {
+                      setPreppedTransfers(prev => [...prev, i]);
+                      toastSuccess("Transfer prep started — route to dispatch area");
+                    }}
+                    className={cn(
+                      "shrink-0 rounded-lg text-xs font-semibold px-2.5 py-1.5 transition-colors",
+                      isPrepped
+                        ? "bg-success-100 text-success-700 cursor-default"
+                        : "bg-brand-500 text-white"
+                    )}
+                  >
+                    {isPrepped ? "Prepped ✓" : "Prep"}
+                  </button>
+                </CardContent>
+              </Card>
+            );
+          })}
         </div>
       )}
 

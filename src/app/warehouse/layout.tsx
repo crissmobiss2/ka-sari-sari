@@ -1,9 +1,23 @@
-import { ShoppingBasket } from "lucide-react";
+"use client";
+
+import { useState, useEffect } from "react";
+import { ShoppingBasket, Bell } from "lucide-react";
 import { WarehouseNav } from "@/components/warehouse/warehouse-nav";
 import { LogoutButton } from "@/components/ui/logout-button";
 import { NexoflowFooter } from "@/components/ui/nexoflow-footer";
 
 export default function WarehouseLayout({ children }: { children: React.ReactNode }) {
+  const [userName, setUserName] = useState("Warehouse Staff");
+
+  useEffect(() => {
+    fetch("/api/auth/me")
+      .then((res) => res.ok ? res.json() : null)
+      .then((data) => {
+        if (data?.user?.name) setUserName(data.user.name);
+      })
+      .catch(() => {/* keep default */});
+  }, []);
+
   return (
     <div className="min-h-screen flex flex-col bg-background">
       {/* Top Header */}
@@ -19,8 +33,9 @@ export default function WarehouseLayout({ children }: { children: React.ReactNod
         </div>
 
         <div className="flex items-center gap-3">
-          <div className="text-right hidden sm:block">
-            <p className="text-sm font-semibold text-foreground leading-tight">Juan Dela Cruz</p>
+          <Bell className="h-5 w-5 text-muted-foreground" />
+          <div className="text-right">
+            <p className="text-sm font-semibold truncate max-w-[120px] text-foreground leading-tight">{userName}</p>
             <p className="text-xs text-muted-foreground leading-tight">Warehouse Staff</p>
           </div>
           <LogoutButton />

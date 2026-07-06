@@ -4,6 +4,7 @@ import { CreditCard, AlertTriangle, CheckCircle2, Clock, TrendingUp, Search, Fil
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { cn, formatPHP, formatDate } from "@/lib/utils";
+import { toastSuccess, toastError } from "@/store/toast";
 
 type CreditStatus = "good" | "overdue" | "at_limit" | "suspended";
 
@@ -53,11 +54,14 @@ function UtilizationBar({ used, limit }: { used: number; limit: number }) {
 }
 
 export default function AdminCreditPage() {
+  const [accounts, setAccounts] = useState(CREDIT_ACCOUNTS);
   const [search, setSearch] = useState("");
   const [statusFilter, setStatusFilter] = useState<CreditStatus | "all">("all");
   const [selected, setSelected] = useState<string | null>(null);
+  const [paymentModal, setPaymentModal] = useState<string | null>(null);
+  const [paymentAmount, setPaymentAmount] = useState("");
 
-  const filtered = CREDIT_ACCOUNTS.filter((a) => {
+  const filtered = accounts.filter((a) => {
     const matchSearch = !search ||
       a.retailer.toLowerCase().includes(search.toLowerCase()) ||
       a.store.toLowerCase().includes(search.toLowerCase()) ||
@@ -66,15 +70,92 @@ export default function AdminCreditPage() {
     return matchSearch && matchStatus;
   });
 
-  const totalOutstanding = CREDIT_ACCOUNTS.reduce((s, a) => s + a.outstanding, 0);
-  const totalLimit       = CREDIT_ACCOUNTS.reduce((s, a) => s + a.creditLimit, 0);
-  const overdueCount     = CREDIT_ACCOUNTS.filter((a) => a.status === "overdue" || a.status === "suspended").length;
-  const atRiskAmount     = CREDIT_ACCOUNTS.filter((a) => a.status === "overdue" || a.status === "suspended").reduce((s, a) => s + a.outstanding, 0);
+  const totalOutstanding = accounts.reduce((s, a) => s + a.outstanding, 0);
+  const totalLimit       = accounts.reduce((s, a) => s + a.creditLimit, 0);
+  const overdueCount     = accounts.filter((a) => a.status === "overdue" || a.status === "suspended").length;
+  const atRiskAmount     = accounts.filter((a) => a.status === "overdue" || a.status === "suspended").reduce((s, a) => s + a.outstanding, 0);
 
-  const selectedAccount = selected ? CREDIT_ACCOUNTS.find((a) => a.id === selected) : null;
+  const selectedAccount = selected ? accounts.find((a) => a.id === selected) : null;
+
+  function handleRecordPayment() {
+    if (!paymentModal) return;
+    const amount = Number(paymentAmount);
+    if (!amount || amount <= 0) return;
+    const account = accounts.find((a) => a.id === paymentModal);
+    if (!account) return;
+    setAccounts((prev) =>
+      prev.map((a) =>
+        a.id === paymentModal
+          ? {
+              ...a,
+              outstanding: Math.max(0, a.outstanding - amount),
+              status: a.outstanding - amount <= 0 ? "good" : a.status,
+            }
+          : a
+      )
+    );
+    toastSuccess(`Payment of ₱${amount.toLocaleString()} recorded for ${account.retailer}`);
+    setPaymentModal(null);
+    setPaymentAmount("");
+  }
+
+  function handleSuspend(account: CreditAccount) {
+    if (window.confirm(`Suspend ${account.retailer}? They will lose ordering access.`)) {
+      setAccounts((prev) =>
+        prev.map((a) => (a.id === account.id ? { ...a, status: "suspended" } : a))
+      );
+      toastError("Account suspended");
+    }
+  }
+
+  function handleReactivate(account: CreditAccount) {
+    setAccounts((prev) =>
+      prev.map((a) => (a.id === account.id ? { ...a, status: "good" } : a))
+    );
+    toastSuccess("Account reactivated");
+  }
+
+  const paymentModalAccount = paymentModal ? accounts.find((a) => a.id === paymentModal) : null;
 
   return (
     <div className="p-6 space-y-5 max-w-7xl mx-auto">
+      {/* Payment Modal */}
+      {paymentModal && paymentModalAccount && (
+        <div className="fixed inset-0 bg-black/40 z-50" onClick={() => setPaymentModal(null)}>
+          <div
+            className="max-w-sm mx-auto mt-24 bg-card rounded-2xl p-6 shadow-xl"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <h2 className="font-display text-lg font-bold text-foreground mb-1">Record Payment</h2>
+            <p className="text-sm text-muted-foreground mb-4">{paymentModalAccount.retailer}</p>
+            <input
+              type="number"
+              placeholder="Amount (PHP)"
+              value={paymentAmount}
+              onChange={(e) => setPaymentAmount(e.target.value)}
+              className="w-full h-10 rounded-xl border border-input bg-background px-4 text-sm focus:outline-none focus:ring-2 focus:ring-brand-500 mb-4"
+              autoFocus
+              onKeyDown={(e) => { if (e.key === "Enter") handleRecordPayment(); }}
+            />
+            <div className="flex gap-2">
+              <button
+                onClick={handleRecordPayment}
+                disabled={!paymentAmount || Number(paymentAmount) <= 0}
+                className="flex-1 rounded-xl bg-brand-500 text-white py-2.5 text-sm font-semibold hover:bg-brand-600 transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
+              >
+                Confirm Payment
+              </button>
+              <button
+                onClick={() => { setPaymentModal(null); setPaymentAmount(""); }}
+                className="flex-1 rounded-xl border border-border text-foreground py-2.5 text-sm font-semibold hover:bg-muted/40 transition-colors"
+              >
+                Cancel
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
       {/* Header */}
       <div className="flex items-start justify-between gap-4">
         <div>
@@ -224,15 +305,24 @@ export default function AdminCreditPage() {
               </div>
 
               <div className="space-y-2 pt-2">
-                <button className="w-full rounded-xl bg-brand-500 text-white py-2.5 text-sm font-semibold hover:bg-brand-600 transition-colors">
+                <button
+                  onClick={() => { setPaymentModal(selectedAccount.id); setPaymentAmount(""); }}
+                  className="w-full rounded-xl bg-brand-500 text-white py-2.5 text-sm font-semibold hover:bg-brand-600 transition-colors"
+                >
                   Record Payment
                 </button>
                 {selectedAccount.status !== "suspended" ? (
-                  <button className="w-full rounded-xl border border-danger-200 text-danger-600 py-2.5 text-sm font-semibold hover:bg-danger-50 transition-colors">
+                  <button
+                    onClick={() => handleSuspend(selectedAccount)}
+                    className="w-full rounded-xl border border-danger-200 text-danger-600 py-2.5 text-sm font-semibold hover:bg-danger-50 transition-colors"
+                  >
                     Suspend Account
                   </button>
                 ) : (
-                  <button className="w-full rounded-xl border border-success-200 text-success-600 py-2.5 text-sm font-semibold hover:bg-success-50 transition-colors">
+                  <button
+                    onClick={() => handleReactivate(selectedAccount)}
+                    className="w-full rounded-xl border border-success-200 text-success-600 py-2.5 text-sm font-semibold hover:bg-success-50 transition-colors"
+                  >
                     Reactivate Account
                   </button>
                 )}

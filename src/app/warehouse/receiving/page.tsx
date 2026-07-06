@@ -15,6 +15,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { cn } from "@/lib/utils";
 import { GOODS_RECEIPTS } from "@/lib/mock-data";
+import { toastError } from "@/store/toast";
 import type { GoodsReceipt } from "@/types";
 
 type ReceiveFormState = {
@@ -46,12 +47,22 @@ function statusBadge(status: GoodsReceipt["status"]) {
 
 export default function ReceivingPage() {
   const [receipts, setReceipts] = useState<GoodsReceipt[]>(GOODS_RECEIPTS);
-  const [expandedId, setExpandedId] = useState<string | null>(null);
+  // Fix #4: allow multiple cards expanded at once via a Set
+  const [expandedIds, setExpandedIds] = useState<Set<string>>(new Set());
   const [form, setForm] = useState<ReceiveFormState | null>(null);
 
   function toggleExpand(id: string) {
-    setExpandedId((prev) => (prev === id ? null : id));
-    setForm(null);
+    setExpandedIds((prev) => {
+      const next = new Set(prev);
+      if (next.has(id)) {
+        next.delete(id);
+      } else {
+        next.add(id);
+      }
+      return next;
+    });
+    // Only clear the form when collapsing the card that owns it
+    setForm((f) => (f?.grId === id ? null : f));
   }
 
   function openReceiveForm(grId: string, itemIdx: number) {
@@ -131,7 +142,8 @@ export default function ReceivingPage() {
     );
 
     setForm((f) => f && { ...f, confirmed: true, error: "" });
-    setTimeout(() => setForm(null), 1500);
+    // Fix #2: increased from 1500ms to 3000ms so users can read the confirmation
+    setTimeout(() => setForm(null), 3000);
   }
 
   const pending = receipts.filter((gr) => gr.status === "pending");
@@ -154,19 +166,23 @@ export default function ReceivingPage() {
         </p>
       </div>
 
-      {/* Summary stats */}
-      <div className="grid grid-cols-3 gap-3">
+      {/* Fix #5: Today's Receipts summary chips */}
+      <div className="flex gap-2 flex-wrap">
         {[
-          { label: "Pending", count: pending.length, color: "text-warning-600" },
-          { label: "In Progress", count: inProgress.length, color: "text-blue-600" },
-          { label: "Completed", count: completed.length, color: "text-success-700" },
-        ].map(({ label, count, color }) => (
-          <Card key={label}>
-            <CardContent className="p-3 text-center">
-              <p className={cn("text-2xl font-display font-bold", color)}>{count}</p>
-              <p className="text-xs text-muted-foreground mt-0.5 leading-snug">{label}</p>
-            </CardContent>
-          </Card>
+          { label: "Pending", count: pending.length, chipClass: "bg-warning-50 text-warning-700 border-warning-200" },
+          { label: "In Progress", count: inProgress.length, chipClass: "bg-blue-50 text-blue-700 border-blue-200" },
+          { label: "Completed", count: completed.length, chipClass: "bg-success-50 text-success-700 border-success-200" },
+        ].map(({ label, count, chipClass }) => (
+          <span
+            key={label}
+            className={cn(
+              "inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-sm font-semibold border",
+              chipClass
+            )}
+          >
+            <span className="text-base font-bold">{count}</span>
+            {label}
+          </span>
         ))}
       </div>
 
@@ -180,7 +196,7 @@ export default function ReceivingPage() {
                 <ReceiptCard
                   key={gr.id}
                   gr={gr}
-                  isExpanded={expandedId === gr.id}
+                  isExpanded={expandedIds.has(gr.id)}
                   form={form?.grId === gr.id ? form : null}
                   onToggle={() => toggleExpand(gr.id)}
                   onOpenForm={openReceiveForm}
@@ -239,6 +255,14 @@ function ReceiptCard({
   const totalExpected = gr.items.reduce((s, i) => s + i.expectedQty, 0);
   const totalReceived = gr.items.reduce((s, i) => s + i.receivedQty, 0);
   const pct = totalExpected === 0 ? 0 : Math.round((totalReceived / totalExpected) * 100);
+
+  // Fix #3: handler for rejecting a shipment
+  function handleReject() {
+    const confirmed = window.confirm("Reject this shipment? This cannot be undone.");
+    if (confirmed) {
+      toastError("Shipment rejected — admin notified");
+    }
+  }
 
   return (
     <Card className="overflow-hidden">
@@ -453,9 +477,11 @@ function ReceiptCard({
                           size="lg"
                           onClick={onConfirm}
                           disabled={
+                            // Fix #1: in scanner mode, require a non-empty barcode that matches the SKU
                             !form.qty ||
                             parseInt(form.qty) <= 0 ||
-                            (!form.manualMode && form.barcode !== item.sku && form.barcode !== "")
+                            (!form.manualMode && form.barcode === "") ||
+                            (!form.manualMode && form.barcode !== item.sku)
                           }
                         >
                           <PackageCheck className="h-5 w-5" />
@@ -474,11 +500,21 @@ function ReceiptCard({
             })}
           </div>
 
-          {/* Card footer — PO date */}
-          <div className="px-5 pb-4 pt-0">
+          {/* Card footer — PO date + Fix #3: Reject button */}
+          <div className="px-5 pb-5 pt-0 flex items-center justify-between gap-3">
             <p className="text-xs text-muted-foreground">
               Created {formatDate(gr.createdAt)}
             </p>
+            {gr.status !== "completed" && (
+              <Button
+                variant="outline"
+                size="sm"
+                className="border-danger-400 text-danger-600 hover:bg-danger-50 hover:border-danger-500"
+                onClick={handleReject}
+              >
+                Reject Shipment
+              </Button>
+            )}
           </div>
         </div>
       )}

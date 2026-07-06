@@ -6,7 +6,9 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { StatusBadge } from "@/components/ui/status-badge";
 import { Button } from "@/components/ui/button";
 import { formatPHP, formatDateTime, type OrderStatus, ORDER_STATUS_LABELS } from "@/lib/utils";
-import { ADMIN_RECENT_ORDERS } from "@/lib/mock-data";
+import { ADMIN_RECENT_ORDERS, MOCK_ORDERS, PRODUCTS } from "@/lib/mock-data";
+import { useOrdersStore } from "@/store/orders";
+import { toastSuccess } from "@/store/toast";
 
 const NEXT_STATUS: Partial<Record<OrderStatus, OrderStatus>> = {
   pending: "confirmed",
@@ -16,10 +18,49 @@ const NEXT_STATUS: Partial<Record<OrderStatus, OrderStatus>> = {
   out_for_delivery: "delivered",
 };
 
+const TERMINAL_STATUSES: OrderStatus[] = ["delivered", "cancelled", "failed_delivery", "returned"];
+
 export default function AdminOrderDetailPage() {
-  const { id } = useParams();
-  const order = ADMIN_RECENT_ORDERS.find((o) => o.id === id) || ADMIN_RECENT_ORDERS[0];
+  const params = useParams();
+  const id = Array.isArray(params.id) ? params.id[0] : params.id;
+
+  const storeOrders = useOrdersStore((s) => s.orders);
+  const advance = useOrdersStore((s) => s.advance);
+
+  // Look up order: store first (live status), then ADMIN_RECENT_ORDERS, then MOCK_ORDERS, then first available
+  const storeOrder = storeOrders.find((o) => o.id === id);
+  const adminOrder = ADMIN_RECENT_ORDERS.find((o) => o.id === id);
+  const mockOrder = MOCK_ORDERS.find((o) => o.id === id);
+
+  const baseOrder = storeOrder ?? adminOrder ?? mockOrder ?? storeOrders[0] ?? ADMIN_RECENT_ORDERS[0];
+
+  // Overlay live status from store if the store knows this order
+  const liveStatus = storeOrder?.status ?? baseOrder.status;
+  const order = { ...baseOrder, status: liveStatus };
+
   const nextStatus = NEXT_STATUS[order.status];
+  const isTerminal = TERMINAL_STATUSES.includes(order.status);
+
+  function handleAdvance() {
+    advance(order.id);
+    const next = NEXT_STATUS[order.status];
+    const label = next ? ORDER_STATUS_LABELS[next] : "next status";
+    toastSuccess(`Order ${order.orderNumber} marked as ${label}`);
+  }
+
+  // Resolve items: use order.items if present, else show a placeholder row
+  const resolvedItems = order.items.length > 0
+    ? order.items.map((item) => {
+        const product = PRODUCTS.find((p) => p.id === item.productId);
+        return {
+          name: product?.name ?? item.productId,
+          brand: product?.brand ?? "—",
+          qty: item.quantity,
+          price: item.unitPrice,
+          total: item.totalPrice,
+        };
+      })
+    : null;
 
   return (
     <div className="p-6 space-y-5 max-w-4xl mx-auto">
@@ -38,8 +79,8 @@ export default function AdminOrderDetailPage() {
         </div>
         <div className="flex items-center gap-3">
           <StatusBadge status={order.status} />
-          {nextStatus && (
-            <Button size="md">
+          {!isTerminal && nextStatus && (
+            <Button size="md" onClick={handleAdvance}>
               <CheckCircle2 className="h-4 w-4" />
               Mark as {ORDER_STATUS_LABELS[nextStatus]}
             </Button>
@@ -48,30 +89,33 @@ export default function AdminOrderDetailPage() {
       </div>
 
       <div className="grid md:grid-cols-3 gap-4">
-        {/* Order summary */}
+        {/* Order items */}
         <Card className="md:col-span-2">
           <CardHeader><CardTitle>Order Items</CardTitle></CardHeader>
           <CardContent className="p-0">
             <div className="divide-y divide-border">
-              {[
-                { name: "Coca-Cola Regular 330ml", brand: "Coca-Cola", qty: 24, price: 28 },
-                { name: "Lucky Me! Pancit Canton", brand: "Lucky Me", qty: 12, price: 14 },
-                { name: "555 Sardines in Tomato Sauce", brand: "555", qty: 24, price: 28 },
-              ].map((item) => (
-                <div key={item.name} className="flex items-center gap-3 px-5 py-3.5">
-                  <div className="h-9 w-9 rounded-xl bg-surface-100 flex items-center justify-center shrink-0">
-                    <Package className="h-4 w-4 text-muted-foreground" />
+              {resolvedItems ? (
+                resolvedItems.map((item) => (
+                  <div key={`${item.name}-${item.qty}`} className="flex items-center gap-3 px-5 py-3.5">
+                    <div className="h-9 w-9 rounded-xl bg-surface-100 flex items-center justify-center shrink-0">
+                      <Package className="h-4 w-4 text-muted-foreground" />
+                    </div>
+                    <div className="flex-1 min-w-0">
+                      <p className="text-sm font-medium text-foreground">{item.name}</p>
+                      <p className="text-xs text-muted-foreground">{item.brand} · Qty: {item.qty}</p>
+                    </div>
+                    <div className="text-right">
+                      <p className="text-sm font-semibold text-foreground">{formatPHP(item.total)}</p>
+                      <p className="text-xs text-muted-foreground">{formatPHP(item.price)}/ea</p>
+                    </div>
                   </div>
-                  <div className="flex-1 min-w-0">
-                    <p className="text-sm font-medium text-foreground">{item.name}</p>
-                    <p className="text-xs text-muted-foreground">{item.brand} · Qty: {item.qty}</p>
-                  </div>
-                  <div className="text-right">
-                    <p className="text-sm font-semibold text-foreground">{formatPHP(item.price * item.qty)}</p>
-                    <p className="text-xs text-muted-foreground">{formatPHP(item.price)}/ea</p>
-                  </div>
+                ))
+              ) : (
+                <div className="flex items-center gap-3 px-5 py-4 text-sm text-muted-foreground">
+                  <Package className="h-4 w-4 shrink-0" />
+                  <span>Item details not available for this order.</span>
                 </div>
-              ))}
+              )}
             </div>
             <div className="border-t border-border px-5 py-4 space-y-1.5">
               <div className="flex justify-between text-sm text-muted-foreground">
@@ -96,6 +140,9 @@ export default function AdminOrderDetailPage() {
                 <MapPin className="h-4 w-4 text-muted-foreground mt-0.5 shrink-0" />
                 <p className="text-foreground">{order.deliveryAddress}</p>
               </div>
+              {order.notes && (
+                <p className="text-xs text-muted-foreground italic">{order.notes}</p>
+              )}
             </CardContent>
           </Card>
 
@@ -103,7 +150,7 @@ export default function AdminOrderDetailPage() {
             <CardHeader><CardTitle>Payment</CardTitle></CardHeader>
             <CardContent className="space-y-2 text-sm">
               <div className="flex items-center justify-between">
-                <span className="text-muted-foreground capitalize">{order.paymentMethod.replace("_", " ")}</span>
+                <span className="text-muted-foreground capitalize">{order.paymentMethod.replace(/_/g, " ")}</span>
                 <span className={`font-semibold ${order.paymentStatus === "paid" ? "text-success-600" : "text-warning-600"}`}>
                   {order.paymentStatus === "paid" ? "Paid" : "Pending"}
                 </span>
@@ -121,7 +168,7 @@ export default function AdminOrderDetailPage() {
               <div className="space-y-3">
                 {[
                   { label: "Order placed", time: order.createdAt },
-                  { label: "Confirmed", time: order.updatedAt },
+                  { label: ORDER_STATUS_LABELS[order.status], time: order.updatedAt },
                 ].map((ev) => (
                   <div key={ev.label} className="flex items-start gap-2.5 text-sm">
                     <div className="mt-0.5 h-2 w-2 rounded-full bg-brand-500 shrink-0" />
