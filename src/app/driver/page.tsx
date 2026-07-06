@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Link from "next/link";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -18,8 +18,11 @@ export default function DriverHomePage() {
     typeof window !== "undefined" ? sessionStorage.getItem("driver-duty") === "1" : false
   );
 
-  const hour = new Date().getHours();
-  const greeting = hour < 12 ? "Good morning" : hour < 18 ? "Good afternoon" : "Good evening";
+  const [greeting, setGreeting] = useState("Good day");
+  useEffect(() => {
+    const h = new Date().getHours();
+    setGreeting(h < 12 ? "Good morning" : h < 18 ? "Good afternoon" : "Good evening");
+  }, []);
 
   const progressPct = Math.round((route.completedStops / route.stops) * 100);
 
