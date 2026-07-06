@@ -51,7 +51,7 @@ const COD_THIS_WEEK = {
 
 const maxEarned = Math.max(...WEEKLY.map((d) => d.earned));
 const MAX_BAR_HEIGHT = 80;
-const TODAY_INDEX = 5;
+const TODAY_INDEX = (() => { const d = new Date().getDay(); return d === 0 ? 6 : d - 1; })();
 
 type Tab = "overview" | "history" | "areas";
 

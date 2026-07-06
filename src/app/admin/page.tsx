@@ -1,6 +1,6 @@
 "use client";
 // v2
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { TrendingUp, TrendingDown, Package, Users, ShoppingCart, AlertTriangle, ArrowRight, Clock } from "lucide-react";
 import Link from "next/link";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -98,6 +98,19 @@ function RevenueChart() {
 }
 
 export default function AdminDashboardPage() {
+  const [timeStr, setTimeStr] = useState<string>("");
+  const [dateStr, setDateStr] = useState<string>("");
+
+  useEffect(() => {
+    const update = () => {
+      setTimeStr(new Date().toLocaleTimeString("en-PH", { hour: "2-digit", minute: "2-digit" }));
+      setDateStr(new Date().toLocaleDateString("en-PH", { weekday: "long", year: "numeric", month: "long", day: "numeric" }));
+    };
+    update();
+    const t = setInterval(update, 60000);
+    return () => clearInterval(t);
+  }, []);
+
   return (
     <div className="p-6 space-y-6 max-w-7xl mx-auto">
       {/* Header */}
@@ -105,13 +118,13 @@ export default function AdminDashboardPage() {
         <div>
           <h1 className="font-display text-2xl font-bold text-foreground">Dashboard</h1>
           <p className="text-sm text-muted-foreground mt-0.5">
-            {new Date().toLocaleDateString("en-PH", { weekday: "long", year: "numeric", month: "long", day: "numeric" })}
+            {dateStr}
           </p>
         </div>
         <div className="flex items-center gap-2 rounded-xl border border-border bg-card px-3 py-2">
           <Clock className="h-4 w-4 text-muted-foreground" />
           <span className="text-sm text-muted-foreground">
-            {new Date().toLocaleTimeString("en-PH", { hour: "2-digit", minute: "2-digit" })}
+            {timeStr || "--:--"}
           </span>
         </div>
       </div>

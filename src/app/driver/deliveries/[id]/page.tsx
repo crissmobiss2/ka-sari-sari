@@ -8,6 +8,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { cn, formatPHP } from "@/lib/utils";
 import { MOCK_ORDERS } from "@/lib/mock-data";
+import { useOrdersStore } from "@/store/orders";
 
 // Back arrow icon
 function ArrowLeftIcon() {
@@ -74,6 +75,14 @@ const CUSTOMER_DETAILS: Record<string, {
   },
 };
 
+const FAIL_REASONS = [
+  "No one home",
+  "Wrong address",
+  "Customer refused delivery",
+  "COD amount not ready",
+  "Address inaccessible",
+];
+
 const PRODUCT_NAME_MAP: Record<string, string> = {
   "prod-1": "Coca-Cola Regular 330ml",
   "prod-2": "Lucky Me! Pancit Canton Original",
@@ -90,8 +99,13 @@ export default function DeliveryDetailPage() {
   const router = useRouter();
   const id = params.id as string;
 
-  const order = MOCK_ORDERS.find((o) => o.id === id) ?? MOCK_ORDERS[0];
-  const customer = CUSTOMER_DETAILS[order.id] ?? CUSTOMER_DETAILS["ord-001"];
+  const storeOrders = useOrdersStore((s) => s.orders);
+  const markDelivered = useOrdersStore((s) => s.markDelivered);
+  const markFailed = useOrdersStore((s) => s.markFailed);
+
+  const order = storeOrders.find((o) => o.id === id) ?? MOCK_ORDERS.find((o) => o.id === id) ?? MOCK_ORDERS[0];
+  const customer = CUSTOMER_DETAILS[order.id];
+  const customerName = customer?.name ?? order.deliveryAddress?.split(",")[0] ?? "Customer";
 
   const isCOD = order.paymentMethod === "cod";
 
@@ -99,6 +113,8 @@ export default function DeliveryDetailPage() {
   const [delivered, setDelivered] = useState(false);
   const [failed, setFailed] = useState(false);
   const [deliveredAt, setDeliveredAt] = useState<string | null>(null);
+  const [showFailPicker, setShowFailPicker] = useState(false);
+  const [selectedFailReason, setSelectedFailReason] = useState(FAIL_REASONS[0]);
 
   // POD photo state
   const [photoUrl, setPhotoUrl] = useState<string | null>(null);
@@ -141,10 +157,13 @@ export default function DeliveryDetailPage() {
       day: "numeric",
     }).format(new Date());
     setDeliveredAt(now);
+    markDelivered(id);
     setDelivered(true);
   }
 
-  function handleFailedDelivery() {
+  function handleConfirmFailed() {
+    markFailed(id, selectedFailReason);
+    setShowFailPicker(false);
     setFailed(true);
   }
 
@@ -201,7 +220,7 @@ export default function DeliveryDetailPage() {
           <p className="text-muted-foreground text-sm">{deliveredAt}</p>
         </div>
         <div className="w-full bg-success-50 rounded-2xl p-4 border border-success-500/20 text-center flex flex-col gap-2">
-          <p className="text-sm text-success-700 font-medium">Successfully delivered to {customer.name}</p>
+          <p className="text-sm text-success-700 font-medium">Successfully delivered to {customerName}</p>
           <div className="flex items-center justify-center gap-1.5 text-xs text-success-600">
             <svg className="w-3.5 h-3.5 flex-shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2.5} strokeLinecap="round" strokeLinejoin="round">
               <polyline points="20 6 9 17 4 12" />
@@ -237,21 +256,25 @@ export default function DeliveryDetailPage() {
         {/* Customer info card */}
         <Card className="p-4">
           <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-3">Customer</p>
-          <h2 className="font-display text-lg font-bold text-foreground mb-1">{customer.name}</h2>
-          <p className="text-sm text-muted-foreground mb-0.5">{customer.address}</p>
-          <p className="text-xs text-muted-foreground mb-3">
-            <span className="font-medium text-foreground">Landmark:</span> {customer.landmark}
-          </p>
+          <h2 className="font-display text-lg font-bold text-foreground mb-1">{customerName}</h2>
+          <p className="text-sm text-muted-foreground mb-0.5">{customer?.address ?? order.deliveryAddress}</p>
+          {customer?.landmark && (
+            <p className="text-xs text-muted-foreground mb-3">
+              <span className="font-medium text-foreground">Landmark:</span> {customer.landmark}
+            </p>
+          )}
           {/* Tap to call */}
-          <a
-            href={`tel:${customer.phone}`}
-            className="flex items-center gap-2 w-full px-4 py-3 rounded-xl bg-brand-50 border border-brand-200 text-brand-700 font-medium text-sm active:bg-brand-100 transition-colors"
-          >
-            <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round">
-              <path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07A19.5 19.5 0 014.31 11a19.79 19.79 0 01-3.07-8.67A2 2 0 013.22 0h3a2 2 0 012 1.72 12.84 12.84 0 00.7 2.81 2 2 0 01-.45 2.11L7.91 7.91a16 16 0 006.18 6.18l1.27-1.27a2 2 0 012.11-.45 12.84 12.84 0 002.81.7A2 2 0 0122 16.92z" />
-            </svg>
-            Call {customer.phone}
-          </a>
+          {customer?.phone && (
+            <a
+              href={`tel:${customer.phone}`}
+              className="flex items-center gap-2 w-full px-4 py-3 rounded-xl bg-brand-50 border border-brand-200 text-brand-700 font-medium text-sm active:bg-brand-100 transition-colors"
+            >
+              <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round">
+                <path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07A19.5 19.5 0 014.31 11a19.79 19.79 0 01-3.07-8.67A2 2 0 013.22 0h3a2 2 0 012 1.72 12.84 12.84 0 00.7 2.81 2 2 0 01-.45 2.11L7.91 7.91a16 16 0 006.18 6.18l1.27-1.27a2 2 0 012.11-.45 12.84 12.84 0 002.81.7A2 2 0 0122 16.92z" />
+              </svg>
+              Call {customer.phone}
+            </a>
+          )}
         </Card>
 
         {/* Order items */}
@@ -445,12 +468,48 @@ export default function DeliveryDetailPage() {
             size="lg"
             variant="outline"
             className="w-full h-12 border-danger-300 text-danger-600 hover:bg-danger-50"
-            onClick={handleFailedDelivery}
+            onClick={() => setShowFailPicker(true)}
           >
             Failed Delivery
           </Button>
         </div>
       </div>
+
+      {showFailPicker && (
+        <div className="fixed inset-0 z-50 flex flex-col justify-end bg-black/40" onClick={() => setShowFailPicker(false)}>
+          <div className="bg-card rounded-t-2xl p-6 space-y-4" onClick={(e) => e.stopPropagation()}>
+            <h3 className="font-display text-base font-bold text-foreground">Reason for Failed Delivery</h3>
+            <div className="space-y-2">
+              {FAIL_REASONS.map((reason) => (
+                <button
+                  key={reason}
+                  onClick={() => setSelectedFailReason(reason)}
+                  className={`w-full flex items-center gap-3 rounded-xl border px-4 py-3 text-sm font-medium text-left transition-colors ${
+                    selectedFailReason === reason
+                      ? "border-danger-400 bg-danger-50 text-danger-700"
+                      : "border-border bg-background text-foreground"
+                  }`}
+                >
+                  <div
+                    className={`w-4 h-4 rounded-full border-2 flex items-center justify-center flex-shrink-0 ${
+                      selectedFailReason === reason ? "border-danger-500 bg-danger-500" : "border-surface-300"
+                    }`}
+                  >
+                    {selectedFailReason === reason && <div className="w-2 h-2 rounded-full bg-white" />}
+                  </div>
+                  {reason}
+                </button>
+              ))}
+            </div>
+            <button
+              onClick={handleConfirmFailed}
+              className="w-full h-12 rounded-2xl bg-danger-600 text-white font-semibold text-sm"
+            >
+              Confirm Failed Delivery
+            </button>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

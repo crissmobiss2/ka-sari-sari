@@ -1,5 +1,6 @@
 "use client";
 import { useState } from "react";
+import { useParams } from "next/navigation";
 import Link from "next/link";
 import {
   ArrowLeft, Phone, MapPin, Calendar, CreditCard,
@@ -11,20 +12,65 @@ import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { cn, formatPHP } from "@/lib/utils";
 
-// Static data for the retailer profile — in production, fetch by params.id
-const RETAILER = {
-  name: "Santos Sari-Sari Store",
-  owner: "Maria Santos",
-  phone: "+63 917 123 4567",
-  location: "Brgy. San Jose, Caloocan City, Metro Manila",
-  memberSince: "February 1, 2024",
-  subscriptionPlan: "Annual",
-  subscriptionPrice: "PHP 1,000/year",
-  subscriptionPaidOn: "February 1, 2024",
-  subscriptionPaidVia: "GCash",
-  subscriptionRenews: "February 1, 2026",
-  initials: "MS",
-};
+// Mock retailer data — in production, fetch from API by params.id
+const MOCK_RETAILERS = [
+  {
+    id: "r1",
+    name: "Santos Sari-Sari Store",
+    owner: "Maria Santos",
+    phone: "+63 917 123 4567",
+    location: "Brgy. San Jose, Caloocan City, Metro Manila",
+    memberSince: "February 1, 2024",
+    subscriptionPlan: "Annual",
+    subscriptionPrice: "PHP 1,000/year",
+    subscriptionPaidOn: "February 1, 2024",
+    subscriptionPaidVia: "GCash",
+    subscriptionRenews: "February 1, 2026",
+    initials: "MS",
+  },
+  {
+    id: "r2",
+    name: "Reyes General Store",
+    owner: "Lourdes Reyes",
+    phone: "+63 918 234 5678",
+    location: "Brgy. Poblacion, Quezon City, Metro Manila",
+    memberSince: "March 15, 2024",
+    subscriptionPlan: "Annual",
+    subscriptionPrice: "PHP 1,000/year",
+    subscriptionPaidOn: "March 15, 2024",
+    subscriptionPaidVia: "Maya",
+    subscriptionRenews: "March 15, 2026",
+    initials: "LR",
+  },
+  {
+    id: "r3",
+    name: "Cruz Mini Mart",
+    owner: "Jose Cruz",
+    phone: "+63 919 345 6789",
+    location: "Brgy. Bagumbayan, Marikina City, Metro Manila",
+    memberSince: "April 5, 2024",
+    subscriptionPlan: "Monthly",
+    subscriptionPrice: "PHP 100/month",
+    subscriptionPaidOn: "June 5, 2025",
+    subscriptionPaidVia: "GCash",
+    subscriptionRenews: "July 5, 2025",
+    initials: "JC",
+  },
+  {
+    id: "r4",
+    name: "Dela Cruz Tindahan",
+    owner: "Ana Dela Cruz",
+    phone: "+63 920 456 7890",
+    location: "Brgy. San Antonio, Pasig City, Metro Manila",
+    memberSince: "January 10, 2024",
+    subscriptionPlan: "Annual",
+    subscriptionPrice: "PHP 1,000/year",
+    subscriptionPaidOn: "January 10, 2024",
+    subscriptionPaidVia: "COD",
+    subscriptionRenews: "January 10, 2026",
+    initials: "AD",
+  },
+];
 
 const STATS = [
   { label: "Total Orders",  value: "24",          icon: ShoppingCart },
@@ -62,6 +108,9 @@ const PAYMENT_CHIP: Record<string, string> = {
 };
 
 export default function AdminRetailerProfilePage() {
+  const { id } = useParams<{ id: string }>();
+  const retailer = MOCK_RETAILERS.find((r) => r.id === id) ?? MOCK_RETAILERS[0];
+
   const [suspendConfirm, setSuspendConfirm] = useState(false);
 
   return (
@@ -82,7 +131,7 @@ export default function AdminRetailerProfilePage() {
 
           {/* Avatar */}
           <div className="flex h-16 w-16 shrink-0 items-center justify-center rounded-2xl bg-brand-100 text-brand-600 text-xl font-bold font-display select-none">
-            {RETAILER.initials}
+            {retailer.initials}
           </div>
 
           {/* Core details */}
@@ -90,9 +139,9 @@ export default function AdminRetailerProfilePage() {
             <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-3">
               <div>
                 <h1 className="font-display text-xl font-bold text-foreground leading-tight text-balance">
-                  {RETAILER.name}
+                  {retailer.name}
                 </h1>
-                <p className="text-sm text-muted-foreground mt-0.5">{RETAILER.owner}</p>
+                <p className="text-sm text-muted-foreground mt-0.5">{retailer.owner}</p>
               </div>
               <Badge variant="success" className="shrink-0 self-start">
                 <CheckCircle2 className="h-3 w-3" /> Active
@@ -102,21 +151,21 @@ export default function AdminRetailerProfilePage() {
             <div className="mt-4 grid grid-cols-1 sm:grid-cols-2 gap-y-2.5 gap-x-8 text-sm">
               <div className="flex items-center gap-2 text-muted-foreground">
                 <Phone className="h-3.5 w-3.5 shrink-0" />
-                <span>{RETAILER.phone}</span>
+                <span>{retailer.phone}</span>
               </div>
               <div className="flex items-start gap-2 text-muted-foreground">
                 <MapPin className="h-3.5 w-3.5 shrink-0 mt-0.5" />
-                <span>{RETAILER.location}</span>
+                <span>{retailer.location}</span>
               </div>
               <div className="flex items-center gap-2 text-muted-foreground">
                 <Calendar className="h-3.5 w-3.5 shrink-0" />
-                <span>Member since {RETAILER.memberSince}</span>
+                <span>Member since {retailer.memberSince}</span>
               </div>
               <div className="flex items-center gap-2 text-muted-foreground">
                 <CreditCard className="h-3.5 w-3.5 shrink-0" />
                 <span>
                   Subscription renews{" "}
-                  <span className="text-foreground font-medium">{RETAILER.subscriptionRenews}</span>
+                  <span className="text-foreground font-medium">{retailer.subscriptionRenews}</span>
                 </span>
               </div>
             </div>
@@ -143,7 +192,7 @@ export default function AdminRetailerProfilePage() {
         {suspendConfirm && (
           <div className="mt-4 rounded-xl border border-danger-200 bg-danger-50 p-4">
             <p className="text-sm font-semibold text-danger-700 mb-1">
-              Suspend {RETAILER.name}?
+              Suspend {retailer.name}?
             </p>
             <p className="text-sm text-danger-600">
               The retailer will lose app access and cannot place orders. This action can be reversed.
@@ -263,7 +312,7 @@ export default function AdminRetailerProfilePage() {
                 Current Plan
               </p>
               <p className="text-sm font-semibold text-foreground">
-                {RETAILER.subscriptionPlan} ({RETAILER.subscriptionPrice})
+                {retailer.subscriptionPlan} ({retailer.subscriptionPrice})
               </p>
             </div>
             <div>
@@ -279,14 +328,14 @@ export default function AdminRetailerProfilePage() {
                 Paid On
               </p>
               <p className="text-sm text-foreground">
-                {RETAILER.subscriptionPaidOn} via {RETAILER.subscriptionPaidVia}
+                {retailer.subscriptionPaidOn} via {retailer.subscriptionPaidVia}
               </p>
             </div>
             <div>
               <p className="text-[11px] uppercase tracking-widest font-semibold text-muted-foreground mb-1">
                 Renews
               </p>
-              <p className="text-sm text-foreground">{RETAILER.subscriptionRenews}</p>
+              <p className="text-sm text-foreground">{retailer.subscriptionRenews}</p>
             </div>
           </div>
         </div>
@@ -296,7 +345,7 @@ export default function AdminRetailerProfilePage() {
       <Card className="p-5">
         <h2 className="font-display text-base font-semibold text-foreground mb-1">Account Actions</h2>
         <p className="text-xs text-muted-foreground mb-4">
-          Manage this retailer's account notifications, access, and data export.
+          Manage this retailer&apos;s account notifications, access, and data export.
         </p>
         <div className="flex flex-wrap gap-3">
           <button className="flex items-center gap-2 rounded-xl border border-border px-4 py-2.5 text-sm font-medium text-foreground hover:bg-muted/50 transition-colors">

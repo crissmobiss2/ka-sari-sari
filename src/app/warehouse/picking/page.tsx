@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { ScanLine, ChevronRight, CheckCircle2, Clock, Package } from "lucide-react";
+import { ScanLine, ChevronRight, CheckCircle2, Clock, Package, ChevronDown } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -17,6 +17,12 @@ const FILTER_TABS: { key: FilterTab; label: string }[] = [
   { key: "in_progress", label: "In Progress" },
   { key: "completed", label: "Completed" },
 ];
+
+const STATUS_ORDER: Record<PickList["status"], number> = {
+  open: 0,
+  in_progress: 1,
+  completed: 2,
+};
 
 function timeAgo(isoString: string) {
   const diffMs = Date.now() - new Date(isoString).getTime();
@@ -34,6 +40,10 @@ function getPickedCount(pl: PickList) {
 
 function getTotalCount(pl: PickList) {
   return pl.items.reduce((sum, item) => sum + item.quantity, 0);
+}
+
+function getRemainingItems(pl: PickList, checkedItems: Record<string, boolean>) {
+  return pl.items.filter((item) => !checkedItems[item.id] && item.status !== "picked").length;
 }
 
 function StatusBanner({ status }: { status: PickList["status"] }) {
@@ -88,12 +98,36 @@ function ProgressBar({ picked, total }: { picked: number; total: number }) {
   );
 }
 
-function PickListCard({ pl, onAction }: { pl: PickList; onAction: (id: string) => void }) {
+function PickListCard({
+  pl,
+  isExpanded,
+  checkedItems,
+  onAction,
+  onToggleItem,
+  onComplete,
+}: {
+  pl: PickList;
+  isExpanded: boolean;
+  checkedItems: Record<string, boolean>;
+  onAction: (id: string) => void;
+  onToggleItem: (itemId: string, checked: boolean) => void;
+  onComplete: (id: string) => void;
+}) {
   const picked = getPickedCount(pl);
   const total = getTotalCount(pl);
 
+  // Items remaining = items that are neither already picked in the data nor checked in UI
+  const remainingCount = pl.items.filter(
+    (item) => item.status !== "picked" && !checkedItems[item.id]
+  ).length;
+
+  // All items resolved = all items either "picked" in data or checked via checkbox
+  const allItemsDone = pl.items.every(
+    (item) => item.status === "picked" || checkedItems[item.id]
+  );
+
   return (
-    <Card className="overflow-hidden">
+    <Card className={cn("overflow-hidden transition-all", isExpanded && "ring-2 ring-blue-500")}>
       <CardContent className="p-5 space-y-4">
         {/* Header row */}
         <div className="flex items-start justify-between gap-2">
@@ -108,56 +142,141 @@ function PickListCard({ pl, onAction }: { pl: PickList; onAction: (id: string) =
               )}
             </p>
           </div>
-          <StatusBanner status={pl.status} />
+          <div className="flex flex-col items-end gap-2">
+            <StatusBanner status={pl.status} />
+            {pl.status !== "completed" && remainingCount > 0 && (
+              <Badge
+                variant="outline"
+                className={cn(
+                  "text-xs font-bold",
+                  pl.status === "in_progress"
+                    ? "border-blue-400 text-blue-600 bg-blue-50 dark:bg-blue-950/20"
+                    : "border-brand-400 text-brand-600 bg-brand-50 dark:bg-brand-950/20"
+                )}
+              >
+                {remainingCount} item{remainingCount !== 1 ? "s" : ""} remaining
+              </Badge>
+            )}
+          </div>
         </div>
 
         {/* Progress bar */}
         <ProgressBar picked={picked} total={total} />
 
-        {/* Item preview */}
-        <div className="space-y-1.5">
-          {pl.items.slice(0, 3).map((item) => (
-            <div
-              key={item.id}
-              className="flex items-center justify-between gap-2 text-sm py-1"
-            >
-              <div className="min-w-0 flex-1">
-                <span className="text-foreground font-medium truncate block">{item.productName}</span>
-                <span className="text-xs text-muted-foreground font-mono">{item.bin}</span>
-              </div>
-              <div className="flex items-center gap-2 shrink-0">
-                <span className="text-muted-foreground text-xs">
-                  {item.pickedQty}/{item.quantity}
-                </span>
-                {item.status === "picked" && (
-                  <CheckCircle2 className="h-4 w-4 text-success-700" />
-                )}
-                {item.status === "partial" && (
-                  <div className="h-4 w-4 rounded-full border-2 border-blue-500 flex items-center justify-center">
-                    <div className="h-1.5 w-1.5 rounded-full bg-blue-500" />
-                  </div>
-                )}
-                {item.status === "pending" && (
-                  <div className="h-4 w-4 rounded-full border-2 border-muted-foreground/40" />
-                )}
-              </div>
+        {/* Expanded picking view — shown when active */}
+        {isExpanded ? (
+          <div className="space-y-3 pt-1">
+            <div className="flex items-center gap-2 text-sm font-semibold text-foreground border-b border-border pb-2">
+              <ChevronDown className="h-4 w-4 text-blue-500" />
+              Pick items in order
             </div>
-          ))}
-          {pl.items.length > 3 && (
-            <p className="text-xs text-muted-foreground pt-1">
-              +{pl.items.length - 3} more item{pl.items.length - 3 !== 1 ? "s" : ""}
-            </p>
-          )}
-        </div>
+            {pl.items.map((item) => {
+              const isAlreadyPicked = item.status === "picked";
+              const isChecked = isAlreadyPicked || !!checkedItems[item.id];
+              return (
+                <label
+                  key={item.id}
+                  className={cn(
+                    "flex items-start gap-3 p-3 rounded-xl border cursor-pointer transition-colors",
+                    isChecked
+                      ? "bg-success-50 border-success-200 dark:bg-success-950/20 dark:border-success-800"
+                      : "bg-muted/40 border-border hover:bg-muted/70"
+                  )}
+                >
+                  <input
+                    type="checkbox"
+                    checked={isChecked}
+                    disabled={isAlreadyPicked}
+                    onChange={(e) => onToggleItem(item.id, e.target.checked)}
+                    className="mt-1 h-5 w-5 rounded accent-blue-600 shrink-0"
+                  />
+                  <div className="flex-1 min-w-0">
+                    <p
+                      className={cn(
+                        "font-medium text-sm leading-snug",
+                        isChecked ? "line-through text-muted-foreground" : "text-foreground"
+                      )}
+                    >
+                      {item.productName}
+                    </p>
+                    <div className="flex items-center gap-3 mt-1.5 flex-wrap">
+                      <span className="font-mono text-lg font-bold text-foreground tracking-wide">
+                        {item.bin}
+                      </span>
+                      <span className="text-sm text-muted-foreground">
+                        Qty: <span className="font-semibold text-foreground">{item.quantity}</span>
+                      </span>
+                    </div>
+                  </div>
+                  {isChecked && (
+                    <CheckCircle2 className="h-5 w-5 text-success-700 shrink-0 mt-0.5" />
+                  )}
+                </label>
+              );
+            })}
 
-        {/* Action button */}
-        {pl.status !== "completed" && (
+            {/* Complete button — only shown when all items are checked */}
+            {allItemsDone ? (
+              <Button
+                className="w-full py-4 text-lg bg-success-600 hover:bg-success-700 text-white"
+                size="lg"
+                onClick={() => onComplete(pl.id)}
+              >
+                <CheckCircle2 className="h-5 w-5" />
+                Complete Pick List
+              </Button>
+            ) : (
+              <p className="text-center text-sm text-muted-foreground py-2">
+                Check off each item above to complete this pick list.
+              </p>
+            )}
+          </div>
+        ) : (
+          /* Collapsed item preview */
+          <div className="space-y-1.5">
+            {pl.items.slice(0, 3).map((item) => (
+              <div
+                key={item.id}
+                className="flex items-center justify-between gap-2 text-sm py-1"
+              >
+                <div className="min-w-0 flex-1">
+                  <span className="text-foreground font-medium truncate block">{item.productName}</span>
+                  <span className="text-xs text-muted-foreground font-mono">{item.bin}</span>
+                </div>
+                <div className="flex items-center gap-2 shrink-0">
+                  <span className="text-muted-foreground text-xs">
+                    {item.pickedQty}/{item.quantity}
+                  </span>
+                  {item.status === "picked" && (
+                    <CheckCircle2 className="h-4 w-4 text-success-700" />
+                  )}
+                  {item.status === "partial" && (
+                    <div className="h-4 w-4 rounded-full border-2 border-blue-500 flex items-center justify-center">
+                      <div className="h-1.5 w-1.5 rounded-full bg-blue-500" />
+                    </div>
+                  )}
+                  {item.status === "pending" && (
+                    <div className="h-4 w-4 rounded-full border-2 border-muted-foreground/40" />
+                  )}
+                </div>
+              </div>
+            ))}
+            {pl.items.length > 3 && (
+              <p className="text-xs text-muted-foreground pt-1">
+                +{pl.items.length - 3} more item{pl.items.length - 3 !== 1 ? "s" : ""}
+              </p>
+            )}
+          </div>
+        )}
+
+        {/* Action button — open or in_progress and not expanded */}
+        {pl.status !== "completed" && !isExpanded && (
           <Button
             className={cn(
               "w-full py-4 text-lg",
               pl.status === "in_progress" ? "bg-blue-600 hover:bg-blue-700 text-white" : ""
             )}
-            variant={pl.status === "in_progress" ? "default" : "default"}
+            variant="default"
             size="lg"
             onClick={() => onAction(pl.id)}
           >
@@ -183,14 +302,42 @@ function PickListCard({ pl, onAction }: { pl: PickList; onAction: (id: string) =
   );
 }
 
+function EmptyState({ filter }: { filter: FilterTab }) {
+  const messages: Record<FilterTab, { title: string; detail: string }> = {
+    all: { title: "No pick lists", detail: "Pick lists will appear here when orders are ready to pick." },
+    open: { title: "No open pick lists", detail: "All open orders have been started or completed." },
+    in_progress: { title: "No pick lists in progress", detail: "Start picking an open list to see it here." },
+    completed: { title: "No completed pick lists", detail: "Finished pick lists will appear here." },
+  };
+  const { title, detail } = messages[filter];
+  return (
+    <Card>
+      <CardContent className="p-8 text-center">
+        <CheckCircle2 className="h-12 w-12 text-success-700 mx-auto mb-3" />
+        <p className="text-lg font-semibold text-foreground">{title}</p>
+        <p className="text-muted-foreground mt-1">{detail}</p>
+      </CardContent>
+    </Card>
+  );
+}
+
 export default function PickingPage() {
   const [activeFilter, setActiveFilter] = useState<FilterTab>("all");
   const [lists, setLists] = useState<PickList[]>(PICK_LISTS);
+  const [activePicking, setActivePicking] = useState<string | null>(null);
+  const [checkedItems, setCheckedItems] = useState<Record<string, boolean>>({});
+
+  // Sort: open first, then in_progress, then completed; within each group oldest first (most urgent)
+  const sorted = [...lists].sort((a, b) => {
+    const statusDiff = STATUS_ORDER[a.status] - STATUS_ORDER[b.status];
+    if (statusDiff !== 0) return statusDiff;
+    return new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime();
+  });
 
   const filtered =
     activeFilter === "all"
-      ? lists
-      : lists.filter((pl) => pl.status === activeFilter);
+      ? sorted
+      : sorted.filter((pl) => pl.status === activeFilter);
 
   const counts: Record<FilterTab, number> = {
     all: lists.length,
@@ -207,6 +354,37 @@ export default function PickingPage() {
         return pl;
       })
     );
+    setActivePicking(id);
+  }
+
+  function handleToggleItem(itemId: string, checked: boolean) {
+    setCheckedItems((prev) => ({ ...prev, [itemId]: checked }));
+  }
+
+  function handleComplete(id: string) {
+    setLists((prev) =>
+      prev.map((pl) => {
+        if (pl.id !== id) return pl;
+        return {
+          ...pl,
+          status: "completed" as const,
+          completedAt: new Date().toISOString(),
+          items: pl.items.map((item) => ({
+            ...item,
+            status: "picked" as const,
+            pickedQty: item.quantity,
+          })),
+        };
+      })
+    );
+    setActivePicking(null);
+    // Clear checked state for items of this list
+    setCheckedItems((prev) => {
+      const updated = { ...prev };
+      const pl = lists.find((l) => l.id === id);
+      if (pl) pl.items.forEach((item) => delete updated[item.id]);
+      return updated;
+    });
   }
 
   return (
@@ -248,16 +426,18 @@ export default function PickingPage() {
       {/* Pick list cards */}
       <div className="space-y-4">
         {filtered.length === 0 ? (
-          <Card>
-            <CardContent className="p-8 text-center">
-              <CheckCircle2 className="h-12 w-12 text-success-700 mx-auto mb-3" />
-              <p className="text-lg font-semibold text-foreground">All done!</p>
-              <p className="text-muted-foreground mt-1">No {activeFilter === "all" ? "" : activeFilter.replace("_", " ")} pick lists.</p>
-            </CardContent>
-          </Card>
+          <EmptyState filter={activeFilter} />
         ) : (
           filtered.map((pl) => (
-            <PickListCard key={pl.id} pl={pl} onAction={handleAction} />
+            <PickListCard
+              key={pl.id}
+              pl={pl}
+              isExpanded={activePicking === pl.id}
+              checkedItems={checkedItems}
+              onAction={handleAction}
+              onToggleItem={handleToggleItem}
+              onComplete={handleComplete}
+            />
           ))
         )}
       </div>

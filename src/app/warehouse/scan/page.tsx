@@ -1,16 +1,16 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useRef } from "react";
 import { ScanLine, Search, CheckCircle2, XCircle, Plus, Minus } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { cn } from "@/lib/utils";
 import { PRODUCTS, CATEGORIES } from "@/lib/mock-data";
+import { toastSuccess } from "@/store/toast";
 
 function getStock(productId: string): number {
-  const n = productId.split("").reduce((a, c) => a + c.charCodeAt(0), 0);
-  return (n * 7 + 13) % 201;
+  return PRODUCTS.find(p => p.id === productId)?.stock ?? 0;
 }
 
 type ScanEntry = {
@@ -36,6 +36,7 @@ export default function ScanPage() {
   const [quantity, setQuantity] = useState(1);
   const [logged, setLogged] = useState(false);
   const [recentScans, setRecentScans] = useState<ScanEntry[]>([]);
+  const debounceRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   const foundProduct = searchedValue
     ? PRODUCTS.find(
@@ -48,15 +49,30 @@ export default function ScanPage() {
 
   const notFound = searchedValue && !foundProduct && !loading;
 
-  function handleSearch() {
-    if (!barcode.trim()) return;
+  function runSearch(value: string) {
+    if (!value.trim()) return;
     setLoading(true);
     setLogged(false);
     setQuantity(1);
     setTimeout(() => {
-      setSearchedValue(barcode.trim());
+      setSearchedValue(value.trim());
       setLoading(false);
     }, 800);
+  }
+
+  function handleSearch() {
+    runSearch(barcode);
+  }
+
+  function handleBarcodeChange(e: React.ChangeEvent<HTMLInputElement>) {
+    const value = e.target.value;
+    setBarcode(value);
+    if (debounceRef.current) clearTimeout(debounceRef.current);
+    if (value.trim().length >= 3) {
+      debounceRef.current = setTimeout(() => {
+        runSearch(value);
+      }, 400);
+    }
   }
 
   function handleLogReceipt() {
@@ -68,6 +84,7 @@ export default function ScanPage() {
       scannedAt: new Date(),
     };
     setRecentScans((prev) => [entry, ...prev].slice(0, 5));
+    toastSuccess("Receipt logged");
     setLogged(true);
   }
 
@@ -107,7 +124,7 @@ export default function ScanPage() {
             type="text"
             placeholder="e.g. CC-330-REG or prod-1"
             value={barcode}
-            onChange={(e) => setBarcode(e.target.value)}
+            onChange={handleBarcodeChange}
             onKeyDown={(e) => e.key === "Enter" && handleSearch()}
             className="flex-1 px-3 py-2.5 text-sm rounded-xl border border-border bg-background text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-brand-500"
           />

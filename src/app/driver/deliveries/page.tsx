@@ -10,6 +10,14 @@ import { CheckCircle2, XCircle, Package, MapPin, Banknote } from "lucide-react";
 
 type FilterTab = "all" | "pending" | "delivered" | "failed";
 
+const FAIL_REASONS = [
+  "No one home",
+  "Wrong address",
+  "Customer refused delivery",
+  "COD amount not ready",
+  "Address inaccessible",
+];
+
 const TABS: { id: FilterTab; label: string }[] = [
   { id: "all",       label: "All" },
   { id: "pending",   label: "Pending" },
@@ -30,6 +38,8 @@ export default function DriverDeliveriesPage() {
 
   const [activeTab, setActiveTab] = useState<FilterTab>("all");
   const [toast, setToast] = useState<string | null>(null);
+  const [failTarget, setFailTarget] = useState<string | null>(null);
+  const [failReason, setFailReason] = useState("No one home");
 
   function showToast(msg: string) {
     setToast(msg);
@@ -146,15 +156,24 @@ export default function DriverDeliveriesPage() {
                       >
                         View Details
                       </Link>
+                      {isCOD ? (
+                        <Link
+                          href={`/driver/deliveries/${delivery.id}`}
+                          className="flex items-center gap-1 rounded-xl bg-brand-500 hover:bg-brand-600 text-white text-xs font-semibold h-9 px-3 transition-colors"
+                        >
+                          View & Confirm
+                        </Link>
+                      ) : (
+                        <button
+                          onClick={() => { markDelivered(delivery.id); showToast("Marked as delivered!"); }}
+                          className="flex items-center gap-1 rounded-xl bg-success-500 hover:bg-success-600 text-white text-xs font-semibold h-9 px-3 transition-colors"
+                        >
+                          <CheckCircle2 className="h-3.5 w-3.5" />
+                          Done
+                        </button>
+                      )}
                       <button
-                        onClick={() => { markDelivered(delivery.id); showToast("Marked as delivered!"); }}
-                        className="flex items-center gap-1 rounded-xl bg-success-500 hover:bg-success-600 text-white text-xs font-semibold h-9 px-3 transition-colors"
-                      >
-                        <CheckCircle2 className="h-3.5 w-3.5" />
-                        Done
-                      </button>
-                      <button
-                        onClick={() => { markFailed(delivery.id, "No one home"); showToast("Marked as failed"); }}
+                        onClick={() => setFailTarget(delivery.id)}
                         className="flex items-center gap-1 rounded-xl bg-danger-100 hover:bg-danger-200 text-danger-700 text-xs font-semibold h-9 px-3 transition-colors"
                       >
                         <XCircle className="h-3.5 w-3.5" />
@@ -184,6 +203,29 @@ export default function DriverDeliveriesPage() {
       {toast && (
         <div className="fixed bottom-24 left-1/2 -translate-x-1/2 z-50 bg-foreground text-background text-sm px-4 py-2.5 rounded-xl shadow-lg whitespace-nowrap">
           {toast}
+        </div>
+      )}
+
+      {failTarget && (
+        <div className="fixed inset-0 z-50 flex flex-col justify-end bg-black/40" onClick={() => setFailTarget(null)}>
+          <div className="bg-card rounded-t-2xl p-6 space-y-4" onClick={e => e.stopPropagation()}>
+            <h3 className="font-display text-base font-bold text-foreground">Reason for Failed Delivery</h3>
+            <div className="space-y-2">
+              {FAIL_REASONS.map(reason => (
+                <button key={reason} onClick={() => setFailReason(reason)}
+                  className={`w-full flex items-center gap-3 rounded-xl border px-4 py-3 text-sm font-medium text-left transition-colors ${failReason === reason ? "border-danger-400 bg-danger-50 text-danger-700" : "border-border bg-background text-foreground"}`}>
+                  <div className={`w-4 h-4 rounded-full border-2 flex items-center justify-center flex-shrink-0 ${failReason === reason ? "border-danger-500 bg-danger-500" : "border-surface-300"}`}>
+                    {failReason === reason && <div className="w-2 h-2 rounded-full bg-white" />}
+                  </div>
+                  {reason}
+                </button>
+              ))}
+            </div>
+            <button onClick={() => { markFailed(failTarget, failReason); setFailTarget(null); showToast("Marked as failed: " + failReason); }}
+              className="w-full h-12 rounded-2xl bg-danger-600 text-white font-semibold text-sm">
+              Confirm Failed Delivery
+            </button>
+          </div>
         </div>
       )}
     </div>

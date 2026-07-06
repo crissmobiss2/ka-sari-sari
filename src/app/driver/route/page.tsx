@@ -118,11 +118,11 @@ export default function RouteMapPage() {
       prev.map((s, i, arr) => {
         if (s.stopNumber === num) {
           const cod = s.paymentMethod === "cod" ? s.total : 0;
-          return { ...s, status: "done", collectedCOD: cod };
+          return { ...s, status: "done" as StopStatus, collectedCOD: cod };
         }
         const nextPending = arr.find((x) => x.stopNumber > num && x.status === "pending");
-        if (s.id === nextPending?.id || s.stopNumber === num + 1 && s.status === "pending") {
-          return { ...s, status: "next" };
+        if (s.stopNumber === nextPending?.stopNumber || s.stopNumber === num + 1 && s.status === "pending") {
+          return { ...s, status: "next" as StopStatus };
         }
         return s;
       }).map((s, _, arr) => {

@@ -9,8 +9,11 @@ import { PRODUCTS, CATEGORIES } from "@/lib/mock-data";
 import { toastSuccess } from "@/store/toast";
 
 function getStock(productId: string): number {
-  const n = productId.split("").reduce((a, c) => a + c.charCodeAt(0), 0);
-  return (n * 7 + 13) % 201;
+  return PRODUCTS.find(p => p.id === productId)?.stock ?? 0;
+}
+
+function getThreshold(productId: string): number {
+  return PRODUCTS.find(p => p.id === productId)?.lowStockThreshold ?? 20;
 }
 
 function downloadInventoryCSV(products: Array<{ id: string; name: string; brand?: string; categoryId: string }>) {
@@ -51,11 +54,11 @@ export default function InventoryPage() {
     }));
   }
 
-  const totalSKUs = 122;
-  const inStockCount = PRODUCTS.filter((p) => currentStock(p.id) > 20).length;
+  const totalSKUs = PRODUCTS.length;
+  const inStockCount = PRODUCTS.filter((p) => currentStock(p.id) > getThreshold(p.id)).length;
   const lowStockCount = PRODUCTS.filter((p) => {
     const s = currentStock(p.id);
-    return s >= 1 && s <= 20;
+    return s >= 1 && s <= getThreshold(p.id);
   }).length;
   const outOfStockCount = PRODUCTS.filter((p) => currentStock(p.id) === 0).length;
 
@@ -71,24 +74,24 @@ export default function InventoryPage() {
 
   const lowStockFiltered = filtered.filter((p) => {
     const s = currentStock(p.id);
-    return s >= 1 && s <= 20;
+    return s >= 1 && s <= getThreshold(p.id);
   });
 
-  function stockColor(stock: number) {
+  function stockColor(stock: number, productId: string) {
     if (stock === 0) return "text-danger-500";
-    if (stock <= 20) return "text-warning-600";
+    if (stock <= getThreshold(productId)) return "text-warning-600";
     return "text-success-600";
   }
 
-  function stockStatus(stock: number) {
+  function stockStatus(stock: number, productId: string) {
     if (stock === 0) return "Out of Stock";
-    if (stock <= 20) return "Low Stock";
+    if (stock <= getThreshold(productId)) return "Low Stock";
     return "In Stock";
   }
 
-  function stockBadgeVariant(stock: number): "success" | "warning" | "danger" {
+  function stockBadgeVariant(stock: number, productId: string): "success" | "warning" | "danger" {
     if (stock === 0) return "danger";
-    if (stock <= 20) return "warning";
+    if (stock <= getThreshold(productId)) return "warning";
     return "success";
   }
 
@@ -207,11 +210,11 @@ export default function InventoryPage() {
 
                       {/* Right: stock controls */}
                       <div className="flex flex-col items-end gap-1 shrink-0">
-                        <span className={cn("font-bold text-lg leading-none", stockColor(stock))}>
+                        <span className={cn("font-bold text-lg leading-none", stockColor(stock, product.id))}>
                           {stock}
                         </span>
-                        <Badge variant={stockBadgeVariant(stock)} className="text-xs">
-                          {stockStatus(stock)}
+                        <Badge variant={stockBadgeVariant(stock, product.id)} className="text-xs">
+                          {stockStatus(stock, product.id)}
                         </Badge>
                         <div className="flex items-center gap-1 mt-1">
                           <button
