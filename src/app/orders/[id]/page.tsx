@@ -1,72 +1,100 @@
 "use client";
 import { useParams, useSearchParams } from "next/navigation";
 import Link from "next/link";
+import Image from "next/image";
 import { useState, Suspense } from "react";
 import {
-  ArrowLeft, Package, MapPin, CreditCard, RotateCcw, CheckCircle2,
-  Phone, Star, Truck, Clock, Download, MessageCircle, Navigation,
-  ChevronRight, AlertCircle, CheckCheck, Circle, Loader2,
+  ArrowLeft, Package, MapPin, CreditCard, CheckCircle2,
+  Phone, Star, Truck, Clock, Download, MessageCircle,
+  AlertCircle, CheckCheck, Circle, Navigation, ShoppingCart,
 } from "lucide-react";
 import { RetailerTopBar, RetailerBottomNav } from "@/components/layout/retailer-nav";
 import { StatusBadge } from "@/components/ui/status-badge";
 import { Button, ButtonLink } from "@/components/ui/button";
 import {
-  formatPHP, formatDate, formatDateTime,
+  formatPHP, formatDateTime,
   type OrderStatus, ORDER_STATUS_LABELS,
 } from "@/lib/utils";
-import { MOCK_ORDERS } from "@/lib/mock-data";
+import { MOCK_ORDERS, PRODUCTS } from "@/lib/mock-data";
 import { cn } from "@/lib/utils";
+import { useCartStore } from "@/store/cart";
+import type { OrderItem, Product } from "@/types";
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 
 type StepStatus = "done" | "current" | "upcoming";
 
 interface TimelineStep {
-  key: OrderStatus;
+  key: string;
   label: string;
-  time?: string;
+  description: string;
+  statuses: OrderStatus[];  // which order statuses map to this step
 }
 
 // ─── Constants ───────────────────────────────────────────────────────────────
 
+// 5-step timeline as required
 const DELIVERY_STEPS: TimelineStep[] = [
-  { key: "pending",         label: "Order Placed",        time: "8:30 AM" },
-  { key: "confirmed",       label: "Order Confirmed",     time: "8:45 AM" },
-  { key: "picking",         label: "Being Prepared",      time: "9:15 AM" },
-  { key: "packed",          label: "Packed & Ready",      time: "10:30 AM" },
-  { key: "out_for_delivery",label: "Out for Delivery",    time: "11:00 AM" },
-  { key: "delivered",       label: "Delivered",           time: "11:58 AM" },
+  {
+    key: "placed",
+    label: "Order Placed",
+    description: "We received your order",
+    statuses: ["pending"],
+  },
+  {
+    key: "confirmed",
+    label: "Confirmed",
+    description: "Order accepted by warehouse",
+    statuses: ["confirmed"],
+  },
+  {
+    key: "picked_packed",
+    label: "Picked & Packed",
+    description: "Items prepared for delivery",
+    statuses: ["picking", "packed"],
+  },
+  {
+    key: "out_for_delivery",
+    label: "Out for Delivery",
+    description: "Driver is on the way",
+    statuses: ["out_for_delivery"],
+  },
+  {
+    key: "delivered",
+    label: "Delivered",
+    description: "Order successfully delivered",
+    statuses: ["delivered"],
+  },
 ];
 
-const STATUS_ORDER: OrderStatus[] = [
-  "pending", "confirmed", "picking", "packed", "out_for_delivery", "delivered",
-];
+// Maps an OrderStatus to the step index it belongs to
+function getStepIndex(status: OrderStatus): number {
+  for (let i = 0; i < DELIVERY_STEPS.length; i++) {
+    if (DELIVERY_STEPS[i].statuses.includes(status)) return i;
+  }
+  return -1;
+}
 
-const ITEMS_BY_ORDER: Record<string, Array<{ name: string; qty: number; price: number; color: string }>> = {
-  "ord-001": [
-    { name: "Coca-Cola Regular 330ml",      qty: 24, price: 28, color: "from-red-400 to-red-600" },
-    { name: "Lucky Me! Pancit Canton",      qty: 48, price: 14, color: "from-yellow-400 to-orange-500" },
-    { name: "555 Sardines Tomato Sauce",    qty: 24, price: 28, color: "from-blue-400 to-blue-600" },
-  ],
-  "ord-002": [
-    { name: "Purefoods Corned Beef 150g",   qty: 48, price: 28, color: "from-amber-400 to-amber-600" },
-    { name: "Kopiko Brown Coffee 3-in-1",   qty: 12, price: 62, color: "from-brown-400 to-yellow-900" },
-    { name: "Lucky Me! Pancit Canton",      qty: 24, price: 22, color: "from-yellow-400 to-orange-500" },
-  ],
-  "ord-003": [
-    { name: "Milo Activ-Go 3-in-1 18g",    qty: 24, price: 18, color: "from-green-400 to-green-700" },
-    { name: "Ariel Powder Detergent 68g",   qty: 48, price: 14, color: "from-blue-500 to-indigo-600" },
-    { name: "Rejoice Shampoo Sachet",       qty: 60, price: 8,  color: "from-pink-400 to-rose-500" },
-  ],
+const PAYMENT_METHOD_LABELS: Record<string, string> = {
+  gcash: "GCash",
+  maya: "Maya",
+  cod: "Cash on Delivery",
+  bank_transfer: "Bank Transfer",
+  credit: "Credit",
 };
 
-function getItemsForOrder(orderId: string, total: number) {
-  if (ITEMS_BY_ORDER[orderId]) return ITEMS_BY_ORDER[orderId];
-  return [
-    { name: "Assorted Grocery Items",       qty: 12, price: Math.round(total * 0.45 / 12), color: "from-brand-400 to-brand-600" },
-    { name: "Household Essentials Pack",    qty: 6,  price: Math.round(total * 0.35 / 6),  color: "from-teal-400 to-teal-600" },
-    { name: "Condiment Bundle",             qty: 8,  price: Math.round(total * 0.2 / 8),   color: "from-amber-400 to-amber-600" },
-  ];
+const PAYMENT_METHOD_COLORS: Record<string, string> = {
+  gcash: "bg-blue-100 text-blue-700 border-blue-200",
+  maya: "bg-green-100 text-green-700 border-green-200",
+  cod: "bg-amber-100 text-amber-700 border-amber-200",
+  bank_transfer: "bg-purple-100 text-purple-700 border-purple-200",
+  credit: "bg-gray-100 text-gray-700 border-gray-200",
+};
+
+// Deterministic picsum seed from productId for stable thumbnails
+function picsumUrl(productId: string, size = 80): string {
+  const seed = productId.replace(/\D/g, "") || "1";
+  return `https://picsum.photos/seed/prod${seed}/${size}/${size}`;
 }
 
 // ─── ConfirmBanner ────────────────────────────────────────────────────────────
@@ -101,13 +129,7 @@ function StatusHero({ status, createdAt }: { status: OrderStatus; createdAt: str
     ? "bg-danger-50 text-danger-700"
     : "bg-warning-50 text-warning-700";
 
-  const label = isOutForDelivery
-    ? "On the way!"
-    : isDelivered
-    ? "Delivered!"
-    : isCancelled
-    ? ORDER_STATUS_LABELS[status]
-    : ORDER_STATUS_LABELS[status];
+  const label = ORDER_STATUS_LABELS[status] ?? status;
 
   const subtext = isOutForDelivery
     ? "Expected today by 5:00 PM"
@@ -141,7 +163,9 @@ function StatusHero({ status, createdAt }: { status: OrderStatus; createdAt: str
         <p className={cn(
           "font-display text-2xl font-bold",
           !(isOutForDelivery || isDelivered) && "text-warning-800"
-        )}>{label}</p>
+        )}>
+          {isOutForDelivery ? "On the way!" : isDelivered ? "Delivered!" : label}
+        </p>
         <p className={cn(
           "text-sm mt-1 font-medium",
           isOutForDelivery ? "text-white/80" : isDelivered ? "text-white/80" : "text-warning-600"
@@ -153,9 +177,15 @@ function StatusHero({ status, createdAt }: { status: OrderStatus; createdAt: str
 
 // ─── DeliveryTimeline ─────────────────────────────────────────────────────────
 
-function DeliveryTimeline({ status }: { status: OrderStatus }) {
-  const currentIdx = STATUS_ORDER.indexOf(status);
+function DeliveryTimeline({
+  status,
+  fulfillmentEvents,
+}: {
+  status: OrderStatus;
+  fulfillmentEvents: Array<{ status: OrderStatus; createdAt: string }>;
+}) {
   const isCancelled = ["cancelled", "failed_delivery", "returned"].includes(status);
+  const currentStepIdx = getStepIndex(status);
 
   if (isCancelled) {
     return (
@@ -165,10 +195,16 @@ function DeliveryTimeline({ status }: { status: OrderStatus }) {
           <h3 className="font-display text-sm font-semibold text-foreground">Order Status</h3>
         </div>
         <p className="text-sm text-danger-600 mt-1">
-          This order was {ORDER_STATUS_LABELS[status].toLowerCase()}.
+          This order was {ORDER_STATUS_LABELS[status]?.toLowerCase() ?? status.replace(/_/g, " ")}.
         </p>
       </div>
     );
+  }
+
+  // Build a lookup of event times by status
+  const eventTimeByStatus = new Map<string, string>();
+  for (const ev of fulfillmentEvents) {
+    eventTimeByStatus.set(ev.status, ev.createdAt);
   }
 
   return (
@@ -181,9 +217,19 @@ function DeliveryTimeline({ status }: { status: OrderStatus }) {
         <div className="space-y-0">
           {DELIVERY_STEPS.map((step, idx) => {
             const stepStatus: StepStatus =
-              idx < currentIdx ? "done"
-              : idx === currentIdx ? "current"
+              idx < currentStepIdx ? "done"
+              : idx === currentStepIdx ? "current"
               : "upcoming";
+
+            // Get the timestamp from fulfillment events if available
+            let timeLabel: string | undefined;
+            if (stepStatus === "done") {
+              // Try to find a matching event time for any of the step's statuses
+              for (const s of step.statuses) {
+                const t = eventTimeByStatus.get(s);
+                if (t) { timeLabel = formatDateTime(t); break; }
+              }
+            }
 
             return (
               <div key={step.key} className="flex items-start gap-4 relative py-2.5">
@@ -209,21 +255,29 @@ function DeliveryTimeline({ status }: { status: OrderStatus }) {
 
                 {/* Step content */}
                 <div className="flex-1 min-w-0 pt-1">
-                  <div className="flex items-center justify-between">
-                    <p className={cn(
-                      "text-sm font-semibold",
-                      stepStatus === "done" ? "text-foreground"
-                      : stepStatus === "current" ? "text-brand-600"
-                      : "text-muted-foreground"
-                    )}>
-                      {step.label}
-                    </p>
-                    {stepStatus === "done" && step.time && (
-                      <span className="text-xs text-muted-foreground shrink-0 ml-2">{step.time}</span>
+                  <div className="flex items-start justify-between gap-2">
+                    <div>
+                      <p className={cn(
+                        "text-sm font-semibold",
+                        stepStatus === "done" ? "text-foreground"
+                        : stepStatus === "current" ? "text-brand-600"
+                        : "text-muted-foreground"
+                      )}>
+                        {step.label}
+                      </p>
+                      <p className={cn(
+                        "text-xs mt-0.5",
+                        stepStatus === "upcoming" ? "text-surface-300" : "text-muted-foreground"
+                      )}>
+                        {step.description}
+                      </p>
+                    </div>
+                    {timeLabel && (
+                      <span className="text-xs text-muted-foreground shrink-0">{timeLabel}</span>
                     )}
                   </div>
                   {stepStatus === "current" && (
-                    <p className="text-xs text-brand-500 mt-0.5 flex items-center gap-1">
+                    <p className="text-xs text-brand-500 mt-1 flex items-center gap-1">
                       In progress
                       <span className="inline-flex gap-0.5">
                         <span className="animate-bounce" style={{ animationDelay: "0ms" }}>.</span>
@@ -238,7 +292,228 @@ function DeliveryTimeline({ status }: { status: OrderStatus }) {
           })}
         </div>
       </div>
+
+      {/* Link to live tracking when out for delivery */}
+      {status === "out_for_delivery" && (
+        <Link
+          href="/tracking"
+          className="mt-4 flex items-center justify-center gap-2 rounded-xl bg-brand-500 px-4 py-2.5 text-sm font-semibold text-white hover:bg-brand-600 active:scale-95 transition-all"
+        >
+          <Navigation className="h-4 w-4" />
+          View Live Tracking
+        </Link>
+      )}
     </div>
+  );
+}
+
+// ─── DeliveryAddress ──────────────────────────────────────────────────────────
+
+function DeliveryAddress({ address, notes }: { address: string; notes?: string }) {
+  return (
+    <div className="rounded-2xl border border-border bg-card shadow-card p-5 mx-4">
+      <div className="flex items-center gap-2 mb-3">
+        <div className="flex h-8 w-8 items-center justify-center rounded-xl bg-brand-100">
+          <MapPin className="h-4 w-4 text-brand-600" />
+        </div>
+        <h3 className="font-display text-sm font-semibold text-foreground">Delivery Address</h3>
+      </div>
+      <p className="text-sm font-medium text-foreground leading-relaxed">{address}</p>
+      {notes && (
+        <div className="mt-3 flex items-start gap-2 rounded-xl bg-warning-50 border border-warning-200 p-3">
+          <AlertCircle className="h-3.5 w-3.5 text-warning-600 mt-0.5 shrink-0" />
+          <p className="text-xs text-warning-700">{notes}</p>
+        </div>
+      )}
+    </div>
+  );
+}
+
+// ─── PaymentBadge ─────────────────────────────────────────────────────────────
+
+function PaymentBadge({ method, paymentStatus }: { method: string; paymentStatus: string }) {
+  const colorClass = PAYMENT_METHOD_COLORS[method] ?? "bg-gray-100 text-gray-700 border-gray-200";
+  const label = PAYMENT_METHOD_LABELS[method] ?? method.replace(/_/g, " ");
+  const isPaid = paymentStatus === "paid";
+
+  return (
+    <div className="flex items-center gap-2">
+      <span className={cn(
+        "inline-flex items-center gap-1.5 rounded-full border px-3 py-1 text-xs font-semibold",
+        colorClass
+      )}>
+        <CreditCard className="h-3 w-3" />
+        {label}
+      </span>
+      <span className={cn(
+        "inline-flex items-center rounded-full px-2.5 py-1 text-xs font-semibold",
+        isPaid
+          ? "bg-success-100 text-success-700"
+          : "bg-warning-100 text-warning-700"
+      )}>
+        {isPaid ? "Paid" : "Payment Pending"}
+      </span>
+    </div>
+  );
+}
+
+// ─── OrderItems ───────────────────────────────────────────────────────────────
+
+interface EnrichedItem {
+  orderItem: OrderItem;
+  product: Product | undefined;
+}
+
+function OrderItems({
+  orderItems,
+  subtotal,
+  deliveryFee,
+  total,
+  paymentMethod,
+  paymentStatus,
+}: {
+  orderItems: OrderItem[];
+  subtotal: number;
+  deliveryFee: number;
+  total: number;
+  paymentMethod: string;
+  paymentStatus: string;
+}) {
+  // Enrich order items with product data from PRODUCTS catalog
+  const enriched: EnrichedItem[] = orderItems.map((oi) => ({
+    orderItem: oi,
+    product: oi.product ?? PRODUCTS.find((p) => p.id === oi.productId),
+  }));
+
+  // Fallback rows if no items (e.g. admin orders with empty items array)
+  const hasItems = enriched.length > 0;
+
+  return (
+    <div className="rounded-2xl border border-border bg-card shadow-card overflow-hidden mx-4">
+      {/* Header */}
+      <div className="px-5 py-3.5 border-b border-border flex items-center justify-between">
+        <h3 className="font-display text-sm font-semibold text-foreground">Order Items</h3>
+        <span className="text-xs text-muted-foreground">
+          {hasItems ? `${enriched.length} item${enriched.length !== 1 ? "s" : ""}` : ""}
+        </span>
+      </div>
+
+      {/* Items list */}
+      <div className="divide-y divide-border">
+        {hasItems ? (
+          enriched.map(({ orderItem, product }) => {
+            const imgSeed = product?.id ?? orderItem.productId;
+            const name = product?.name ?? `Product ${orderItem.productId}`;
+            const unitLabel = product?.unit ?? "pc";
+            const lineTotal = orderItem.totalPrice ?? (orderItem.unitPrice * orderItem.quantity);
+
+            return (
+              <div key={orderItem.id} className="flex items-center gap-3 px-5 py-3.5">
+                {/* Thumbnail */}
+                <div className="h-14 w-14 shrink-0 rounded-xl overflow-hidden bg-surface-100 border border-border">
+                  <Image
+                    src={picsumUrl(imgSeed)}
+                    alt={name}
+                    width={56}
+                    height={56}
+                    className="h-full w-full object-cover"
+                    unoptimized
+                  />
+                </div>
+
+                {/* Details */}
+                <div className="flex-1 min-w-0">
+                  <p className="text-sm font-semibold text-foreground leading-tight line-clamp-2">{name}</p>
+                  <p className="text-xs text-muted-foreground mt-0.5">
+                    {orderItem.quantity} {unitLabel}
+                    {unitLabel !== "pc" ? "s" : "s"} &times; {formatPHP(orderItem.unitPrice)}
+                  </p>
+                  {orderItem.status === "partial" && (
+                    <p className="text-xs text-warning-600 mt-0.5">
+                      Partial: {orderItem.fulfilledQty ?? "?"} fulfilled
+                    </p>
+                  )}
+                  {orderItem.status === "unavailable" && (
+                    <p className="text-xs text-danger-500 mt-0.5">Unavailable</p>
+                  )}
+                </div>
+
+                {/* Line total */}
+                <p className="text-sm font-bold text-foreground shrink-0">
+                  {formatPHP(lineTotal)}
+                </p>
+              </div>
+            );
+          })
+        ) : (
+          <div className="flex items-center gap-3 px-5 py-4 text-sm text-muted-foreground">
+            <Package className="h-4 w-4 shrink-0" />
+            Item details unavailable
+          </div>
+        )}
+      </div>
+
+      {/* Totals */}
+      <div className="border-t border-border bg-surface-50 px-5 py-4 space-y-2">
+        <div className="flex justify-between text-sm text-muted-foreground">
+          <span>Subtotal</span>
+          <span>{formatPHP(subtotal)}</span>
+        </div>
+        <div className="flex justify-between text-sm text-muted-foreground">
+          <span>Delivery fee</span>
+          <span>{formatPHP(deliveryFee)}</span>
+        </div>
+        <div className="flex justify-between text-base font-bold text-foreground border-t border-border pt-2.5 mt-1">
+          <span>Total</span>
+          <span className="text-brand-600">{formatPHP(total)}</span>
+        </div>
+      </div>
+
+      {/* Payment method & status */}
+      <div className="border-t border-border px-5 py-3.5">
+        <PaymentBadge method={paymentMethod} paymentStatus={paymentStatus} />
+      </div>
+    </div>
+  );
+}
+
+// ─── ReorderButton ────────────────────────────────────────────────────────────
+
+function ReorderButton({ orderItems }: { orderItems: OrderItem[] }) {
+  const addItem = useCartStore((s) => s.addItem);
+  const [done, setDone] = useState(false);
+
+  function handleReorder() {
+    const itemsToAdd = orderItems.filter((oi) => oi.status !== "unavailable");
+    for (const oi of itemsToAdd) {
+      const product = oi.product ?? PRODUCTS.find((p) => p.id === oi.productId);
+      if (product) {
+        addItem(product, oi.quantity);
+      }
+    }
+    setDone(true);
+    setTimeout(() => setDone(false), 3000);
+  }
+
+  return (
+    <Button
+      size="lg"
+      className="w-full"
+      onClick={handleReorder}
+      disabled={done}
+    >
+      {done ? (
+        <>
+          <CheckCircle2 className="h-4 w-4" />
+          Added to cart!
+        </>
+      ) : (
+        <>
+          <ShoppingCart className="h-4 w-4" />
+          Reorder All Items
+        </>
+      )}
+    </Button>
   );
 }
 
@@ -249,14 +524,13 @@ function DriverCard({ onAction }: { onAction: (msg: string) => void }) {
     <div className="rounded-2xl border border-border bg-card shadow-card p-5 mx-4">
       <h3 className="font-display text-sm font-semibold text-foreground mb-4">Your Driver</h3>
       <div className="flex items-center gap-4">
-        {/* Avatar */}
         <div className="flex h-14 w-14 shrink-0 items-center justify-center rounded-2xl bg-brand-100 text-brand-600 font-display font-bold text-lg">
           RD
         </div>
         <div className="flex-1 min-w-0">
           <p className="font-semibold text-foreground text-sm">Rodrigo Delos Santos</p>
           <div className="flex items-center gap-1 mt-0.5">
-            {[1,2,3,4,5].map((s) => (
+            {[1, 2, 3, 4, 5].map((s) => (
               <Star
                 key={s}
                 className={cn(
@@ -296,7 +570,6 @@ function MapPlaceholder() {
   return (
     <div className="mx-4 rounded-2xl overflow-hidden border border-border shadow-card">
       <div className="relative h-44 bg-gradient-to-br from-emerald-100 via-teal-100 to-cyan-100">
-        {/* Road lines */}
         <svg className="absolute inset-0 w-full h-full opacity-30" viewBox="0 0 400 176">
           <path d="M0 88 Q100 60 200 88 Q300 116 400 88" stroke="#0f766e" strokeWidth="6" fill="none" strokeDasharray="12 6" />
           <path d="M0 44 Q80 30 160 44 Q240 58 320 44 Q360 38 400 44" stroke="#059669" strokeWidth="2" fill="none" opacity="0.5" />
@@ -306,8 +579,6 @@ function MapPlaceholder() {
           <rect x="280" y="30" width="45" height="30" rx="4" fill="#0f766e" opacity="0.15" />
           <rect x="320" y="100" width="55" height="36" rx="4" fill="#0f766e" opacity="0.1" />
         </svg>
-
-        {/* Warehouse pin */}
         <div className="absolute left-8 top-1/2 -translate-y-1/2 flex flex-col items-center">
           <div className="h-8 w-8 rounded-full bg-white shadow-lg flex items-center justify-center border-2 border-brand-500">
             <Package className="h-4 w-4 text-brand-500" />
@@ -316,8 +587,6 @@ function MapPlaceholder() {
             Warehouse
           </div>
         </div>
-
-        {/* Store pin */}
         <div className="absolute right-8 top-1/2 -translate-y-1/2 flex flex-col items-center">
           <div className="h-8 w-8 rounded-full bg-white shadow-lg flex items-center justify-center border-2 border-success-500">
             <MapPin className="h-4 w-4 text-success-500" />
@@ -326,8 +595,6 @@ function MapPlaceholder() {
             Your Store
           </div>
         </div>
-
-        {/* Driver location animated dot */}
         <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 flex flex-col items-center">
           <div className="relative">
             <div className="absolute -inset-2 rounded-full bg-brand-500/30 animate-ping" />
@@ -336,8 +603,6 @@ function MapPlaceholder() {
             </div>
           </div>
         </div>
-
-        {/* Overlay info */}
         <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/30 to-transparent p-3">
           <div className="flex items-center gap-2">
             <div className="h-2 w-2 rounded-full bg-brand-400 animate-pulse" />
@@ -345,95 +610,6 @@ function MapPlaceholder() {
           </div>
         </div>
       </div>
-    </div>
-  );
-}
-
-// ─── OrderItems ───────────────────────────────────────────────────────────────
-
-function OrderItems({ orderId, subtotal, deliveryFee, total, paymentMethod, paymentStatus }: {
-  orderId: string;
-  subtotal: number;
-  deliveryFee: number;
-  total: number;
-  paymentMethod: string;
-  paymentStatus: string;
-}) {
-  const items = getItemsForOrder(orderId, total);
-
-  return (
-    <div className="rounded-2xl border border-border bg-card shadow-card overflow-hidden mx-4">
-      <div className="px-5 py-3.5 border-b border-border">
-        <h3 className="font-display text-sm font-semibold text-foreground">Order Items</h3>
-      </div>
-      <div className="divide-y divide-border">
-        {items.map((item) => (
-          <div key={item.name} className="flex items-center gap-4 px-5 py-3.5">
-            {/* Product color block */}
-            <div className={cn(
-              "h-12 w-12 shrink-0 rounded-xl bg-gradient-to-br flex items-center justify-center",
-              item.color
-            )}>
-              <Package className="h-5 w-5 text-white/80" />
-            </div>
-            <div className="flex-1 min-w-0">
-              <p className="text-sm font-semibold text-foreground leading-tight">{item.name}</p>
-              <p className="text-xs text-muted-foreground mt-0.5">
-                {item.qty} pcs &times; {formatPHP(item.price)}
-              </p>
-            </div>
-            <p className="text-sm font-bold text-foreground shrink-0">{formatPHP(item.price * item.qty)}</p>
-          </div>
-        ))}
-      </div>
-      {/* Totals */}
-      <div className="border-t border-border bg-surface-50 px-5 py-4 space-y-2">
-        <div className="flex justify-between text-sm text-muted-foreground">
-          <span>Subtotal</span>
-          <span>{formatPHP(subtotal)}</span>
-        </div>
-        <div className="flex justify-between text-sm text-muted-foreground">
-          <span>Delivery fee</span>
-          <span>{formatPHP(deliveryFee)}</span>
-        </div>
-        <div className="flex justify-between text-base font-bold text-foreground border-t border-border pt-2.5 mt-1">
-          <span>Total</span>
-          <span className="text-brand-600">{formatPHP(total)}</span>
-        </div>
-      </div>
-      {/* Payment */}
-      <div className="border-t border-border px-5 py-3.5 flex items-center justify-between">
-        <div className="flex items-center gap-2">
-          <CreditCard className="h-4 w-4 text-muted-foreground" />
-          <span className="text-sm text-muted-foreground capitalize">{paymentMethod.replace("_", " ")}</span>
-        </div>
-        <span className={cn(
-          "text-sm font-semibold",
-          paymentStatus === "paid" ? "text-success-600" : "text-warning-600"
-        )}>
-          {paymentStatus === "paid" ? "Paid" : "Pending"}
-        </span>
-      </div>
-    </div>
-  );
-}
-
-// ─── DeliveryAddress ──────────────────────────────────────────────────────────
-
-function DeliveryAddress({ address, notes }: { address: string; notes?: string }) {
-  return (
-    <div className="rounded-2xl border border-border bg-card shadow-card p-5 mx-4">
-      <div className="flex items-center gap-2 mb-3">
-        <MapPin className="h-4 w-4 text-brand-500" />
-        <h3 className="font-display text-sm font-semibold text-foreground">Delivery Address</h3>
-      </div>
-      <p className="text-sm text-foreground font-medium">{address}</p>
-      {notes && (
-        <p className="text-xs text-muted-foreground mt-1.5 flex items-start gap-1.5">
-          <AlertCircle className="h-3.5 w-3.5 mt-0.5 shrink-0" />
-          {notes}
-        </p>
-      )}
     </div>
   );
 }
@@ -480,11 +656,7 @@ function RatingSection() {
         ))}
       </div>
       {rating > 0 && (
-        <Button
-          size="sm"
-          className="w-full"
-          onClick={() => setSubmitted(true)}
-        >
+        <Button size="sm" className="w-full" onClick={() => setSubmitted(true)}>
           Submit Rating ({rating}/5)
         </Button>
       )}
@@ -514,7 +686,6 @@ export default function OrderDetailPage() {
 
   const isOutForDelivery = order.status === "out_for_delivery";
   const isDelivered = order.status === "delivered";
-  const isActive = !["delivered", "cancelled", "failed_delivery", "returned"].includes(order.status);
 
   function showToast(msg: string) {
     setToast(msg);
@@ -523,7 +694,7 @@ export default function OrderDetailPage() {
 
   return (
     <div className="min-h-screen bg-background pb-28">
-      <RetailerTopBar title="Track Order" />
+      <RetailerTopBar title="Order Details" />
 
       {/* Back link */}
       <div className="px-4 pt-4 pb-2">
@@ -558,12 +729,18 @@ export default function OrderDetailPage() {
         {/* 3. Driver card (out for delivery only) */}
         {isOutForDelivery && <DriverCard onAction={showToast} />}
 
-        {/* 4. Delivery Timeline */}
-        <DeliveryTimeline status={order.status} />
+        {/* 4. Order Status Timeline (5 steps) */}
+        <DeliveryTimeline
+          status={order.status}
+          fulfillmentEvents={order.fulfillmentEvents}
+        />
 
-        {/* 5. Order Items */}
+        {/* 5. Delivery Address — shown prominently */}
+        <DeliveryAddress address={order.deliveryAddress} notes={order.notes} />
+
+        {/* 6. Order Items with thumbnails, qty, unit price, line total, payment badge */}
         <OrderItems
-          orderId={order.id}
+          orderItems={order.items}
           subtotal={order.subtotal}
           deliveryFee={order.deliveryFee}
           total={order.total}
@@ -571,26 +748,21 @@ export default function OrderDetailPage() {
           paymentStatus={order.paymentStatus}
         />
 
-        {/* 6. Delivery Address */}
-        <DeliveryAddress address={order.deliveryAddress} notes={order.notes} />
-
         {/* 7. Rating (delivered only) */}
         {isDelivered && <RatingSection />}
 
         {/* 8. Action buttons */}
         <div className="px-4 space-y-3">
-          {isDelivered && (
-            <ButtonLink href="/catalog" size="lg" className="w-full">
-              <RotateCcw className="h-4 w-4" />
-              Reorder these items
-            </ButtonLink>
-          )}
+          {/* Reorder button — always show, adds all items to cart */}
+          <ReorderButton orderItems={order.items} />
+
           {isOutForDelivery && (
             <ButtonLink href="/support" variant="outline" size="lg" className="w-full">
               <MessageCircle className="h-4 w-4" />
               Contact Support
             </ButtonLink>
           )}
+
           <button
             onClick={() => showToast("PDF download is coming soon. Your receipt will be ready shortly!")}
             className="w-full flex items-center justify-center gap-2 rounded-2xl border border-border bg-surface-50 py-3.5 text-sm font-semibold text-muted-foreground hover:bg-surface-100 active:scale-[0.98] transition-all"

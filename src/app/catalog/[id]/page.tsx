@@ -2,7 +2,20 @@
 import { useParams, useRouter } from "next/navigation";
 import { useState } from "react";
 import Image from "next/image";
-import { ArrowLeft, Heart, Share2, ShoppingCart, Star, Package, CheckCircle2, Truck, Shield } from "lucide-react";
+import {
+  ArrowLeft,
+  Heart,
+  ShoppingCart,
+  Star,
+  Package,
+  CheckCircle2,
+  Truck,
+  Shield,
+  AlertTriangle,
+  XCircle,
+  Tag,
+  TrendingDown,
+} from "lucide-react";
 import { RetailerBottomNav } from "@/components/layout/retailer-nav";
 import { Button } from "@/components/ui/button";
 import { ProductCard } from "@/components/products/product-card";
@@ -17,6 +30,72 @@ const MOCK_REVIEWS = [
   { id: 2, name: "Juan dela Cruz", rating: 5, comment: "Mabilis yung delivery at tama yung quantity. Highly recommended!", date: "Dec 28, 2024" },
   { id: 3, name: "Ana Reyes", rating: 4, comment: "Good quality at competitive price. Will order again.", date: "Dec 15, 2024" },
 ];
+
+// Derives simple bulk-discount tiers from product pricing context.
+// Since the Product type has no bulkPricing field, we simulate tiers based on
+// the wholesale price vs SRP spread and common sari-sari bulk thresholds.
+function getBulkTiers(price: number, minOrderQty: number) {
+  return [
+    { minQty: minOrderQty * 2,  discountPct: 3  },
+    { minQty: minOrderQty * 5,  discountPct: 5  },
+    { minQty: minOrderQty * 10, discountPct: 8  },
+  ].map((t) => ({
+    ...t,
+    discountedPrice: Math.round(price * (1 - t.discountPct / 100) * 100) / 100,
+  }));
+}
+
+// ── Stock badge ────────────────────────────────────────────────────────────────
+type StockStatus = "out" | "low" | "ok";
+
+function getStockStatus(stock: number): StockStatus {
+  if (stock === 0)  return "out";
+  if (stock < 50)   return "low";
+  return "ok";
+}
+
+interface StockBadgeProps {
+  stock: number;
+  className?: string;
+}
+
+function StockBadge({ stock, className }: StockBadgeProps) {
+  const status = getStockStatus(stock);
+
+  if (status === "out") {
+    return (
+      <span className={cn(
+        "inline-flex items-center gap-1 rounded-full px-2.5 py-1 text-xs font-bold bg-danger-100 text-danger-700 border border-danger-200",
+        className,
+      )}>
+        <XCircle className="h-3.5 w-3.5" />
+        Out of Stock
+      </span>
+    );
+  }
+
+  if (status === "low") {
+    return (
+      <span className={cn(
+        "inline-flex items-center gap-1 rounded-full px-2.5 py-1 text-xs font-bold bg-warning-100 text-warning-700 border border-warning-200",
+        className,
+      )}>
+        <AlertTriangle className="h-3.5 w-3.5" />
+        Low Stock — {stock} left
+      </span>
+    );
+  }
+
+  return (
+    <span className={cn(
+      "inline-flex items-center gap-1 rounded-full px-2.5 py-1 text-xs font-bold bg-success-100 text-success-700 border border-success-200",
+      className,
+    )}>
+      <CheckCircle2 className="h-3.5 w-3.5" />
+      In Stock
+    </span>
+  );
+}
 
 export default function ProductDetailPage() {
   const { id } = useParams<{ id: string }>();
@@ -41,22 +120,48 @@ export default function ProductDetailPage() {
   }
 
   const cartItem = items.find((i) => i.product.id === product.id);
-  const stockColor = product.stock === 0 ? "text-danger-500" : product.stock < 20 ? "text-warning-600" : "text-success-600";
-  const stockLabel = product.stock === 0 ? "Out of stock" : product.stock < 20 ? `Only ${product.stock} left` : "In stock";
   const avgRating = (MOCK_REVIEWS.reduce((s, r) => s + r.rating, 0) / MOCK_REVIEWS.length).toFixed(1);
 
+  // Savings vs SRP
+  const hasSrp = product.srp !== undefined && product.srp > product.price;
+  const savingsPerUnit = hasSrp ? (product.srp! - product.price) : 0;
+  const savingsTotal = savingsPerUnit * qty;
+  const savingsPct = hasSrp ? Math.round((savingsPerUnit / product.srp!) * 100) : 0;
+
+  // Min-order enforcement
+  const belowMinOrder = qty < product.minOrderQty;
+  const isOutOfStock = product.stock === 0;
+  const addDisabled = isOutOfStock || belowMinOrder;
+
+  // Bulk discount tiers (simulated)
+  const bulkTiers = getBulkTiers(product.price, product.minOrderQty);
+
+  // Active bulk tier for current qty
+  const activeTier = [...bulkTiers].reverse().find((t) => qty >= t.minQty);
+
   function handleAddToCart() {
-    if (!product) return;
+    if (!product || addDisabled) return;
     addItem(product, qty);
     setAdded(true);
     setTimeout(() => setAdded(false), 2000);
+  }
+
+  function handleQtyDecrease() {
+    setQty((prev) => Math.max(product!.minOrderQty, prev - 1));
+  }
+
+  function handleQtyIncrease() {
+    setQty((prev) => Math.min(product!.stock || 9999, prev + 1));
   }
 
   return (
     <div className="min-h-screen bg-background pb-32">
       {/* Sticky top bar */}
       <div className="sticky top-0 z-30 flex h-14 items-center justify-between bg-card/90 backdrop-blur-md border-b border-border px-4">
-        <button onClick={() => router.back()} className="flex h-9 w-9 items-center justify-center rounded-xl hover:bg-muted transition-colors">
+        <button
+          onClick={() => router.back()}
+          className="flex h-9 w-9 items-center justify-center rounded-xl hover:bg-muted transition-colors"
+        >
           <ArrowLeft className="h-5 w-5 text-foreground" />
         </button>
         <span className="font-display text-sm font-bold text-foreground truncate mx-3">{product.name}</span>
@@ -99,12 +204,9 @@ export default function ProductDetailPage() {
             </div>
           </div>
 
-          <div className="flex items-center gap-3 flex-wrap">
-            <span className={cn("text-xs font-semibold flex items-center gap-1", stockColor)}>
-              <CheckCircle2 className="h-3.5 w-3.5" />
-              {stockLabel}
-            </span>
-            <span className="text-xs text-muted-foreground">Min. order: {product.minOrderQty} pcs</span>
+          {/* Stock badge + rating row */}
+          <div className="flex items-center gap-3 flex-wrap mt-2">
+            <StockBadge stock={product.stock} />
             <div className="flex items-center gap-1">
               <Star className="h-3.5 w-3.5 fill-yellow-400 text-yellow-400" />
               <span className="text-xs font-semibold text-foreground">{avgRating}</span>
@@ -112,21 +214,55 @@ export default function ProductDetailPage() {
             </div>
           </div>
 
-          <div className="mt-3 flex items-baseline gap-2">
+          {/* Price block */}
+          <div className="mt-3 flex items-baseline gap-2 flex-wrap">
             <span className="font-display text-3xl font-black text-brand-500">{formatPHP(product.price)}</span>
-            <span className="text-sm text-muted-foreground">per piece</span>
+            {hasSrp && (
+              <span className="text-base text-muted-foreground line-through">{formatPHP(product.srp!)}</span>
+            )}
+            <span className="text-sm text-muted-foreground">per {product.unit}</span>
           </div>
-          <p className="text-xs text-muted-foreground mt-1">
-            Order total: {formatPHP(product.price * qty)}
+
+          {/* SRP savings highlight */}
+          {hasSrp && (
+            <div className="mt-2 inline-flex items-center gap-1.5 rounded-xl bg-success-50 border border-success-200 px-3 py-1.5">
+              <TrendingDown className="h-4 w-4 text-success-600 shrink-0" />
+              <p className="text-sm font-semibold text-success-700">
+                You save {formatPHP(savingsTotal)} vs retail price
+                <span className="ml-1 font-normal text-success-600">({savingsPct}% off SRP)</span>
+              </p>
+            </div>
+          )}
+
+          <p className="text-xs text-muted-foreground mt-2">
+            Order total: <span className="font-semibold text-foreground">{formatPHP(product.price * qty)}</span>
           </p>
+        </div>
+
+        {/* Min-order callout */}
+        <div className="rounded-2xl border border-brand-200 bg-brand-50 px-4 py-3 flex items-center gap-3">
+          <Tag className="h-5 w-5 text-brand-500 shrink-0" />
+          <div>
+            <p className="text-xs font-bold text-brand-700 uppercase tracking-wide">Minimum Order</p>
+            <p className="text-sm font-semibold text-brand-600">
+              {product.minOrderQty} {product.unit}{product.minOrderQty > 1 ? "s" : ""} per order
+            </p>
+          </div>
         </div>
 
         {/* Qty selector */}
         <div className="rounded-2xl border border-border bg-card shadow-card p-4">
-          <p className="text-sm font-semibold text-foreground mb-3">Quantity</p>
+          <div className="flex items-center justify-between mb-3">
+            <p className="text-sm font-semibold text-foreground">Quantity</p>
+            {belowMinOrder && (
+              <p className="text-xs font-semibold text-danger-600">
+                Min. {product.minOrderQty} required
+              </p>
+            )}
+          </div>
           <div className="flex items-center gap-4">
             <button
-              onClick={() => setQty(Math.max(product.minOrderQty, qty - 1))}
+              onClick={handleQtyDecrease}
               disabled={qty <= product.minOrderQty}
               className="flex h-11 w-11 items-center justify-center rounded-xl border border-border bg-muted text-lg font-bold hover:bg-surface-200 disabled:opacity-30 transition-colors"
             >
@@ -134,7 +270,7 @@ export default function ProductDetailPage() {
             </button>
             <span className="text-2xl font-bold text-foreground w-16 text-center tabular-nums">{qty}</span>
             <button
-              onClick={() => setQty(Math.min(product.stock || 999, qty + 1))}
+              onClick={handleQtyIncrease}
               disabled={product.stock !== undefined && qty >= product.stock}
               className="flex h-11 w-11 items-center justify-center rounded-xl bg-brand-500 text-white text-lg font-bold hover:bg-brand-600 disabled:opacity-30 transition-colors"
             >
@@ -143,15 +279,63 @@ export default function ProductDetailPage() {
             <div className="ml-2 text-right flex-1">
               <p className="text-xs text-muted-foreground">Total</p>
               <p className="text-lg font-bold text-foreground">{formatPHP(product.price * qty)}</p>
+              {activeTier && (
+                <p className="text-xs text-success-600 font-semibold">{activeTier.discountPct}% bulk discount applied</p>
+              )}
             </div>
           </div>
+        </div>
+
+        {/* Bulk discount hint */}
+        <div className="rounded-2xl border border-border bg-card shadow-card p-4">
+          <div className="flex items-center gap-2 mb-3">
+            <TrendingDown className="h-4 w-4 text-success-600" />
+            <h2 className="text-sm font-bold text-foreground">Bulk Discounts Available</h2>
+          </div>
+          <div className="space-y-2">
+            {bulkTiers.map((tier) => {
+              const isActive = qty >= tier.minQty;
+              return (
+                <div
+                  key={tier.minQty}
+                  className={cn(
+                    "flex items-center justify-between rounded-xl px-3 py-2 text-sm transition-colors",
+                    isActive
+                      ? "bg-success-50 border border-success-200"
+                      : "bg-muted/50 border border-transparent",
+                  )}
+                >
+                  <span className={cn("font-medium", isActive ? "text-success-700" : "text-muted-foreground")}>
+                    {tier.minQty}+ {product.unit}s
+                  </span>
+                  <div className="flex items-center gap-2">
+                    <span className={cn("font-bold", isActive ? "text-success-700" : "text-foreground")}>
+                      {formatPHP(tier.discountedPrice)}/{product.unit}
+                    </span>
+                    <span className={cn(
+                      "rounded-full px-2 py-0.5 text-[10px] font-bold",
+                      isActive ? "bg-success-600 text-white" : "bg-muted text-muted-foreground",
+                    )}>
+                      -{tier.discountPct}%
+                    </span>
+                    {isActive && (
+                      <CheckCircle2 className="h-3.5 w-3.5 text-success-600" />
+                    )}
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+          <p className="text-[11px] text-muted-foreground mt-2">
+            Increase your order quantity to unlock lower prices.
+          </p>
         </div>
 
         {/* Trust signals */}
         <div className="grid grid-cols-3 gap-3">
           {[
-            { icon: Truck, label: "2-3 Day Delivery" },
-            { icon: Shield, label: "Quality Guaranteed" },
+            { icon: Truck,   label: "2-3 Day Delivery" },
+            { icon: Shield,  label: "Quality Guaranteed" },
             { icon: Package, label: "Bulk Savings" },
           ].map(({ icon: Icon, label }) => (
             <div key={label} className="flex flex-col items-center gap-1.5 rounded-xl border border-border bg-card py-3 px-2 text-center">
@@ -161,16 +345,18 @@ export default function ProductDetailPage() {
           ))}
         </div>
 
-        {/* Description */}
+        {/* Product details */}
         <div className="rounded-2xl border border-border bg-card shadow-card p-4 space-y-3">
           <h2 className="font-display text-sm font-bold text-foreground">Product Details</h2>
           <div className="space-y-2 text-sm">
             {[
-              { label: "Brand", value: product.brand },
-              { label: "Category", value: CATEGORIES.find(c => c.id === product.categoryId)?.name ?? "-" },
+              { label: "Brand",     value: product.brand ?? "-" },
+              { label: "Category",  value: CATEGORIES.find(c => c.id === product.categoryId)?.name ?? "-" },
               { label: "Unit size", value: product.unit },
-              { label: "Min. order", value: `${product.minOrderQty} pieces` },
-              { label: "Stock", value: `${product.stock} pcs available` },
+              { label: "Min. order",value: `${product.minOrderQty} pieces` },
+              { label: "Stock",     value: `${product.stock} pcs available` },
+              ...(hasSrp ? [{ label: "Retail SRP", value: formatPHP(product.srp!) }] : []),
+              { label: "Wholesale", value: formatPHP(product.price) },
             ].map(({ label, value }) => (
               <div key={label} className="flex justify-between">
                 <span className="text-muted-foreground">{label}</span>
@@ -178,6 +364,12 @@ export default function ProductDetailPage() {
               </div>
             ))}
           </div>
+          {hasSrp && (
+            <div className="mt-1 pt-2 border-t border-border flex justify-between items-center">
+              <span className="text-xs font-semibold text-success-600">Your savings per unit</span>
+              <span className="text-sm font-bold text-success-600">{formatPHP(savingsPerUnit)} ({savingsPct}% off)</span>
+            </div>
+          )}
         </div>
 
         {/* Reviews */}
@@ -204,10 +396,13 @@ export default function ProductDetailPage() {
           </div>
         </div>
 
-        {/* Related products */}
+        {/* Related Products */}
         {related.length > 0 && (
           <div>
-            <h2 className="font-display text-base font-bold text-foreground mb-3">You may also need</h2>
+            <h2 className="font-display text-base font-bold text-foreground mb-1">You may also need</h2>
+            <p className="text-xs text-muted-foreground mb-3">
+              More from {CATEGORIES.find(c => c.id === product.categoryId)?.name ?? "this category"}
+            </p>
             <div className="grid grid-cols-2 gap-3">
               {related.map((p) => (
                 <ProductCard key={p.id} product={p} />
@@ -222,19 +417,43 @@ export default function ProductDetailPage() {
         {cartItem ? (
           <div className="flex items-center gap-3">
             <div className="flex items-center gap-3 flex-1">
-              <button onClick={() => updateQty(product.id, cartItem.quantity - 1)} className="flex h-11 w-11 items-center justify-center rounded-xl border border-border bg-muted text-lg font-bold">−</button>
+              <button
+                onClick={() => updateQty(product.id, cartItem.quantity - 1)}
+                className="flex h-11 w-11 items-center justify-center rounded-xl border border-border bg-muted text-lg font-bold"
+              >
+                −
+              </button>
               <span className="flex-1 text-center text-lg font-bold">{cartItem.quantity} in cart</span>
-              <button onClick={() => updateQty(product.id, cartItem.quantity + 1)} className="flex h-11 w-11 items-center justify-center rounded-xl bg-brand-500 text-white text-lg font-bold">+</button>
+              <button
+                onClick={() => updateQty(product.id, cartItem.quantity + 1)}
+                className="flex h-11 w-11 items-center justify-center rounded-xl bg-brand-500 text-white text-lg font-bold"
+              >
+                +
+              </button>
             </div>
           </div>
         ) : (
-          <Button size="lg" className="w-full" onClick={handleAddToCart} disabled={product.stock === 0}>
-            {added ? (
-              <><CheckCircle2 className="h-4 w-4" /> Added to Cart!</>
-            ) : (
-              <><ShoppingCart className="h-4 w-4" /> Add {qty} to Cart - {formatPHP(product.price * qty)}</>
+          <div className="space-y-2">
+            {belowMinOrder && !isOutOfStock && (
+              <p className="text-center text-xs text-danger-600 font-semibold">
+                Set quantity to at least {product.minOrderQty} to add to cart
+              </p>
             )}
-          </Button>
+            <Button
+              size="lg"
+              className="w-full"
+              onClick={handleAddToCart}
+              disabled={addDisabled}
+            >
+              {added ? (
+                <><CheckCircle2 className="h-4 w-4" /> Added to Cart!</>
+              ) : isOutOfStock ? (
+                <><XCircle className="h-4 w-4" /> Out of Stock</>
+              ) : (
+                <><ShoppingCart className="h-4 w-4" /> Add {qty} to Cart — {formatPHP(product.price * qty)}</>
+              )}
+            </Button>
+          </div>
         )}
       </div>
 

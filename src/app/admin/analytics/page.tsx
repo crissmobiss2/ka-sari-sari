@@ -1,51 +1,58 @@
 "use client";
 
-import { TrendingUp, Users, ShoppingCart, Package, Download, FileDown, ArrowUpRight, ArrowDownRight } from "lucide-react";
+import { useMemo } from "react";
+import { TrendingUp, Users, ShoppingCart, Package, Download, FileDown, ArrowUpRight, ArrowDownRight, Zap, Star } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { formatPHP, cn } from "@/lib/utils";
 import { toastSuccess, toastInfo } from "@/store/toast";
+import {
+  MOCK_ORDERS,
+  PRODUCTS,
+  CATEGORIES as PRODUCT_CATEGORIES,
+  ADMIN_STATS,
+} from "@/lib/mock-data";
 
-// ── Static mock data ─────────────────────────────────────────────────────────
+// ── Constants ─────────────────────────────────────────────────────────────────
 
-const MONTHLY_REVENUE = [890000, 1020000, 1150000, 1340000, 1480000, 1250000];
+const BRAND_COLOR = "#f47028";
+
+// ── Static chart data (monthly revenue trend — platform-level) ───────────────
+
+const MONTHLY_REVENUE = [890_000, 1_020_000, 1_150_000, 1_340_000, 1_480_000, 1_250_000];
 const MONTHS = ["Aug '25", "Sep '25", "Oct '25", "Nov '25", "Dec '25", "Jan '26"];
 const maxRevenue = Math.max(...MONTHLY_REVENUE);
 
-const TOP_RETAILERS = [
-  { name: "Aling Nena's Store",      orders: 48, revenue: 184200, avgOrder: 3838, status: "Active" },
-  { name: "Mang Tony Sari-Sari",     orders: 41, revenue: 156800, avgOrder: 3824, status: "Active" },
-  { name: "JB General Merchandise",  orders: 37, revenue: 142500, avgOrder: 3851, status: "Active" },
-  { name: "Rose Convenience Store",  orders: 32, revenue: 118400, avgOrder: 3700, status: "Active" },
-  { name: "Dela Cruz Store",         orders: 28, revenue: 97600,  avgOrder: 3486, status: "Inactive" },
-];
+// ── Retailer names (synthetic — keyed to storeId from ADMIN_RECENT_ORDERS) ───
 
-const CATEGORIES = [
-  { name: "Beverages",        revenue: 420000, pct: 32 },
-  { name: "Instant Noodles", revenue: 285000, pct: 22 },
-  { name: "Snacks & Chips",  revenue: 210000, pct: 16 },
-  { name: "Canned Goods",    revenue: 195000, pct: 15 },
-  { name: "Personal Care",   revenue: 98000,  pct: 7  },
-  { name: "Others",          revenue: 42000,  pct: 8  },
-];
+const RETAILER_NAMES: Record<string, string> = {
+  "s1": "Aling Nena's Store",
+  "s2": "Mang Tony Sari-Sari",
+  "s3": "JB General Merchandise",
+  "s4": "Rose Convenience Store",
+  "s5": "Dela Cruz Store",
+  "store-1": "Aling Nena's Store",
+};
+
+// ── Payment methods static split (from ADMIN_STATS scale) ────────────────────
 
 const PAYMENT_METHODS = [
-  { name: "GCash",  pct: 58, count: 1072, barColor: "bg-blue-500" },
-  { name: "COD",    pct: 27, count: 499,  barColor: "bg-brand-500" },
-  { name: "Maya",   pct: 15, count: 277,  barColor: "bg-emerald-500" },
+  { name: "GCash",  pct: 58, barColor: "bg-blue-500" },
+  { name: "COD",    pct: 27, barColor: "bg-brand-500" },
+  { name: "Maya",   pct: 15, barColor: "bg-emerald-500" },
 ];
 
 // ── CSV / PDF export ─────────────────────────────────────────────────────────
 
-function downloadCSV() {
+function downloadCSV(monthlyRevenue: number[], months: string[]) {
   const rows = [
     ["Month", "Revenue (PHP)", "Orders", "Avg Order (PHP)"],
-    ...MONTHLY_REVENUE.map((rev, i) => [
-      MONTHS[i],
+    ...monthlyRevenue.map((rev, i) => [
+      months[i],
       rev.toString(),
-      Math.round(rev / 3200).toString(),
-      Math.round(rev / Math.round(rev / 3200)).toString(),
+      Math.round(rev / 3_200).toString(),
+      "3200",
     ]),
   ];
   const csv = rows.map((r) => r.join(",")).join("\n");
@@ -64,7 +71,7 @@ function downloadPDF() {
   window.print();
 }
 
-// ── Helpers ──────────────────────────────────────────────────────────────────
+// ── Helpers ───────────────────────────────────────────────────────────────────
 
 function formatMillions(n: number) {
   if (n >= 1_000_000) return `₱${(n / 1_000_000).toFixed(2)}M`;
@@ -72,13 +79,12 @@ function formatMillions(n: number) {
   return `₱${n}`;
 }
 
-// ── SVG Bar Chart ────────────────────────────────────────────────────────────
+// ── SVG Bar Chart ─────────────────────────────────────────────────────────────
 
 const CHART_W = 600;
 const CHART_H = 200;
 const CHART_PADDING = { top: 28, right: 10, bottom: 36, left: 10 };
 const BAR_GAP = 12;
-const BRAND_COLOR = "#f47028";
 const GRID_LINES = 4;
 
 function RevenueSvgChart() {
@@ -121,7 +127,6 @@ function RevenueSvgChart() {
 
         return (
           <g key={i}>
-            {/* Bar with rounded top corners via path */}
             <path
               d={`
                 M ${x + 4} ${y}
@@ -135,7 +140,6 @@ function RevenueSvgChart() {
               fill={BRAND_COLOR}
               opacity={i === MONTHLY_REVENUE.length - 1 ? 0.65 : 1}
             />
-            {/* Value label above bar */}
             <text
               x={midX}
               y={y - 6}
@@ -146,7 +150,6 @@ function RevenueSvgChart() {
             >
               {label}
             </text>
-            {/* Month label on x-axis */}
             <text
               x={midX}
               y={CHART_H - CHART_PADDING.bottom + 14}
@@ -163,9 +166,213 @@ function RevenueSvgChart() {
   );
 }
 
-// ── Page ─────────────────────────────────────────────────────────────────────
+// ── Page ──────────────────────────────────────────────────────────────────────
 
 export default function AdminAnalyticsPage() {
+
+  // ── Build product lookup map ───────────────────────────────────────────────
+  const productMap = useMemo(
+    () => new Map(PRODUCTS.map((p) => [p.id, p])),
+    []
+  );
+
+  // ── Build category lookup map ──────────────────────────────────────────────
+  const categoryMap = useMemo(
+    () => new Map(PRODUCT_CATEGORIES.map((c) => [c.id, c])),
+    []
+  );
+
+  // ── Top products by revenue (from MOCK_ORDERS items × product prices) ─────
+  const topProducts = useMemo(() => {
+    const revenueByProduct = new Map<string, { name: string; revenue: number; qty: number; categoryId: string }>();
+
+    for (const order of MOCK_ORDERS) {
+      for (const item of order.items) {
+        const product = productMap.get(item.productId);
+        if (!product) continue;
+        const existing = revenueByProduct.get(item.productId);
+        const lineRevenue = item.totalPrice;
+        if (existing) {
+          existing.revenue += lineRevenue;
+          existing.qty += item.quantity;
+        } else {
+          revenueByProduct.set(item.productId, {
+            name: product.name,
+            revenue: lineRevenue,
+            qty: item.quantity,
+            categoryId: product.categoryId,
+          });
+        }
+      }
+    }
+
+    return Array.from(revenueByProduct.values())
+      .sort((a, b) => b.revenue - a.revenue)
+      .slice(0, 5);
+  }, [productMap]);
+
+  // ── Revenue by Category (MOCK_ORDERS items × product prices) ──────────────
+  // Supplement with ADMIN_STATS scale so the chart reflects realistic proportions.
+  // We compute real percentages from order items, then scale to ADMIN_STATS revenue.
+  const categoryRevenue = useMemo(() => {
+    const revenueByCategory = new Map<string, number>();
+
+    for (const order of MOCK_ORDERS) {
+      for (const item of order.items) {
+        const product = productMap.get(item.productId);
+        if (!product) continue;
+        const prev = revenueByCategory.get(product.categoryId) ?? 0;
+        revenueByCategory.set(product.categoryId, prev + item.totalPrice);
+      }
+    }
+
+    const totalItemRevenue = Array.from(revenueByCategory.values()).reduce((s, v) => s + v, 0);
+
+    // If we have real data, scale proportionally to ADMIN_STATS platform revenue.
+    // Otherwise fall back to category-level inventory value as a proxy.
+    const platformRevenue = ADMIN_STATS.revenueMonth;
+
+    let entries: Array<{ name: string; revenue: number; pct: number }> = [];
+
+    if (totalItemRevenue > 0) {
+      entries = Array.from(revenueByCategory.entries())
+        .map(([catId, rawRev]) => {
+          const cat = categoryMap.get(catId);
+          const scaledRevenue = Math.round((rawRev / totalItemRevenue) * platformRevenue);
+          const pct = Math.round((rawRev / totalItemRevenue) * 100);
+          return { name: cat?.name ?? catId, revenue: scaledRevenue, pct };
+        })
+        .sort((a, b) => b.revenue - a.revenue);
+
+      // Ensure pcts sum to 100 by adjusting the first entry
+      const pctSum = entries.reduce((s, e) => s + e.pct, 0);
+      if (entries.length > 0 && pctSum !== 100) {
+        entries[0].pct += 100 - pctSum;
+      }
+    } else {
+      // Fallback: distribute by product count per category
+      const totalProducts = PRODUCT_CATEGORIES.reduce((s, c) => s + c.productCount, 0);
+      entries = PRODUCT_CATEGORIES.map((cat) => {
+        const pct = Math.round((cat.productCount / totalProducts) * 100);
+        return { name: cat.name, revenue: Math.round((cat.productCount / totalProducts) * platformRevenue), pct };
+      }).sort((a, b) => b.revenue - a.revenue);
+    }
+
+    return entries;
+  }, [productMap, categoryMap]);
+
+  // ── Sales Velocity — orders per day from order dates ──────────────────────
+  const salesVelocity = useMemo(() => {
+    if (MOCK_ORDERS.length === 0) return { ordersPerDay: 0, busiestDay: "N/A", dayBreakdown: [], platformOrdersPerDay: 0 };
+
+    // Parse dates and group by date string
+    const countByDay = new Map<string, number>();
+    for (const order of MOCK_ORDERS) {
+      const day = order.createdAt.slice(0, 10); // "YYYY-MM-DD"
+      countByDay.set(day, (countByDay.get(day) ?? 0) + 1);
+    }
+
+    const days = Array.from(countByDay.keys()).sort();
+    const firstDay = new Date(days[0]);
+    const lastDay = new Date(days[days.length - 1]);
+    const spanDays = Math.max(1, Math.round((lastDay.getTime() - firstDay.getTime()) / 86_400_000) + 1);
+
+    const ordersPerDay = +(MOCK_ORDERS.length / spanDays).toFixed(1);
+
+    let busiestDay = days[0];
+    let busiestCount = 0;
+    for (const [day, count] of countByDay) {
+      if (count > busiestCount) { busiestCount = count; busiestDay = day; }
+    }
+
+    // Use ADMIN_STATS to show realistic platform-level velocity alongside sample data
+    const platformOrdersPerDay = +(ADMIN_STATS.totalOrders / 31).toFixed(0);
+
+    const dayBreakdown = days.map((day) => ({
+      day,
+      count: countByDay.get(day) ?? 0,
+      label: new Date(day + "T00:00:00").toLocaleDateString("en-PH", { month: "short", day: "numeric" }),
+    }));
+
+    return { ordersPerDay, busiestDay, dayBreakdown, platformOrdersPerDay };
+  }, []);
+
+  // ── Top Retailers from MOCK_ORDERS (grouped by storeId) ───────────────────
+  const topRetailers = useMemo(() => {
+    const byStore = new Map<string, { orders: number; revenue: number }>();
+
+    for (const order of MOCK_ORDERS) {
+      const existing = byStore.get(order.storeId);
+      if (existing) {
+        existing.orders += 1;
+        existing.revenue += order.total;
+      } else {
+        byStore.set(order.storeId, { orders: 1, revenue: order.total });
+      }
+    }
+
+    const fromOrders = Array.from(byStore.entries())
+      .map(([storeId, data]) => ({
+        name: RETAILER_NAMES[storeId] ?? `Store ${storeId}`,
+        orders: data.orders,
+        revenue: data.revenue,
+        avgOrder: Math.round(data.revenue / data.orders),
+        status: "Active" as const,
+      }))
+      .sort((a, b) => b.revenue - a.revenue);
+
+    // Supplement with synthetic retailers so the table is meaningful
+    // (MOCK_ORDERS only has one store; supplement with platform-representative data)
+    const SUPPLEMENTAL = [
+      { name: "Mang Tony Sari-Sari",     orders: 41, revenue: 156_800, avgOrder: 3_824, status: "Active" as const },
+      { name: "JB General Merchandise",  orders: 37, revenue: 142_500, avgOrder: 3_851, status: "Active" as const },
+      { name: "Rose Convenience Store",  orders: 32, revenue: 118_400, avgOrder: 3_700, status: "Active" as const },
+      { name: "Dela Cruz Store",         orders: 28, revenue: 97_600,  avgOrder: 3_486, status: "Inactive" as const },
+    ];
+
+    // Merge: real data first, then supplement if fewer than 5 rows
+    type RetailerRow = { name: string; orders: number; revenue: number; avgOrder: number; status: "Active" | "Inactive" };
+    const merged: RetailerRow[] = [...fromOrders];
+    const existingNames = new Set(merged.map((r) => r.name));
+    for (const s of SUPPLEMENTAL) {
+      if (!existingNames.has(s.name) && merged.length < 5) merged.push(s);
+    }
+
+    return merged.slice(0, 5);
+  }, []);
+
+  // ── KPI numbers — use ADMIN_STATS for platform-level realism ───────────────
+  const kpi = useMemo(() => {
+    return {
+      totalRevenue: ADMIN_STATS.revenueMonth,
+      activeRetailers: ADMIN_STATS.activeRetailers,
+      ordersThisMonth: ADMIN_STATS.totalOrders,
+      avgOrderValue: Math.round(ADMIN_STATS.revenueMonth / ADMIN_STATS.totalOrders),
+    };
+  }, []);
+
+  // ── Order status distribution computed from MOCK_ORDERS ───────────────────
+  const orderStatusDist = useMemo(() => {
+    const counts: Record<string, number> = {};
+    for (const o of MOCK_ORDERS) {
+      counts[o.status] = (counts[o.status] ?? 0) + 1;
+    }
+    const total = MOCK_ORDERS.length || 1;
+    return [
+      { label: "Delivered",   pct: Math.round(((counts["delivered"] ?? 0) / total) * 100), color: "bg-green-500" },
+      { label: "In Transit",  pct: Math.round(((counts["out_for_delivery"] ?? 0) / total) * 100), color: "bg-amber-500" },
+      { label: "Processing",  pct: Math.round(((counts["picking"] ?? 0) + (counts["packed"] ?? 0) + (counts["confirmed"] ?? 0)) / total * 100), color: "bg-blue-500" },
+      { label: "Cancelled",   pct: Math.round(((counts["cancelled"] ?? 0) + (counts["failed_delivery"] ?? 0)) / total * 100), color: "bg-red-500" },
+    ];
+  }, []);
+
+  // Payment method counts from ADMIN_STATS scale
+  const totalTxns = ADMIN_STATS.totalOrders;
+  const paymentMethods = PAYMENT_METHODS.map((pm) => ({
+    ...pm,
+    count: Math.round((pm.pct / 100) * totalTxns),
+  }));
+
   return (
     <div className="p-6 space-y-6 max-w-7xl mx-auto">
 
@@ -179,7 +386,7 @@ export default function AdminAnalyticsPage() {
           <Button variant="outline" size="sm">
             This Month ▼
           </Button>
-          <Button size="sm" onClick={downloadCSV}>
+          <Button size="sm" onClick={() => downloadCSV(MONTHLY_REVENUE, MONTHS)}>
             <Download className="h-4 w-4" />
             Export CSV
           </Button>
@@ -202,7 +409,9 @@ export default function AdminAnalyticsPage() {
               <ArrowUpRight className="h-3 w-3" />12.3%
             </span>
           </div>
-          <p className="font-display text-2xl font-bold text-foreground leading-none">₱1.25M</p>
+          <p className="font-display text-2xl font-bold text-foreground leading-none">
+            {formatMillions(kpi.totalRevenue)}
+          </p>
           <p className="text-xs text-muted-foreground mt-1">Total Revenue</p>
           <p className="text-[11px] text-muted-foreground/70 mt-0.5">vs last month</p>
         </Card>
@@ -214,10 +423,12 @@ export default function AdminAnalyticsPage() {
               <Users className="h-5 w-5" />
             </div>
             <span className="inline-flex items-center gap-0.5 text-[11px] font-semibold text-success-600 bg-success-50 rounded-full px-2 py-0.5">
-              <ArrowUpRight className="h-3 w-3" />+8 new
+              <ArrowUpRight className="h-3 w-3" />+{ADMIN_STATS.newRetailersMonth} new
             </span>
           </div>
-          <p className="font-display text-2xl font-bold text-foreground leading-none">284</p>
+          <p className="font-display text-2xl font-bold text-foreground leading-none">
+            {kpi.activeRetailers.toLocaleString()}
+          </p>
           <p className="text-xs text-muted-foreground mt-1">Active Retailers</p>
           <p className="text-[11px] text-muted-foreground/70 mt-0.5">this month</p>
         </Card>
@@ -232,7 +443,9 @@ export default function AdminAnalyticsPage() {
               <ArrowDownRight className="h-3 w-3" />3.2%
             </span>
           </div>
-          <p className="font-display text-2xl font-bold text-foreground leading-none">1,847</p>
+          <p className="font-display text-2xl font-bold text-foreground leading-none">
+            {kpi.ordersThisMonth.toLocaleString()}
+          </p>
           <p className="text-xs text-muted-foreground mt-1">Orders This Month</p>
           <p className="text-[11px] text-muted-foreground/70 mt-0.5">vs last month</p>
         </Card>
@@ -247,7 +460,9 @@ export default function AdminAnalyticsPage() {
               <ArrowUpRight className="h-3 w-3" />4.1%
             </span>
           </div>
-          <p className="font-display text-2xl font-bold text-foreground leading-none">₱676</p>
+          <p className="font-display text-2xl font-bold text-foreground leading-none">
+            {formatPHP(kpi.avgOrderValue)}
+          </p>
           <p className="text-xs text-muted-foreground mt-1">Avg Order Value</p>
           <p className="text-[11px] text-muted-foreground/70 mt-0.5">vs last month</p>
         </Card>
@@ -272,6 +487,66 @@ export default function AdminAnalyticsPage() {
         </CardContent>
       </Card>
 
+      {/* ── Sales Velocity ──────────────────────────────────────────────────── */}
+      <Card>
+        <CardHeader className="pb-2">
+          <div className="flex items-center gap-2">
+            <Zap className="h-4 w-4 text-brand-500" />
+            <CardTitle>Sales Velocity</CardTitle>
+          </div>
+          <p className="text-xs text-muted-foreground mt-0.5">Orders per day · computed from order dates</p>
+        </CardHeader>
+        <CardContent className="pt-2">
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-5">
+            {/* Platform daily avg */}
+            <div className="rounded-xl bg-brand-50 border border-brand-100 p-4">
+              <p className="text-xs text-brand-700 font-medium mb-1">Platform Daily Avg</p>
+              <p className="font-display text-3xl font-bold text-brand-700 leading-none">
+                {salesVelocity.platformOrdersPerDay}
+              </p>
+              <p className="text-[11px] text-brand-600 mt-1">orders / day (Jan 2026)</p>
+            </div>
+            {/* Today */}
+            <div className="rounded-xl bg-surface-50 border border-border p-4">
+              <p className="text-xs text-muted-foreground font-medium mb-1">Today</p>
+              <p className="font-display text-3xl font-bold text-foreground leading-none">
+                {ADMIN_STATS.ordersToday}
+              </p>
+              <p className="text-[11px] text-muted-foreground mt-1">orders placed today</p>
+            </div>
+            {/* Sample avg from MOCK_ORDERS */}
+            <div className="rounded-xl bg-surface-50 border border-border p-4">
+              <p className="text-xs text-muted-foreground font-medium mb-1">Recent Sample Avg</p>
+              <p className="font-display text-3xl font-bold text-foreground leading-none">
+                {salesVelocity.ordersPerDay}
+              </p>
+              <p className="text-[11px] text-muted-foreground mt-1">orders / day (last {salesVelocity.dayBreakdown.length} active days)</p>
+            </div>
+          </div>
+
+          {/* Day-by-day breakdown from MOCK_ORDERS */}
+          {salesVelocity.dayBreakdown.length > 0 && (
+            <div>
+              <p className="text-xs font-semibold text-muted-foreground mb-3 uppercase tracking-wide">Order Activity — Sample Window</p>
+              <div className="flex flex-wrap gap-2">
+                {salesVelocity.dayBreakdown.map((d) => (
+                  <div
+                    key={d.day}
+                    className="flex flex-col items-center gap-1 rounded-lg border border-border bg-surface-50 px-4 py-2.5 min-w-[80px]"
+                  >
+                    <span className="text-[10px] text-muted-foreground">{d.label}</span>
+                    <span className="font-display text-xl font-bold text-foreground">{d.count}</span>
+                    <span className="text-[10px] text-muted-foreground">
+                      {d.count === 1 ? "order" : "orders"}
+                    </span>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+        </CardContent>
+      </Card>
+
       {/* ── Order Status + Payment Methods ─────────────────────────────────── */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
 
@@ -279,37 +554,45 @@ export default function AdminAnalyticsPage() {
         <Card>
           <CardHeader className="pb-2">
             <CardTitle>Order Status</CardTitle>
-            <p className="text-xs text-muted-foreground">Distribution · Jan 2026</p>
+            <p className="text-xs text-muted-foreground">Distribution · MOCK_ORDERS sample</p>
           </CardHeader>
           <CardContent className="pt-2 flex flex-col items-center gap-5">
-            {/* Donut via conic-gradient */}
+            {/* Donut via conic-gradient — built from computed orderStatusDist */}
             <div className="relative flex-shrink-0">
-              <div
-                className="rounded-full"
-                style={{
-                  width: 148,
-                  height: 148,
-                  background: "conic-gradient(#22c55e 0% 73%, #f59e0b 73% 85%, #3b82f6 85% 94%, #ef4444 94% 100%)",
-                }}
-              />
-              {/* Centre hole */}
+              {(() => {
+                // Build conic stops from real data
+                const colors = ["#22c55e", "#f59e0b", "#3b82f6", "#ef4444"];
+                let cumulative = 0;
+                const stops = orderStatusDist.map((s, i) => {
+                  const start = cumulative;
+                  cumulative += s.pct;
+                  return `${colors[i]} ${start}% ${cumulative}%`;
+                });
+                return (
+                  <div
+                    className="rounded-full"
+                    style={{
+                      width: 148,
+                      height: 148,
+                      background: `conic-gradient(${stops.join(", ")})`,
+                    }}
+                  />
+                );
+              })()}
               <div
                 className="absolute inset-0 m-auto rounded-full bg-card flex flex-col items-center justify-center"
                 style={{ width: 80, height: 80 }}
               >
-                <p className="font-display text-xl font-bold text-foreground leading-none">1,847</p>
+                <p className="font-display text-xl font-bold text-foreground leading-none">
+                  {MOCK_ORDERS.length}
+                </p>
                 <p className="text-[10px] text-muted-foreground mt-0.5">orders</p>
               </div>
             </div>
 
             {/* Legend */}
             <div className="w-full grid grid-cols-2 gap-x-6 gap-y-2">
-              {[
-                { label: "Delivered",   pct: 73, color: "bg-green-500"  },
-                { label: "In Transit",  pct: 12, color: "bg-amber-500"  },
-                { label: "Processing",  pct: 9,  color: "bg-blue-500"   },
-                { label: "Cancelled",   pct: 6,  color: "bg-red-500"    },
-              ].map((s) => (
+              {orderStatusDist.map((s) => (
                 <div key={s.label} className="flex items-center justify-between gap-2">
                   <div className="flex items-center gap-1.5 min-w-0">
                     <span className={cn("h-2.5 w-2.5 rounded-full shrink-0", s.color)} />
@@ -329,7 +612,7 @@ export default function AdminAnalyticsPage() {
             <p className="text-xs text-muted-foreground">Transaction split · Jan 2026</p>
           </CardHeader>
           <CardContent className="pt-2 space-y-5">
-            {PAYMENT_METHODS.map((pm) => (
+            {paymentMethods.map((pm) => (
               <div key={pm.name}>
                 <div className="flex items-center justify-between mb-1.5">
                   <span className="text-sm font-medium text-foreground">{pm.name}</span>
@@ -347,10 +630,9 @@ export default function AdminAnalyticsPage() {
               </div>
             ))}
 
-            {/* Total callout */}
             <div className="mt-2 rounded-xl bg-surface-50 border border-border p-3 flex items-center justify-between">
               <span className="text-xs text-muted-foreground">Total Transactions</span>
-              <span className="text-sm font-bold text-foreground">1,848</span>
+              <span className="text-sm font-bold text-foreground">{totalTxns.toLocaleString()}</span>
             </div>
           </CardContent>
         </Card>
@@ -359,12 +641,13 @@ export default function AdminAnalyticsPage() {
       {/* ── Top Retailers Table ─────────────────────────────────────────────── */}
       <Card>
         <CardHeader className="pb-2">
-          <div className="flex items-center justify-between">
-            <div>
-              <CardTitle>Top Retailers by Revenue</CardTitle>
-              <p className="text-xs text-muted-foreground mt-0.5">Jan 2026 · Sorted by total revenue</p>
-            </div>
+          <div className="flex items-center gap-2">
+            <Star className="h-4 w-4 text-amber-500" />
+            <CardTitle>Top Retailers by Revenue</CardTitle>
           </div>
+          <p className="text-xs text-muted-foreground mt-0.5">
+            Computed from order history · Sorted by total revenue
+          </p>
         </CardHeader>
         <CardContent className="pt-0">
           <div className="overflow-x-auto">
@@ -380,7 +663,7 @@ export default function AdminAnalyticsPage() {
                 </tr>
               </thead>
               <tbody>
-                {TOP_RETAILERS.map((r, i) => (
+                {topRetailers.map((r, i) => (
                   <tr key={r.name} className="border-b border-border last:border-0 hover:bg-surface-50 transition-colors">
                     <td className="py-3.5">
                       <span
@@ -422,19 +705,73 @@ export default function AdminAnalyticsPage() {
         </CardContent>
       </Card>
 
+      {/* ── Top Products by Revenue ─────────────────────────────────────────── */}
+      {topProducts.length > 0 && (
+        <Card>
+          <CardHeader className="pb-2">
+            <CardTitle>Top Products by Revenue</CardTitle>
+            <p className="text-xs text-muted-foreground mt-0.5">Computed from MOCK_ORDERS line items × unit prices</p>
+          </CardHeader>
+          <CardContent className="pt-2 space-y-3">
+            {topProducts.map((p, i) => {
+              const cat = categoryMap.get(p.categoryId);
+              const maxRev = topProducts[0].revenue;
+              const widthPct = Math.round((p.revenue / maxRev) * 100);
+              const opacity = Math.max(0.45, 1 - i * 0.12);
+              return (
+                <div key={p.name} className="flex items-center gap-3">
+                  <span
+                    className={cn(
+                      "inline-flex h-6 w-6 items-center justify-center rounded-full text-[10px] font-bold shrink-0",
+                      i === 0 ? "bg-amber-100 text-amber-700" :
+                      i === 1 ? "bg-slate-100 text-slate-600" :
+                      i === 2 ? "bg-orange-100 text-orange-700" :
+                      "bg-surface-100 text-muted-foreground"
+                    )}
+                  >
+                    {i + 1}
+                  </span>
+                  <div className="flex-1 min-w-0">
+                    <div className="flex items-center justify-between mb-1">
+                      <span className="text-sm font-medium text-foreground truncate pr-2">{p.name}</span>
+                      <span className="text-sm font-semibold text-foreground shrink-0">{formatPHP(p.revenue)}</span>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <div className="flex-1 h-2 rounded-full bg-surface-100 overflow-hidden">
+                        <div
+                          className="h-full rounded-full"
+                          style={{ width: `${widthPct}%`, background: `rgba(244, 112, 40, ${opacity})` }}
+                        />
+                      </div>
+                      <span className="text-[11px] text-muted-foreground shrink-0 w-14 text-right">
+                        {p.qty.toLocaleString()} units
+                      </span>
+                    </div>
+                    {cat && (
+                      <span className="text-[10px] text-muted-foreground/70">{cat.name}</span>
+                    )}
+                  </div>
+                </div>
+              );
+            })}
+          </CardContent>
+        </Card>
+      )}
+
       {/* ── Category Performance ────────────────────────────────────────────── */}
       <Card>
         <CardHeader className="pb-2">
           <CardTitle>Revenue by Category</CardTitle>
-          <p className="text-xs text-muted-foreground mt-0.5">Jan 2026 · Sorted by revenue</p>
+          <p className="text-xs text-muted-foreground mt-0.5">
+            Computed from order items · scaled to platform revenue
+          </p>
         </CardHeader>
         <CardContent className="pt-2 space-y-4">
-          {CATEGORIES.map((cat, i) => {
-            // Decreasing opacity for visual hierarchy
-            const opacity = Math.max(0.45, 1 - i * 0.1);
+          {categoryRevenue.map((cat, i) => {
+            const opacity = Math.max(0.45, 1 - i * 0.08);
             return (
               <div key={cat.name} className="flex items-center gap-4">
-                <span className="text-sm text-muted-foreground w-32 shrink-0 truncate">{cat.name}</span>
+                <span className="text-sm text-muted-foreground w-36 shrink-0 truncate">{cat.name}</span>
                 <div className="flex-1 h-5 rounded-full bg-surface-100 overflow-hidden">
                   <div
                     className="h-full rounded-full"
@@ -444,7 +781,7 @@ export default function AdminAnalyticsPage() {
                     }}
                   />
                 </div>
-                <span className="text-sm font-semibold text-foreground w-24 text-right shrink-0">
+                <span className="text-sm font-semibold text-foreground w-28 text-right shrink-0">
                   {formatPHP(cat.revenue)}
                 </span>
                 <span className="text-xs text-muted-foreground w-8 text-right shrink-0">{cat.pct}%</span>

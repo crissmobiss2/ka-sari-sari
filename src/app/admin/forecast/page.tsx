@@ -1,5 +1,6 @@
 "use client";
 
+import { useMemo } from "react";
 import {
   TrendingUp,
   Download,
@@ -10,11 +11,16 @@ import {
   Flame,
   Lightbulb,
   ShieldAlert,
+  Zap,
+  Package,
+  ShoppingCart,
 } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { toastSuccess, toastInfo } from "@/store/toast";
+import { MOCK_ORDERS, PRODUCTS } from "@/lib/mock-data";
 
 // ── Types ─────────────────────────────────────────────────────────────────────
 
@@ -42,7 +48,24 @@ interface AiInsight {
   bgColor: string;
 }
 
-// ── Static data ────────────────────────────────────────────────────────────────
+interface VelocityEntry {
+  productId: string;
+  name: string;
+  category: string;
+  velocity: number; // total order-line appearances across all orders
+  totalQty: number; // total units ordered
+  stock: number;
+}
+
+interface StockoutEntry extends VelocityEntry {
+  daysRemaining: number;
+}
+
+interface ReorderEntry extends VelocityEntry {
+  suggestedQty: number;
+}
+
+// ── Static forecast data ───────────────────────────────────────────────────────
 
 const FORECAST_ROWS: ForecastRow[] = [
   { name: "Coca-Cola Regular 330ml",    category: "Beverages",      currentStock: 142, forecastUnits: 168, trendPct:  18, confidence: 96, action: "Reorder" },
@@ -155,6 +178,82 @@ function ConfidenceBar({ pct }: { pct: number }) {
 // ── Page ──────────────────────────────────────────────────────────────────────
 
 export default function AdminForecastPage() {
+
+  // ── Velocity computation from MOCK_ORDERS ────────────────────────────────
+  const velocityData = useMemo<VelocityEntry[]>(() => {
+    // Build a map: productId -> { appearances (order-line count), totalQty }
+    const velocityMap = new Map<string, { velocity: number; totalQty: number }>();
+
+    for (const order of MOCK_ORDERS) {
+      for (const item of order.items) {
+        const existing = velocityMap.get(item.productId);
+        if (existing) {
+          existing.velocity += 1;
+          existing.totalQty += item.quantity;
+        } else {
+          velocityMap.set(item.productId, { velocity: 1, totalQty: item.quantity });
+        }
+      }
+    }
+
+    // Build a product lookup
+    const productMap = new Map(PRODUCTS.map((p) => [p.id, p]));
+
+    // Enrich with product details and sort by velocity descending
+    const entries: VelocityEntry[] = [];
+    for (const [productId, { velocity, totalQty }] of velocityMap) {
+      const product = productMap.get(productId);
+      if (!product) continue;
+      // Resolve category name from categoryId
+      const categoryNames: Record<string, string> = {
+        "cat-1": "Beverages",
+        "cat-2": "Instant Noodles",
+        "cat-3": "Snacks & Chips",
+        "cat-4": "Canned Goods",
+        "cat-5": "Condiments",
+        "cat-6": "Personal Care",
+        "cat-7": "Coffee & Milo",
+        "cat-8": "Laundry & Cleaning",
+        "cat-9": "Bread & Biscuits",
+        "cat-10": "Candies & Sweets",
+        "cat-11": "Dairy & Eggs",
+        "cat-12": "Cooking Essentials",
+      };
+      entries.push({
+        productId,
+        name: product.name,
+        category: categoryNames[product.categoryId] ?? product.categoryId,
+        velocity,
+        totalQty,
+        stock: product.stock,
+      });
+    }
+
+    return entries.sort((a, b) => b.velocity - a.velocity);
+  }, []);
+
+  // Top 5 high-velocity items
+  const highVelocityItems = useMemo(() => velocityData.slice(0, 5), [velocityData]);
+
+  // Predicted stockouts: stock < velocity * 7
+  const stockoutItems = useMemo<StockoutEntry[]>(() => {
+    return velocityData
+      .filter((item) => item.velocity > 0 && item.stock < item.velocity * 7)
+      .map((item) => ({
+        ...item,
+        daysRemaining: item.velocity > 0 ? Math.floor(item.stock / item.velocity) : 999,
+      }))
+      .sort((a, b) => a.daysRemaining - b.daysRemaining);
+  }, [velocityData]);
+
+  // Recommended purchase quantities: at-risk products, suggested = velocity * 30
+  const reorderItems = useMemo<ReorderEntry[]>(() => {
+    return stockoutItems.map((item) => ({
+      ...item,
+      suggestedQty: item.velocity * 30,
+    }));
+  }, [stockoutItems]);
+
   const insights: AiInsight[] = [
     {
       icon: <Flame className="h-4 w-4 text-danger-500 shrink-0 mt-0.5" />,
@@ -205,16 +304,16 @@ export default function AdminForecastPage() {
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
         <SummaryCard
           label="Stockout Risk"
-          value="3 products"
+          value={`${stockoutItems.length} product${stockoutItems.length !== 1 ? "s" : ""}`}
           sub="require immediate action"
           icon={<AlertTriangle className="h-5 w-5" />}
           iconBg="bg-amber-50"
           iconColor="text-amber-600"
         />
         <SummaryCard
-          label="High Demand Items"
-          value="8 products"
-          sub="forecast above current stock"
+          label="High Velocity Items"
+          value={`${highVelocityItems.length} products`}
+          sub="most frequently ordered"
           icon={<TrendingUp className="h-5 w-5" />}
           iconBg="bg-brand-50"
           iconColor="text-brand-500"
@@ -235,6 +334,132 @@ export default function AdminForecastPage() {
           iconBg="bg-surface-100"
           iconColor="text-muted-foreground"
         />
+      </div>
+
+      {/* ── Velocity-driven intelligence cards ──────────────────────────────── */}
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
+
+        {/* High Velocity Items */}
+        <Card>
+          <CardHeader className="pb-2">
+            <div className="flex items-center gap-2">
+              <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-brand-50">
+                <Zap className="h-4 w-4 text-brand-500" />
+              </div>
+              <div>
+                <CardTitle className="text-base">High Velocity Items</CardTitle>
+                <p className="text-xs text-muted-foreground mt-0.5">Top 5 most-ordered products</p>
+              </div>
+            </div>
+          </CardHeader>
+          <CardContent className="pt-0 space-y-2.5">
+            {highVelocityItems.length === 0 ? (
+              <p className="text-sm text-muted-foreground py-4 text-center">No order data available</p>
+            ) : (
+              highVelocityItems.map((item, idx) => (
+                <div key={item.productId} className="flex items-start gap-3 py-2 border-b border-border last:border-0">
+                  <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-brand-100 text-brand-700 text-xs font-bold">
+                    {idx + 1}
+                  </span>
+                  <div className="flex-1 min-w-0">
+                    <p className="text-sm font-medium text-foreground leading-tight truncate">{item.name}</p>
+                    <p className="text-[11px] text-muted-foreground mt-0.5">{item.category}</p>
+                  </div>
+                  <div className="shrink-0 text-right">
+                    <Badge variant="neutral" className="text-xs tabular-nums font-semibold">
+                      {item.velocity}× ordered
+                    </Badge>
+                    <p className="text-[11px] text-muted-foreground mt-0.5 text-right">{item.totalQty} units</p>
+                  </div>
+                </div>
+              ))
+            )}
+          </CardContent>
+        </Card>
+
+        {/* Predicted Stockouts */}
+        <Card>
+          <CardHeader className="pb-2">
+            <div className="flex items-center gap-2">
+              <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-amber-50">
+                <AlertTriangle className="h-4 w-4 text-amber-600" />
+              </div>
+              <div>
+                <CardTitle className="text-base">Predicted Stockouts</CardTitle>
+                <p className="text-xs text-muted-foreground mt-0.5">Stock below 7-day velocity threshold</p>
+              </div>
+            </div>
+          </CardHeader>
+          <CardContent className="pt-0 space-y-2.5">
+            {stockoutItems.length === 0 ? (
+              <div className="flex items-center gap-2 py-4 justify-center">
+                <CheckCircle2 className="h-4 w-4 text-success-600" />
+                <p className="text-sm text-muted-foreground">All products have sufficient stock</p>
+              </div>
+            ) : (
+              stockoutItems.map((item) => {
+                const isUrgent = item.daysRemaining <= 3;
+                return (
+                  <div key={item.productId} className={cn(
+                    "rounded-lg p-2.5 border",
+                    isUrgent
+                      ? "bg-danger-50/60 border-danger-200"
+                      : "bg-warning-50/40 border-warning-200"
+                  )}>
+                    <div className="flex items-start justify-between gap-2">
+                      <p className="text-sm font-medium text-foreground leading-tight">{item.name}</p>
+                      <Badge
+                        variant={isUrgent ? "danger" : "warning"}
+                        className="shrink-0 text-[11px] font-semibold"
+                      >
+                        {item.daysRemaining} day{item.daysRemaining !== 1 ? "s" : ""} left
+                      </Badge>
+                    </div>
+                    <p className="text-[11px] text-muted-foreground mt-1">
+                      {item.stock} units in stock · velocity {item.velocity}×
+                    </p>
+                  </div>
+                );
+              })
+            )}
+          </CardContent>
+        </Card>
+
+        {/* Recommended Purchase Quantities */}
+        <Card>
+          <CardHeader className="pb-2">
+            <div className="flex items-center gap-2">
+              <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-success-50">
+                <ShoppingCart className="h-4 w-4 text-success-600" />
+              </div>
+              <div>
+                <CardTitle className="text-base">Recommended Reorders</CardTitle>
+                <p className="text-xs text-muted-foreground mt-0.5">30-day buffer for at-risk products</p>
+              </div>
+            </div>
+          </CardHeader>
+          <CardContent className="pt-0 space-y-2.5">
+            {reorderItems.length === 0 ? (
+              <div className="flex items-center gap-2 py-4 justify-center">
+                <Package className="h-4 w-4 text-muted-foreground" />
+                <p className="text-sm text-muted-foreground">No reorders needed</p>
+              </div>
+            ) : (
+              reorderItems.map((item) => (
+                <div key={item.productId} className="flex items-center gap-3 py-2 border-b border-border last:border-0">
+                  <div className="flex-1 min-w-0">
+                    <p className="text-sm font-medium text-foreground leading-tight truncate">{item.name}</p>
+                    <p className="text-[11px] text-muted-foreground mt-0.5">{item.stock} in stock</p>
+                  </div>
+                  <div className="shrink-0 text-right">
+                    <p className="text-sm font-bold text-success-600 tabular-nums">+{item.suggestedQty}</p>
+                    <p className="text-[11px] text-muted-foreground">units to order</p>
+                  </div>
+                </div>
+              ))
+            )}
+          </CardContent>
+        </Card>
       </div>
 
       {/* ── Demand forecast table ────────────────────────────────────────────── */}
