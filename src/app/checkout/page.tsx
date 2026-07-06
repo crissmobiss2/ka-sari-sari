@@ -1,5 +1,5 @@
 "use client";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import {
   MapPin, CreditCard, CheckCircle2, ChevronDown, ChevronUp,
@@ -64,10 +64,11 @@ export default function CheckoutPage() {
   const [address, setAddress] = useState(MOCK_ADDRESS);
   const [draftAddress, setDraftAddress] = useState(MOCK_ADDRESS);
 
-  if (items.length === 0) {
-    router.push("/catalog");
-    return null;
-  }
+  useEffect(() => {
+    if (items.length === 0) router.push("/catalog");
+  }, [items.length, router]);
+
+  if (items.length === 0) return null;
 
   function getButtonLabel() {
     if (loading) return null;
