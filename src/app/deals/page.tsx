@@ -6,6 +6,7 @@ import { RetailerTopBar, RetailerBottomNav } from "@/components/layout/retailer-
 import { PRODUCTS, CATEGORIES } from "@/lib/mock-data";
 import { formatPHP } from "@/lib/utils";
 import { useCartStore } from "@/store/cart";
+import { toastError } from "@/store/toast";
 import { cn } from "@/lib/utils";
 
 const CATEGORY_DISPLAY: Record<string, { gradient: string; emoji: string }> = {
@@ -23,25 +24,59 @@ const CATEGORY_DISPLAY: Record<string, { gradient: string; emoji: string }> = {
   "cat-12": { gradient: "from-lime-400 to-green-500",     emoji: "🫙" },
 };
 
+function getDealLabel(categoryId: string): string {
+  switch (categoryId) {
+    case "cat-1": return "Bundle Deal";
+    case "cat-2": return "Flash Sale";
+    case "cat-3": return "Bulk Discount";
+    default: return categoryId.charCodeAt(categoryId.length - 1) % 2 === 0
+      ? "Weekend Special"
+      : "Hot Pick";
+  }
+}
+
 // Compute deal price
 const DEALS = PRODUCTS.map((p, i) => ({
   ...p,
   originalPrice: p.price,
   discountPct: [15, 20, 10, 25, 12, 18, 22, 8, 30, 15][i % 10],
   price: Math.round(p.price * [0.85, 0.80, 0.90, 0.75, 0.88, 0.82, 0.78, 0.92, 0.70, 0.85][i % 10]),
-  dealLabel: ["Flash Sale", "Bundle Deal", "Weekend Special", "Clearance", "Hot Pick"][i % 5],
+  dealLabel: getDealLabel(p.categoryId),
   expiresIn: [3600 * 2 + 1800, 3600 * 5, 3600 * 12, 3600 * 24, 3600 * 8][i % 5],
 }));
 
 const FLASH_DEALS = DEALS.filter((_, i) => i < 4);
 const ALL_DEALS = DEALS;
 
+function getSessionStart(): number {
+  const key = "deals-session-start";
+  const stored = sessionStorage.getItem(key);
+  if (stored) return parseInt(stored, 10);
+  const now = Date.now();
+  sessionStorage.setItem(key, now.toString());
+  return now;
+}
+
 function Countdown({ seconds }: { seconds: number }) {
-  const [remaining, setRemaining] = useState(seconds);
+  const [remaining, setRemaining] = useState<number | null>(null);
+
   useEffect(() => {
-    const interval = setInterval(() => setRemaining((r) => Math.max(0, r - 1)), 1000);
+    const sessionStart = getSessionStart();
+    const elapsed = Math.floor((Date.now() - sessionStart) / 1000);
+    const initial = Math.max(0, seconds - elapsed);
+    setRemaining(initial);
+
+    if (initial <= 0) return;
+    const interval = setInterval(() => {
+      const e = Math.floor((Date.now() - sessionStart) / 1000);
+      setRemaining(Math.max(0, seconds - e));
+    }, 1000);
     return () => clearInterval(interval);
-  }, []);
+  }, [seconds]);
+
+  if (remaining === null) return <span className="font-mono font-bold tabular-nums">--:--:--</span>;
+  if (remaining === 0) return <span className="font-mono font-bold tabular-nums text-danger-500">Expired</span>;
+
   const h = Math.floor(remaining / 3600);
   const m = Math.floor((remaining % 3600) / 60);
   const s = remaining % 60;
@@ -59,6 +94,15 @@ function DealCard({ deal }: { deal: typeof DEALS[0] }) {
   const [imgError, setImgError] = useState(false);
   const display = CATEGORY_DISPLAY[deal.categoryId] || { gradient: "from-gray-400 to-slate-500", emoji: "📦" };
   const showRealImage = !!deal.imageUrl && !imgError;
+
+  function handleAddToCart() {
+    const product = PRODUCTS.find((p) => p.id === deal.id);
+    if (product && product.stock === 0) {
+      toastError("Out of stock");
+      return;
+    }
+    addItem(deal as any);
+  }
 
   return (
     <div className="rounded-2xl border border-border bg-card shadow-card overflow-hidden flex flex-col">
@@ -103,7 +147,7 @@ function DealCard({ deal }: { deal: typeof DEALS[0] }) {
           </div>
         ) : (
           <button
-            onClick={() => addItem(deal as any)}
+            onClick={handleAddToCart}
             className="mt-1 w-full rounded-xl bg-brand-500 py-2 text-xs font-semibold text-white hover:bg-brand-600 transition-colors active:scale-95"
           >
             Add to Cart

@@ -44,6 +44,7 @@ const PAYMENT_OPTIONS: {
 ];
 
 const DELIVERY_FEE = 80;
+const FREE_DELIVERY_THRESHOLD = 1500;
 const MOCK_ADDRESS = "123 Rosal Street, Brgy. 5, Caloocan City, Metro Manila";
 
 export default function CheckoutPage() {
@@ -52,12 +53,16 @@ export default function CheckoutPage() {
   const { balance: walletBalance, debit: walletDebit } = useWalletStore();
 
   const subtotal = items.reduce((s, i) => s + i.product.price * i.quantity, 0);
-  const total = subtotal + DELIVERY_FEE;
+  const deliveryFee = subtotal >= FREE_DELIVERY_THRESHOLD ? 0 : DELIVERY_FEE;
+  const total = subtotal + deliveryFee;
 
   const [selectedPayment, setSelectedPayment] = useState<PaymentMethod>("cod");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [showItems, setShowItems] = useState(false);
+  const [editingAddress, setEditingAddress] = useState(false);
+  const [address, setAddress] = useState(MOCK_ADDRESS);
+  const [draftAddress, setDraftAddress] = useState(MOCK_ADDRESS);
 
   if (items.length === 0) {
     router.push("/catalog");
@@ -91,11 +96,11 @@ export default function CheckoutPage() {
             price: i.product.price,
             quantity: i.quantity,
           })),
-          deliveryAddress: MOCK_ADDRESS,
+          deliveryAddress: address,
           deliveryNotes: "",
           paymentMethod: selectedPayment,
           subtotal,
-          deliveryFee: DELIVERY_FEE,
+          deliveryFee,
           total,
         }),
       });
@@ -160,11 +165,51 @@ export default function CheckoutPage() {
               <MapPin className="h-4 w-4 text-brand-500" />
               <h3 className="font-display text-sm font-semibold text-foreground">Delivery Address</h3>
             </div>
-            <button className="text-xs text-brand-500 font-medium hover:text-brand-600 transition-colors">
-              Change
-            </button>
+            {!editingAddress && (
+              <button
+                onClick={() => {
+                  setDraftAddress(address);
+                  setEditingAddress(true);
+                }}
+                className="text-xs text-brand-500 font-medium hover:text-brand-600 transition-colors"
+              >
+                Change
+              </button>
+            )}
           </div>
-          <p className="text-sm text-foreground leading-relaxed">{MOCK_ADDRESS}</p>
+          {editingAddress ? (
+            <div className="space-y-2.5">
+              <textarea
+                value={draftAddress}
+                onChange={(e) => setDraftAddress(e.target.value)}
+                rows={3}
+                className="w-full rounded-xl border border-border bg-background px-3 py-2.5 text-sm text-foreground leading-relaxed resize-none focus:outline-none focus:ring-2 focus:ring-brand-500"
+              />
+              <div className="flex gap-2">
+                <Button
+                  size="sm"
+                  variant="default"
+                  onClick={() => {
+                    setAddress(draftAddress.trim() || address);
+                    setEditingAddress(false);
+                  }}
+                  className="flex-1"
+                >
+                  Save
+                </Button>
+                <Button
+                  size="sm"
+                  variant="outline"
+                  onClick={() => setEditingAddress(false)}
+                  className="flex-1"
+                >
+                  Cancel
+                </Button>
+              </div>
+            </div>
+          ) : (
+            <p className="text-sm text-foreground leading-relaxed">{address}</p>
+          )}
         </div>
 
         {/* ── Section B: Order Items (collapsible) ── */}
@@ -263,9 +308,18 @@ export default function CheckoutPage() {
             <span>Subtotal ({items.reduce((s, i) => s + i.quantity, 0)} items)</span>
             <span>{formatPHP(subtotal)}</span>
           </div>
-          <div className="flex justify-between text-sm text-muted-foreground">
+          <div className="flex justify-between text-sm text-muted-foreground items-center">
             <span>Delivery fee</span>
-            <span>{formatPHP(DELIVERY_FEE)}</span>
+            {deliveryFee === 0 ? (
+              <span className="flex items-center gap-1.5">
+                <span className="line-through">₱80</span>
+                <span className="rounded-full bg-green-100 px-2 py-0.5 text-xs font-semibold text-green-700">
+                  FREE
+                </span>
+              </span>
+            ) : (
+              <span>{formatPHP(deliveryFee)}</span>
+            )}
           </div>
           <div className="border-t border-border pt-2.5 flex justify-between text-base font-bold text-foreground">
             <span>Total</span>

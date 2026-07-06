@@ -96,19 +96,106 @@ const MONTHLY_DATA = [
 
 const MAX_VALUE = Math.max(...MONTHLY_DATA.map((d) => d.value));
 
-const TOP_PRODUCTS = [
-  { rank: 1, name: "Coca-Cola Regular 330ml", orders: 18, spent: 3024 },
-  { rank: 2, name: "Lucky Me! Pancit Canton", orders: 14, spent: 1176 },
-  { rank: 3, name: "Nescafé 3-in-1 Original", orders: 12, spent: 1020 },
-  { rank: 4, name: "555 Sardines Tomato Sauce", orders: 10, spent: 1680 },
-  { rank: 5, name: "Safeguard Classic Bar", orders: 8, spent: 1760 },
-];
+// ── Computed top products from MOCK_ORDERS ────────────────────────────────────
 
-const RESTOCK_SUGGESTIONS = [
-  { name: "Coca-Cola Regular 330ml", frequency: "every 2 weeks", daysSince: 12, href: "/catalog?q=coca-cola" },
-  { name: "Lucky Me! Pancit Canton", frequency: "every 10 days", daysSince: 8, href: "/catalog?q=lucky+me" },
-  { name: "555 Sardines Tomato Sauce", frequency: "every 2 weeks", daysSince: 15, href: "/catalog?q=555+sardines" },
-];
+// Build productId → total quantity ordered
+const productQtyMap = new Map<string, number>();
+for (const order of MOCK_ORDERS) {
+  for (const item of order.items) {
+    productQtyMap.set(item.productId, (productQtyMap.get(item.productId) ?? 0) + item.quantity);
+  }
+}
+
+// Build productId → number of orders it appears in
+const productOrderCountMap = new Map<string, number>();
+for (const order of MOCK_ORDERS) {
+  const seen = new Set<string>();
+  for (const item of order.items) {
+    if (!seen.has(item.productId)) {
+      productOrderCountMap.set(item.productId, (productOrderCountMap.get(item.productId) ?? 0) + 1);
+      seen.add(item.productId);
+    }
+  }
+}
+
+// Build productId → Product lookup
+const productMap = new Map(PRODUCTS.map((p) => [p.id, p]));
+
+// Sort by total quantity descending, take top 5
+const totalOrdersWithItems = MOCK_ORDERS.filter((o) => o.items.length > 0).length;
+
+const TOP_PRODUCTS = Array.from(productQtyMap.entries())
+  .sort((a, b) => b[1] - a[1])
+  .slice(0, 5)
+  .map(([productId, totalQty], idx) => {
+    const product = productMap.get(productId);
+    const ordersAppearingIn = productOrderCountMap.get(productId) ?? 0;
+    const pctOfOrders = totalOrdersWithItems > 0
+      ? Math.round((ordersAppearingIn / totalOrdersWithItems) * 100)
+      : 0;
+    return {
+      rank: idx + 1,
+      name: product?.name ?? productId,
+      brand: product?.brand ?? "",
+      totalQty,
+      pctOfOrders,
+    };
+  });
+
+// ── Computed restock suggestions ──────────────────────────────────────────────
+
+// Find the most-ordered product categories from MOCK_ORDERS items
+const categoryOrderQtyMap = new Map<string, number>();
+for (const order of MOCK_ORDERS) {
+  for (const item of order.items) {
+    const catId = productCategoryMap.get(item.productId);
+    if (catId) {
+      categoryOrderQtyMap.set(catId, (categoryOrderQtyMap.get(catId) ?? 0) + item.quantity);
+    }
+  }
+}
+
+// Top categories by order volume
+const topCategoryIds = Array.from(categoryOrderQtyMap.entries())
+  .sort((a, b) => b[1] - a[1])
+  .map(([catId]) => catId);
+
+// Products that are low stock, in the most-ordered categories
+const lowStockInTopCats = PRODUCTS.filter(
+  (p) => p.stock <= p.lowStockThreshold && topCategoryIds.includes(p.categoryId)
+).sort((a, b) => {
+  // Sort by category rank first, then stock ascending (most urgently low first)
+  const catRankA = topCategoryIds.indexOf(a.categoryId);
+  const catRankB = topCategoryIds.indexOf(b.categoryId);
+  if (catRankA !== catRankB) return catRankA - catRankB;
+  return a.stock - b.stock;
+});
+
+// If no low-stock products found, fall back to the most-ordered products
+const RESTOCK_SUGGESTIONS: Array<{ name: string; brand: string; productId: string; isLowStock: boolean }> =
+  lowStockInTopCats.length > 0
+    ? lowStockInTopCats.slice(0, 3).map((p) => ({
+        name: p.name,
+        brand: p.brand ?? "",
+        productId: p.id,
+        isLowStock: true,
+      }))
+    : Array.from(productQtyMap.entries())
+        .sort((a, b) => b[1] - a[1])
+        .slice(0, 3)
+        .map(([productId]) => {
+          const p = productMap.get(productId);
+          return {
+            name: p?.name ?? productId,
+            brand: p?.brand ?? "",
+            productId,
+            isLowStock: false,
+          };
+        });
+
+// ── Savings forecast for CTA ──────────────────────────────────────────────────
+
+const savingsForecast = Math.round(totalSpent * (srpPremium - 1));
 
 const RANK_COLORS = [
   "bg-brand-500",
@@ -224,6 +311,9 @@ export default function AnalyticsPage() {
               <span className="text-[10px] text-muted-foreground">Previous months</span>
             </div>
           </div>
+          <p className="text-[10px] text-muted-foreground mt-2">
+            Based on order history · Updated monthly
+          </p>
         </div>
 
         {/* Category breakdown */}
@@ -266,29 +356,33 @@ export default function AnalyticsPage() {
             <Package className="h-4 w-4 text-brand-500" />
             Your Top Products
           </h2>
-          <div className="rounded-2xl border border-border bg-card shadow-card overflow-hidden divide-y divide-border">
-            {TOP_PRODUCTS.map((p) => (
-              <div key={p.rank} className="flex items-center gap-0 overflow-hidden">
-                {/* Rank bar */}
-                <div className={cn("w-1.5 self-stretch shrink-0", RANK_COLORS[p.rank - 1])} />
-                <div className="flex items-center gap-3 px-4 py-3.5 flex-1 min-w-0">
-                  <span className={cn(
-                    "flex h-7 w-7 shrink-0 items-center justify-center rounded-lg text-xs font-black",
-                    p.rank === 1 ? "bg-brand-500 text-white" : "bg-surface-100 text-muted-foreground"
-                  )}>
-                    {p.rank}
-                  </span>
-                  <div className="flex-1 min-w-0">
-                    <p className="text-sm font-semibold text-foreground truncate">{p.name}</p>
-                    <p className="text-xs text-muted-foreground mt-0.5">{p.orders} orders</p>
+          {TOP_PRODUCTS.length > 0 ? (
+            <div className="rounded-2xl border border-border bg-card shadow-card overflow-hidden divide-y divide-border">
+              {TOP_PRODUCTS.map((p) => (
+                <div key={p.rank} className="flex items-center gap-0 overflow-hidden">
+                  {/* Rank bar */}
+                  <div className={cn("w-1.5 self-stretch shrink-0", RANK_COLORS[p.rank - 1])} />
+                  <div className="flex items-center gap-3 px-4 py-3.5 flex-1 min-w-0">
+                    <span className={cn(
+                      "flex h-7 w-7 shrink-0 items-center justify-center rounded-lg text-xs font-black",
+                      p.rank === 1 ? "bg-brand-500 text-white" : "bg-surface-100 text-muted-foreground"
+                    )}>
+                      {p.rank}
+                    </span>
+                    <div className="flex-1 min-w-0">
+                      <p className="text-sm font-semibold text-foreground truncate">{p.name}</p>
+                      <p className="text-xs text-muted-foreground mt-0.5">
+                        {p.brand && <span className="mr-1">{p.brand} ·</span>}
+                        {p.totalQty} units ordered · {p.pctOfOrders}% of orders
+                      </p>
+                    </div>
                   </div>
-                  <span className="text-sm font-bold text-foreground tabular-nums shrink-0">
-                    {formatPHP(p.spent)}
-                  </span>
                 </div>
-              </div>
-            ))}
-          </div>
+              ))}
+            </div>
+          ) : (
+            <p className="text-sm text-muted-foreground">No order item data available yet.</p>
+          )}
         </div>
 
         {/* Order frequency */}
@@ -327,23 +421,22 @@ export default function AnalyticsPage() {
           </h2>
           <div className="space-y-3">
             {RESTOCK_SUGGESTIONS.map((s) => (
-              <div key={s.name} className="rounded-2xl border border-border bg-card shadow-card px-4 py-4">
+              <div key={s.productId} className="rounded-2xl border border-border bg-card shadow-card px-4 py-4">
                 <div className="flex items-start justify-between gap-3">
                   <div className="flex-1 min-w-0">
                     <p className="text-sm font-semibold text-foreground truncate">{s.name}</p>
                     <p className="text-xs text-muted-foreground mt-0.5">
-                      You usually order {s.frequency}
+                      {s.brand && <span>{s.brand} · </span>}
+                      {s.isLowStock ? "Low on stock — time to reorder" : "Consider stocking more"}
                     </p>
                     <div className="flex items-center gap-1.5 mt-2">
                       <span className={cn(
                         "rounded-full px-2 py-0.5 text-[10px] font-semibold",
-                        s.daysSince >= 14
-                          ? "bg-danger-50 text-danger-600 border border-danger-200"
-                          : s.daysSince >= 10
+                        s.isLowStock
                           ? "bg-warning-50 text-warning-600 border border-warning-200"
                           : "bg-surface-100 text-muted-foreground border border-border"
                       )}>
-                        Last ordered {s.daysSince} days ago
+                        {s.isLowStock ? "Low stock" : "Frequently ordered"}
                       </span>
                     </div>
                   </div>
@@ -421,7 +514,7 @@ export default function AnalyticsPage() {
             <div>
               <p className="text-sm font-semibold text-foreground">Keep saving more</p>
               <p className="text-xs text-muted-foreground mt-0.5">
-                You&apos;re on track to save <span className="text-brand-600 font-semibold">₱15,000+</span> this year if you keep ordering through Ka Sari-Sari.
+                You&apos;re on track to save <span className="text-brand-600 font-semibold">{formatPHP(savingsForecast)}</span> this year if you keep ordering through Ka Sari-Sari.
               </p>
               <Link href="/catalog" className="mt-2.5 inline-flex items-center gap-1 rounded-xl bg-brand-500 px-3 py-1.5 text-xs font-bold text-white hover:bg-brand-600 transition-colors active:scale-95">
                 Browse catalog

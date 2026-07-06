@@ -1,6 +1,7 @@
 "use client";
 import { useState } from "react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import {
   Package, ChevronRight, RotateCcw, Clock, Truck, CheckCheck,
   AlertCircle, MapPin, ShoppingBag,
@@ -11,6 +12,7 @@ import { EmptyState } from "@/components/ui/empty-state";
 import { formatPHP, formatDate, type OrderStatus, ORDER_STATUS_LABELS } from "@/lib/utils";
 import { MOCK_ORDERS } from "@/lib/mock-data";
 import { cn } from "@/lib/utils";
+import { toastSuccess } from "@/store/toast";
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 
@@ -41,7 +43,7 @@ const EXTRA_ORDERS: DisplayOrder[] = [
     total: 980,
     subtotal: 900,
     deliveryFee: 80,
-    deliveryAddress: "123 Rizal St., Barangay 5, Caloocan City",
+    deliveryAddress: "48 Mabini St., Brgy. Poblacion, Marikina City",
     itemCount: 2,
     createdAt: new Date(Date.now() - 1000 * 60 * 25).toISOString(),
     updatedAt: new Date(Date.now() - 1000 * 60 * 20).toISOString(),
@@ -55,7 +57,7 @@ const EXTRA_ORDERS: DisplayOrder[] = [
     total: 2640,
     subtotal: 2560,
     deliveryFee: 80,
-    deliveryAddress: "123 Rizal St., Barangay 5, Caloocan City",
+    deliveryAddress: "12 Luna Ave., Brgy. San Antonio, Quezon City",
     itemCount: 5,
     createdAt: new Date(Date.now() - 1000 * 60 * 90).toISOString(),
     updatedAt: new Date(Date.now() - 1000 * 60 * 60).toISOString(),
@@ -69,7 +71,7 @@ const EXTRA_ORDERS: DisplayOrder[] = [
     total: 1340,
     subtotal: 1260,
     deliveryFee: 80,
-    deliveryAddress: "123 Rizal St., Barangay 5, Caloocan City",
+    deliveryAddress: "77 Del Pilar St., Brgy. Bagong Ilog, Pasig City",
     itemCount: 3,
     createdAt: new Date(Date.now() - 1000 * 60 * 180).toISOString(),
     updatedAt: new Date(Date.now() - 1000 * 60 * 150).toISOString(),
@@ -83,7 +85,7 @@ const EXTRA_ORDERS: DisplayOrder[] = [
     total: 3180,
     subtotal: 3100,
     deliveryFee: 80,
-    deliveryAddress: "123 Rizal St., Barangay 5, Caloocan City",
+    deliveryAddress: "9 Aguinaldo St., Brgy. Kapitolyo, Pasig City",
     itemCount: 7,
     createdAt: "2025-01-10T07:00:00Z",
     updatedAt: "2025-01-10T15:30:00Z",
@@ -97,7 +99,7 @@ const EXTRA_ORDERS: DisplayOrder[] = [
     total: 860,
     subtotal: 780,
     deliveryFee: 80,
-    deliveryAddress: "123 Rizal St., Barangay 5, Caloocan City",
+    deliveryAddress: "33 Bonifacio Ave., Brgy. Plainview, Mandaluyong City",
     itemCount: 2,
     createdAt: "2025-01-05T09:30:00Z",
     updatedAt: "2025-01-05T10:00:00Z",
@@ -137,7 +139,7 @@ const TABS = [
 ];
 
 const ACTIVE_STATUSES: OrderStatus[] = ["pending", "confirmed", "picking", "packed", "out_for_delivery"];
-const DONE_STATUSES: OrderStatus[] = ["delivered"];
+const DONE_STATUSES: OrderStatus[] = ["delivered", "failed_delivery", "cancelled"];
 
 const PROGRESS_STEPS: OrderStatus[] = ["confirmed", "picking", "packed", "out_for_delivery"];
 
@@ -195,10 +197,19 @@ function ActiveProgressBar({ status }: { status: OrderStatus }) {
 // ─── OrderCard ────────────────────────────────────────────────────────────────
 
 function OrderCard({ order }: { order: DisplayOrder }) {
+  const router = useRouter();
   const isActive = ACTIVE_STATUSES.includes(order.status);
   const isDelivered = order.status === "delivered";
   const showProgress = isActive && PROGRESS_STEPS.includes(order.status);
   const isCancelled = ["cancelled", "failed_delivery", "returned"].includes(order.status);
+
+  function handleReorder(e: React.MouseEvent) {
+    e.preventDefault();
+    e.stopPropagation();
+    // DisplayOrder doesn't carry full product objects — redirect to catalog
+    toastSuccess("Redirecting to catalog — pick your items!");
+    router.push("/catalog");
+  }
 
   return (
     <Link
@@ -244,7 +255,7 @@ function OrderCard({ order }: { order: DisplayOrder }) {
         <div className="flex items-center gap-2">
           {isActive && (
             <Link
-              href="/tracking"
+              href={`/orders/${order.id}`}
               onClick={(e) => e.stopPropagation()}
               className="rounded-lg bg-brand-500 px-3 py-1.5 text-xs font-semibold text-white flex items-center gap-1.5 hover:bg-brand-600 transition-colors"
             >
@@ -253,14 +264,14 @@ function OrderCard({ order }: { order: DisplayOrder }) {
             </Link>
           )}
           {isDelivered && (
-            <Link
-              href="/reorder"
-              onClick={(e) => e.stopPropagation()}
+            <button
+              type="button"
+              onClick={handleReorder}
               className="rounded-lg bg-surface-100 px-3 py-1.5 text-xs font-semibold text-foreground flex items-center gap-1.5 hover:bg-surface-200 transition-colors"
             >
               <RotateCcw className="h-3 w-3" />
               Reorder
-            </Link>
+            </button>
           )}
           <ChevronRight className="h-4 w-4 text-muted-foreground" />
         </div>

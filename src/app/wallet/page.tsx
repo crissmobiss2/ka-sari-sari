@@ -10,7 +10,7 @@ import { useWalletStore } from "@/store/wallet";
 import { formatPHP, formatDateTime } from "@/lib/utils";
 import { cn } from "@/lib/utils";
 
-const TOP_UP_AMOUNTS = [100, 200, 500, 1000];
+const TOP_UP_AMOUNTS = [200, 500, 1000, 2000];
 const WITHDRAW_AMOUNTS = [100, 200, 500, 1000];
 
 const TOP_UP_METHODS = [
@@ -36,6 +36,7 @@ export default function WalletPage() {
   const [selectedMethod, setSelectedMethod] = useState("gcash");
   const [topUpLoading, setTopUpLoading] = useState(false);
   const [topUpSuccess, setTopUpSuccess] = useState(false);
+  const [topUpRef, setTopUpRef] = useState("");
 
   // Withdraw state
   const [showWithdraw, setShowWithdraw] = useState(false);
@@ -46,14 +47,17 @@ export default function WalletPage() {
   const [accountName, setAccountName] = useState("");
   const [withdrawLoading, setWithdrawLoading] = useState(false);
   const [withdrawError, setWithdrawError] = useState("");
+  const [withdrawAmountError, setWithdrawAmountError] = useState("");
 
   async function handleTopUp() {
     setTopUpLoading(true);
     await new Promise((r) => setTimeout(r, 1500));
-    credit(selectedAmount, `Top-up via ${selectedMethod.toUpperCase()}`, `TXN-${Date.now()}`);
+    const ref = "KSS-" + Math.random().toString(36).slice(2, 8).toUpperCase() + "-" + new Date().getFullYear();
+    credit(selectedAmount, `Top-up via ${selectedMethod.toUpperCase()}`, ref);
+    setTopUpRef(ref);
     setTopUpLoading(false);
     setTopUpSuccess(true);
-    setTimeout(() => { setTopUpSuccess(false); setShowTopUp(false); }, 2000);
+    setTimeout(() => { setTopUpSuccess(false); setTopUpRef(""); setShowTopUp(false); }, 2000);
   }
 
   function openWithdraw() {
@@ -63,6 +67,7 @@ export default function WalletPage() {
     setAccountNumber("");
     setAccountName("");
     setWithdrawError("");
+    setWithdrawAmountError("");
     setShowWithdraw(true);
   }
 
@@ -74,10 +79,11 @@ export default function WalletPage() {
   async function handleWithdrawConfirm() {
     setWithdrawLoading(true);
     await new Promise((r) => setTimeout(r, 1800));
+    const ref = "KSS-" + Math.random().toString(36).slice(2, 8).toUpperCase() + "-" + new Date().getFullYear();
     const success = debit(
       withdrawAmount,
       `Withdraw to ${WITHDRAW_METHODS.find(m => m.id === withdrawMethod)?.label} ···${accountNumber.slice(-4)}`,
-      `WD-${Date.now()}`
+      ref
     );
     setWithdrawLoading(false);
     if (success) {
@@ -85,6 +91,19 @@ export default function WalletPage() {
     } else {
       setWithdrawError("Insufficient balance.");
     }
+  }
+
+  function validateWithdrawAmount(): boolean {
+    if (withdrawAmount < 50) {
+      setWithdrawAmountError("Minimum withdrawal is ₱50");
+      return false;
+    }
+    if (withdrawAmount > balance) {
+      setWithdrawAmountError("Insufficient balance");
+      return false;
+    }
+    setWithdrawAmountError("");
+    return true;
   }
 
   const selectedWithdrawMethod = WITHDRAW_METHODS.find(m => m.id === withdrawMethod)!;
@@ -148,9 +167,12 @@ export default function WalletPage() {
             </div>
 
             {topUpSuccess ? (
-              <div className="rounded-xl bg-success-50 border border-success-200 p-4 text-center">
+              <div className="rounded-xl bg-success-50 border border-success-200 p-4 text-center space-y-1">
                 <CheckCircle2 className="h-6 w-6 text-success-600 mx-auto mb-1" />
-                <p className="text-success-700 font-semibold text-sm">{formatPHP(selectedAmount)} added successfully!</p>
+                <p className="text-success-700 font-semibold text-sm">
+                  {formatPHP(selectedAmount)} added via {selectedMethod.toUpperCase()}
+                </p>
+                <p className="text-success-600 text-xs font-mono">Ref: #{topUpRef.split("-").slice(1, 2).join("")}</p>
               </div>
             ) : (
               <>
@@ -253,7 +275,7 @@ export default function WalletPage() {
                     {WITHDRAW_AMOUNTS.map((amt) => (
                       <button
                         key={amt}
-                        onClick={() => setWithdrawAmount(amt)}
+                        onClick={() => { setWithdrawAmount(amt); setWithdrawAmountError(""); }}
                         disabled={balance < amt}
                         className={cn(
                           "rounded-xl border py-2.5 text-sm font-bold transition-colors disabled:opacity-40 disabled:cursor-not-allowed",
@@ -272,18 +294,17 @@ export default function WalletPage() {
                   </p>
                 </div>
 
-                {balance < withdrawAmount && (
+                {withdrawAmountError && (
                   <div className="flex items-center gap-2 rounded-xl bg-danger-50 border border-danger-200 px-3 py-2.5">
                     <AlertCircle className="h-4 w-4 text-danger-500 shrink-0" />
-                    <p className="text-xs text-danger-700">Insufficient balance for this amount.</p>
+                    <p className="text-xs text-danger-700">{withdrawAmountError}</p>
                   </div>
                 )}
 
                 <Button
                   size="md"
                   className="w-full"
-                  disabled={balance < withdrawAmount}
-                  onClick={() => setWithdrawStep("account")}
+                  onClick={() => { if (validateWithdrawAmount()) setWithdrawStep("account"); }}
                 >
                   Continue <ChevronRight className="h-4 w-4 ml-1" />
                 </Button>

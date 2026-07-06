@@ -1,9 +1,10 @@
 "use client";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Crown, Star, Gift, Users, Copy, CheckCircle2, ChevronRight } from "lucide-react";
 import { RetailerTopBar, RetailerBottomNav } from "@/components/layout/retailer-nav";
 import { cn } from "@/lib/utils";
 import { useLoyaltyStore } from "@/store/loyalty";
+import { toastSuccess } from "@/store/toast";
 
 // ── Tier config ───────────────────────────────────────────────────────────────
 
@@ -77,14 +78,27 @@ const HOW_TO_EARN = [
   { icon: Gift, text: "25 pts for leaving a product review" },
 ];
 
-const REFERRAL_CODE = "MARIA-SANTOS-2025";
+// Referral code is derived dynamically from auth; see useState below
 
 // ── Main page ────────────────────────────────────────────────────────────────
 
 export default function LoyaltyPage() {
   const [copied, setCopied] = useState(false);
+  const [referralCode, setReferralCode] = useState("KSS-DEMO-2025");
 
   const { balance, transactions } = useLoyaltyStore();
+
+  useEffect(() => {
+    fetch("/api/auth/me")
+      .then((r) => r.ok ? r.json() : null)
+      .then((data) => {
+        if (data?.name) {
+          const first = data.name.split(" ")[0].toUpperCase();
+          setReferralCode(`${first}-KSS-${new Date().getFullYear()}`);
+        }
+      })
+      .catch(() => {/* keep default */});
+  }, []);
 
   // Derived tier data
   const currentTier = getTierForBalance(balance);
@@ -110,13 +124,24 @@ export default function LoyaltyPage() {
   }));
 
   function handleCopy() {
-    navigator.clipboard.writeText(REFERRAL_CODE).catch(() => {});
+    navigator.clipboard.writeText(referralCode).catch(() => {});
     setCopied(true);
     setTimeout(() => setCopied(false), 2500);
   }
 
   function handleShareMessenger() {
-    alert("Opening Messenger share... (integration coming soon)");
+    if (navigator.share) {
+      navigator.share({
+        title: "Ka Sari-Sari",
+        text: `Join Ka Sari-Sari with my referral code: ${referralCode}`,
+        url: "https://ka-sari-sari.vercel.app",
+      }).catch(() => {/* user cancelled or share failed */});
+    } else {
+      navigator.clipboard
+        .writeText(`Join Ka Sari-Sari! Use my code: ${referralCode}`)
+        .catch(() => {});
+      toastSuccess("Referral link copied to clipboard!");
+    }
   }
 
   return (
@@ -293,7 +318,7 @@ export default function LoyaltyPage() {
           {/* Code display */}
           <div className="flex items-center gap-2 rounded-xl border border-dashed border-brand-300 bg-brand-50 px-4 py-3 mb-3">
             <span className="flex-1 font-mono text-sm font-bold text-brand-700 tracking-wider">
-              {REFERRAL_CODE}
+              {referralCode}
             </span>
             <button
               onClick={handleCopy}

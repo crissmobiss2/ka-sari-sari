@@ -13,7 +13,8 @@ import { formatPHP, formatDate, cn, type OrderStatus } from "@/lib/utils";
 import { PRODUCTS, MOCK_ORDERS, CATEGORIES } from "@/lib/mock-data";
 import { useWalletStore } from "@/store/wallet";
 import { useCartStore } from "@/store/cart";
-import { Suspense } from "react";
+import { useOrdersStore } from "@/store/orders";
+import { Suspense, useState, useEffect } from "react";
 
 const PROMO_BANNERS = [
   {
@@ -56,13 +57,40 @@ function WelcomeBanner() {
   );
 }
 
+function getGreeting() {
+  const h = new Date().getHours();
+  if (h < 12) return "Magandang umaga";
+  if (h < 17) return "Magandang hapon";
+  return "Magandang gabi";
+}
+
 export default function DashboardPage() {
+  const [greeting, setGreeting] = useState("Magandang araw");
+  const [storeName, setStoreName] = useState("Your Store");
+
+  useEffect(() => {
+    setGreeting(getGreeting());
+  }, []);
+
+  useEffect(() => {
+    fetch("/api/auth/me")
+      .then((r) => r.ok ? r.json() : null)
+      .then((data) => {
+        if (data?.name) {
+          const name = data.name as string;
+          setStoreName(name.toLowerCase().includes("store") ? name : name + "'s Store");
+        }
+      })
+      .catch(() => {});
+  }, []);
+
   const recentOrders = MOCK_ORDERS.slice(0, 2);
   const popularProducts = PRODUCTS.filter((p) => p.isFeatured).slice(0, 4);
   const newArrivals = PRODUCTS.slice(0, 4);
   const walletBalance = useWalletStore((s) => s.balance);
   const { addItem, items: cartItems } = useCartStore();
-  const activeOrder = recentOrders.find((o) => o.status === "out_for_delivery" || o.status === "picking" || o.status === "packed");
+  const storeOrders = useOrdersStore((s) => s.orders);
+  const activeOrder = storeOrders.find((o) => o.status === "out_for_delivery" || o.status === "picking" || o.status === "packed");
 
   const lowStockProducts = PRODUCTS
     .filter((p) => p.isActive && p.stock < p.lowStockThreshold)
@@ -79,8 +107,8 @@ export default function DashboardPage() {
         {/* Greeting + wallet */}
         <div className="px-4 flex items-start justify-between">
           <div>
-            <p className="text-muted-foreground text-sm">Magandang umaga 👋</p>
-            <h1 className="font-display text-xl font-bold text-foreground mt-0.5">Maria&apos;s Sari-Sari Store</h1>
+            <p className="text-muted-foreground text-sm">{greeting} 👋</p>
+            <h1 className="font-display text-xl font-bold text-foreground mt-0.5">{storeName}</h1>
           </div>
           <Link
             href="/wallet"
@@ -141,7 +169,7 @@ export default function DashboardPage() {
                   </div>
                   <ChevronRight className="h-4 w-4 text-brand-400" />
                 </div>
-                <p className="text-xs text-brand-600">{activeOrder.orderNumber} · Expected delivery today by 5PM</p>
+                <p className="text-xs text-brand-600">{activeOrder.orderNumber} · {activeOrder.eta ? `Expected by ${activeOrder.eta}` : "Estimated delivery by today"}</p>
                 <div className="mt-3 flex gap-1">
                   {(["confirmed", "picking", "packed", "out_for_delivery"] as OrderStatus[]).map((s, i) => {
                     const steps = ["confirmed", "picking", "packed", "out_for_delivery"];
@@ -198,7 +226,7 @@ export default function DashboardPage() {
           </div>
           <div className="flex gap-3 overflow-x-auto scrollbar-hide -mx-4 px-4 pb-1">
             {PRODUCTS.slice(0, 6).map((p, i) => {
-              const discount = [15, 20, 10, 25, 12, 18][i];
+              const discount = [10, 15, 20, 10, 15, 20][i];
               const salePrice = Math.round(p.price * (1 - discount / 100));
               return (
                 <Link key={p.id} href={`/catalog/${p.id}`} className="shrink-0 w-40 rounded-2xl border border-border bg-card shadow-card overflow-hidden active:scale-95 transition-transform">
