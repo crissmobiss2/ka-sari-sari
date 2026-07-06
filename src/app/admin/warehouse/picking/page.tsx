@@ -112,7 +112,14 @@ export default function PickingPage() {
           ...l,
           items: l.items.map((i) => {
             if (i.id !== itemId) return i;
-            if (i.status === "pending" || i.status === "partial") {
+            if (i.status === "pending") {
+              const entered = Number(partialQty[i.id] ?? "");
+              if (entered > 0 && entered < i.quantity) {
+                return { ...i, status: "partial", pickedQty: entered };
+              }
+              return { ...i, status: "picked", pickedQty: i.quantity };
+            }
+            if (i.status === "partial") {
               return { ...i, status: "picked", pickedQty: i.quantity };
             }
             return { ...i, status: "pending", pickedQty: 0 };
@@ -120,6 +127,28 @@ export default function PickingPage() {
         };
       })
     );
+  }
+
+  function confirmPartial(listId: string, itemId: string, qty: number) {
+    if (qty <= 0) return;
+    setLists((prev) =>
+      prev.map((l) => {
+        if (l.id !== listId) return l;
+        return {
+          ...l,
+          items: l.items.map((i) => {
+            if (i.id !== itemId) return i;
+            if (qty >= i.quantity) return { ...i, status: "picked", pickedQty: i.quantity };
+            return { ...i, status: "partial", pickedQty: qty };
+          }),
+        };
+      })
+    );
+    setPartialQty((prev) => {
+      const next = { ...prev };
+      delete next[itemId];
+      return next;
+    });
   }
 
   function markAllPicked(listId: string) {
@@ -317,7 +346,7 @@ export default function PickingPage() {
                       </div>
 
                       {/* Partial qty input */}
-                      {isPartial && !isCompleted && (
+                      {(isPartial || (!isItemPicked && !isCompleted && partialQty[item.id] !== undefined)) && !isCompleted && (
                         <div
                           className="flex items-center gap-1.5 shrink-0"
                           onClick={(e) => e.stopPropagation()}
@@ -325,7 +354,7 @@ export default function PickingPage() {
                           <span className="text-xs text-muted-foreground">Partial:</span>
                           <input
                             type="number"
-                            min={0}
+                            min={1}
                             max={item.quantity}
                             placeholder="0"
                             value={(partialQty[item.id] ?? item.pickedQty) || ""}
@@ -335,6 +364,12 @@ export default function PickingPage() {
                             className="border border-input rounded-xl px-3 py-1.5 text-sm w-16 text-right tabular-nums
                               focus:outline-none focus:ring-2 focus:ring-brand-500 focus:border-transparent bg-card text-foreground"
                           />
+                          <button
+                            className="rounded-lg bg-brand-500 px-2 py-1.5 text-xs font-semibold text-white hover:bg-brand-600 transition-colors"
+                            onClick={() => confirmPartial(list.id, item.id, Number(partialQty[item.id] ?? item.pickedQty))}
+                          >
+                            Confirm
+                          </button>
                         </div>
                       )}
 

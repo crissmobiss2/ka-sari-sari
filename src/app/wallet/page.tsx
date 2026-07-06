@@ -108,6 +108,36 @@ export default function WalletPage() {
 
   const selectedWithdrawMethod = WITHDRAW_METHODS.find(m => m.id === withdrawMethod)!;
 
+  function isAccountValid(): boolean {
+    const digits = accountNumber.replace(/\D/g, "");
+    if (withdrawMethod === "gcash" || withdrawMethod === "maya") {
+      return digits.length === 11 && digits.startsWith("09");
+    }
+    if (withdrawMethod === "bdo" || withdrawMethod === "bpi") {
+      return digits.length === 10;
+    }
+    if (withdrawMethod === "unionbank") {
+      return digits.length === 12;
+    }
+    return accountNumber.length >= 6;
+  }
+
+  function accountError(): string {
+    if (!accountNumber) return "";
+    const digits = accountNumber.replace(/\D/g, "");
+    if (withdrawMethod === "gcash" || withdrawMethod === "maya") {
+      if (!digits.startsWith("09")) return "Must start with 09";
+      if (digits.length !== 11) return "Must be 11 digits";
+    }
+    if (withdrawMethod === "bdo" || withdrawMethod === "bpi") {
+      if (digits.length !== 10) return "Must be 10 digits";
+    }
+    if (withdrawMethod === "unionbank") {
+      if (digits.length !== 12) return "Must be 12 digits";
+    }
+    return "";
+  }
+
   return (
     <div className="min-h-screen bg-background pb-24">
       <RetailerTopBar title="My Wallet" />
@@ -332,7 +362,11 @@ export default function WalletPage() {
                       placeholder={selectedWithdrawMethod.placeholder}
                       className="h-11 w-full rounded-xl border border-input bg-background px-3 text-sm focus:outline-none focus:ring-2 focus:ring-brand-500"
                     />
-                    <p className="text-[11px] text-muted-foreground mt-1">{selectedWithdrawMethod.hint}</p>
+                    {accountError() ? (
+                      <p className="text-[11px] text-danger-500 mt-1">{accountError()}</p>
+                    ) : (
+                      <p className="text-[11px] text-muted-foreground mt-1">{selectedWithdrawMethod.hint}</p>
+                    )}
                   </div>
                   <div>
                     <label className="text-xs font-medium text-muted-foreground block mb-1">Account holder name</label>
@@ -356,7 +390,7 @@ export default function WalletPage() {
                   <Button
                     size="md"
                     className="flex-1"
-                    disabled={accountNumber.length < 6 || accountName.length < 2}
+                    disabled={!isAccountValid() || accountName.length < 2}
                     onClick={() => setWithdrawStep("confirm")}
                   >
                     Review
