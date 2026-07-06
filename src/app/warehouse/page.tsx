@@ -93,15 +93,16 @@ function timeAgo(isoString: string) {
 }
 
 export default function WarehouseDashboard() {
-  const [now, setNow] = useState(new Date());
+  const [now, setNow] = useState<Date | null>(null);
   const [activeHub, setActiveHub] = useState<HubKey>("NCR");
 
   useEffect(() => {
+    setNow(new Date());
     const timer = setInterval(() => setNow(new Date()), 30000);
     return () => clearInterval(timer);
   }, []);
 
-  const hour = now.getHours();
+  const hour = now ? now.getHours() : new Date().getHours();
   const greeting = hour < 12 ? "Good morning" : hour < 17 ? "Good afternoon" : "Good evening";
 
   const hub = HUBS[activeHub];
@@ -129,7 +130,7 @@ export default function WarehouseDashboard() {
         <h1 className="font-display text-xl font-bold text-foreground">{greeting}, Juan!</h1>
         <div className="flex items-center gap-2 mt-0.5 text-muted-foreground">
           <Clock className="h-3.5 w-3.5" />
-          <span className="text-sm">{formatTime(now)}</span>
+          <span className="text-sm">{now ? formatTime(now) : '--:--'}</span>
         </div>
       </div>
 
