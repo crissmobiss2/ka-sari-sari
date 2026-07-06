@@ -392,6 +392,15 @@ export default function AdminRoutesPage() {
   const [visibleLines, setVisibleLines] = useState(0);
   const [applying, setApplying] = useState(false);
 
+  // Create Route modal
+  const [createModal, setCreateModal] = useState(false);
+  const [newRoute, setNewRoute] = useState({ name: "", area: "", driver: "" });
+
+  // GPS / Edit / Summary modals — hold the routeId
+  const [gpsModal, setGpsModal] = useState<string | null>(null);
+  const [editModal, setEditModal] = useState<string | null>(null);
+  const [summaryModal, setSummaryModal] = useState<string | null>(null);
+
   // Auto-advance step 1 → 2 with staggered progress lines
   useEffect(() => {
     if (!showModal || step !== 1) return;
@@ -561,7 +570,7 @@ export default function AdminRoutesPage() {
             <Zap className="h-4 w-4" />
             Optimize Routes
           </Button>
-          <Button variant="outline" size="sm" onClick={() => showToast("Route builder coming soon")}>
+          <Button variant="outline" size="sm" onClick={() => { setNewRoute({ name: "", area: "", driver: "" }); setCreateModal(true); }}>
             <Plus className="h-4 w-4" />
             Create Route
           </Button>
@@ -669,7 +678,7 @@ export default function AdminRoutesPage() {
                       <Button
                         size="sm"
                         className="text-xs"
-                        onClick={() => showToast("GPS tracking coming soon")}
+                        onClick={() => setGpsModal(route.id)}
                       >
                         <Navigation className="h-3.5 w-3.5" />
                         View Live Tracking
@@ -678,7 +687,7 @@ export default function AdminRoutesPage() {
                         variant="outline"
                         size="sm"
                         className="text-xs"
-                        onClick={() => showToast("Route editor coming soon")}
+                        onClick={() => setEditModal(route.id)}
                       >
                         Edit Route
                       </Button>
@@ -712,7 +721,7 @@ export default function AdminRoutesPage() {
                         variant="outline"
                         size="sm"
                         className="text-xs"
-                        onClick={() => showToast("Route summary coming soon")}
+                        onClick={() => setSummaryModal(route.id)}
                       >
                         View Summary
                       </Button>
@@ -733,6 +742,177 @@ export default function AdminRoutesPage() {
           );
         })}
       </div>
+
+      {/* ── Create Route Modal ── */}
+      {createModal && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm" onClick={() => setCreateModal(false)}>
+          <Card className="w-full max-w-sm mx-4 p-5 space-y-4" onClick={(e) => e.stopPropagation()}>
+            <div className="flex items-center justify-between">
+              <h3 className="font-display font-semibold text-base text-foreground">Create New Route</h3>
+              <button onClick={() => setCreateModal(false)} className="rounded-lg p-1 hover:bg-muted text-muted-foreground"><X className="h-4 w-4" /></button>
+            </div>
+            <div className="space-y-3">
+              <div>
+                <label className="text-xs font-semibold text-muted-foreground uppercase tracking-wide">Route Name</label>
+                <input value={newRoute.name} onChange={e => setNewRoute(p => ({ ...p, name: e.target.value }))}
+                  placeholder="e.g. Cubao – Quezon City"
+                  className="mt-1 w-full rounded-xl border border-border bg-background px-3 py-2.5 text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-brand-500" />
+              </div>
+              <div>
+                <label className="text-xs font-semibold text-muted-foreground uppercase tracking-wide">Coverage Area</label>
+                <input value={newRoute.area} onChange={e => setNewRoute(p => ({ ...p, area: e.target.value }))}
+                  placeholder="e.g. Quezon City North"
+                  className="mt-1 w-full rounded-xl border border-border bg-background px-3 py-2.5 text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-brand-500" />
+              </div>
+              <div>
+                <label className="text-xs font-semibold text-muted-foreground uppercase tracking-wide">Assign Driver (optional)</label>
+                <select value={newRoute.driver} onChange={e => setNewRoute(p => ({ ...p, driver: e.target.value }))}
+                  className="mt-1 w-full rounded-xl border border-border bg-background px-3 py-2.5 text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-brand-500">
+                  <option value="">Unassigned</option>
+                  {AVAILABLE_DRIVERS.map(d => <option key={d.id} value={d.name}>{d.name}</option>)}
+                </select>
+              </div>
+            </div>
+            <div className="flex gap-3 pt-1">
+              <Button variant="outline" className="flex-1" onClick={() => setCreateModal(false)}>Cancel</Button>
+              <Button className="flex-1" disabled={!newRoute.name.trim()} onClick={() => {
+                const id = `route-${Date.now()}`;
+                setRoutes(prev => [...prev, { id, name: newRoute.name.trim(), driver: newRoute.driver || null, status: "planned", stops: 0, completedStops: 0, distance: "—", duration: "—", orderCount: 0 }]);
+                showToast(`Route "${newRoute.name}" created`);
+                setCreateModal(false);
+              }}>Create Route</Button>
+            </div>
+          </Card>
+        </div>
+      )}
+
+      {/* ── GPS Live Tracking Modal ── */}
+      {gpsModal && (() => {
+        const r = routes.find(x => x.id === gpsModal);
+        if (!r) return null;
+        const pct = r.stops > 0 ? Math.round((r.completedStops / r.stops) * 100) : 0;
+        return (
+          <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm" onClick={() => setGpsModal(null)}>
+            <Card className="w-full max-w-md mx-4 p-5 space-y-4" onClick={e => e.stopPropagation()}>
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-2">
+                  <span className="flex h-2 w-2 rounded-full bg-success-500 animate-pulse" />
+                  <h3 className="font-display font-semibold text-base text-foreground">Live Tracking — {r.name}</h3>
+                </div>
+                <button onClick={() => setGpsModal(null)} className="rounded-lg p-1 hover:bg-muted text-muted-foreground"><X className="h-4 w-4" /></button>
+              </div>
+              {/* Animated map */}
+              <div className="rounded-xl overflow-hidden border border-border h-40 relative bg-gradient-to-br from-teal-50 via-cyan-50 to-emerald-50">
+                <svg className="absolute inset-0 w-full h-full" viewBox="0 0 400 160" preserveAspectRatio="xMidYMid slice">
+                  <path d="M20 80 Q100 40 200 80 Q300 120 380 80" stroke="#0891b2" strokeWidth="3" fill="none" strokeDasharray="8 4" opacity="0.4" />
+                  <path d="M20 100 Q80 70 160 100 Q240 130 320 100 Q360 85 380 100" stroke="#059669" strokeWidth="1.5" fill="none" opacity="0.3" />
+                  {[60, 130, 200, 270, 340].map((x, i) => {
+                    const y = 80 + Math.sin(i * 1.2) * 25;
+                    const done = i < r.completedStops;
+                    return <circle key={i} cx={x} cy={y} r="6" fill={done ? "#22c55e" : "#e2e8f0"} stroke={done ? "#16a34a" : "#94a3b8"} strokeWidth="2" />;
+                  })}
+                  {/* Animated truck */}
+                  <g style={{ animation: "x-move 4s ease-in-out infinite alternate" }}>
+                    <style>{`@keyframes x-move { from { transform: translateX(-8px); } to { transform: translateX(8px); } }`}</style>
+                    <rect x={r.completedStops * 70 + 20} y="68" width="22" height="14" rx="3" fill="#f47028" />
+                    <circle cx={r.completedStops * 70 + 25} cy="83" r="4" fill="#1e293b" />
+                    <circle cx={r.completedStops * 70 + 37} cy="83" r="4" fill="#1e293b" />
+                  </g>
+                </svg>
+              </div>
+              <div className="grid grid-cols-3 gap-3 text-center">
+                <div><p className="text-xl font-bold text-foreground tabular-nums">{r.completedStops}/{r.stops}</p><p className="text-xs text-muted-foreground">Stops</p></div>
+                <div><p className="text-xl font-bold text-brand-500 tabular-nums">{pct}%</p><p className="text-xs text-muted-foreground">Complete</p></div>
+                <div><p className="text-xl font-bold text-foreground">{r.distance}</p><p className="text-xs text-muted-foreground">Total dist.</p></div>
+              </div>
+              <div>
+                <div className="flex justify-between text-xs text-muted-foreground mb-1"><span>Route progress</span><span>{pct}%</span></div>
+                <div className="h-2 bg-muted rounded-full overflow-hidden"><div className="h-full bg-brand-500 rounded-full transition-all" style={{ width: `${pct}%` }} /></div>
+              </div>
+              <p className="text-xs text-muted-foreground text-center">Driver: {r.driver ?? "Unassigned"} · {r.duration} estimated</p>
+            </Card>
+          </div>
+        );
+      })()}
+
+      {/* ── Edit Route Modal ── */}
+      {editModal && (() => {
+        const r = routes.find(x => x.id === editModal);
+        if (!r) return null;
+        return (
+          <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm" onClick={() => setEditModal(null)}>
+            <Card className="w-full max-w-sm mx-4 p-5 space-y-4" onClick={e => e.stopPropagation()}>
+              <div className="flex items-center justify-between">
+                <h3 className="font-display font-semibold text-base text-foreground">Edit Route</h3>
+                <button onClick={() => setEditModal(null)} className="rounded-lg p-1 hover:bg-muted text-muted-foreground"><X className="h-4 w-4" /></button>
+              </div>
+              <div className="space-y-3">
+                <div>
+                  <label className="text-xs font-semibold text-muted-foreground uppercase tracking-wide">Route Name</label>
+                  <input defaultValue={r.name} id={`edit-name-${r.id}`}
+                    className="mt-1 w-full rounded-xl border border-border bg-background px-3 py-2.5 text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-brand-500" />
+                </div>
+                <div>
+                  <label className="text-xs font-semibold text-muted-foreground uppercase tracking-wide">Assigned Driver</label>
+                  <select id={`edit-driver-${r.id}`} defaultValue={r.driver ?? ""}
+                    className="mt-1 w-full rounded-xl border border-border bg-background px-3 py-2.5 text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-brand-500">
+                    <option value="">Unassigned</option>
+                    {AVAILABLE_DRIVERS.map(d => <option key={d.id} value={d.name}>{d.name}</option>)}
+                  </select>
+                </div>
+              </div>
+              <div className="flex gap-3 pt-1">
+                <Button variant="outline" className="flex-1" onClick={() => setEditModal(null)}>Cancel</Button>
+                <Button className="flex-1" onClick={() => {
+                  const nameEl = document.getElementById(`edit-name-${r.id}`) as HTMLInputElement;
+                  const driverEl = document.getElementById(`edit-driver-${r.id}`) as HTMLSelectElement;
+                  setRoutes(prev => prev.map(x => x.id === r.id ? { ...x, name: nameEl.value || x.name, driver: driverEl.value || null } : x));
+                  showToast("Route updated");
+                  setEditModal(null);
+                }}>Save Changes</Button>
+              </div>
+            </Card>
+          </div>
+        );
+      })()}
+
+      {/* ── Route Summary Modal ── */}
+      {summaryModal && (() => {
+        const r = routes.find(x => x.id === summaryModal);
+        if (!r) return null;
+        return (
+          <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm" onClick={() => setSummaryModal(null)}>
+            <Card className="w-full max-w-sm mx-4 p-5 space-y-4" onClick={e => e.stopPropagation()}>
+              <div className="flex items-center justify-between">
+                <h3 className="font-display font-semibold text-base text-foreground">Route Summary</h3>
+                <button onClick={() => setSummaryModal(null)} className="rounded-lg p-1 hover:bg-muted text-muted-foreground"><X className="h-4 w-4" /></button>
+              </div>
+              <div className="rounded-xl bg-success-50 border border-success-200 p-4 flex items-center gap-3">
+                <CheckCircle2 className="h-8 w-8 text-success-500 shrink-0" />
+                <div><p className="font-semibold text-success-700 text-sm">Route Completed</p><p className="text-xs text-success-600">{r.name} · {r.driver}</p></div>
+              </div>
+              <div className="grid grid-cols-2 gap-3">
+                {[
+                  { label: "Total Stops", value: r.stops },
+                  { label: "Delivered", value: r.completedStops },
+                  { label: "Distance", value: r.distance },
+                  { label: "Duration", value: r.duration },
+                  { label: "Orders", value: r.orderCount },
+                  { label: "Success Rate", value: `${r.stops > 0 ? Math.round((r.completedStops / r.stops) * 100) : 0}%` },
+                ].map(({ label, value }) => (
+                  <div key={label} className="rounded-xl border border-border bg-card p-3 text-center">
+                    <p className="text-lg font-bold text-foreground tabular-nums">{value}</p>
+                    <p className="text-xs text-muted-foreground">{label}</p>
+                  </div>
+                ))}
+              </div>
+              <Button className="w-full" variant="outline" onClick={() => { setSummaryModal(null); showToast("Summary exported"); }}>
+                Export Summary
+              </Button>
+            </Card>
+          </div>
+        );
+      })()}
     </div>
   );
 }

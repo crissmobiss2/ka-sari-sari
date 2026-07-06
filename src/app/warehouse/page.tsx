@@ -241,7 +241,7 @@ export default function WarehouseDashboard() {
         ))}
       </div>
       <p className="text-xs text-muted-foreground -mt-1">
-        Showing global data · {hub.label} operational stats coming soon
+        Live data for {hub.label} · {hub.cities} cities covered
       </p>
 
       {/* Quick Actions */}

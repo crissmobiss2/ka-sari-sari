@@ -545,20 +545,22 @@ function DriverCard({ onAction }: { onAction: (msg: string) => void }) {
         </div>
       </div>
       <div className="grid grid-cols-2 gap-3 mt-4">
-        <button
-          onClick={() => onAction("Calling your driver is coming soon. We'll add this feature shortly!")}
+        <a
+          href="tel:+639171234567"
           className="flex items-center justify-center gap-2 rounded-xl border border-border bg-surface-50 py-2.5 text-sm font-medium text-foreground hover:bg-surface-100 active:scale-95 transition-all"
         >
           <Phone className="h-4 w-4 text-brand-500" />
           Call Driver
-        </button>
-        <button
-          onClick={() => onAction("Driver messaging is coming soon. Sit tight!")}
+        </a>
+        <a
+          href="https://wa.me/639171234567"
+          target="_blank"
+          rel="noopener noreferrer"
           className="flex items-center justify-center gap-2 rounded-xl bg-brand-500 py-2.5 text-sm font-medium text-white hover:bg-brand-600 active:scale-95 transition-all"
         >
           <MessageCircle className="h-4 w-4" />
           Message
-        </button>
+        </a>
       </div>
     </div>
   );
@@ -764,8 +766,8 @@ export default function OrderDetailPage() {
           )}
 
           <button
-            onClick={() => showToast("PDF download is coming soon. Your receipt will be ready shortly!")}
-            className="w-full flex items-center justify-center gap-2 rounded-2xl border border-border bg-surface-50 py-3.5 text-sm font-semibold text-muted-foreground hover:bg-surface-100 active:scale-[0.98] transition-all"
+            onClick={() => window.print()}
+            className="w-full flex items-center justify-center gap-2 rounded-2xl border border-border bg-surface-50 py-3.5 text-sm font-semibold text-foreground hover:bg-surface-100 active:scale-[0.98] transition-all"
           >
             <Download className="h-4 w-4" />
             Download Receipt

@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect, useCallback } from "react";
 import { useParams, useRouter } from "next/navigation";
 import Link from "next/link";
 import { Card } from "@/components/ui/card";
@@ -201,6 +201,12 @@ export default function DeliveryDetailPage() {
   const [captureTime, setCaptureTime] = useState<string | null>(null);
   const photoInputRef = useRef<HTMLInputElement>(null);
 
+  // Signature pad state
+  const [showSignaturePad, setShowSignaturePad] = useState(false);
+  const [signatureData, setSignatureData] = useState<string | null>(null);
+  const canvasRef = useRef<HTMLCanvasElement>(null);
+  const isDrawingRef = useRef(false);
+
   const photoTaken = photoUrl !== null;
 
   // ─── Event handlers ───────────────────────────────────────────────────────
@@ -230,8 +236,52 @@ export default function DeliveryDetailPage() {
   }
 
   function handleSignaturePlaceholder() {
-    // In a real app this would open a canvas for drawing a signature
-    alert("Digital signature capture coming soon. Please take a photo as proof of delivery.");
+    setShowSignaturePad(true);
+  }
+
+  function handleCanvasPointerDown(e: React.PointerEvent<HTMLCanvasElement>) {
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+    isDrawingRef.current = true;
+    canvas.setPointerCapture(e.pointerId);
+    const rect = canvas.getBoundingClientRect();
+    const ctx = canvas.getContext("2d");
+    if (!ctx) return;
+    ctx.beginPath();
+    ctx.moveTo(e.clientX - rect.left, e.clientY - rect.top);
+  }
+
+  function handleCanvasPointerMove(e: React.PointerEvent<HTMLCanvasElement>) {
+    if (!isDrawingRef.current) return;
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+    const rect = canvas.getBoundingClientRect();
+    const ctx = canvas.getContext("2d");
+    if (!ctx) return;
+    ctx.lineWidth = 2.5;
+    ctx.lineCap = "round";
+    ctx.strokeStyle = "#111";
+    ctx.lineTo(e.clientX - rect.left, e.clientY - rect.top);
+    ctx.stroke();
+  }
+
+  function handleCanvasPointerUp() {
+    isDrawingRef.current = false;
+  }
+
+  function clearSignature() {
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+    const ctx = canvas.getContext("2d");
+    if (!ctx) return;
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+  }
+
+  function saveSignature() {
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+    setSignatureData(canvas.toDataURL("image/png"));
+    setShowSignaturePad(false);
   }
 
   function handleDeliver() {
@@ -687,15 +737,28 @@ export default function DeliveryDetailPage() {
             </button>
           )}
 
-          {/* Digital Signature placeholder */}
-          <button
-            type="button"
-            onClick={handleSignaturePlaceholder}
-            className="mt-3 w-full flex items-center justify-center gap-2 px-4 py-3 rounded-xl border border-border bg-background text-muted-foreground hover:bg-muted transition-colors text-sm font-medium"
-          >
-            <PenIcon className="w-4 h-4" />
-            Digital Signature (optional)
-          </button>
+          {/* Digital Signature */}
+          {signatureData ? (
+            <div className="mt-3 rounded-xl border border-success-300 bg-success-50 overflow-hidden">
+              <div className="flex items-center justify-between px-3 py-2 border-b border-success-200">
+                <span className="text-xs font-semibold text-success-700 flex items-center gap-1.5">
+                  <CheckCircleIcon className="w-3.5 h-3.5" /> Signature captured
+                </span>
+                <button onClick={() => setSignatureData(null)} className="text-xs text-muted-foreground hover:text-foreground">Redo</button>
+              </div>
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img src={signatureData} alt="Customer signature" className="w-full h-24 object-contain bg-white" />
+            </div>
+          ) : (
+            <button
+              type="button"
+              onClick={handleSignaturePlaceholder}
+              className="mt-3 w-full flex items-center justify-center gap-2 px-4 py-3 rounded-xl border border-border bg-background text-foreground hover:bg-muted transition-colors text-sm font-medium"
+            >
+              <PenIcon className="w-4 h-4" />
+              Digital Signature (optional)
+            </button>
+          )}
         </Card>
 
         {/* Delivery actions */}
@@ -831,6 +894,46 @@ export default function DeliveryDetailPage() {
             >
               Cancel
             </button>
+          </div>
+        </div>
+      )}
+
+      {/* ── Signature Pad Modal ── */}
+      {showSignaturePad && (
+        <div className="fixed inset-0 z-50 flex flex-col justify-end bg-black/50">
+          <div className="bg-card rounded-t-2xl p-5 space-y-4 mx-auto w-full max-w-md">
+            <div className="flex items-center justify-between">
+              <h3 className="font-display text-base font-bold text-foreground">Customer Signature</h3>
+              <button onClick={() => setShowSignaturePad(false)} className="rounded-lg p-1.5 hover:bg-muted text-muted-foreground">
+                <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2}><path d="M18 6L6 18M6 6l12 12"/></svg>
+              </button>
+            </div>
+            <p className="text-xs text-muted-foreground">Ask the customer to sign in the box below to confirm receipt.</p>
+            <div className="rounded-xl border-2 border-dashed border-border bg-white overflow-hidden touch-none">
+              <canvas
+                ref={canvasRef}
+                width={350}
+                height={160}
+                className="w-full h-40 cursor-crosshair"
+                onPointerDown={handleCanvasPointerDown}
+                onPointerMove={handleCanvasPointerMove}
+                onPointerUp={handleCanvasPointerUp}
+              />
+            </div>
+            <div className="flex gap-3">
+              <button
+                onClick={clearSignature}
+                className="flex-1 h-11 rounded-2xl border border-border text-foreground text-sm font-semibold hover:bg-muted"
+              >
+                Clear
+              </button>
+              <button
+                onClick={saveSignature}
+                className="flex-1 h-11 rounded-2xl bg-brand-500 hover:bg-brand-600 text-white font-semibold text-sm"
+              >
+                Save Signature
+              </button>
+            </div>
           </div>
         </div>
       )}
