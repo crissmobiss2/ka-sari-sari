@@ -1,5 +1,5 @@
 "use client";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import {
   CheckCircle2, XCircle, RotateCcw, Phone, Truck,
   MapPin, Clock, ChevronDown, AlertCircle, Package,
@@ -173,9 +173,28 @@ export default function AdminDeliveryPage() {
   const markFailed = useOrdersStore((s) => s.markFailed);
   const advance = useOrdersStore((s) => s.advance);
 
-  // Local driver assignment state (before dispatching)
   const [assigned, setAssigned] = useState<Record<string, string>>({});
   const [toast, setToast] = useState<string | null>(null);
+  const [failTarget, setFailTarget] = useState<string | null>(null);
+  const [failReason, setFailReason] = useState("No one home");
+  const [timeStr, setTimeStr] = useState<string>("");
+
+  const FAIL_REASONS = [
+    "No one home",
+    "Wrong address",
+    "Customer refused delivery",
+    "COD amount not ready",
+    "Address inaccessible",
+  ];
+
+  useEffect(() => {
+    function update() {
+      setTimeStr(new Date().toLocaleString("en-PH", { month: "short", day: "numeric", year: "numeric", hour: "2-digit", minute: "2-digit" }));
+    }
+    update();
+    const id = setInterval(update, 60000);
+    return () => clearInterval(id);
+  }, []);
 
   function showToast(msg: string) {
     setToast(msg);
@@ -204,8 +223,15 @@ export default function AdminDeliveryPage() {
   }
 
   function handleFailed(id: string) {
-    markFailed(id, "Delivery unsuccessful");
-    showToast("Order marked as failed delivery");
+    setFailTarget(id);
+    setFailReason("No one home");
+  }
+
+  function handleConfirmFailed() {
+    if (!failTarget) return;
+    markFailed(failTarget, failReason);
+    showToast(`Order marked as failed: ${failReason}`);
+    setFailTarget(null);
   }
 
   function handleRetry(id: string) {
@@ -235,7 +261,7 @@ export default function AdminDeliveryPage() {
         </div>
         <div className="flex items-center gap-1.5 text-xs text-muted-foreground bg-surface-50 border border-border rounded-xl px-3 py-2 self-start">
           <Clock className="h-3.5 w-3.5" />
-          <span>{new Date().toLocaleString("en-PH", { month: "short", day: "numeric", year: "numeric", hour: "2-digit", minute: "2-digit" })}</span>
+          <span>{timeStr || "--"}</span>
         </div>
       </div>
 
@@ -303,6 +329,35 @@ export default function AdminDeliveryPage() {
           })}
         </div>
       </div>
+
+      {failTarget && (
+        <div className="fixed inset-0 z-50 flex flex-col justify-end bg-black/40" onClick={() => setFailTarget(null)}>
+          <div className="bg-card rounded-t-2xl p-6 space-y-4 max-w-md mx-auto w-full" onClick={(e) => e.stopPropagation()}>
+            <h3 className="font-display text-base font-bold text-foreground">Reason for Failed Delivery</h3>
+            <div className="space-y-2">
+              {FAIL_REASONS.map((reason) => (
+                <button key={reason} onClick={() => setFailReason(reason)}
+                  className={`w-full flex items-center gap-3 rounded-xl border px-4 py-3 text-sm font-medium text-left transition-colors ${failReason === reason ? "border-danger-400 bg-danger-50 text-danger-700" : "border-border bg-background text-foreground"}`}>
+                  <div className={`w-4 h-4 rounded-full border-2 flex items-center justify-center flex-shrink-0 ${failReason === reason ? "border-danger-500 bg-danger-500" : "border-surface-300"}`}>
+                    {failReason === reason && <div className="w-2 h-2 rounded-full bg-white" />}
+                  </div>
+                  {reason}
+                </button>
+              ))}
+            </div>
+            <div className="flex gap-3">
+              <button onClick={() => setFailTarget(null)}
+                className="flex-1 h-11 rounded-2xl border border-border text-foreground text-sm font-semibold">
+                Cancel
+              </button>
+              <button onClick={handleConfirmFailed}
+                className="flex-1 h-11 rounded-2xl bg-danger-600 text-white font-semibold text-sm">
+                Confirm Failed
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
