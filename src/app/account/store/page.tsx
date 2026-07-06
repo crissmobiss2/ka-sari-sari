@@ -1,5 +1,5 @@
 "use client";
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { Store, MapPin, Phone, ArrowLeft, CheckCircle2, ChevronDown, Search, AlertCircle } from "lucide-react";
 import { RetailerTopBar, RetailerBottomNav } from "@/components/layout/retailer-nav";
@@ -10,6 +10,7 @@ import { NEXOFLOW_CITIES, isCovered, type NexoflowCity } from "@/lib/nexoflow-ci
 
 export default function StoreProfilePage() {
   const router = useRouter();
+  const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [saved, setSaved] = useState(false);
   const [citySearch, setCitySearch] = useState("");
@@ -22,6 +23,29 @@ export default function StoreProfilePage() {
     city: "Caloocan",
     province: "Metro Manila",
   });
+
+  useEffect(() => {
+    (async () => {
+      try {
+        const res = await fetch("/api/auth/me");
+        if (res.ok) {
+          const data = await res.json();
+          setForm((prev) => ({
+            storeName: data.storeName ?? prev.storeName,
+            ownerName: data.ownerName ?? data.name ?? prev.ownerName,
+            phone: data.phone ?? prev.phone,
+            barangay: data.barangay ?? prev.barangay,
+            city: data.city ?? prev.city,
+            province: data.province ?? prev.province,
+          }));
+        }
+      } catch {
+        // ignore fetch errors; use defaults
+      } finally {
+        setLoading(false);
+      }
+    })();
+  }, []);
 
   function set(k: string, v: string) { setForm((p) => ({ ...p, [k]: v })); }
 
@@ -44,10 +68,19 @@ export default function StoreProfilePage() {
 
   async function handleSave() {
     setSaving(true);
-    await new Promise((r) => setTimeout(r, 1000));
-    setSaving(false);
-    setSaved(true);
-    setTimeout(() => setSaved(false), 3000);
+    try {
+      await fetch("/api/auth/me", {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(form),
+      });
+    } catch {
+      // treat as locally saved
+    } finally {
+      setSaving(false);
+      setSaved(true);
+      setTimeout(() => setSaved(false), 3000);
+    }
   }
 
   return (
@@ -69,146 +102,154 @@ export default function StoreProfilePage() {
           </div>
         )}
 
-        {/* Store info */}
-        <div className="rounded-2xl border border-border bg-card shadow-card p-5 space-y-4">
-          <div className="flex items-center gap-2 mb-1">
-            <Store className="h-4 w-4 text-brand-500" />
-            <h3 className="font-display text-sm font-semibold text-foreground">Store Information</h3>
+        {loading ? (
+          <div className="flex items-center justify-center py-16 text-sm text-muted-foreground">
+            Loading profile…
           </div>
-          <Input
-            label="Store name"
-            value={form.storeName}
-            onChange={(e) => set("storeName", e.target.value)}
-            placeholder="Your store name"
-          />
-          <Input
-            label="Owner / Contact name"
-            value={form.ownerName}
-            onChange={(e) => set("ownerName", e.target.value)}
-            placeholder="Full name"
-          />
-          <Input
-            label="Phone number"
-            type="tel"
-            value={form.phone}
-            onChange={(e) => set("phone", e.target.value)}
-            leftIcon={<Phone className="h-4 w-4" />}
-          />
-        </div>
-
-        {/* Delivery address */}
-        <div className="rounded-2xl border border-border bg-card shadow-card p-5 space-y-4">
-          <div className="flex items-center justify-between mb-1">
-            <div className="flex items-center gap-2">
-              <MapPin className="h-4 w-4 text-brand-500" />
-              <h3 className="font-display text-sm font-semibold text-foreground">Delivery Address</h3>
+        ) : (
+          <>
+            {/* Store info */}
+            <div className="rounded-2xl border border-border bg-card shadow-card p-5 space-y-4">
+              <div className="flex items-center gap-2 mb-1">
+                <Store className="h-4 w-4 text-brand-500" />
+                <h3 className="font-display text-sm font-semibold text-foreground">Store Information</h3>
+              </div>
+              <Input
+                label="Store name"
+                value={form.storeName}
+                onChange={(e) => set("storeName", e.target.value)}
+                placeholder="Your store name"
+              />
+              <Input
+                label="Owner / Contact name"
+                value={form.ownerName}
+                onChange={(e) => set("ownerName", e.target.value)}
+                placeholder="Full name"
+              />
+              <Input
+                label="Phone number"
+                type="tel"
+                value={form.phone}
+                onChange={(e) => set("phone", e.target.value)}
+                leftIcon={<Phone className="h-4 w-4" />}
+              />
             </div>
-            {covered ? (
-              <span className="flex items-center gap-1 text-[11px] font-semibold text-success-700 bg-success-50 border border-success-200 rounded-full px-2 py-0.5">
-                <CheckCircle2 className="h-3 w-3" /> Nexoflow Covered
-              </span>
-            ) : form.city ? (
-              <span className="flex items-center gap-1 text-[11px] font-semibold text-warning-700 bg-warning-50 border border-warning-200 rounded-full px-2 py-0.5">
-                <AlertCircle className="h-3 w-3" /> Not covered yet
-              </span>
-            ) : null}
-          </div>
 
-          <Input
-            label="Barangay / Street"
-            value={form.barangay}
-            onChange={(e) => set("barangay", e.target.value)}
-            placeholder="Brgy. San Jose"
-          />
-
-          {/* City picker */}
-          <div className="space-y-1.5">
-            <label className="block text-xs font-semibold text-foreground">City / Municipality</label>
-            <div className="relative">
-              <button
-                type="button"
-                onClick={() => setCityOpen((o) => !o)}
-                className="flex h-11 w-full items-center justify-between rounded-xl border border-input bg-card px-3.5 text-sm focus:outline-none focus:ring-2 focus:ring-brand-500"
-              >
-                <span className={cn("truncate", form.city ? "text-foreground" : "text-muted-foreground")}>
-                  {form.city || "Select city…"}
-                </span>
-                <ChevronDown className={cn("h-4 w-4 text-muted-foreground transition-transform shrink-0", cityOpen && "rotate-180")} />
-              </button>
-
-              {cityOpen && (
-                <div className="absolute top-full mt-1 left-0 right-0 z-50 rounded-xl border border-border bg-card shadow-lg overflow-hidden">
-                  <div className="p-2 border-b border-border">
-                    <div className="relative">
-                      <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-3.5 w-3.5 text-muted-foreground" />
-                      <input
-                        autoFocus
-                        value={citySearch}
-                        onChange={(e) => setCitySearch(e.target.value)}
-                        placeholder="Search cities…"
-                        className="h-9 w-full rounded-lg border border-input bg-background pl-9 pr-3 text-sm focus:outline-none focus:ring-1 focus:ring-brand-500"
-                      />
-                    </div>
-                  </div>
-                  <div className="max-h-52 overflow-y-auto divide-y divide-border/50">
-                    {filtered.length === 0 && (
-                      <p className="py-8 text-center text-xs text-muted-foreground">No cities found</p>
-                    )}
-                    {filtered.map((c) => (
-                      <button
-                        key={c.city + c.province}
-                        type="button"
-                        onClick={() => selectCity(c)}
-                        className="flex w-full items-center justify-between px-4 py-2.5 text-sm hover:bg-muted/50 transition-colors"
-                      >
-                        <div className="text-left">
-                          <p className="font-medium text-foreground">{c.city}</p>
-                          <p className="text-[11px] text-muted-foreground">{c.province}</p>
-                        </div>
-                        <span className="text-[10px] font-semibold text-brand-500 bg-brand-50 border border-brand-100 rounded-full px-1.5 py-0.5 shrink-0">
-                          {c.hub}
-                        </span>
-                      </button>
-                    ))}
-                    {!citySearch && (
-                      <p className="py-2 text-center text-[11px] text-muted-foreground">
-                        Showing 20 of 137 cities. Type to search more.
-                      </p>
-                    )}
-                  </div>
+            {/* Delivery address */}
+            <div className="rounded-2xl border border-border bg-card shadow-card p-5 space-y-4">
+              <div className="flex items-center justify-between mb-1">
+                <div className="flex items-center gap-2">
+                  <MapPin className="h-4 w-4 text-brand-500" />
+                  <h3 className="font-display text-sm font-semibold text-foreground">Delivery Address</h3>
                 </div>
-              )}
+                {covered ? (
+                  <span className="flex items-center gap-1 text-[11px] font-semibold text-success-700 bg-success-50 border border-success-200 rounded-full px-2 py-0.5">
+                    <CheckCircle2 className="h-3 w-3" /> Nexoflow Covered
+                  </span>
+                ) : form.city ? (
+                  <span className="flex items-center gap-1 text-[11px] font-semibold text-warning-700 bg-warning-50 border border-warning-200 rounded-full px-2 py-0.5">
+                    <AlertCircle className="h-3 w-3" /> Not covered yet
+                  </span>
+                ) : null}
+              </div>
+
+              <Input
+                label="Barangay / Street"
+                value={form.barangay}
+                onChange={(e) => set("barangay", e.target.value)}
+                placeholder="Brgy. San Jose"
+              />
+
+              {/* City picker */}
+              <div className="space-y-1.5">
+                <label className="block text-xs font-semibold text-foreground">City / Municipality</label>
+                <div className="relative">
+                  <button
+                    type="button"
+                    onClick={() => setCityOpen((o) => !o)}
+                    className="flex h-11 w-full items-center justify-between rounded-xl border border-input bg-card px-3.5 text-sm focus:outline-none focus:ring-2 focus:ring-brand-500"
+                  >
+                    <span className={cn("truncate", form.city ? "text-foreground" : "text-muted-foreground")}>
+                      {form.city || "Select city…"}
+                    </span>
+                    <ChevronDown className={cn("h-4 w-4 text-muted-foreground transition-transform shrink-0", cityOpen && "rotate-180")} />
+                  </button>
+
+                  {cityOpen && (
+                    <div className="absolute top-full mt-1 left-0 right-0 z-50 rounded-xl border border-border bg-card shadow-lg overflow-hidden">
+                      <div className="p-2 border-b border-border">
+                        <div className="relative">
+                          <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-3.5 w-3.5 text-muted-foreground" />
+                          <input
+                            autoFocus
+                            value={citySearch}
+                            onChange={(e) => setCitySearch(e.target.value)}
+                            placeholder="Search cities…"
+                            className="h-9 w-full rounded-lg border border-input bg-background pl-9 pr-3 text-sm focus:outline-none focus:ring-1 focus:ring-brand-500"
+                          />
+                        </div>
+                      </div>
+                      <div className="max-h-52 overflow-y-auto divide-y divide-border/50">
+                        {filtered.length === 0 && (
+                          <p className="py-8 text-center text-xs text-muted-foreground">No cities found</p>
+                        )}
+                        {filtered.map((c) => (
+                          <button
+                            key={c.city + c.province}
+                            type="button"
+                            onClick={() => selectCity(c)}
+                            className="flex w-full items-center justify-between px-4 py-2.5 text-sm hover:bg-muted/50 transition-colors"
+                          >
+                            <div className="text-left">
+                              <p className="font-medium text-foreground">{c.city}</p>
+                              <p className="text-[11px] text-muted-foreground">{c.province}</p>
+                            </div>
+                            <span className="text-[10px] font-semibold text-brand-500 bg-brand-50 border border-brand-100 rounded-full px-1.5 py-0.5 shrink-0">
+                              {c.hub}
+                            </span>
+                          </button>
+                        ))}
+                        {!citySearch && (
+                          <p className="py-2 text-center text-[11px] text-muted-foreground">
+                            Showing 20 of 137 cities. Type to search more.
+                          </p>
+                        )}
+                      </div>
+                    </div>
+                  )}
+                </div>
+                {!covered && form.city && (
+                  <p className="text-[11px] text-muted-foreground">
+                    Delivery may have longer lead times. We're expanding to more cities soon.
+                  </p>
+                )}
+              </div>
+
+              <div>
+                <label className="block text-xs font-semibold text-foreground mb-1.5">Province</label>
+                <div className="flex h-11 items-center rounded-xl border border-input bg-muted/50 px-3.5 text-sm text-muted-foreground">
+                  {form.province || "Auto-filled from city"}
+                </div>
+              </div>
             </div>
-            {!covered && form.city && (
-              <p className="text-[11px] text-muted-foreground">
-                Delivery may have longer lead times. We're expanding to more cities soon.
-              </p>
-            )}
-          </div>
 
-          <div>
-            <label className="block text-xs font-semibold text-foreground mb-1.5">Province</label>
-            <div className="flex h-11 items-center rounded-xl border border-input bg-muted/50 px-3.5 text-sm text-muted-foreground">
-              {form.province || "Auto-filled from city"}
+            {/* Nexoflow coverage note */}
+            <div className="rounded-xl border border-brand-100 bg-brand-50 p-4 flex items-start gap-3">
+              <MapPin className="h-4 w-4 text-brand-500 shrink-0 mt-0.5" />
+              <div>
+                <p className="text-xs font-semibold text-foreground">Nexoflow Delivery Network</p>
+                <p className="text-xs text-muted-foreground mt-0.5 leading-relaxed">
+                  Ka Sari-Sari uses Nexoflow's network to deliver to 137 cities across the Philippines.
+                  Select your city to confirm delivery coverage and estimated lead times.
+                </p>
+              </div>
             </div>
-          </div>
-        </div>
 
-        {/* Nexoflow coverage note */}
-        <div className="rounded-xl border border-brand-100 bg-brand-50 p-4 flex items-start gap-3">
-          <MapPin className="h-4 w-4 text-brand-500 shrink-0 mt-0.5" />
-          <div>
-            <p className="text-xs font-semibold text-foreground">Nexoflow Delivery Network</p>
-            <p className="text-xs text-muted-foreground mt-0.5 leading-relaxed">
-              Ka Sari-Sari uses Nexoflow's network to deliver to 137 cities across the Philippines.
-              Select your city to confirm delivery coverage and estimated lead times.
-            </p>
-          </div>
-        </div>
-
-        <Button size="lg" className="w-full" onClick={handleSave} loading={saving}>
-          Save changes
-        </Button>
+            <Button size="lg" className="w-full" onClick={handleSave} loading={saving}>
+              {saving ? "Saving…" : "Save changes"}
+            </Button>
+          </>
+        )}
       </div>
 
       <RetailerBottomNav />

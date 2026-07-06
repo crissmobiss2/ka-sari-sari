@@ -1,4 +1,5 @@
 "use client";
+import { useState, useEffect } from "react";
 import Link from "next/link";
 import {
   User, Store, CreditCard, Bell, HelpCircle, LogOut,
@@ -54,9 +55,42 @@ export default function AccountPage() {
   const walletBalance = useWalletStore((s) => s.balance);
   const favCount = useFavoritesStore((s) => s.items.length);
 
+  const [creditData, setCreditData] = useState({
+    score: CREDIT_SCORE,
+    limit: CREDIT_LIMIT,
+    used: CREDIT_USED,
+    available: CREDIT_AVAILABLE,
+    utilization: CREDIT_UTILIZATION,
+  });
+
+  const [userInfo, setUserInfo] = useState({
+    displayName: "Maria Santos",
+    phone: "+63 917 123 4567",
+    storeName: "Santos Sari-Sari Store · Caloocan City",
+    initial: "M",
+  });
+
+  useEffect(() => {
+    fetch("/api/auth/me")
+      .then((res) => {
+        if (!res.ok) return null;
+        return res.json();
+      })
+      .then((data) => {
+        if (!data) return;
+        setUserInfo({
+          displayName: data.displayName ?? data.name ?? userInfo.displayName,
+          phone: data.phone ?? userInfo.phone,
+          storeName: data.storeName ?? userInfo.storeName,
+          initial: (data.displayName ?? data.name ?? userInfo.displayName).charAt(0).toUpperCase(),
+        });
+      })
+      .catch(() => {});
+  }, []);
+
   const menuItems = [
     { label: "Store Profile", description: "Manage your store details", href: "/account/store", icon: Store },
-    { label: "Subscription", description: "Active · Renews Feb 1, 2026", href: "/account/subscription", icon: CreditCard },
+    { label: "Subscription", description: "Active · Renews Jul 6, 2027", href: "/account/subscription", icon: CreditCard },
     { label: "My Wallet", description: `Balance: ${formatPHP(walletBalance)}`, href: "/wallet", icon: Wallet },
     { label: "Saved Items", description: `${favCount} saved ${favCount === 1 ? "product" : "products"}`, href: "/favorites", icon: Heart },
     { label: "Today's Deals", description: "Exclusive discounts for you", href: "/deals", icon: Tag },
@@ -73,12 +107,12 @@ export default function AccountPage() {
         <div className="rounded-2xl border border-border bg-card shadow-card p-5">
           <div className="flex items-center gap-4">
             <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-brand-100 text-brand-600 text-2xl font-black shrink-0">
-              M
+              {userInfo.initial}
             </div>
             <div>
-              <p className="font-display text-base font-bold text-foreground">Maria Santos</p>
-              <p className="text-sm text-muted-foreground">+63 917 123 4567</p>
-              <p className="text-sm text-muted-foreground">Santos Sari-Sari Store · Caloocan City</p>
+              <p className="font-display text-base font-bold text-foreground">{userInfo.displayName}</p>
+              <p className="text-sm text-muted-foreground">{userInfo.phone}</p>
+              <p className="text-sm text-muted-foreground">{userInfo.storeName}</p>
             </div>
           </div>
         </div>
@@ -115,7 +149,7 @@ export default function AccountPage() {
 
           {/* Score gauge */}
           <div className="flex flex-col items-center mb-4">
-            <svg viewBox="0 0 150 90" width={150} height={90} aria-label={`Credit score ${CREDIT_SCORE} out of ${CREDIT_SCORE_MAX}`}>
+            <svg viewBox="0 0 150 90" width={150} height={90} aria-label={`Credit score ${creditData.score} out of ${CREDIT_SCORE_MAX}`}>
               {/* Background arc */}
               <path
                 d={BG_ARC}
@@ -142,7 +176,7 @@ export default function AccountPage() {
                 fill="currentColor"
                 className="fill-foreground"
               >
-                {CREDIT_SCORE}
+                {creditData.score}
               </text>
               <text
                 x="75"
@@ -179,15 +213,15 @@ export default function AccountPage() {
           <div className="rounded-xl bg-surface-50 border border-border px-4 py-3 flex justify-between items-center">
             <div>
               <p className="text-xs text-muted-foreground">Credit Limit</p>
-              <p className="text-lg font-black text-foreground">₱{CREDIT_LIMIT.toLocaleString()}</p>
+              <p className="text-lg font-black text-foreground">₱{creditData.limit.toLocaleString()}</p>
             </div>
             <div className="text-right">
               <p className="text-xs text-muted-foreground">Used</p>
-              <p className="text-base font-bold text-brand-500">₱{CREDIT_USED.toLocaleString()}</p>
+              <p className="text-base font-bold text-brand-500">₱{creditData.used.toLocaleString()}</p>
             </div>
             <div className="text-right">
               <p className="text-xs text-muted-foreground">Available</p>
-              <p className="text-base font-bold text-success-600">₱{CREDIT_AVAILABLE.toLocaleString()}</p>
+              <p className="text-base font-bold text-success-600">₱{creditData.available.toLocaleString()}</p>
             </div>
           </div>
 
@@ -195,12 +229,12 @@ export default function AccountPage() {
           <div className="mt-2.5">
             <div className="flex justify-between items-center mb-1">
               <p className="text-[11px] text-muted-foreground">Credit utilization</p>
-              <p className="text-[11px] font-semibold text-muted-foreground">{CREDIT_UTILIZATION.toFixed(1)}% used</p>
+              <p className="text-[11px] font-semibold text-muted-foreground">{creditData.utilization.toFixed(1)}% used</p>
             </div>
             <div className="h-1.5 rounded-full bg-success-100 overflow-hidden">
               <div
                 className="h-full rounded-full bg-brand-500 transition-all"
-                style={{ width: `${CREDIT_UTILIZATION}%` }}
+                style={{ width: `${creditData.utilization}%` }}
               />
             </div>
           </div>

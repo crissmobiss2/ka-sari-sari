@@ -1,6 +1,6 @@
 "use client";
 import { useState } from "react";
-import { CreditCard, AlertTriangle, CheckCircle2, Clock, TrendingUp, Search, Filter, ChevronRight } from "lucide-react";
+import { CreditCard, AlertTriangle, CheckCircle2, Clock, TrendingUp, Search, Filter, ChevronRight, X } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { cn, formatPHP, formatDate } from "@/lib/utils";
@@ -60,6 +60,10 @@ export default function AdminCreditPage() {
   const [selected, setSelected] = useState<string | null>(null);
   const [paymentModal, setPaymentModal] = useState<string | null>(null);
   const [paymentAmount, setPaymentAmount] = useState("");
+  const [createModal, setCreateModal] = useState(false);
+  const [newRetailer, setNewRetailer] = useState("");
+  const [newLimit, setNewLimit] = useState("");
+  const [newTerms, setNewTerms] = useState<7 | 14 | 30 | 45>(30);
 
   const filtered = accounts.filter((a) => {
     const matchSearch = !search ||
@@ -115,6 +119,40 @@ export default function AdminCreditPage() {
     toastSuccess("Account reactivated");
   }
 
+  function handleCreateCreditLine() {
+    const retailerName = newRetailer.trim();
+    const limitAmount = Number(newLimit);
+    if (!retailerName) return;
+    if (!limitAmount || limitAmount <= 0) return;
+    const newId = `ca-${String(accounts.length + 1).padStart(2, "0")}`;
+    const newAccount: CreditAccount = {
+      id: newId,
+      retailer: retailerName,
+      store: `${retailerName} Store`,
+      city: "—",
+      creditLimit: limitAmount,
+      outstanding: 0,
+      oldestInvoiceDays: 0,
+      terms: newTerms,
+      status: "good",
+      lastPayment: "2026-07-06",
+      nextDue: undefined,
+    };
+    setAccounts((prev) => [...prev, newAccount]);
+    toastSuccess(`Credit line created for ${retailerName}`);
+    setCreateModal(false);
+    setNewRetailer("");
+    setNewLimit("");
+    setNewTerms(30);
+  }
+
+  function handleCloseCreateModal() {
+    setCreateModal(false);
+    setNewRetailer("");
+    setNewLimit("");
+    setNewTerms(30);
+  }
+
   const paymentModalAccount = paymentModal ? accounts.find((a) => a.id === paymentModal) : null;
 
   return (
@@ -156,6 +194,78 @@ export default function AdminCreditPage() {
         </div>
       )}
 
+      {/* Create Credit Line Modal */}
+      {createModal && (
+        <div className="fixed inset-0 bg-black/40 z-50" onClick={handleCloseCreateModal}>
+          <div
+            className="max-w-sm mx-auto mt-24 bg-card rounded-2xl p-6 shadow-xl"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <div className="flex items-center justify-between mb-4">
+              <h2 className="font-display text-lg font-bold text-foreground">New Credit Line</h2>
+              <button
+                onClick={handleCloseCreateModal}
+                className="flex h-7 w-7 items-center justify-center rounded-lg text-muted-foreground hover:text-foreground hover:bg-muted/40 transition-colors"
+              >
+                <X className="h-4 w-4" />
+              </button>
+            </div>
+            <div className="space-y-3 mb-5">
+              <div>
+                <label className="block text-xs font-semibold text-muted-foreground mb-1.5">Retailer Name</label>
+                <input
+                  type="text"
+                  placeholder="e.g. Juan dela Cruz"
+                  value={newRetailer}
+                  onChange={(e) => setNewRetailer(e.target.value)}
+                  className="w-full h-10 rounded-xl border border-input bg-background px-4 text-sm focus:outline-none focus:ring-2 focus:ring-brand-500"
+                  autoFocus
+                />
+              </div>
+              <div>
+                <label className="block text-xs font-semibold text-muted-foreground mb-1.5">Credit Limit (PHP)</label>
+                <input
+                  type="number"
+                  placeholder="e.g. 20000"
+                  value={newLimit}
+                  onChange={(e) => setNewLimit(e.target.value)}
+                  min={1}
+                  className="w-full h-10 rounded-xl border border-input bg-background px-4 text-sm focus:outline-none focus:ring-2 focus:ring-brand-500"
+                />
+              </div>
+              <div>
+                <label className="block text-xs font-semibold text-muted-foreground mb-1.5">Payment Terms</label>
+                <select
+                  value={newTerms}
+                  onChange={(e) => setNewTerms(Number(e.target.value) as 7 | 14 | 30 | 45)}
+                  className="w-full h-10 rounded-xl border border-input bg-background px-4 text-sm focus:outline-none focus:ring-2 focus:ring-brand-500"
+                >
+                  <option value={7}>7 days</option>
+                  <option value={14}>14 days</option>
+                  <option value={30}>30 days</option>
+                  <option value={45}>45 days</option>
+                </select>
+              </div>
+            </div>
+            <div className="flex gap-2">
+              <button
+                onClick={handleCreateCreditLine}
+                disabled={!newRetailer.trim() || !newLimit || Number(newLimit) <= 0}
+                className="flex-1 rounded-xl bg-brand-500 text-white py-2.5 text-sm font-semibold hover:bg-brand-600 transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
+              >
+                Create Credit Line
+              </button>
+              <button
+                onClick={handleCloseCreateModal}
+                className="flex-1 rounded-xl border border-border text-foreground py-2.5 text-sm font-semibold hover:bg-muted/40 transition-colors"
+              >
+                Cancel
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
       {/* Header */}
       <div className="flex items-start justify-between gap-4">
         <div>
@@ -167,7 +277,10 @@ export default function AdminCreditPage() {
           </div>
           <p className="text-sm text-muted-foreground">Buy-now-pay-later accounts for trusted retailers</p>
         </div>
-        <button className="flex items-center gap-2 rounded-xl border border-brand-200 bg-brand-50 px-4 py-2 text-sm font-semibold text-brand-600 hover:bg-brand-100 transition-colors">
+        <button
+          onClick={() => setCreateModal(true)}
+          className="flex items-center gap-2 rounded-xl border border-brand-200 bg-brand-50 px-4 py-2 text-sm font-semibold text-brand-600 hover:bg-brand-100 transition-colors"
+        >
           + New Credit Line
         </button>
       </div>

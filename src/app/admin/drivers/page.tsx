@@ -300,7 +300,7 @@ export default function AdminDriversPage() {
 
               {/* Actions */}
               <div className="grid grid-cols-3 gap-2">
-                <Button variant="outline" size="sm" className="text-xs flex-col h-auto py-2 gap-1" onClick={() => showToast(`Calling ${driver.name}…`)}>
+                <Button variant="outline" size="sm" className="text-xs flex-col h-auto py-2 gap-1" onClick={() => { window.location.href = "tel:" + (driver.phone || "+639171234567"); }}>
                   <Phone className="h-3.5 w-3.5" />
                   Call
                 </Button>
@@ -517,7 +517,7 @@ export default function AdminDriversPage() {
               >
                 <Navigation className="h-4 w-4" /> Assign Route
               </button>
-              <Button size="md" className="flex-1" onClick={() => { showToast(`Calling ${viewDriver.name}…`); setViewDriver(null); }}>
+              <Button size="md" className="flex-1" onClick={() => { window.location.href = "tel:" + (viewDriver.phone || "+639171234567"); setViewDriver(null); }}>
                 <Phone className="h-4 w-4 mr-1.5" /> Call Driver
               </Button>
             </div>

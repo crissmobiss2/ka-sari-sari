@@ -55,7 +55,7 @@ function DriverSelect({ value, onChange }: { value: string | null | undefined; o
 
 function DispatchCard({
   id, orderNumber, amount, address, driverName, eta, failReason, dispatchStatus,
-  onDispatch, onDelivered, onFailed, onRetry, onAssignDriver,
+  onDispatch, onDelivered, onFailed, onRetry, onContact, onAssignDriver,
 }: {
   id: string;
   orderNumber: string;
@@ -69,6 +69,7 @@ function DispatchCard({
   onDelivered: (id: string) => void;
   onFailed: (id: string) => void;
   onRetry: (id: string) => void;
+  onContact: (id: string) => void;
   onAssignDriver: (id: string, driver: string) => void;
 }) {
   return (
@@ -156,7 +157,7 @@ function DispatchCard({
             <RotateCcw className="h-3.5 w-3.5" />
             Retry
           </Button>
-          <Button size="sm" variant="outline" className="text-xs h-8">
+          <Button size="sm" variant="outline" className="text-xs h-8" onClick={() => onContact(id)}>
             <Phone className="h-3.5 w-3.5" />
             Contact
           </Button>
@@ -235,9 +236,15 @@ export default function AdminDeliveryPage() {
   }
 
   function handleRetry(id: string) {
-    // Move back to "packed" so it re-appears in ready column
     advance(id);
     showToast("Order moved back to dispatch queue");
+  }
+
+  function handleContact(id: string) {
+    const order = storeOrders.find((o) => o.id === id);
+    const phone = (order as unknown as { phone?: string })?.phone;
+    showToast("Opening driver contact");
+    window.location.href = phone ? `tel:${phone}` : "tel:+639171234567";
   }
 
   const counts = {
@@ -315,6 +322,7 @@ export default function AdminDeliveryPage() {
                       onDelivered={handleDelivered}
                       onFailed={handleFailed}
                       onRetry={handleRetry}
+                      onContact={handleContact}
                       onAssignDriver={handleAssignDriver}
                     />
                   ))}

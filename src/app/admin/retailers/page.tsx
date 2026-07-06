@@ -1,6 +1,7 @@
 "use client";
 import { useState } from "react";
-import { Search, Users, MapPin, Phone, CheckCircle2, XCircle, ChevronDown, TrendingUp, Building2, Filter } from "lucide-react";
+import { useRouter } from "next/navigation";
+import { Search, Users, MapPin, Phone, CheckCircle2, XCircle, ChevronDown, TrendingUp, Building2, Filter, X } from "lucide-react";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { cn, formatDate } from "@/lib/utils";
@@ -32,9 +33,14 @@ const HUB_COLORS: Record<string, string> = {
 };
 
 export default function AdminRetailersPage() {
+  const router = useRouter();
   const [search, setSearch]   = useState("");
   const [hub, setHub]         = useState<HubFilter>("all");
   const [status, setStatus]   = useState<"all" | "active" | "inactive">("all");
+  const [inviteModal, setInviteModal] = useState(false);
+  const [invitePhone, setInvitePhone] = useState("");
+  const [inviteStore, setInviteStore] = useState("");
+  const [inviteToast, setInviteToast] = useState("");
 
   const filtered = MOCK_RETAILERS.filter((r) => {
     const matchSearch = !search ||
@@ -49,8 +55,71 @@ export default function AdminRetailersPage() {
   const activeCount = MOCK_RETAILERS.filter((r) => r.isActive).length;
   const hubs = ["all", "NCR", "North Luzon", "South Luzon", "Visayas", "Mindanao"] as HubFilter[];
 
+  function handleSendInvite() {
+    const phone = invitePhone.trim();
+    if (!phone) return;
+    setInviteToast("Invite sent to " + phone);
+    setInviteModal(false);
+    setInvitePhone("");
+    setInviteStore("");
+    setTimeout(() => setInviteToast(""), 3500);
+  }
+
   return (
     <div className="p-6 space-y-5 max-w-7xl mx-auto">
+      {/* Toast */}
+      {inviteToast && (
+        <div className="fixed top-5 right-5 z-50 rounded-xl bg-success-600 text-white px-5 py-3 text-sm font-semibold shadow-lg">
+          {inviteToast}
+        </div>
+      )}
+
+      {/* Invite Modal */}
+      {inviteModal && (
+        <div className="fixed inset-0 z-40 flex items-center justify-center bg-black/40">
+          <div className="relative w-full max-w-md rounded-2xl bg-card border border-border shadow-xl p-6">
+            <button
+              onClick={() => setInviteModal(false)}
+              className="absolute top-4 right-4 text-muted-foreground hover:text-foreground transition-colors"
+              aria-label="Close"
+            >
+              <X className="h-5 w-5" />
+            </button>
+            <h2 className="font-display text-lg font-bold text-foreground mb-4">Invite Retailer</h2>
+            <div className="space-y-4">
+              <div>
+                <label className="block text-sm font-medium text-foreground mb-1">Mobile Number</label>
+                <input
+                  type="tel"
+                  placeholder="+63 9XX XXX XXXX"
+                  value={invitePhone}
+                  onChange={(e) => setInvitePhone(e.target.value)}
+                  className="h-10 w-full rounded-xl border border-input bg-background px-3 text-sm focus:outline-none focus:ring-2 focus:ring-brand-500"
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-foreground mb-1">
+                  Store Name <span className="text-muted-foreground font-normal">(optional)</span>
+                </label>
+                <input
+                  type="text"
+                  placeholder="e.g. Santos Sari-Sari Store"
+                  value={inviteStore}
+                  onChange={(e) => setInviteStore(e.target.value)}
+                  className="h-10 w-full rounded-xl border border-input bg-background px-3 text-sm focus:outline-none focus:ring-2 focus:ring-brand-500"
+                />
+              </div>
+              <button
+                onClick={handleSendInvite}
+                className="w-full rounded-xl bg-brand-500 py-2.5 text-sm font-semibold text-white hover:bg-brand-600 transition-colors"
+              >
+                Send Invite
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
       {/* Header */}
       <div className="flex items-start justify-between gap-4">
         <div>
@@ -62,7 +131,10 @@ export default function AdminRetailersPage() {
           </div>
           <p className="text-sm text-muted-foreground">{MOCK_RETAILERS.length} registered store owners across {new Set(MOCK_RETAILERS.map(r => r.hub)).size} hubs</p>
         </div>
-        <button className="flex items-center gap-2 rounded-xl border border-brand-200 bg-brand-50 px-4 py-2 text-sm font-semibold text-brand-600 hover:bg-brand-100 transition-colors">
+        <button
+          onClick={() => setInviteModal(true)}
+          className="flex items-center gap-2 rounded-xl border border-brand-200 bg-brand-50 px-4 py-2 text-sm font-semibold text-brand-600 hover:bg-brand-100 transition-colors"
+        >
           + Invite Retailer
         </button>
       </div>
@@ -158,7 +230,11 @@ export default function AdminRetailersPage() {
             </thead>
             <tbody className="divide-y divide-border">
               {filtered.map((r) => (
-                <tr key={r.id} className="hover:bg-muted/30 transition-colors cursor-pointer">
+                <tr
+                  key={r.id}
+                  className="hover:bg-muted/30 transition-colors cursor-pointer"
+                  onClick={() => router.push("/admin/retailers/" + r.id)}
+                >
                   <td className="px-5 py-3.5">
                     <div className="flex items-center gap-3">
                       <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-brand-100 text-brand-600 text-sm font-bold">

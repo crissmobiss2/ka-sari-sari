@@ -8,41 +8,63 @@ import { Card } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { cn } from "@/lib/utils";
 
-const PROMOS_DATA = [
+type PromoStatus = "active" | "scheduled" | "ended" | "paused" | "expired";
+
+type Promo = {
+  id: string;
+  title: string;
+  description: string;
+  type: "percentage" | "fixed";
+  value: number;
+  minOrder: number;
+  category: string;
+  startDate: string;
+  endDate: string;
+  status: PromoStatus;
+  usageCount: number;
+  maxUsage: number | undefined;
+};
+
+const INITIAL_PROMOS: Promo[] = [
   { id: "promo-1", title: "Flash Sale: Beverages", description: "20% off all beverages today", type: "percentage", value: 20, minOrder: 500, category: "Beverages", startDate: "Jan 21, 2025 8:00 AM", endDate: "Jan 21, 2025 11:59 PM", status: "active", usageCount: 47, maxUsage: 100 },
   { id: "promo-2", title: "Snacks Bonanza", description: "10% off on bulk snack orders", type: "percentage", value: 10, minOrder: 1000, category: "Snacks & Chips", startDate: "Jan 20, 2025", endDate: "Jan 22, 2025", status: "active", usageCount: 23, maxUsage: undefined },
   { id: "promo-3", title: "Free Delivery Weekend", description: "PHP 80 delivery discount on orders 2000+", type: "fixed", value: 80, minOrder: 2000, category: "All", startDate: "Jan 22, 2025", endDate: "Jan 24, 2025", status: "scheduled", usageCount: 0, maxUsage: undefined },
   { id: "promo-4", title: "New Year Promo", description: "PHP 100 off on first 200 orders of the year", type: "fixed", value: 100, minOrder: 2500, category: "All", startDate: "Jan 1, 2025", endDate: "Jan 15, 2025", status: "ended", usageCount: 156, maxUsage: 200 },
 ];
 
-type PromoStatus = "active" | "scheduled" | "ended";
+const AVG_ORDER_VALUE = 800;
 
 const STATUS_STYLE: Record<PromoStatus, string> = {
   active:    "bg-success-50 text-success-700 border-success-500/25",
   scheduled: "bg-warning-50 text-warning-600 border-warning-500/25",
   ended:     "bg-surface-100 text-muted-foreground border-surface-200",
+  paused:    "bg-surface-100 text-muted-foreground border-surface-200",
+  expired:   "bg-surface-100 text-muted-foreground border-surface-200",
 };
 
 const STATUS_BAR: Record<PromoStatus, string> = {
   active:    "bg-brand-500",
   scheduled: "bg-warning-400",
   ended:     "bg-surface-300",
+  paused:    "bg-surface-300",
+  expired:   "bg-surface-300",
 };
-
-const TABS = [
-  { id: "all",       label: "All",       count: PROMOS_DATA.length },
-  { id: "active",    label: "Active",    count: PROMOS_DATA.filter((p) => p.status === "active").length },
-  { id: "scheduled", label: "Scheduled", count: PROMOS_DATA.filter((p) => p.status === "scheduled").length },
-  { id: "ended",     label: "Ended",     count: PROMOS_DATA.filter((p) => p.status === "ended").length },
-];
 
 const CATEGORIES = [
   "All", "Beverages", "Coffee", "Instant Noodles",
   "Snacks & Chips", "Canned Goods", "Condiments", "Personal Care", "Laundry",
 ];
 
-function PromoCard({ promo }: { promo: typeof PROMOS_DATA[number] }) {
-  const status = promo.status as PromoStatus;
+type PromoCardProps = {
+  promo: Promo;
+  onPause: (id: string) => void;
+  onEdit: (promo: Promo) => void;
+  onDuplicate: (id: string) => void;
+  onArchiveOrCancel: (id: string) => void;
+};
+
+function PromoCard({ promo, onPause, onEdit, onDuplicate, onArchiveOrCancel }: PromoCardProps) {
+  const status = promo.status;
   const discountLabel = promo.type === "percentage" ? `${promo.value}% off` : `PHP ${promo.value} off`;
   const usagePct = promo.maxUsage ? Math.round((promo.usageCount / promo.maxUsage) * 100) : null;
 
@@ -105,33 +127,54 @@ function PromoCard({ promo }: { promo: typeof PROMOS_DATA[number] }) {
         <div className="mt-4 flex flex-wrap gap-2 border-t border-border pt-3">
           {status === "active" && (
             <>
-              <button className="flex items-center gap-1.5 rounded-xl border border-border px-3 py-2 text-xs font-medium text-muted-foreground hover:bg-muted/50 transition-colors">
+              <button
+                onClick={() => onPause(promo.id)}
+                className="flex items-center gap-1.5 rounded-xl border border-border px-3 py-2 text-xs font-medium text-muted-foreground hover:bg-muted/50 transition-colors"
+              >
                 <Pause className="h-3.5 w-3.5" /> Pause
               </button>
-              <button className="flex items-center gap-1.5 rounded-xl border border-border px-3 py-2 text-xs font-medium text-muted-foreground hover:bg-muted/50 transition-colors">
+              <button
+                onClick={() => onEdit(promo)}
+                className="flex items-center gap-1.5 rounded-xl border border-border px-3 py-2 text-xs font-medium text-muted-foreground hover:bg-muted/50 transition-colors"
+              >
                 <Pencil className="h-3.5 w-3.5" /> Edit
               </button>
-              <button className="flex items-center gap-1.5 rounded-xl border border-border px-3 py-2 text-xs font-medium text-muted-foreground hover:bg-muted/50 transition-colors">
+              <button
+                onClick={() => onDuplicate(promo.id)}
+                className="flex items-center gap-1.5 rounded-xl border border-border px-3 py-2 text-xs font-medium text-muted-foreground hover:bg-muted/50 transition-colors"
+              >
                 <Copy className="h-3.5 w-3.5" /> Duplicate
               </button>
             </>
           )}
           {status === "scheduled" && (
             <>
-              <button className="flex items-center gap-1.5 rounded-xl border border-border px-3 py-2 text-xs font-medium text-muted-foreground hover:bg-muted/50 transition-colors">
+              <button
+                onClick={() => onEdit(promo)}
+                className="flex items-center gap-1.5 rounded-xl border border-border px-3 py-2 text-xs font-medium text-muted-foreground hover:bg-muted/50 transition-colors"
+              >
                 <Pencil className="h-3.5 w-3.5" /> Edit
               </button>
-              <button className="flex items-center gap-1.5 rounded-xl border border-danger-200 bg-danger-50 px-3 py-2 text-xs font-medium text-danger-600 hover:bg-danger-100 transition-colors">
+              <button
+                onClick={() => onArchiveOrCancel(promo.id)}
+                className="flex items-center gap-1.5 rounded-xl border border-danger-200 bg-danger-50 px-3 py-2 text-xs font-medium text-danger-600 hover:bg-danger-100 transition-colors"
+              >
                 <Ban className="h-3.5 w-3.5" /> Cancel
               </button>
             </>
           )}
-          {status === "ended" && (
+          {(status === "ended" || status === "paused" || status === "expired") && (
             <>
-              <button className="flex items-center gap-1.5 rounded-xl border border-border px-3 py-2 text-xs font-medium text-muted-foreground hover:bg-muted/50 transition-colors">
+              <button
+                onClick={() => onDuplicate(promo.id)}
+                className="flex items-center gap-1.5 rounded-xl border border-border px-3 py-2 text-xs font-medium text-muted-foreground hover:bg-muted/50 transition-colors"
+              >
                 <Copy className="h-3.5 w-3.5" /> Duplicate
               </button>
-              <button className="flex items-center gap-1.5 rounded-xl border border-border px-3 py-2 text-xs font-medium text-muted-foreground hover:bg-muted/50 transition-colors">
+              <button
+                onClick={() => onArchiveOrCancel(promo.id)}
+                className="flex items-center gap-1.5 rounded-xl border border-border px-3 py-2 text-xs font-medium text-muted-foreground hover:bg-muted/50 transition-colors"
+              >
                 <Archive className="h-3.5 w-3.5" /> Archive
               </button>
             </>
@@ -142,7 +185,12 @@ function PromoCard({ promo }: { promo: typeof PROMOS_DATA[number] }) {
   );
 }
 
-function CreatePromoModal({ onClose }: { onClose: () => void }) {
+type CreatePromoModalProps = {
+  onClose: () => void;
+  onSave: (promo: Omit<Promo, "id" | "status" | "usageCount">) => void;
+};
+
+function CreatePromoModal({ onClose, onSave }: CreatePromoModalProps) {
   const [form, setForm] = useState({
     title: "",
     description: "",
@@ -154,11 +202,38 @@ function CreatePromoModal({ onClose }: { onClose: () => void }) {
     endDate: "",
     maxUsage: "",
   });
+  const [error, setError] = useState("");
+  const [saved, setSaved] = useState(false);
 
   const set =
     <K extends keyof typeof form>(k: K) =>
     (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) =>
       setForm((f) => ({ ...f, [k]: e.target.value }));
+
+  function handleSubmit() {
+    if (!form.title.trim()) {
+      setError("Title is required.");
+      return;
+    }
+    if (!form.value.trim() || isNaN(Number(form.value)) || Number(form.value) <= 0) {
+      setError("A valid discount value is required.");
+      return;
+    }
+    setError("");
+    onSave({
+      title: form.title.trim(),
+      description: form.description.trim(),
+      type: form.discountType,
+      value: Number(form.value),
+      minOrder: form.minOrder ? Number(form.minOrder) : 0,
+      category: form.category,
+      startDate: form.startDate || "—",
+      endDate: form.endDate || "—",
+      maxUsage: form.maxUsage ? Number(form.maxUsage) : undefined,
+    });
+    setSaved(true);
+    setTimeout(() => onClose(), 800);
+  }
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/40 backdrop-blur-sm">
@@ -247,6 +322,8 @@ function CreatePromoModal({ onClose }: { onClose: () => void }) {
             value={form.maxUsage}
             onChange={set("maxUsage")}
           />
+          {error && <p className="text-xs text-danger-600">{error}</p>}
+          {saved && <p className="text-xs text-success-600">Promotion created successfully.</p>}
         </div>
         <div className="flex gap-3 p-5 pt-0">
           <button
@@ -256,7 +333,7 @@ function CreatePromoModal({ onClose }: { onClose: () => void }) {
             Cancel
           </button>
           <button
-            onClick={onClose}
+            onClick={handleSubmit}
             className="flex-1 rounded-xl bg-brand-500 py-2.5 text-sm font-medium text-white hover:bg-brand-600 transition-colors"
           >
             Create Promotion
@@ -267,19 +344,270 @@ function CreatePromoModal({ onClose }: { onClose: () => void }) {
   );
 }
 
+type EditPromoModalProps = {
+  promo: Promo;
+  onClose: () => void;
+  onSave: (updated: Promo) => void;
+};
+
+function EditPromoModal({ promo, onClose, onSave }: EditPromoModalProps) {
+  const [form, setForm] = useState({
+    title: promo.title,
+    description: promo.description,
+    discountType: promo.type,
+    value: promo.value.toString(),
+    minOrder: promo.minOrder.toString(),
+    category: promo.category,
+    startDate: promo.startDate,
+    endDate: promo.endDate,
+    maxUsage: promo.maxUsage !== undefined ? promo.maxUsage.toString() : "",
+  });
+  const [error, setError] = useState("");
+  const [saved, setSaved] = useState(false);
+
+  const set =
+    <K extends keyof typeof form>(k: K) =>
+    (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) =>
+      setForm((f) => ({ ...f, [k]: e.target.value }));
+
+  function handleSave() {
+    if (!form.title.trim()) {
+      setError("Title is required.");
+      return;
+    }
+    if (!form.value.trim() || isNaN(Number(form.value)) || Number(form.value) <= 0) {
+      setError("A valid discount value is required.");
+      return;
+    }
+    setError("");
+    onSave({
+      ...promo,
+      title: form.title.trim(),
+      description: form.description.trim(),
+      type: form.discountType,
+      value: Number(form.value),
+      minOrder: form.minOrder ? Number(form.minOrder) : 0,
+      category: form.category,
+      startDate: form.startDate || promo.startDate,
+      endDate: form.endDate || promo.endDate,
+      maxUsage: form.maxUsage ? Number(form.maxUsage) : undefined,
+    });
+    setSaved(true);
+    setTimeout(() => onClose(), 800);
+  }
+
+  return (
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/40 backdrop-blur-sm">
+      <Card className="w-full max-w-lg max-h-[90vh] overflow-y-auto">
+        <div className="flex items-center justify-between p-5 border-b border-border">
+          <h2 className="font-display text-lg font-bold text-foreground">Edit Promotion</h2>
+          <button
+            onClick={onClose}
+            className="rounded-xl p-1.5 text-muted-foreground hover:bg-muted/50 transition-colors"
+            aria-label="Close"
+          >
+            <X className="h-4 w-4" />
+          </button>
+        </div>
+        <div className="p-5 space-y-4">
+          <Input
+            label="Title"
+            placeholder="e.g. Flash Sale: Beverages"
+            value={form.title}
+            onChange={set("title")}
+          />
+          <div className="flex flex-col gap-1.5">
+            <label className="text-sm font-medium text-foreground">Description</label>
+            <textarea
+              rows={2}
+              placeholder="Short description of the promotion"
+              value={form.description}
+              onChange={set("description")}
+              className="w-full rounded-xl border border-input bg-card px-4 py-3 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-brand-500 resize-none"
+            />
+          </div>
+          <div className="flex flex-col gap-1.5">
+            <label className="text-sm font-medium text-foreground">Discount Type</label>
+            <div className="flex rounded-xl border border-border overflow-hidden">
+              {(["percentage", "fixed"] as const).map((t) => (
+                <button
+                  key={t}
+                  type="button"
+                  onClick={() => setForm((f) => ({ ...f, discountType: t }))}
+                  className={cn(
+                    "flex-1 py-2.5 text-sm font-medium transition-colors",
+                    form.discountType === t
+                      ? "bg-brand-500 text-white"
+                      : "text-muted-foreground hover:bg-muted/50"
+                  )}
+                >
+                  {t === "percentage" ? "Percentage (%)" : "Fixed (PHP)"}
+                </button>
+              ))}
+            </div>
+          </div>
+          <div className="grid grid-cols-2 gap-3">
+            <Input
+              label={form.discountType === "percentage" ? "Discount %" : "Discount Amount (PHP)"}
+              type="number"
+              placeholder={form.discountType === "percentage" ? "20" : "80"}
+              value={form.value}
+              onChange={set("value")}
+            />
+            <Input
+              label="Min. Order (PHP)"
+              type="number"
+              placeholder="500"
+              value={form.minOrder}
+              onChange={set("minOrder")}
+            />
+          </div>
+          <div className="flex flex-col gap-1.5">
+            <label className="text-sm font-medium text-foreground">Category</label>
+            <select
+              value={form.category}
+              onChange={set("category")}
+              className="h-11 w-full border border-input rounded-xl px-3 py-2 text-sm bg-card text-foreground focus:outline-none focus:ring-2 focus:ring-brand-500"
+            >
+              {CATEGORIES.map((c) => <option key={c}>{c}</option>)}
+            </select>
+          </div>
+          <div className="grid grid-cols-2 gap-3">
+            <Input label="Start Date" type="date" value={form.startDate} onChange={set("startDate")} />
+            <Input label="End Date" type="date" value={form.endDate} onChange={set("endDate")} />
+          </div>
+          <Input
+            label="Max Usage (optional)"
+            type="number"
+            placeholder="Leave blank for unlimited"
+            value={form.maxUsage}
+            onChange={set("maxUsage")}
+          />
+          {error && <p className="text-xs text-danger-600">{error}</p>}
+          {saved && <p className="text-xs text-success-600">Promotion updated successfully.</p>}
+        </div>
+        <div className="flex gap-3 p-5 pt-0">
+          <button
+            onClick={onClose}
+            className="flex-1 rounded-xl border border-border py-2.5 text-sm font-medium text-muted-foreground hover:bg-muted/50 transition-colors"
+          >
+            Cancel
+          </button>
+          <button
+            onClick={handleSave}
+            className="flex-1 rounded-xl bg-brand-500 py-2.5 text-sm font-medium text-white hover:bg-brand-600 transition-colors"
+          >
+            Save Changes
+          </button>
+        </div>
+      </Card>
+    </div>
+  );
+}
+
+let promoCounter = INITIAL_PROMOS.length + 1;
+
 export default function AdminPromotionsPage() {
+  const [promos, setPromos] = useState<Promo[]>(INITIAL_PROMOS);
   const [activeTab, setActiveTab] = useState("all");
   const [showCreate, setShowCreate] = useState(false);
+  const [editingPromo, setEditingPromo] = useState<Promo | null>(null);
 
-  const filtered = PROMOS_DATA.filter((p) => activeTab === "all" || p.status === activeTab);
-  const activeCount = PROMOS_DATA.filter((p) => p.status === "active").length;
-  const totalUses = PROMOS_DATA.reduce((sum, p) => sum + p.usageCount, 0);
+  const activeCount = promos.filter((p) => p.status === "active").length;
+  const totalUses = promos.reduce((sum, p) => sum + p.usageCount, 0);
+  const revenueImpact = promos
+    .filter((p) => p.status === "active")
+    .reduce((sum, p) => {
+      const discountPerOrder =
+        p.type === "percentage"
+          ? (p.value / 100) * AVG_ORDER_VALUE
+          : p.value;
+      return sum + discountPerOrder * p.usageCount;
+    }, 0);
+  const revenueImpactLabel =
+    revenueImpact >= 1000
+      ? `~PHP ${Math.round(revenueImpact / 1000)}K`
+      : `PHP ${Math.round(revenueImpact)}`;
+
+  const tabDefs = [
+    { id: "all",       label: "All",       count: promos.length },
+    { id: "active",    label: "Active",    count: promos.filter((p) => p.status === "active").length },
+    { id: "scheduled", label: "Scheduled", count: promos.filter((p) => p.status === "scheduled").length },
+    { id: "ended",     label: "Ended",     count: promos.filter((p) => p.status === "ended").length },
+  ];
+
+  const filtered = promos.filter((p) => activeTab === "all" || p.status === activeTab);
+
+  function handleCreate(data: Omit<Promo, "id" | "status" | "usageCount">) {
+    const newPromo: Promo = {
+      ...data,
+      id: `promo-${promoCounter++}`,
+      status: "active",
+      usageCount: 0,
+    };
+    setPromos((prev) => [newPromo, ...prev]);
+  }
+
+  function handlePause(id: string) {
+    setPromos((prev) =>
+      prev.map((p) => (p.id === id ? { ...p, status: "paused" } : p))
+    );
+  }
+
+  function handleEdit(promo: Promo) {
+    setEditingPromo(promo);
+  }
+
+  function handleEditSave(updated: Promo) {
+    setPromos((prev) =>
+      prev.map((p) => (p.id === updated.id ? updated : p))
+    );
+    setEditingPromo(null);
+  }
+
+  function handleDuplicate(id: string) {
+    const original = promos.find((p) => p.id === id);
+    if (!original) return;
+    const copy: Promo = {
+      ...original,
+      id: `promo-${promoCounter++}`,
+      title: `${original.title} (Copy)`,
+      usageCount: 0,
+      status: "scheduled",
+    };
+    setPromos((prev) => {
+      const idx = prev.findIndex((p) => p.id === id);
+      const next = [...prev];
+      next.splice(idx + 1, 0, copy);
+      return next;
+    });
+  }
+
+  function handleArchiveOrCancel(id: string) {
+    setPromos((prev) =>
+      prev.map((p) => (p.id === id ? { ...p, status: "expired" } : p))
+    );
+  }
 
   return (
     <div className="p-6 space-y-5 max-w-7xl mx-auto">
-      {showCreate && <CreatePromoModal onClose={() => setShowCreate(false)} />}
+      {showCreate && (
+        <CreatePromoModal
+          onClose={() => setShowCreate(false)}
+          onSave={(data) => {
+            handleCreate(data);
+            setShowCreate(false);
+          }}
+        />
+      )}
+      {editingPromo && (
+        <EditPromoModal
+          promo={editingPromo}
+          onClose={() => setEditingPromo(null)}
+          onSave={handleEditSave}
+        />
+      )}
 
-      {/* Header */}
       <div className="flex items-center justify-between">
         <h1 className="font-display text-2xl font-bold text-foreground">Promotions &amp; Deals</h1>
         <button
@@ -290,12 +618,11 @@ export default function AdminPromotionsPage() {
         </button>
       </div>
 
-      {/* Stats */}
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
         {[
           { icon: Zap, label: "Active Promos", value: activeCount.toString(), color: "text-brand-500", bg: "bg-brand-50" },
           { icon: BarChart3, label: "Total Uses", value: totalUses.toString(), color: "text-success-600", bg: "bg-success-50" },
-          { icon: TrendingUp, label: "Revenue Impact", value: "~PHP 18K", color: "text-warning-600", bg: "bg-warning-50" },
+          { icon: TrendingUp, label: "Revenue Impact", value: revenueImpactLabel, color: "text-warning-600", bg: "bg-warning-50" },
         ].map((s) => (
           <Card key={s.label} className="p-4 flex items-center gap-4">
             <div className={cn("flex h-10 w-10 shrink-0 items-center justify-center rounded-xl", s.bg, s.color)}>
@@ -309,9 +636,8 @@ export default function AdminPromotionsPage() {
         ))}
       </div>
 
-      {/* Status tabs */}
       <div className="flex gap-1 overflow-x-auto scrollbar-hide border-b border-border">
-        {TABS.map((tab) => (
+        {tabDefs.map((tab) => (
           <button
             key={tab.id}
             onClick={() => setActiveTab(tab.id)}
@@ -333,9 +659,17 @@ export default function AdminPromotionsPage() {
         ))}
       </div>
 
-      {/* Promo list */}
       <div className="space-y-3">
-        {filtered.map((p) => <PromoCard key={p.id} promo={p} />)}
+        {filtered.map((p) => (
+          <PromoCard
+            key={p.id}
+            promo={p}
+            onPause={handlePause}
+            onEdit={handleEdit}
+            onDuplicate={handleDuplicate}
+            onArchiveOrCancel={handleArchiveOrCancel}
+          />
+        ))}
       </div>
 
       {filtered.length === 0 && (

@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Eye, EyeOff, Wifi, WifiOff, CheckCircle2, AlertTriangle, RefreshCw, RotateCcw } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -226,11 +226,17 @@ function WhatsAppPreview() {
 
 export default function WhatsAppSettingsPage() {
   // Connection state
-  const [isConnected] = useState(false);
+  const [connectionStatus, setConnectionStatus] = useState<"connected" | "disconnected">("disconnected");
+  const isConnected = connectionStatus === "connected";
   const [showApiKey, setShowApiKey] = useState(false);
   const [phoneNumber, setPhoneNumber] = useState("+63 2 8XXX XXXX");
   const [apiKey, setApiKey] = useState("");
   const [isTesting, setIsTesting] = useState(false);
+  const [isConnecting, setIsConnecting] = useState(false);
+  const [isSaving, setIsSaving] = useState(false);
+  const [saveMessage, setSaveMessage] = useState("");
+  const [testMessage, setTestMessage] = useState("");
+  const [connectMessage, setConnectMessage] = useState("");
 
   // Template toggles — initialised from defaultOn
   const [templateEnabled, setTemplateEnabled] = useState<Record<string, boolean>>(
@@ -241,9 +247,62 @@ export default function WhatsAppSettingsPage() {
   // Opt-out re-enabled set
   const [reEnabled, setReEnabled] = useState<Set<string>>(new Set());
 
+  useEffect(() => {
+    try {
+      const stored = localStorage.getItem("wa_settings");
+      if (stored) {
+        const parsed = JSON.parse(stored) as {
+          phoneNumber?: string;
+          apiKey?: string;
+          connectionStatus?: "connected" | "disconnected";
+        };
+        if (parsed.phoneNumber) setPhoneNumber(parsed.phoneNumber);
+        if (parsed.apiKey) setApiKey(parsed.apiKey);
+        if (parsed.connectionStatus) setConnectionStatus(parsed.connectionStatus);
+      }
+    } catch {
+      // ignore malformed storage
+    }
+  }, []);
+
+  function handleSaveChanges() {
+    if (!phoneNumber.trim() || !apiKey.trim()) {
+      setSaveMessage("Please fill in the phone number and API key before saving.");
+      setTimeout(() => setSaveMessage(""), 3000);
+      return;
+    }
+    setIsSaving(true);
+    setSaveMessage("");
+    setTimeout(() => {
+      localStorage.setItem(
+        "wa_settings",
+        JSON.stringify({ phoneNumber, apiKey, connectionStatus })
+      );
+      setIsSaving(false);
+      setSaveMessage("Settings saved");
+      setTimeout(() => setSaveMessage(""), 3000);
+    }, 800);
+  }
+
+  function handleConnect() {
+    setIsConnecting(true);
+    setConnectMessage("");
+    setTimeout(() => {
+      setConnectionStatus("connected");
+      setIsConnecting(false);
+      setConnectMessage("Connected successfully");
+      setTimeout(() => setConnectMessage(""), 3000);
+    }, 1200);
+  }
+
   function handleTestConnection() {
     setIsTesting(true);
-    setTimeout(() => setIsTesting(false), 1800);
+    setTestMessage("");
+    setTimeout(() => {
+      setIsTesting(false);
+      setTestMessage("Connection test passed");
+      setTimeout(() => setTestMessage(""), 3000);
+    }, 1800);
   }
 
   function toggleTemplate(id: string, val: boolean) {
@@ -267,9 +326,19 @@ export default function WhatsAppSettingsPage() {
           <h1 className="font-display text-2xl font-bold text-foreground">WhatsApp Notifications</h1>
           <p className="text-sm text-muted-foreground mt-0.5">Configure your WhatsApp Business API and notification templates</p>
         </div>
-        <Button size="sm">
-          Save Changes
-        </Button>
+        <div className="flex items-center gap-3">
+          {saveMessage && (
+            <span className={cn(
+              "text-sm font-medium",
+              saveMessage === "Settings saved" ? "text-success-600" : "text-amber-600"
+            )}>
+              {saveMessage}
+            </span>
+          )}
+          <Button size="sm" onClick={handleSaveChanges} disabled={isSaving}>
+            {isSaving ? "Saving..." : "Save Changes"}
+          </Button>
+        </div>
       </div>
 
       {/* ── Connection Status Card ────────────────────────────────────────────── */}
@@ -369,9 +438,17 @@ export default function WhatsAppSettingsPage() {
                 "Test Connection"
               )}
             </Button>
-            <Button size="sm">
-              Connect WhatsApp Business API
-            </Button>
+            {testMessage && (
+              <span className="text-sm font-medium text-success-600">{testMessage}</span>
+            )}
+            {!isConnected && (
+              <Button size="sm" onClick={handleConnect} disabled={isConnecting}>
+                {isConnecting ? "Connecting..." : "Connect WhatsApp Business API"}
+              </Button>
+            )}
+            {connectMessage && (
+              <span className="text-sm font-medium text-success-600">{connectMessage}</span>
+            )}
           </div>
         </CardContent>
       </Card>

@@ -197,6 +197,103 @@ function AddStaffModal({ onClose, onAdd }: AddStaffModalProps) {
   );
 }
 
+// ─── Edit Staff Modal ─────────────────────────────────────────────────────────
+
+interface EditStaffModalProps {
+  member: StaffMember;
+  onClose: () => void;
+  onSave: (updated: StaffMember) => void;
+}
+
+function EditStaffModal({ member, onClose, onSave }: EditStaffModalProps) {
+  const [name, setName] = useState(member.name);
+  const [role, setRole] = useState<Role>(member.role);
+  const [status, setStatus] = useState<Status>(member.status);
+
+  function handleSubmit(e: React.FormEvent) {
+    e.preventDefault();
+    if (!name.trim()) return;
+    onSave({
+      ...member,
+      name: name.trim(),
+      role,
+      status,
+      initials: getInitials(name.trim()),
+    });
+    onClose();
+  }
+
+  return (
+    <div
+      className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center"
+      onClick={(e) => { if (e.target === e.currentTarget) onClose(); }}
+    >
+      <div className="bg-card rounded-2xl p-6 w-full max-w-md mx-4 shadow-xl">
+        <div className="flex items-center justify-between mb-5">
+          <h2 className="font-display text-lg font-bold text-foreground">Edit Staff Member</h2>
+          <button
+            onClick={onClose}
+            className="rounded-lg p-1 text-muted-foreground hover:text-foreground hover:bg-muted transition-colors"
+          >
+            <X className="h-4 w-4" />
+          </button>
+        </div>
+
+        <form onSubmit={handleSubmit} className="space-y-4">
+          <Input
+            label="Full Name"
+            placeholder="e.g. Juan dela Cruz"
+            value={name}
+            onChange={(e) => setName(e.target.value)}
+            leftIcon={<User className="h-4 w-4" />}
+            required
+          />
+
+          <div className="flex flex-col gap-1.5">
+            <label className="text-sm font-medium text-foreground">Role</label>
+            <select
+              value={role}
+              onChange={(e) => setRole(e.target.value as Role)}
+              className="h-11 w-full rounded-xl border border-input bg-card px-4 text-sm text-foreground transition-colors focus:outline-none focus:ring-2 focus:ring-brand-500 focus:border-brand-500"
+            >
+              <option value="admin">Admin</option>
+              <option value="warehouse">Warehouse</option>
+              <option value="driver">Driver</option>
+            </select>
+          </div>
+
+          <div className="flex flex-col gap-1.5">
+            <label className="text-sm font-medium text-foreground">Status</label>
+            <select
+              value={status}
+              onChange={(e) => setStatus(e.target.value as Status)}
+              className="h-11 w-full rounded-xl border border-input bg-card px-4 text-sm text-foreground transition-colors focus:outline-none focus:ring-2 focus:ring-brand-500 focus:border-brand-500"
+            >
+              <option value="active">Active</option>
+              <option value="inactive">Inactive</option>
+            </select>
+          </div>
+
+          <div className="flex gap-3 pt-1">
+            <Button
+              type="button"
+              variant="outline"
+              size="md"
+              className="flex-1"
+              onClick={onClose}
+            >
+              Cancel
+            </Button>
+            <Button type="submit" variant="default" size="md" className="flex-1">
+              Save Changes
+            </Button>
+          </div>
+        </form>
+      </div>
+    </div>
+  );
+}
+
 // ─── Staff Card ───────────────────────────────────────────────────────────────
 
 interface StaffCardProps {
@@ -278,9 +375,11 @@ export default function AdminStaffPage() {
   const [staff, setStaff] = useState<StaffMember[]>(INITIAL_STAFF);
   const [activeTab, setActiveTab] = useState<FilterTab>("all");
   const [showModal, setShowModal] = useState(false);
+  const [editStaff, setEditStaff] = useState<StaffMember | null>(null);
 
   const filtered = activeTab === "all" ? staff : staff.filter((s) => s.role === activeTab);
   const activeCount = staff.filter((s) => s.status === "active").length;
+  const uniqueRoleCount = new Set(staff.map((s) => s.role)).size;
 
   const tabCount = (key: FilterTab) =>
     key === "all" ? staff.length : staff.filter((s) => s.role === key).length;
@@ -296,8 +395,13 @@ export default function AdminStaffPage() {
   }
 
   function handleEdit(id: string) {
-    // Placeholder — expand into an edit modal as needed
-    console.log("Edit staff:", id);
+    const member = staff.find((m) => m.id === id);
+    if (member) setEditStaff(member);
+  }
+
+  function handleSaveEdit(updated: StaffMember) {
+    setStaff((prev) => prev.map((m) => (m.id === updated.id ? updated : m)));
+    setEditStaff(null);
   }
 
   function handleAdd(member: StaffMember) {
@@ -351,7 +455,7 @@ export default function AdminStaffPage() {
               <Users className="h-5 w-5 text-purple-500" />
             </div>
             <div>
-              <p className="font-display text-2xl font-bold text-foreground leading-none">3</p>
+              <p className="font-display text-2xl font-bold text-foreground leading-none">{uniqueRoleCount}</p>
               <p className="text-xs text-muted-foreground mt-0.5">Roles · Admin, Warehouse, Driver</p>
             </div>
           </div>
@@ -398,6 +502,15 @@ export default function AdminStaffPage() {
       {/* Add Staff Modal */}
       {showModal && (
         <AddStaffModal onClose={() => setShowModal(false)} onAdd={handleAdd} />
+      )}
+
+      {/* Edit Staff Modal */}
+      {editStaff && (
+        <EditStaffModal
+          member={editStaff}
+          onClose={() => setEditStaff(null)}
+          onSave={handleSaveEdit}
+        />
       )}
     </>
   );

@@ -53,6 +53,10 @@ const maxEarned = Math.max(...WEEKLY.map((d) => d.earned));
 const MAX_BAR_HEIGHT = 80;
 const TODAY_INDEX = (() => { const d = new Date().getDay(); return d === 0 ? 6 : d - 1; })();
 
+const weeklyTotal = WEEKLY.reduce((sum, w) => sum + w.earned, 0);
+const monthlyTotal = weeklyTotal * 4;
+const yearToDateTotal = monthlyTotal * 8;
+
 type Tab = "overview" | "history" | "areas";
 
 export default function EarningsPage() {
@@ -68,7 +72,7 @@ export default function EarningsPage() {
       {/* Hero card */}
       <div className="mx-4 rounded-2xl bg-brand-500 text-white p-5">
         <p className="text-xs opacity-80 uppercase tracking-wider font-medium mb-1">This Week</p>
-        <p className="font-display text-4xl font-black leading-none mb-1">₱3,680</p>
+        <p className="font-display text-4xl font-black leading-none mb-1">{formatPHP(weeklyTotal)}</p>
         <p className="text-sm opacity-90 mb-3">23 deliveries</p>
         <div className="flex items-center gap-1.5 opacity-80">
           <TrendingUp className="w-3.5 h-3.5" />
@@ -83,7 +87,7 @@ export default function EarningsPage() {
             <Wallet className="w-4 h-4 text-brand-500 flex-shrink-0" />
             <p className="text-xs text-muted-foreground font-medium uppercase tracking-wider">This Month</p>
           </div>
-          <p className="font-display text-xl font-black text-foreground">₱15,200</p>
+          <p className="font-display text-xl font-black text-foreground">{formatPHP(monthlyTotal)}</p>
           <p className="text-xs text-muted-foreground mt-0.5">95 deliveries</p>
         </Card>
         <Card className="p-4">
@@ -91,7 +95,7 @@ export default function EarningsPage() {
             <TrendingUp className="w-4 h-4 text-brand-500 flex-shrink-0" />
             <p className="text-xs text-muted-foreground font-medium uppercase tracking-wider">Year to Date</p>
           </div>
-          <p className="font-display text-xl font-black text-foreground">₱89,400</p>
+          <p className="font-display text-xl font-black text-foreground">{formatPHP(yearToDateTotal)}</p>
           <p className="text-xs text-muted-foreground mt-0.5">559 deliveries</p>
         </Card>
       </div>

@@ -9,7 +9,7 @@ import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import { cn } from "@/lib/utils";
 
-const SUPPLIERS_DATA = [
+const INITIAL_SUPPLIERS = [
   { id: "sup-1", name: "PhilBev Distribution Inc.", contact: "Roberto Aquino", phone: "+63 2 8888 1234", email: "roberto@philbev.com", city: "Valenzuela City", status: "active", terms: "30 days NET", leadTime: 3, totalPurchases: 2450000, lastOrder: "Jan 15, 2025", categories: ["Beverages", "Coffee"] },
   { id: "sup-2", name: "Lucky Me Foods Corp", contact: "Sandra Villanueva", phone: "+63 2 8777 9900", email: "orders@luckyme.com", city: "Taguig City", status: "active", terms: "COD", leadTime: 2, totalPurchases: 1820000, lastOrder: "Jan 18, 2025", categories: ["Instant Noodles", "Snacks"] },
   { id: "sup-3", name: "Del Monte Philippines", contact: "Carlos Mendoza", phone: "+63 2 8999 5678", email: "c.mendoza@delmonte.ph", city: "Malolos City", status: "active", terms: "15 days NET", leadTime: 4, totalPurchases: 980000, lastOrder: "Jan 10, 2025", categories: ["Canned Goods", "Condiments"] },
@@ -30,9 +30,15 @@ function formatM(n: number) {
   return `PHP ${n}`;
 }
 
-type Supplier = (typeof SUPPLIERS_DATA)[number];
+type Supplier = (typeof INITIAL_SUPPLIERS)[number];
 
-function SupplierCard({ s }: { s: Supplier }) {
+type CardHandlers = {
+  onView: (s: Supplier) => void;
+  onNewPO: (s: Supplier) => void;
+  onEdit: (s: Supplier) => void;
+};
+
+function SupplierCard({ s, onView, onNewPO, onEdit }: { s: Supplier } & CardHandlers) {
   const initials = s.name.split(" ").slice(0, 2).map((w) => w[0]).join("").toUpperCase();
   return (
     <Card className="p-5 flex flex-col gap-4 hover:shadow-card-md transition-shadow">
@@ -101,13 +107,22 @@ function SupplierCard({ s }: { s: Supplier }) {
       </div>
 
       <div className="flex gap-2 border-t border-border pt-3">
-        <button className="flex-1 flex items-center justify-center gap-1.5 rounded-xl border border-border py-2 text-xs font-medium text-muted-foreground hover:bg-muted/50 transition-colors">
+        <button
+          onClick={() => onView(s)}
+          className="flex-1 flex items-center justify-center gap-1.5 rounded-xl border border-border py-2 text-xs font-medium text-muted-foreground hover:bg-muted/50 transition-colors"
+        >
           <Eye className="h-3.5 w-3.5" /> View
         </button>
-        <button className="flex-1 flex items-center justify-center gap-1.5 rounded-xl bg-brand-500 py-2 text-xs font-medium text-white hover:bg-brand-600 transition-colors">
+        <button
+          onClick={() => onNewPO(s)}
+          className="flex-1 flex items-center justify-center gap-1.5 rounded-xl bg-brand-500 py-2 text-xs font-medium text-white hover:bg-brand-600 transition-colors"
+        >
           <ShoppingCart className="h-3.5 w-3.5" /> New PO
         </button>
-        <button className="flex items-center justify-center gap-1.5 rounded-xl border border-border px-3 py-2 text-xs font-medium text-muted-foreground hover:bg-muted/50 transition-colors">
+        <button
+          onClick={() => onEdit(s)}
+          className="flex items-center justify-center gap-1.5 rounded-xl border border-border px-3 py-2 text-xs font-medium text-muted-foreground hover:bg-muted/50 transition-colors"
+        >
           <Pencil className="h-3.5 w-3.5" />
         </button>
       </div>
@@ -115,14 +130,246 @@ function SupplierCard({ s }: { s: Supplier }) {
   );
 }
 
-function AddSupplierModal({ onClose }: { onClose: () => void }) {
+function ViewSupplierModal({ s, onClose }: { s: Supplier; onClose: () => void }) {
+  return (
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/40 backdrop-blur-sm">
+      <Card className="w-full max-w-lg max-h-[90vh] overflow-y-auto">
+        <div className="flex items-center justify-between p-5 border-b border-border">
+          <h2 className="font-display text-lg font-bold text-foreground">Supplier Details</h2>
+          <button
+            onClick={onClose}
+            className="rounded-xl p-1.5 text-muted-foreground hover:bg-muted/50 transition-colors"
+            aria-label="Close"
+          >
+            <X className="h-4 w-4" />
+          </button>
+        </div>
+        <div className="p-5 space-y-4">
+          <div className="flex items-center gap-3">
+            <div className="h-12 w-12 shrink-0 rounded-xl bg-brand-100 text-brand-600 flex items-center justify-center text-sm font-bold">
+              {s.name.split(" ").slice(0, 2).map((w) => w[0]).join("").toUpperCase()}
+            </div>
+            <div>
+              <p className="font-semibold text-foreground">{s.name}</p>
+              <Badge variant={s.status === "active" ? "success" : "neutral"} className="mt-1">
+                {s.status === "active" ? "Active" : "Inactive"}
+              </Badge>
+            </div>
+          </div>
+          <div className="grid grid-cols-1 gap-3 text-sm">
+            <div className="flex items-center gap-2 text-muted-foreground">
+              <User className="h-4 w-4 shrink-0" />
+              <span className="font-medium text-foreground">{s.contact}</span>
+            </div>
+            <div className="flex items-center gap-2 text-muted-foreground">
+              <Phone className="h-4 w-4 shrink-0" />
+              <span>{s.phone}</span>
+            </div>
+            <div className="flex items-center gap-2 text-muted-foreground">
+              <Mail className="h-4 w-4 shrink-0" />
+              <span>{s.email}</span>
+            </div>
+            <div className="flex items-center gap-2 text-muted-foreground">
+              <MapPin className="h-4 w-4 shrink-0" />
+              <span>{s.city}</span>
+            </div>
+            <div className="flex items-center gap-2 text-muted-foreground">
+              <Truck className="h-4 w-4 shrink-0" />
+              <span>Lead Time: {s.leadTime} days</span>
+            </div>
+          </div>
+          <div className="border-t border-border pt-4 grid grid-cols-2 gap-4 text-sm">
+            <div>
+              <p className="text-xs text-muted-foreground">Payment Terms</p>
+              <span className={cn(
+                "inline-flex items-center rounded-full border px-2.5 py-0.5 text-xs font-medium mt-1",
+                TERMS_COLORS[s.terms] ?? "bg-surface-100 text-surface-600 border-surface-200"
+              )}>
+                {s.terms}
+              </span>
+            </div>
+            <div>
+              <p className="text-xs text-muted-foreground">Total Purchases</p>
+              <p className="font-semibold text-foreground tabular-nums mt-1">{formatM(s.totalPurchases)}</p>
+            </div>
+            <div>
+              <p className="text-xs text-muted-foreground">Last Order</p>
+              <p className="font-semibold text-foreground mt-1">{s.lastOrder}</p>
+            </div>
+          </div>
+          <div className="border-t border-border pt-4">
+            <p className="text-xs text-muted-foreground mb-2">Categories</p>
+            <div className="flex flex-wrap gap-1.5">
+              {s.categories.map((c) => (
+                <span key={c} className="rounded-full bg-surface-100 px-2 py-0.5 text-xs text-surface-600">
+                  {c}
+                </span>
+              ))}
+            </div>
+          </div>
+        </div>
+        <div className="p-5 pt-0">
+          <button
+            onClick={onClose}
+            className="w-full rounded-xl border border-border py-2.5 text-sm font-medium text-muted-foreground hover:bg-muted/50 transition-colors"
+          >
+            Close
+          </button>
+        </div>
+      </Card>
+    </div>
+  );
+}
+
+function EditSupplierModal({
+  s,
+  onClose,
+  onSave,
+}: {
+  s: Supplier;
+  onClose: () => void;
+  onSave: (updated: Supplier) => void;
+}) {
+  const [form, setForm] = useState({
+    company: s.name,
+    contact: s.contact,
+    phone: s.phone,
+    email: s.email,
+    city: s.city,
+    terms: s.terms,
+    leadTime: String(s.leadTime),
+  });
+  const [error, setError] = useState("");
+
+  const set = (k: keyof typeof form) =>
+    (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) =>
+      setForm((f) => ({ ...f, [k]: e.target.value }));
+
+  function handleSave() {
+    if (!form.company.trim()) {
+      setError("Company name is required.");
+      return;
+    }
+    setError("");
+    onSave({
+      ...s,
+      name: form.company.trim(),
+      contact: form.contact,
+      phone: form.phone,
+      email: form.email,
+      city: form.city,
+      terms: form.terms,
+      leadTime: parseInt(form.leadTime, 10) || s.leadTime,
+    });
+  }
+
+  return (
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/40 backdrop-blur-sm">
+      <Card className="w-full max-w-lg max-h-[90vh] overflow-y-auto">
+        <div className="flex items-center justify-between p-5 border-b border-border">
+          <h2 className="font-display text-lg font-bold text-foreground">Edit Supplier</h2>
+          <button
+            onClick={onClose}
+            className="rounded-xl p-1.5 text-muted-foreground hover:bg-muted/50 transition-colors"
+            aria-label="Close"
+          >
+            <X className="h-4 w-4" />
+          </button>
+        </div>
+        <div className="p-5 space-y-4">
+          {error && (
+            <p className="text-sm text-red-600 bg-red-50 border border-red-200 rounded-xl px-3 py-2">{error}</p>
+          )}
+          <Input label="Company Name" placeholder="e.g. PhilBev Distribution Inc." value={form.company} onChange={set("company")} />
+          <Input label="Contact Name" placeholder="Primary contact person" value={form.contact} onChange={set("contact")} />
+          <div className="grid grid-cols-2 gap-3">
+            <Input label="Phone" placeholder="+63 2 8888 1234" value={form.phone} onChange={set("phone")} />
+            <Input label="Email" type="email" placeholder="orders@supplier.com" value={form.email} onChange={set("email")} />
+          </div>
+          <Input label="City" placeholder="e.g. Valenzuela City" value={form.city} onChange={set("city")} />
+          <div className="grid grid-cols-2 gap-3">
+            <div className="flex flex-col gap-1.5">
+              <label className="text-sm font-medium text-foreground">Payment Terms</label>
+              <select
+                value={form.terms}
+                onChange={set("terms")}
+                className="h-11 w-full rounded-xl border border-input bg-card px-3 text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-brand-500"
+              >
+                <option>COD</option>
+                <option>15 days NET</option>
+                <option>30 days NET</option>
+                <option>45 days NET</option>
+                <option>60 days NET</option>
+              </select>
+            </div>
+            <Input
+              label="Lead Time (days)"
+              type="number"
+              min="1"
+              placeholder="3"
+              value={form.leadTime}
+              onChange={set("leadTime")}
+            />
+          </div>
+        </div>
+        <div className="flex gap-3 p-5 pt-0">
+          <button
+            onClick={onClose}
+            className="flex-1 rounded-xl border border-border py-2.5 text-sm font-medium text-muted-foreground hover:bg-muted/50 transition-colors"
+          >
+            Cancel
+          </button>
+          <button
+            onClick={handleSave}
+            className="flex-1 rounded-xl bg-brand-500 py-2.5 text-sm font-medium text-white hover:bg-brand-600 transition-colors"
+          >
+            Save Changes
+          </button>
+        </div>
+      </Card>
+    </div>
+  );
+}
+
+function AddSupplierModal({
+  onClose,
+  onAdd,
+}: {
+  onClose: () => void;
+  onAdd: (s: Supplier) => void;
+}) {
   const [form, setForm] = useState({
     company: "", contact: "", phone: "", email: "",
     address: "", city: "", terms: "30 days NET", leadTime: "3",
   });
+  const [error, setError] = useState("");
+
   const set = (k: keyof typeof form) =>
     (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) =>
       setForm((f) => ({ ...f, [k]: e.target.value }));
+
+  function handleAdd() {
+    if (!form.company.trim()) {
+      setError("Company name is required.");
+      return;
+    }
+    setError("");
+    const newSupplier: Supplier = {
+      id: `sup-new-${form.company.trim().replace(/\s+/g, "-").toLowerCase().slice(0, 20)}`,
+      name: form.company.trim(),
+      contact: form.contact,
+      phone: form.phone,
+      email: form.email,
+      city: form.city,
+      status: "active",
+      terms: form.terms,
+      leadTime: parseInt(form.leadTime, 10) || 3,
+      totalPurchases: 0,
+      lastOrder: "—",
+      categories: [],
+    };
+    onAdd(newSupplier);
+  }
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/40 backdrop-blur-sm">
@@ -138,6 +385,9 @@ function AddSupplierModal({ onClose }: { onClose: () => void }) {
           </button>
         </div>
         <div className="p-5 space-y-4">
+          {error && (
+            <p className="text-sm text-red-600 bg-red-50 border border-red-200 rounded-xl px-3 py-2">{error}</p>
+          )}
           <Input label="Company Name" placeholder="e.g. PhilBev Distribution Inc." value={form.company} onChange={set("company")} />
           <Input label="Contact Name" placeholder="Primary contact person" value={form.contact} onChange={set("contact")} />
           <div className="grid grid-cols-2 gap-3">
@@ -179,7 +429,7 @@ function AddSupplierModal({ onClose }: { onClose: () => void }) {
             Cancel
           </button>
           <button
-            onClick={onClose}
+            onClick={handleAdd}
             className="flex-1 rounded-xl bg-brand-500 py-2.5 text-sm font-medium text-white hover:bg-brand-600 transition-colors"
           >
             Add Supplier
@@ -191,29 +441,70 @@ function AddSupplierModal({ onClose }: { onClose: () => void }) {
 }
 
 export default function AdminSuppliersPage() {
+  const [suppliers, setSuppliers] = useState<Supplier[]>(INITIAL_SUPPLIERS);
   const [search, setSearch] = useState("");
   const [viewMode, setViewMode] = useState<"card" | "table">("card");
   const [showAdd, setShowAdd] = useState(false);
+  const [viewSupplier, setViewSupplier] = useState<Supplier | null>(null);
+  const [editSupplier, setEditSupplier] = useState<Supplier | null>(null);
+  const [toast, setToast] = useState<string | null>(null);
 
-  const filtered = SUPPLIERS_DATA.filter((s) =>
+  function showToast(msg: string) {
+    setToast(msg);
+    setTimeout(() => setToast(null), 3000);
+  }
+
+  function handleAdd(s: Supplier) {
+    setSuppliers((prev) => [...prev, s]);
+    showToast(`Supplier "${s.name}" added successfully.`);
+    setShowAdd(false);
+  }
+
+  function handleEdit(updated: Supplier) {
+    setSuppliers((prev) => prev.map((s) => (s.id === updated.id ? updated : s)));
+    showToast(`Supplier "${updated.name}" updated successfully.`);
+    setEditSupplier(null);
+  }
+
+  function handleNewPO(s: Supplier) {
+    showToast(`Creating PO for ${s.name}`);
+  }
+
+  const filtered = suppliers.filter((s) =>
     s.name.toLowerCase().includes(search.toLowerCase()) ||
     s.contact.toLowerCase().includes(search.toLowerCase()) ||
     s.city.toLowerCase().includes(search.toLowerCase())
   );
 
-  const totalPurchases = SUPPLIERS_DATA.reduce((sum, s) => sum + s.totalPurchases, 0);
-  const avgLeadTime = (SUPPLIERS_DATA.reduce((sum, s) => sum + s.leadTime, 0) / SUPPLIERS_DATA.length).toFixed(1);
+  const totalPurchases = suppliers.reduce((sum, s) => sum + s.totalPurchases, 0);
+  const avgLeadTime = suppliers.length
+    ? (suppliers.reduce((sum, s) => sum + s.leadTime, 0) / suppliers.length).toFixed(1)
+    : "0.0";
 
   return (
     <div className="p-6 space-y-5 max-w-7xl mx-auto">
-      {showAdd && <AddSupplierModal onClose={() => setShowAdd(false)} />}
+      {showAdd && <AddSupplierModal onClose={() => setShowAdd(false)} onAdd={handleAdd} />}
+      {viewSupplier && <ViewSupplierModal s={viewSupplier} onClose={() => setViewSupplier(null)} />}
+      {editSupplier && (
+        <EditSupplierModal
+          s={editSupplier}
+          onClose={() => setEditSupplier(null)}
+          onSave={handleEdit}
+        />
+      )}
+
+      {toast && (
+        <div className="fixed bottom-6 right-6 z-50 rounded-xl bg-foreground text-background text-sm font-medium px-4 py-3 shadow-lg">
+          {toast}
+        </div>
+      )}
 
       {/* Header */}
       <div className="flex items-center justify-between gap-4">
         <div className="flex items-center gap-3">
           <h1 className="font-display text-2xl font-bold text-foreground">Suppliers</h1>
           <span className="rounded-full bg-brand-50 border border-brand-200 px-2.5 py-0.5 text-xs font-semibold text-brand-600">
-            {SUPPLIERS_DATA.length}
+            {suppliers.length}
           </span>
         </div>
         <div className="flex items-center gap-3">
@@ -239,8 +530,8 @@ export default function AdminSuppliersPage() {
       {/* Stats */}
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
         {[
-          { label: "Total Suppliers", value: SUPPLIERS_DATA.length.toString() },
-          { label: "Active", value: SUPPLIERS_DATA.filter((s) => s.status === "active").length.toString() },
+          { label: "Total Suppliers", value: suppliers.length.toString() },
+          { label: "Active", value: suppliers.filter((s) => s.status === "active").length.toString() },
           { label: "Total Purchases YTD", value: formatM(totalPurchases) },
           { label: "Average Lead Time", value: `${avgLeadTime} days` },
         ].map((s) => (
@@ -281,7 +572,15 @@ export default function AdminSuppliersPage() {
       {viewMode === "card" && (
         <>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            {filtered.map((s) => <SupplierCard key={s.id} s={s} />)}
+            {filtered.map((s) => (
+              <SupplierCard
+                key={s.id}
+                s={s}
+                onView={setViewSupplier}
+                onNewPO={handleNewPO}
+                onEdit={setEditSupplier}
+              />
+            ))}
           </div>
           {filtered.length === 0 && (
             <div className="py-16 text-center text-muted-foreground text-sm">No suppliers found.</div>
@@ -343,13 +642,25 @@ export default function AdminSuppliersPage() {
                     </td>
                     <td className="px-5 py-3.5">
                       <div className="flex gap-2 justify-end">
-                        <button className="rounded-lg border border-border p-1.5 text-muted-foreground hover:bg-muted/50 transition-colors" title="View">
+                        <button
+                          onClick={() => setViewSupplier(s)}
+                          className="rounded-lg border border-border p-1.5 text-muted-foreground hover:bg-muted/50 transition-colors"
+                          title="View"
+                        >
                           <Eye className="h-3.5 w-3.5" />
                         </button>
-                        <button className="rounded-lg border border-border p-1.5 text-muted-foreground hover:bg-muted/50 transition-colors" title="New PO">
+                        <button
+                          onClick={() => handleNewPO(s)}
+                          className="rounded-lg border border-border p-1.5 text-muted-foreground hover:bg-muted/50 transition-colors"
+                          title="New PO"
+                        >
                           <ShoppingCart className="h-3.5 w-3.5" />
                         </button>
-                        <button className="rounded-lg border border-border p-1.5 text-muted-foreground hover:bg-muted/50 transition-colors" title="Edit">
+                        <button
+                          onClick={() => setEditSupplier(s)}
+                          className="rounded-lg border border-border p-1.5 text-muted-foreground hover:bg-muted/50 transition-colors"
+                          title="Edit"
+                        >
                           <Pencil className="h-3.5 w-3.5" />
                         </button>
                       </div>

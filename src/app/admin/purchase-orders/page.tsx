@@ -7,12 +7,12 @@ import {
 import { Card } from "@/components/ui/card";
 import { cn, formatPHP } from "@/lib/utils";
 
-const PO_DATA = [
-  { id: "po-001", poNumber: "PO-2025-0089", supplier: "PhilBev Distribution Inc.", status: "confirmed", items: 2, total: 25440, expectedDate: "Tomorrow, Jan 22", createdAt: "Jan 21, 2025", receivedAt: undefined },
-  { id: "po-002", poNumber: "PO-2025-0088", supplier: "Lucky Me Foods Corp", status: "received", items: 1, total: 4800, expectedDate: "Jan 19, 2025", createdAt: "Jan 18, 2025", receivedAt: "Jan 19, 2025" },
-  { id: "po-003", poNumber: "PO-2025-0087", supplier: "P&G Philippines", status: "sent", items: 2, total: 17280, expectedDate: "Jan 24, 2025", createdAt: "Jan 20, 2025", receivedAt: undefined },
-  { id: "po-004", poNumber: "PO-2025-0086", supplier: "Del Monte Philippines", status: "draft", items: 3, total: 12600, expectedDate: null, createdAt: "Jan 21, 2025", receivedAt: undefined },
-] as const;
+const PO_DATA_INITIAL = [
+  { id: "po-001", poNumber: "PO-2025-0089", supplier: "PhilBev Distribution Inc.", status: "confirmed", items: 2, total: 25440, expectedDate: "Tomorrow, Jan 22", createdAt: "Jan 21, 2025", receivedAt: undefined as string | undefined },
+  { id: "po-002", poNumber: "PO-2025-0088", supplier: "Lucky Me Foods Corp", status: "received", items: 1, total: 4800, expectedDate: "Jan 19, 2025", createdAt: "Jan 18, 2025", receivedAt: "Jan 19, 2025" as string | undefined },
+  { id: "po-003", poNumber: "PO-2025-0087", supplier: "P&G Philippines", status: "sent", items: 2, total: 17280, expectedDate: "Jan 24, 2025", createdAt: "Jan 20, 2025", receivedAt: undefined as string | undefined },
+  { id: "po-004", poNumber: "PO-2025-0086", supplier: "Del Monte Philippines", status: "draft", items: 3, total: 12600, expectedDate: null as string | null, createdAt: "Jan 21, 2025", receivedAt: undefined as string | undefined },
+];
 
 const SUPPLIER_OPTIONS = [
   "PhilBev Distribution Inc.",
@@ -23,6 +23,18 @@ const SUPPLIER_OPTIONS = [
 ];
 
 type POStatus = "draft" | "sent" | "confirmed" | "received" | "partial";
+
+type PORecord = {
+  id: string;
+  poNumber: string;
+  supplier: string;
+  status: string;
+  items: number;
+  total: number;
+  expectedDate: string | null;
+  createdAt: string;
+  receivedAt: string | undefined;
+};
 
 const STATUS_STYLE: Record<POStatus, string> = {
   draft:     "bg-surface-100 text-muted-foreground border-surface-200",
@@ -47,14 +59,6 @@ const STATUS_LABEL: Record<POStatus, string> = {
   received:  "Received",
   partial:   "Partial",
 };
-
-const TABS = [
-  { id: "all",       label: "All",       count: PO_DATA.length },
-  { id: "draft",     label: "Draft",     count: PO_DATA.filter((p) => p.status === "draft").length },
-  { id: "sent",      label: "Sent",      count: PO_DATA.filter((p) => p.status === "sent").length },
-  { id: "confirmed", label: "Confirmed", count: PO_DATA.filter((p) => p.status === "confirmed").length },
-  { id: "received",  label: "Received",  count: PO_DATA.filter((p) => p.status === "received").length },
-];
 
 type POItem = { name: string; sku: string; qty: string; unitCost: string };
 
@@ -123,7 +127,6 @@ function AutoPOModal({ onClose, onViewDrafts }: AutoPOModalProps) {
   );
   const [isCreating, setIsCreating] = useState(false);
 
-  // Auto-advance from step 1 → step 2 after 1500ms
   useEffect(() => {
     if (step !== 1) return;
     const timer = setTimeout(() => setStep(2), 1500);
@@ -164,7 +167,6 @@ function AutoPOModal({ onClose, onViewDrafts }: AutoPOModalProps) {
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50">
       <div className="max-w-lg w-full rounded-2xl bg-card shadow-xl p-6 relative">
-        {/* Close button */}
         <button
           onClick={onClose}
           className="absolute top-4 right-4 rounded-xl p-1.5 text-muted-foreground hover:bg-muted/50 transition-colors"
@@ -173,7 +175,6 @@ function AutoPOModal({ onClose, onViewDrafts }: AutoPOModalProps) {
           <X className="h-4 w-4" />
         </button>
 
-        {/* ── Step 1: Analyzing ─────────────────────────────────────── */}
         {step === 1 && (
           <div className="flex flex-col items-center py-8 gap-5 text-center">
             <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-brand-50 text-brand-500">
@@ -192,7 +193,6 @@ function AutoPOModal({ onClose, onViewDrafts }: AutoPOModalProps) {
           </div>
         )}
 
-        {/* ── Step 2: Recommendations ───────────────────────────────── */}
         {step === 2 && (
           <div className="space-y-4">
             <div>
@@ -249,7 +249,6 @@ function AutoPOModal({ onClose, onViewDrafts }: AutoPOModalProps) {
               ))}
             </div>
 
-            {/* Summary row */}
             <div className="flex items-center justify-between rounded-xl bg-surface-50 border border-border px-4 py-3 text-sm">
               <span className="text-muted-foreground">
                 <span className="font-semibold text-foreground">{selectedCount} PO{selectedCount !== 1 ? "s" : ""}</span> selected
@@ -282,7 +281,6 @@ function AutoPOModal({ onClose, onViewDrafts }: AutoPOModalProps) {
           </div>
         )}
 
-        {/* ── Step 3: Success ────────────────────────────────────────── */}
         {step === 3 && (
           <div className="flex flex-col items-center py-8 gap-5 text-center">
             <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-success-50 text-success-500">
@@ -319,9 +317,21 @@ function AutoPOModal({ onClose, onViewDrafts }: AutoPOModalProps) {
 
 // ─── Create PO Modal ──────────────────────────────────────────────────────────
 
-function CreatePOModal({ onClose }: { onClose: () => void }) {
-  const [supplier, setSupplier] = useState("");
-  const [items, setItems] = useState<POItem[]>([{ name: "", sku: "", qty: "", unitCost: "" }]);
+interface CreatePOModalProps {
+  onClose: () => void;
+  onSubmit: (supplier: string, items: POItem[], total: number) => void;
+  initialSupplier?: string;
+  initialItems?: POItem[];
+  title?: string;
+  submitLabel?: string;
+}
+
+function CreatePOModal({ onClose, onSubmit, initialSupplier = "", initialItems, title = "Create Purchase Order", submitLabel = "Create PO" }: CreatePOModalProps) {
+  const [supplier, setSupplier] = useState(initialSupplier);
+  const [items, setItems] = useState<POItem[]>(
+    initialItems ?? [{ name: "", sku: "", qty: "", unitCost: "" }]
+  );
+  const [validationError, setValidationError] = useState("");
 
   const addItem = () => setItems((prev) => [...prev, { name: "", sku: "", qty: "", unitCost: "" }]);
   const removeItem = (i: number) => setItems((prev) => prev.filter((_, idx) => idx !== i));
@@ -334,13 +344,27 @@ function CreatePOModal({ onClose }: { onClose: () => void }) {
     return sum + qty * cost;
   }, 0);
 
+  const handleSubmit = () => {
+    if (!supplier) {
+      setValidationError("Please select a supplier.");
+      return;
+    }
+    const filledItems = items.filter((item) => item.name.trim() !== "");
+    if (filledItems.length === 0) {
+      setValidationError("Please add at least one item with a product name.");
+      return;
+    }
+    setValidationError("");
+    onSubmit(supplier, items, total);
+  };
+
   const inputCls = "h-10 rounded-xl border border-input bg-card px-3 text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-brand-500 w-full";
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/40 backdrop-blur-sm">
       <Card className="w-full max-w-2xl max-h-[90vh] overflow-y-auto">
         <div className="flex items-center justify-between p-5 border-b border-border">
-          <h2 className="font-display text-lg font-bold text-foreground">Create Purchase Order</h2>
+          <h2 className="font-display text-lg font-bold text-foreground">{title}</h2>
           <button
             onClick={onClose}
             className="rounded-xl p-1.5 text-muted-foreground hover:bg-muted/50 transition-colors"
@@ -435,6 +459,10 @@ function CreatePOModal({ onClose }: { onClose: () => void }) {
             </div>
           </div>
 
+          {validationError && (
+            <p className="text-xs text-danger-600">{validationError}</p>
+          )}
+
           <div className="flex justify-end items-center gap-2 pt-2 border-t border-border">
             <span className="text-sm text-muted-foreground">Total:</span>
             <span className="font-display text-lg font-bold text-foreground tabular-nums">{formatPHP(total)}</span>
@@ -448,10 +476,10 @@ function CreatePOModal({ onClose }: { onClose: () => void }) {
             Cancel
           </button>
           <button
-            onClick={onClose}
+            onClick={handleSubmit}
             className="flex-1 rounded-xl bg-brand-500 py-2.5 text-sm font-medium text-white hover:bg-brand-600 transition-colors"
           >
-            Create PO
+            {submitLabel}
           </button>
         </div>
       </Card>
@@ -461,8 +489,19 @@ function CreatePOModal({ onClose }: { onClose: () => void }) {
 
 // ─── PO Card ──────────────────────────────────────────────────────────────────
 
-function POCard({ po }: { po: typeof PO_DATA[number] }) {
+interface POCardProps {
+  po: PORecord;
+  onSend: (id: string) => void;
+  onEdit: (po: PORecord) => void;
+  onDelete: (id: string) => void;
+  confirmDeleteId: string | null;
+  onConfirmDelete: (id: string) => void;
+  onCancelDelete: () => void;
+}
+
+function POCard({ po, onSend, onEdit, onDelete, confirmDeleteId, onConfirmDelete, onCancelDelete }: POCardProps) {
   const status = po.status as POStatus;
+  const isConfirmingDelete = confirmDeleteId === po.id;
   return (
     <div className="relative flex rounded-2xl border border-border bg-card shadow-card overflow-hidden hover:shadow-card-md transition-shadow">
       <div className={cn("w-1 shrink-0", STATUS_BAR[status])} />
@@ -505,15 +544,44 @@ function POCard({ po }: { po: typeof PO_DATA[number] }) {
         <div className="mt-4 flex flex-wrap gap-2 border-t border-border pt-3">
           {status === "draft" && (
             <>
-              <button className="flex items-center gap-1.5 rounded-xl bg-brand-500 px-3 py-2 text-xs font-medium text-white hover:bg-brand-600 transition-colors">
-                <Send className="h-3.5 w-3.5" /> Send to Supplier
-              </button>
-              <button className="flex items-center gap-1.5 rounded-xl border border-border px-3 py-2 text-xs font-medium text-muted-foreground hover:bg-muted/50 transition-colors">
-                Edit
-              </button>
-              <button className="flex items-center gap-1.5 rounded-xl border border-danger-200 bg-danger-50 px-3 py-2 text-xs font-medium text-danger-600 hover:bg-danger-100 transition-colors">
-                <Trash2 className="h-3.5 w-3.5" /> Delete
-              </button>
+              {isConfirmingDelete ? (
+                <>
+                  <span className="flex items-center text-xs text-danger-600 font-medium">Delete this PO?</span>
+                  <button
+                    onClick={() => onDelete(po.id)}
+                    className="flex items-center gap-1.5 rounded-xl bg-danger-500 px-3 py-2 text-xs font-medium text-white hover:bg-danger-600 transition-colors"
+                  >
+                    Confirm
+                  </button>
+                  <button
+                    onClick={onCancelDelete}
+                    className="flex items-center gap-1.5 rounded-xl border border-border px-3 py-2 text-xs font-medium text-muted-foreground hover:bg-muted/50 transition-colors"
+                  >
+                    Cancel
+                  </button>
+                </>
+              ) : (
+                <>
+                  <button
+                    onClick={() => onSend(po.id)}
+                    className="flex items-center gap-1.5 rounded-xl bg-brand-500 px-3 py-2 text-xs font-medium text-white hover:bg-brand-600 transition-colors"
+                  >
+                    <Send className="h-3.5 w-3.5" /> Send to Supplier
+                  </button>
+                  <button
+                    onClick={() => onEdit(po)}
+                    className="flex items-center gap-1.5 rounded-xl border border-border px-3 py-2 text-xs font-medium text-muted-foreground hover:bg-muted/50 transition-colors"
+                  >
+                    Edit PO
+                  </button>
+                  <button
+                    onClick={() => onConfirmDelete(po.id)}
+                    className="flex items-center gap-1.5 rounded-xl border border-danger-200 bg-danger-50 px-3 py-2 text-xs font-medium text-danger-600 hover:bg-danger-100 transition-colors"
+                  >
+                    <Trash2 className="h-3.5 w-3.5" /> Delete
+                  </button>
+                </>
+              )}
             </>
           )}
           {(status === "sent" || status === "confirmed") && (
@@ -543,17 +611,120 @@ export default function AdminPurchaseOrdersPage() {
   const [activeTab, setActiveTab] = useState("all");
   const [showCreate, setShowCreate] = useState(false);
   const [showAutoModal, setShowAutoModal] = useState(false);
+  const [poList, setPoList] = useState<PORecord[]>(PO_DATA_INITIAL);
+  const [poCounter, setPoCounter] = useState(90);
+  const [toast, setToast] = useState<string | null>(null);
+  const [editingPO, setEditingPO] = useState<PORecord | null>(null);
+  const [confirmDeleteId, setConfirmDeleteId] = useState<string | null>(null);
 
-  const filtered = PO_DATA.filter((p) => activeTab === "all" || p.status === activeTab);
+  const showToast = (message: string) => {
+    setToast(message);
+    setTimeout(() => setToast(null), 3000);
+  };
+
+  const tabs = [
+    { id: "all",       label: "All",       count: poList.length },
+    { id: "draft",     label: "Draft",     count: poList.filter((p) => p.status === "draft").length },
+    { id: "sent",      label: "Sent",      count: poList.filter((p) => p.status === "sent").length },
+    { id: "confirmed", label: "Confirmed", count: poList.filter((p) => p.status === "confirmed").length },
+    { id: "received",  label: "Received",  count: poList.filter((p) => p.status === "received").length },
+  ];
+
+  const filtered = poList.filter((p) => activeTab === "all" || p.status === activeTab);
+
+  const handleCreateSubmit = (supplier: string, items: POItem[], total: number) => {
+    const newCounter = poCounter + 1;
+    setPoCounter(newCounter);
+    const paddedNum = String(newCounter).padStart(4, "0");
+    const today = new Date();
+    const month = today.toLocaleString("en-US", { month: "short" });
+    const day = today.getDate();
+    const year = today.getFullYear();
+    const dateStr = `${month} ${day}, ${year}`;
+    const newPO: PORecord = {
+      id: `po-new-${paddedNum}`,
+      poNumber: `PO-2025-${paddedNum}`,
+      supplier,
+      status: "draft",
+      items: items.filter((item) => item.name.trim() !== "").length,
+      total,
+      expectedDate: null,
+      createdAt: dateStr,
+      receivedAt: undefined,
+    };
+    setPoList((prev) => [newPO, ...prev]);
+    setShowCreate(false);
+  };
+
+  const handleSend = (id: string) => {
+    setPoList((prev) =>
+      prev.map((po) => po.id === id ? { ...po, status: "sent" } : po)
+    );
+    showToast("PO sent to supplier");
+  };
+
+  const handleEditOpen = (po: PORecord) => {
+    setEditingPO(po);
+  };
+
+  const handleEditSubmit = (supplier: string, items: POItem[], total: number) => {
+    if (!editingPO) return;
+    setPoList((prev) =>
+      prev.map((po) =>
+        po.id === editingPO.id
+          ? {
+              ...po,
+              supplier,
+              items: items.filter((item) => item.name.trim() !== "").length,
+              total,
+            }
+          : po
+      )
+    );
+    setEditingPO(null);
+  };
+
+  const handleConfirmDelete = (id: string) => {
+    setConfirmDeleteId(id);
+  };
+
+  const handleDelete = (id: string) => {
+    setPoList((prev) => prev.filter((po) => po.id !== id));
+    setConfirmDeleteId(null);
+  };
+
+  const handleCancelDelete = () => {
+    setConfirmDeleteId(null);
+  };
 
   return (
     <div className="p-6 space-y-5 max-w-7xl mx-auto">
-      {showCreate && <CreatePOModal onClose={() => setShowCreate(false)} />}
+      {showCreate && (
+        <CreatePOModal
+          onClose={() => setShowCreate(false)}
+          onSubmit={handleCreateSubmit}
+        />
+      )}
+      {editingPO && (
+        <CreatePOModal
+          onClose={() => setEditingPO(null)}
+          onSubmit={handleEditSubmit}
+          initialSupplier={editingPO.supplier}
+          title="Edit Purchase Order"
+          submitLabel="Save Changes"
+        />
+      )}
       {showAutoModal && (
         <AutoPOModal
           onClose={() => setShowAutoModal(false)}
           onViewDrafts={() => setActiveTab("draft")}
         />
+      )}
+
+      {toast && (
+        <div className="fixed bottom-6 left-1/2 -translate-x-1/2 z-50 rounded-xl bg-foreground px-5 py-3 text-sm font-medium text-background shadow-lg">
+          {toast}
+        </div>
       )}
 
       {/* Header */}
@@ -577,7 +748,7 @@ export default function AdminPurchaseOrdersPage() {
 
       {/* Status tabs */}
       <div className="flex gap-1 overflow-x-auto scrollbar-hide border-b border-border">
-        {TABS.map((tab) => (
+        {tabs.map((tab) => (
           <button
             key={tab.id}
             onClick={() => setActiveTab(tab.id)}
@@ -601,7 +772,18 @@ export default function AdminPurchaseOrdersPage() {
 
       {/* PO list */}
       <div className="space-y-3">
-        {filtered.map((po) => <POCard key={po.id} po={po} />)}
+        {filtered.map((po) => (
+          <POCard
+            key={po.id}
+            po={po}
+            onSend={handleSend}
+            onEdit={handleEditOpen}
+            onDelete={handleDelete}
+            confirmDeleteId={confirmDeleteId}
+            onConfirmDelete={handleConfirmDelete}
+            onCancelDelete={handleCancelDelete}
+          />
+        ))}
       </div>
 
       {filtered.length === 0 && (

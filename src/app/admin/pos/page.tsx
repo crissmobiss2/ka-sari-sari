@@ -80,7 +80,7 @@ export default function POSPage() {
   const [orderRef, setOrderRef] = useState("");
   const [receiptMode, setReceiptMode] = useState<"print" | "sms" | "email" | null>(null);
 
-  const subtotal = cart.reduce((s, i) => s + i.product.price * i.quantity, 0);
+  const subtotal = cart.reduce((s, i) => s + (i.product.srp ?? i.product.price ?? 0) * i.quantity, 0);
   const total = Math.max(0, subtotal - discount);
   const cash = parseFloat(cashTendered) || 0;
   const change = payMethod === "cash" && cash > total ? cash - total : 0;
@@ -187,7 +187,14 @@ export default function POSPage() {
               ].map(({ mode, label, icon }) => (
                 <button
                   key={mode}
-                  onClick={() => { setReceiptMode(mode); alert(`${label} receipt sent for ${orderRef}`); }}
+                  onClick={() => {
+                    setReceiptMode(mode);
+                    if (mode === "print") {
+                      window.print();
+                    } else {
+                      alert(`${label} receipt sent for ${orderRef}`);
+                    }
+                  }}
                   className={cn(
                     "flex flex-col items-center gap-1 rounded-xl border py-3 text-xs font-medium transition-colors",
                     receiptMode === mode ? "border-brand-500 bg-brand-50 text-brand-600" : "border-border bg-card text-muted-foreground hover:bg-muted"
@@ -213,6 +220,7 @@ export default function POSPage() {
 
   return (
     <div className="flex flex-col bg-background" style={{ height: "calc(100vh - 0px)" }}>
+      <style>{".print-hide { } @media print { .print-hide { display: none !important; } .print-show { display: block !important; } }"}</style>
       {/* POS Header */}
       <header className="flex items-center justify-between px-4 py-2.5 border-b border-border bg-card shrink-0">
         <div>
@@ -239,7 +247,7 @@ export default function POSPage() {
 
       <div className="flex flex-1 min-h-0">
         {/* ─── Product panel ─── */}
-        <div className={cn("flex flex-col flex-1 min-w-0 overflow-hidden", mobileTab !== "products" && "hidden md:flex")}>
+        <div className={cn("flex flex-col flex-1 min-w-0 overflow-hidden print-hide", mobileTab !== "products" && "hidden md:flex")}>
           <div className="px-3 pt-3 pb-2 border-b border-border space-y-2 shrink-0">
             <div className="relative">
               <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />

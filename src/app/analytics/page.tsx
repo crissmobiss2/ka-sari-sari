@@ -41,7 +41,7 @@ if (sortedOrders.length >= 2) {
   avgDaysBetween = Math.round(totalDays / (sortedOrders.length - 1));
 }
 
-// Orders this month (Jan 2026 is current per app context; data is Jan 2025 — match the year/month of most recent order)
+// Orders this month (Jul 2026 is current per app context — match the year/month of most recent order)
 const mostRecentMonth = lastOrderDate ? lastOrderDate.getMonth() : -1;
 const mostRecentYear = lastOrderDate ? lastOrderDate.getFullYear() : -1;
 const ordersThisMonth = MOCK_ORDERS.filter((o) => {
@@ -86,12 +86,12 @@ const TOP_CATEGORIES = Array.from(categoryTotals.entries())
 // ── Static chart & display data ───────────────────────────────────────────────
 
 const MONTHLY_DATA = [
-  { month: "Aug", value: 3200 },
-  { month: "Sep", value: 4100 },
-  { month: "Oct", value: 3800 },
-  { month: "Nov", value: 5200 },
-  { month: "Dec", value: 6100 },
-  { month: "Jan", value: 4980, current: true },
+  { month: "Feb", value: 3200 },
+  { month: "Mar", value: 4100 },
+  { month: "Apr", value: 3800 },
+  { month: "May", value: 5200 },
+  { month: "Jun", value: 6100 },
+  { month: "Jul", value: 4980, current: true },
 ];
 
 const MAX_VALUE = Math.max(...MONTHLY_DATA.map((d) => d.value));
