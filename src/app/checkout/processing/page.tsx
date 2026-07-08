@@ -73,7 +73,7 @@ function ProcessingContent() {
       </div>
 
       {/* Step labels row */}
-      <div className="flex gap-6 mb-6">
+      <div className="flex flex-wrap gap-x-4 gap-y-1 justify-center mb-6">
         {STEPS.map((s, i) => (
           <span key={i} className={cn(
             "text-xs transition-colors duration-300",
