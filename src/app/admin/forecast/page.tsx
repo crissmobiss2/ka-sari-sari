@@ -20,7 +20,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { toastSuccess, toastInfo } from "@/store/toast";
-import { MOCK_ORDERS, PRODUCTS } from "@/lib/mock-data";
+import { MOCK_ORDERS, PRODUCTS, CATEGORIES } from "@/lib/mock-data";
 
 // ── Types ─────────────────────────────────────────────────────────────────────
 
@@ -205,20 +205,7 @@ export default function AdminForecastPage() {
       const product = productMap.get(productId);
       if (!product) continue;
       // Resolve category name from categoryId
-      const categoryNames: Record<string, string> = {
-        "cat-1": "Beverages",
-        "cat-2": "Instant Noodles",
-        "cat-3": "Snacks & Chips",
-        "cat-4": "Canned Goods",
-        "cat-5": "Condiments",
-        "cat-6": "Personal Care",
-        "cat-7": "Coffee & Milo",
-        "cat-8": "Laundry & Cleaning",
-        "cat-9": "Bread & Biscuits",
-        "cat-10": "Candies & Sweets",
-        "cat-11": "Dairy & Eggs",
-        "cat-12": "Cooking Essentials",
-      };
+      const categoryNames: Record<string, string> = Object.fromEntries(CATEGORIES.map((c) => [c.id, c.name]));
       entries.push({
         productId,
         name: product.name,

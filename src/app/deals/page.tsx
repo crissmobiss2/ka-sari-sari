@@ -10,29 +10,38 @@ import { toastError } from "@/store/toast";
 import { cn } from "@/lib/utils";
 
 const CATEGORY_DISPLAY: Record<string, { gradient: string; emoji: string }> = {
-  "cat-1":  { gradient: "from-blue-400 to-cyan-500",      emoji: "🥤" },
-  "cat-2":  { gradient: "from-yellow-400 to-orange-500",  emoji: "🍜" },
-  "cat-3":  { gradient: "from-red-400 to-pink-500",       emoji: "🍿" },
-  "cat-4":  { gradient: "from-orange-400 to-red-500",     emoji: "🥫" },
-  "cat-5":  { gradient: "from-green-400 to-emerald-500",  emoji: "🧂" },
-  "cat-6":  { gradient: "from-purple-400 to-violet-500",  emoji: "🧴" },
-  "cat-7":  { gradient: "from-amber-500 to-yellow-600",   emoji: "☕" },
-  "cat-8":  { gradient: "from-teal-400 to-green-500",     emoji: "🧺" },
-  "cat-9":  { gradient: "from-yellow-300 to-amber-400",   emoji: "🍞" },
-  "cat-10": { gradient: "from-pink-400 to-rose-500",      emoji: "🍫" },
-  "cat-11": { gradient: "from-sky-300 to-blue-400",       emoji: "🥛" },
-  "cat-12": { gradient: "from-lime-400 to-green-500",     emoji: "🫙" },
+  "cat-01": { gradient: "from-amber-500 to-yellow-600",   emoji: "☕" },
+  "cat-02": { gradient: "from-yellow-400 to-orange-500",  emoji: "🍜" },
+  "cat-03": { gradient: "from-orange-400 to-red-500",     emoji: "🍿" },
+  "cat-04": { gradient: "from-pink-400 to-rose-500",      emoji: "🍫" },
+  "cat-05": { gradient: "from-red-400 to-orange-500",     emoji: "🥫" },
+  "cat-06": { gradient: "from-blue-400 to-cyan-500",      emoji: "🥤" },
+  "cat-07": { gradient: "from-green-400 to-teal-500",     emoji: "🧃" },
+  "cat-08": { gradient: "from-sky-300 to-blue-400",       emoji: "🥛" },
+  "cat-09": { gradient: "from-amber-400 to-orange-500",   emoji: "🧂" },
+  "cat-10": { gradient: "from-yellow-300 to-amber-400",   emoji: "🍳" },
+  "cat-11": { gradient: "from-yellow-400 to-amber-500",   emoji: "🧈" },
+  "cat-12": { gradient: "from-amber-300 to-orange-400",   emoji: "🍞" },
+  "cat-13": { gradient: "from-yellow-200 to-amber-300",   emoji: "🥚" },
+  "cat-14": { gradient: "from-lime-300 to-green-400",     emoji: "🍚" },
+  "cat-15": { gradient: "from-cyan-400 to-blue-500",      emoji: "🧊" },
+  "cat-16": { gradient: "from-purple-400 to-violet-500",  emoji: "🧴" },
+  "cat-17": { gradient: "from-pink-300 to-rose-400",      emoji: "🌸" },
+  "cat-18": { gradient: "from-teal-400 to-green-500",     emoji: "🧺" },
+  "cat-19": { gradient: "from-emerald-400 to-green-600",  emoji: "🧹" },
+  "cat-20": { gradient: "from-red-500 to-rose-600",       emoji: "🦟" },
+  "cat-21": { gradient: "from-pink-300 to-pink-500",      emoji: "👶" },
+  "cat-22": { gradient: "from-indigo-400 to-blue-500",    emoji: "📚" },
+  "cat-23": { gradient: "from-red-300 to-rose-400",       emoji: "💊" },
+  "cat-24": { gradient: "from-gray-400 to-slate-500",     emoji: "🔋" },
+  "cat-25": { gradient: "from-blue-300 to-cyan-400",      emoji: "💧" },
+  "cat-26": { gradient: "from-violet-400 to-purple-500",  emoji: "📱" },
 };
 
 function getDealLabel(categoryId: string): string {
-  switch (categoryId) {
-    case "cat-1": return "Bundle Deal";
-    case "cat-2": return "Flash Sale";
-    case "cat-3": return "Bulk Discount";
-    default: return categoryId.charCodeAt(categoryId.length - 1) % 2 === 0
-      ? "Weekend Special"
-      : "Hot Pick";
-  }
+  const labels = ["Bundle Deal", "Flash Sale", "Bulk Discount", "Weekend Special", "Hot Pick", "Daily Deal"];
+  const idx = parseInt(categoryId.replace("cat-", ""), 10) % labels.length;
+  return labels[idx] ?? "Hot Pick";
 }
 
 // Compute deal price

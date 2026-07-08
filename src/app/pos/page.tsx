@@ -1,13 +1,14 @@
 "use client";
-import { useState, useMemo, useRef } from "react";
+import { useState, useMemo, useRef, useCallback } from "react";
 import {
   Search, Plus, Minus, X, CheckCircle2, Printer,
-  RefreshCcw, ShoppingCart, Package, Tag, Banknote, ArrowLeft
+  RefreshCcw, ShoppingCart, Package, Banknote, ArrowLeft, Camera,
 } from "lucide-react";
 import Link from "next/link";
 import { cn, formatPHP } from "@/lib/utils";
 import { PRODUCTS, CATEGORIES } from "@/lib/mock-data";
 import type { Product } from "@/types";
+import { BarcodeScanner } from "@/components/pos/barcode-scanner";
 
 // ─── Types ──────────────────────────────────────────────────────────────────
 
@@ -23,16 +24,6 @@ const PH_METHODS = [
   { id: "qrph",      label: "QR Ph",    icon: "📱" },
   { id: "card",      label: "Card",     icon: "💳" },
 ];
-
-// ─── Cart helpers ────────────────────────────────────────────────────────────
-
-function getTotal(items: SaleItem[]) {
-  return items.reduce((s, i) => s + i.product.srp! * i.quantity, 0);
-}
-
-function getChange(total: number, tendered: number) {
-  return Math.max(0, tendered - total);
-}
 
 // ─── Numpad for cash tender ──────────────────────────────────────────────────
 
@@ -75,6 +66,10 @@ export default function RetailerPOSPage() {
   const [method, setMethod] = useState<string>("cash");
   const [tendered, setTendered] = useState("0");
   const [receiptNo, setReceiptNo] = useState(1001);
+  const [mobileView, setMobileView] = useState<"products" | "cart">("products");
+  const [showScanner, setShowScanner] = useState(false);
+  const [scanFeedback, setScanFeedback] = useState<{ ok: boolean; text: string } | null>(null);
+  const feedbackTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const searchRef = useRef<HTMLInputElement>(null);
 
   const products = useMemo(() => {
@@ -85,9 +80,10 @@ export default function RetailerPOSPage() {
     });
   }, [search, categoryId]);
 
-  const total = getTotal(cart);
+  const total       = cart.reduce((s, i) => s + (i.product.srp ?? i.product.price) * i.quantity, 0);
   const tenderedNum = parseInt(tendered, 10) || 0;
-  const change = getChange(total, tenderedNum);
+  const change      = Math.max(0, tenderedNum - total);
+  const cartCount   = cart.reduce((s, i) => s + i.quantity, 0);
 
   function addToCart(product: Product) {
     setCart((prev) => {
@@ -118,14 +114,87 @@ export default function RetailerPOSPage() {
     setStep("idle");
     setTendered("0");
     setMethod("cash");
+    setMobileView("products");
     setTimeout(() => searchRef.current?.focus(), 100);
   }
 
+  const handleScan = useCallback((code: string) => {
+    const product = PRODUCTS.find((p) => p.isActive && p.sku.toLowerCase() === code.toLowerCase());
+    if (feedbackTimerRef.current) clearTimeout(feedbackTimerRef.current);
+    if (product) {
+      addToCart(product);
+      setScanFeedback({ ok: true, text: `✓ Added: ${product.name}` });
+    } else {
+      setScanFeedback({ ok: false, text: `Not found: ${code}` });
+    }
+    feedbackTimerRef.current = setTimeout(() => setScanFeedback(null), 2500);
+  }, []);
+
+  // ── Receipt screen ──────────────────────────────────────────────────────────
+  if (step === "done") {
+    return (
+      <div className="fixed inset-0 bg-background flex flex-col overflow-hidden">
+        <header className="flex items-center gap-3 px-4 py-3 border-b border-border bg-card shrink-0">
+          <div className="flex h-8 w-8 items-center justify-center rounded-xl bg-brand-500">
+            <ShoppingCart className="h-4 w-4 text-white" />
+          </div>
+          <p className="text-sm font-bold text-foreground">Point of Sale</p>
+        </header>
+        <div className="flex-1 flex flex-col items-center justify-center p-6 text-center gap-4">
+          <div className="flex h-16 w-16 items-center justify-center rounded-full bg-success-100">
+            <CheckCircle2 className="h-8 w-8 text-success-600" />
+          </div>
+          <div>
+            <p className="font-display text-xl font-bold text-foreground">Payment received!</p>
+            <p className="text-sm text-muted-foreground mt-1">Receipt #{receiptNo - 1}</p>
+          </div>
+          <div className="w-full max-w-xs rounded-2xl border border-border p-4 text-left space-y-2 text-sm">
+            <div className="flex justify-between">
+              <span className="text-muted-foreground">Total</span>
+              <span className="font-bold">{formatPHP(total)}</span>
+            </div>
+            <div className="flex justify-between">
+              <span className="text-muted-foreground">Method</span>
+              <span className="font-semibold capitalize">{method}</span>
+            </div>
+            {method === "cash" && (
+              <>
+                <div className="flex justify-between">
+                  <span className="text-muted-foreground">Tendered</span>
+                  <span className="font-semibold">{formatPHP(tenderedNum)}</span>
+                </div>
+                <div className="flex justify-between border-t border-border pt-2">
+                  <span className="text-foreground font-semibold">Change</span>
+                  <span className="font-black text-brand-500">{formatPHP(change)}</span>
+                </div>
+              </>
+            )}
+          </div>
+          <div className="flex flex-col gap-2 w-full max-w-xs">
+            <button
+              onClick={handleNewSale}
+              className="w-full rounded-xl bg-brand-500 hover:bg-brand-600 text-white text-sm font-bold h-11 transition-colors flex items-center justify-center gap-2"
+            >
+              <RefreshCcw className="h-4 w-4" />
+              New Sale
+            </button>
+            <button className="w-full rounded-xl bg-surface-100 hover:bg-surface-200 text-foreground text-sm font-medium h-9 transition-colors flex items-center justify-center gap-2">
+              <Printer className="h-4 w-4" />
+              Print Receipt
+            </button>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  // ── Main POS layout ─────────────────────────────────────────────────────────
   return (
     <div className="fixed inset-0 bg-background flex flex-col overflow-hidden">
+
       {/* Top bar */}
       <header className="flex items-center gap-3 px-4 py-3 border-b border-border bg-card shrink-0">
-        <Link href="/dashboard" className="flex items-center gap-1 text-sm text-muted-foreground hover:text-foreground transition-colors">
+        <Link href="/dashboard" className="flex items-center text-muted-foreground hover:text-foreground transition-colors">
           <ArrowLeft className="h-4 w-4" />
         </Link>
         <div className="flex h-8 w-8 items-center justify-center rounded-xl bg-brand-500">
@@ -135,18 +204,59 @@ export default function RetailerPOSPage() {
           <p className="text-sm font-bold text-foreground leading-tight">Point of Sale</p>
           <p className="text-[10px] text-muted-foreground">Maria&apos;s Sari-Sari Store</p>
         </div>
+        <button
+          onClick={() => setShowScanner(true)}
+          className="flex h-8 w-8 items-center justify-center rounded-xl border border-border text-muted-foreground hover:text-brand-500 hover:border-brand-300 transition-colors"
+          title="Scan barcode"
+        >
+          <Camera className="h-4 w-4" />
+        </button>
         <div className="text-right">
           <p className="text-[10px] text-muted-foreground">Receipt #</p>
           <p className="text-xs font-bold text-foreground">{receiptNo}</p>
         </div>
       </header>
 
-      {/* Main layout — left: catalog, right: cart */}
+      {/* Mobile tab bar — products / cart */}
+      <div className="flex md:hidden border-b border-border bg-card shrink-0">
+        <button
+          onClick={() => setMobileView("products")}
+          className={cn(
+            "flex-1 py-2 text-xs font-semibold transition-colors",
+            mobileView === "products"
+              ? "text-brand-500 border-b-2 border-brand-500"
+              : "text-muted-foreground"
+          )}
+        >
+          Products
+        </button>
+        <button
+          onClick={() => setMobileView("cart")}
+          className={cn(
+            "flex-1 py-2 text-xs font-semibold transition-colors",
+            mobileView === "cart"
+              ? "text-brand-500 border-b-2 border-brand-500"
+              : "text-muted-foreground"
+          )}
+        >
+          Cart
+          {cartCount > 0 && (
+            <span className="ml-1.5 inline-flex items-center justify-center h-4 min-w-4 px-1 rounded-full bg-brand-500 text-white text-[10px] font-bold">
+              {cartCount}
+            </span>
+          )}
+        </button>
+      </div>
+
       <div className="flex flex-1 overflow-hidden">
 
-        {/* ── Left: Product catalog ── */}
-        <div className="flex flex-col flex-1 overflow-hidden border-r border-border">
-          {/* Search */}
+        {/* ── Left / Products panel ── */}
+        <div className={cn(
+          "flex-col overflow-hidden border-r border-border",
+          mobileView === "products" ? "flex flex-1" : "hidden",
+          "md:flex md:flex-1"
+        )}>
+          {/* Search row */}
           <div className="px-3 pt-3 pb-2 shrink-0">
             <div className="relative">
               <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-3.5 w-3.5 text-muted-foreground" />
@@ -155,8 +265,15 @@ export default function RetailerPOSPage() {
                 value={search}
                 onChange={(e) => setSearch(e.target.value)}
                 placeholder="Search product or scan barcode…"
-                className="w-full rounded-xl border border-border bg-surface-50 pl-8 pr-3 py-2 text-xs placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-brand-500"
+                className="w-full rounded-xl border border-border bg-surface-50 pl-8 pr-10 py-2 text-xs placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-brand-500"
               />
+              <button
+                onClick={() => setShowScanner(true)}
+                className="absolute right-2 top-1/2 -translate-y-1/2 flex h-6 w-6 items-center justify-center rounded-lg text-muted-foreground hover:text-brand-500 transition-colors"
+                title="Scan barcode"
+              >
+                <Camera className="h-3.5 w-3.5" />
+              </button>
             </div>
           </div>
 
@@ -177,6 +294,16 @@ export default function RetailerPOSPage() {
               </button>
             ))}
           </div>
+
+          {/* Scan feedback banner */}
+          {scanFeedback && (
+            <div className={cn(
+              "mx-3 mb-2 rounded-xl px-3 py-2 text-xs font-semibold text-white shrink-0",
+              scanFeedback.ok ? "bg-success-500" : "bg-danger-500"
+            )}>
+              {scanFeedback.text}
+            </div>
+          )}
 
           {/* Product grid */}
           <div className="flex-1 overflow-y-auto p-3">
@@ -220,58 +347,15 @@ export default function RetailerPOSPage() {
           </div>
         </div>
 
-        {/* ── Right: Cart & payment ── */}
-        <div className="w-80 shrink-0 flex flex-col bg-card">
+        {/* ── Right / Cart & Payment panel ── */}
+        <div className={cn(
+          "flex-col bg-card",
+          mobileView === "cart" ? "flex flex-1" : "hidden",
+          "md:flex md:w-80 md:flex-none"
+        )}>
 
-          {step === "done" ? (
-            /* ── Receipt screen ── */
-            <div className="flex-1 flex flex-col items-center justify-center p-6 text-center gap-4">
-              <div className="flex h-16 w-16 items-center justify-center rounded-full bg-success-100">
-                <CheckCircle2 className="h-8 w-8 text-success-600" />
-              </div>
-              <div>
-                <p className="font-display text-xl font-bold text-foreground">Payment received!</p>
-                <p className="text-sm text-muted-foreground mt-1">Receipt #{receiptNo - 1}</p>
-              </div>
-              <div className="w-full rounded-2xl border border-border p-4 text-left space-y-2 text-sm">
-                <div className="flex justify-between">
-                  <span className="text-muted-foreground">Total</span>
-                  <span className="font-bold">{formatPHP(total)}</span>
-                </div>
-                <div className="flex justify-between">
-                  <span className="text-muted-foreground">Method</span>
-                  <span className="font-semibold capitalize">{method}</span>
-                </div>
-                {method === "cash" && (
-                  <>
-                    <div className="flex justify-between">
-                      <span className="text-muted-foreground">Tendered</span>
-                      <span className="font-semibold">{formatPHP(tenderedNum)}</span>
-                    </div>
-                    <div className="flex justify-between border-t border-border pt-2">
-                      <span className="text-foreground font-semibold">Change</span>
-                      <span className="font-black text-brand-500">{formatPHP(change)}</span>
-                    </div>
-                  </>
-                )}
-              </div>
-              <div className="flex flex-col gap-2 w-full">
-                <button
-                  onClick={handleNewSale}
-                  className="w-full rounded-xl bg-brand-500 hover:bg-brand-600 text-white text-sm font-bold h-11 transition-colors flex items-center justify-center gap-2"
-                >
-                  <RefreshCcw className="h-4 w-4" />
-                  New Sale
-                </button>
-                <button className="w-full rounded-xl bg-surface-100 hover:bg-surface-200 text-foreground text-sm font-medium h-9 transition-colors flex items-center justify-center gap-2">
-                  <Printer className="h-4 w-4" />
-                  Print Receipt
-                </button>
-              </div>
-            </div>
-
-          ) : step === "pay" ? (
-            /* ── Payment screen ── */
+          {step === "pay" ? (
+            /* Payment screen */
             <div className="flex-1 flex flex-col overflow-hidden">
               <div className="px-4 pt-4 pb-3 border-b border-border">
                 <div className="flex items-center justify-between">
@@ -284,7 +368,6 @@ export default function RetailerPOSPage() {
               </div>
 
               <div className="flex-1 overflow-y-auto p-4 space-y-4">
-                {/* Payment method */}
                 <div>
                   <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wide mb-2">Method</p>
                   <div className="grid grid-cols-3 gap-1.5">
@@ -306,14 +389,12 @@ export default function RetailerPOSPage() {
                   </div>
                 </div>
 
-                {/* Cash numpad */}
                 {method === "cash" && (
                   <div className="space-y-3">
                     <div className="rounded-xl bg-surface-100 p-3 text-center">
                       <p className="text-xs text-muted-foreground mb-1">Cash received</p>
                       <p className="font-display text-2xl font-black text-foreground">{formatPHP(parseInt(tendered) || 0)}</p>
                     </div>
-                    {/* Quick amounts */}
                     <div className="grid grid-cols-4 gap-1">
                       {[100, 200, 500, 1000].map((amt) => (
                         <button
@@ -348,7 +429,7 @@ export default function RetailerPOSPage() {
             </div>
 
           ) : (
-            /* ── Cart screen ── */
+            /* Cart screen */
             <div className="flex-1 flex flex-col overflow-hidden">
               <div className="px-4 pt-4 pb-2 border-b border-border shrink-0">
                 <div className="flex items-center justify-between">
@@ -362,12 +443,18 @@ export default function RetailerPOSPage() {
                 <p className="text-xs text-muted-foreground mt-0.5">{cart.length} item{cart.length !== 1 ? "s" : ""}</p>
               </div>
 
-              {/* Cart items */}
               <div className="flex-1 overflow-y-auto divide-y divide-border">
                 {cart.length === 0 ? (
                   <div className="flex flex-col items-center justify-center h-full py-12 px-4 text-center">
                     <ShoppingCart className="h-10 w-10 text-muted-foreground/20 mb-3" />
-                    <p className="text-sm text-muted-foreground">Tap a product to add it to the sale</p>
+                    <p className="text-sm text-muted-foreground">Tap a product to add it</p>
+                    <button
+                      onClick={() => { setMobileView("products"); setShowScanner(true); }}
+                      className="mt-3 flex items-center gap-1.5 text-xs text-brand-500 font-semibold md:hidden"
+                    >
+                      <Camera className="h-3.5 w-3.5" />
+                      Or scan a barcode
+                    </button>
                   </div>
                 ) : (
                   cart.map((item) => (
@@ -405,7 +492,6 @@ export default function RetailerPOSPage() {
                 )}
               </div>
 
-              {/* Total & checkout */}
               <div className="border-t border-border p-4 shrink-0 space-y-3">
                 <div className="flex items-center justify-between">
                   <span className="text-sm text-muted-foreground">Subtotal</span>
@@ -424,6 +510,17 @@ export default function RetailerPOSPage() {
           )}
         </div>
       </div>
+
+      {/* Barcode scanner modal */}
+      {showScanner && (
+        <BarcodeScanner
+          onScan={(code) => {
+            handleScan(code);
+            setMobileView("products");
+          }}
+          onClose={() => setShowScanner(false)}
+        />
+      )}
     </div>
   );
 }

@@ -3,8 +3,9 @@ import { useState, useMemo } from "react";
 import {
   Search, Plus, Minus, X, CheckCircle2, Printer,
   RefreshCcw, ShoppingCart, QrCode, Users, Package,
-  AlertCircle, Tag, Banknote
+  AlertCircle, Tag, Banknote, Camera
 } from "lucide-react";
+import { BarcodeScanner } from "@/components/pos/barcode-scanner";
 import { cn } from "@/lib/utils";
 import { formatPHP } from "@/lib/utils";
 import { PRODUCTS, CATEGORIES } from "@/lib/mock-data";
@@ -49,14 +50,32 @@ const EWALLET_INFO: Record<string, { number: string; name: string }> = {
 };
 
 const CAT_DISPLAY: Record<string, { gradient: string; emoji: string }> = {
-  "cat-1": { gradient: "from-blue-400 to-cyan-400",     emoji: "🥤" },
-  "cat-2": { gradient: "from-yellow-400 to-orange-400", emoji: "🍜" },
-  "cat-3": { gradient: "from-red-400 to-pink-400",      emoji: "🍿" },
-  "cat-4": { gradient: "from-orange-400 to-red-400",    emoji: "🥫" },
-  "cat-5": { gradient: "from-green-400 to-emerald-400", emoji: "🧂" },
-  "cat-6": { gradient: "from-purple-400 to-violet-400", emoji: "🧴" },
-  "cat-7": { gradient: "from-amber-500 to-yellow-400",  emoji: "☕" },
-  "cat-8": { gradient: "from-teal-400 to-green-400",    emoji: "🧺" },
+  "cat-01": { gradient: "from-amber-500 to-yellow-600",   emoji: "☕" },
+  "cat-02": { gradient: "from-yellow-400 to-orange-500",  emoji: "🍜" },
+  "cat-03": { gradient: "from-orange-400 to-red-500",     emoji: "🍿" },
+  "cat-04": { gradient: "from-pink-400 to-rose-500",      emoji: "🍫" },
+  "cat-05": { gradient: "from-red-400 to-orange-500",     emoji: "🥫" },
+  "cat-06": { gradient: "from-blue-400 to-cyan-500",      emoji: "🥤" },
+  "cat-07": { gradient: "from-green-400 to-teal-500",     emoji: "🧃" },
+  "cat-08": { gradient: "from-sky-300 to-blue-400",       emoji: "🥛" },
+  "cat-09": { gradient: "from-amber-400 to-orange-500",   emoji: "🧂" },
+  "cat-10": { gradient: "from-yellow-300 to-amber-400",   emoji: "🍳" },
+  "cat-11": { gradient: "from-yellow-400 to-amber-500",   emoji: "🧈" },
+  "cat-12": { gradient: "from-amber-300 to-orange-400",   emoji: "🍞" },
+  "cat-13": { gradient: "from-yellow-200 to-amber-300",   emoji: "🥚" },
+  "cat-14": { gradient: "from-lime-300 to-green-400",     emoji: "🍚" },
+  "cat-15": { gradient: "from-cyan-400 to-blue-500",      emoji: "🧊" },
+  "cat-16": { gradient: "from-purple-400 to-violet-500",  emoji: "🧴" },
+  "cat-17": { gradient: "from-pink-300 to-rose-400",      emoji: "🌸" },
+  "cat-18": { gradient: "from-teal-400 to-green-500",     emoji: "🧺" },
+  "cat-19": { gradient: "from-emerald-400 to-green-600",  emoji: "🧹" },
+  "cat-20": { gradient: "from-red-500 to-rose-600",       emoji: "🦟" },
+  "cat-21": { gradient: "from-pink-300 to-pink-500",      emoji: "👶" },
+  "cat-22": { gradient: "from-indigo-400 to-blue-500",    emoji: "📚" },
+  "cat-23": { gradient: "from-red-300 to-rose-400",       emoji: "💊" },
+  "cat-24": { gradient: "from-gray-400 to-slate-500",     emoji: "🔋" },
+  "cat-25": { gradient: "from-blue-300 to-cyan-400",      emoji: "💧" },
+  "cat-26": { gradient: "from-violet-400 to-purple-500",  emoji: "📱" },
 };
 
 function generateRef() {
@@ -65,6 +84,8 @@ function generateRef() {
 
 export default function POSPage() {
   const [mobileTab, setMobileTab] = useState<"products" | "cart" | "pay">("products");
+  const [showScanner, setShowScanner] = useState(false);
+  const [scanFeedback, setScanFeedback] = useState<{ ok: boolean; text: string } | null>(null);
   const [cart, setCart] = useState<POSCartItem[]>([]);
   const [customer, setCustomer] = useState("Walk-in Customer");
   const [search, setSearch] = useState("");
@@ -109,6 +130,17 @@ export default function POSPage() {
       const n = i.quantity + delta;
       return n <= 0 ? [] : [{ ...i, quantity: n }];
     }));
+  }
+
+  function handleScan(code: string) {
+    const product = PRODUCTS.find((p) => p.isActive && p.sku.toLowerCase() === code.toLowerCase());
+    if (product) {
+      addItem(product);
+      setScanFeedback({ ok: true, text: `Added: ${product.name}` });
+    } else {
+      setScanFeedback({ ok: false, text: `Not found: ${code}` });
+    }
+    setTimeout(() => setScanFeedback(null), 2500);
   }
 
   function applyPromo() {
@@ -252,7 +284,14 @@ export default function POSPage() {
             <div className="relative">
               <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
               <input type="search" placeholder="Search product, SKU, brand…" value={search} onChange={e => setSearch(e.target.value)}
-                className="h-10 w-full rounded-xl border border-input bg-card pl-9 pr-3 text-sm focus:outline-none focus:ring-2 focus:ring-brand-500" />
+                className="h-10 w-full rounded-xl border border-input bg-card pl-9 pr-12 text-sm focus:outline-none focus:ring-2 focus:ring-brand-500" />
+              <button
+                onClick={() => setShowScanner(true)}
+                className="absolute right-2 top-1/2 -translate-y-1/2 flex h-7 w-7 items-center justify-center rounded-lg bg-surface-100 text-muted-foreground hover:text-brand-500 hover:bg-brand-50 transition-colors"
+                title="Scan barcode"
+              >
+                <Camera className="h-4 w-4" />
+              </button>
             </div>
             <div className="flex gap-1.5 overflow-x-auto scrollbar-hide">
               <button onClick={() => setCategory("all")} className={cn("shrink-0 rounded-lg px-3 py-1.5 text-[11px] font-semibold border transition-colors", category === "all" ? "bg-brand-500 text-white border-brand-500" : "bg-card border-border text-muted-foreground")}>All</button>
@@ -539,6 +578,24 @@ export default function POSPage() {
           </div>
         </div>
       </div>
+
+      {/* Scan feedback toast */}
+      {scanFeedback && (
+        <div className={cn(
+          "fixed bottom-6 left-1/2 -translate-x-1/2 z-[150] rounded-2xl px-5 py-3 text-sm font-semibold text-white shadow-lg pointer-events-none",
+          scanFeedback.ok ? "bg-success-500" : "bg-danger-500"
+        )}>
+          {scanFeedback.text}
+        </div>
+      )}
+
+      {/* Barcode scanner modal */}
+      {showScanner && (
+        <BarcodeScanner
+          onScan={(code) => handleScan(code)}
+          onClose={() => setShowScanner(false)}
+        />
+      )}
     </div>
   );
 }

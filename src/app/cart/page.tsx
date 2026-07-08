@@ -12,9 +12,13 @@ const DELIVERY_FEE = 80;
 const FREE_DELIVERY_THRESHOLD = 1500;
 
 const CATEGORY_EMOJI: Record<string, string> = {
-  "cat-1": "🥤", "cat-2": "🍜", "cat-3": "🍿", "cat-4": "🥫",
-  "cat-5": "🧂", "cat-6": "🧴", "cat-7": "☕", "cat-8": "🧺",
-  "cat-9": "🍞", "cat-10": "🍫", "cat-11": "🥛", "cat-12": "🫙",
+  "cat-01": "☕", "cat-02": "🍜", "cat-03": "🍿", "cat-04": "🍫",
+  "cat-05": "🥫", "cat-06": "🥤", "cat-07": "🧃", "cat-08": "🥛",
+  "cat-09": "🧂", "cat-10": "🍳", "cat-11": "🧈", "cat-12": "🍞",
+  "cat-13": "🥚", "cat-14": "🍚", "cat-15": "🧊", "cat-16": "🧴",
+  "cat-17": "🌸", "cat-18": "🧺", "cat-19": "🧹", "cat-20": "🦟",
+  "cat-21": "👶", "cat-22": "📚", "cat-23": "💊", "cat-24": "🔋",
+  "cat-25": "💧", "cat-26": "📱",
 };
 
 function ProductThumb({ product }: { product: { imageUrl?: string; categoryId: string; name: string } }) {
