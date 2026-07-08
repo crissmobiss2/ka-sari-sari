@@ -1,4 +1,4 @@
-const CACHE_NAME = 'kss-v1';
+const CACHE_NAME = 'kss-v2';
 const STATIC_ASSETS = ['/', '/catalog', '/deals', '/orders'];
 
 // Install: cache static assets
