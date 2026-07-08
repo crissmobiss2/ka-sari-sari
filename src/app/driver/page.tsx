@@ -38,9 +38,8 @@ export default function DriverHomePage() {
     .reduce((s, o) => s + o.total, 0);
   const nextStop = pendingDeliveries[0] ?? null; // first pending delivery
 
-  // Hardcoded — no real data source yet for earnings and distance
-  const HARDCODED_EARNINGS = 620;
-  const HARDCODED_DISTANCE = "18.4";
+  // Estimated earnings: ₱80/stop + 2% COD incentive
+  const estEarnings = (deliveredToday || route.completedStops) * 80 + codToCollect * 0.02;
 
   const handleDutyToggle = () => {
     const next = !onDuty;
@@ -101,7 +100,7 @@ export default function DriverHomePage() {
           />
           <SummaryCard
             label="Est. Earnings"
-            value={formatPHP(HARDCODED_EARNINGS)} // no real data source yet
+            value={formatPHP(estEarnings)}
             valueClass="text-success-600"
             badge="today"
             badgeVariant="success"
@@ -112,7 +111,7 @@ export default function DriverHomePage() {
       {/* Quick stats row */}
       <Card className="p-4">
         <div className="grid grid-cols-3 divide-x divide-border">
-          <StatCell label="Distance" value={`${HARDCODED_DISTANCE} km`} /> {/* no real data source yet */}
+          <StatCell label="Distance" value={route.distance} />
           <StatCell label="Done" value={String(deliveredToday)} />
           <StatCell label="Success" value={myDeliveries.length > 0 ? `${Math.round((deliveredToday / myDeliveries.length) * 100)}%` : "—"} valueClass="text-success-600" />
         </div>

@@ -1,39 +1,103 @@
 "use client";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useSearchParams, useRouter } from "next/navigation";
 import { Suspense } from "react";
+import { cn } from "@/lib/utils";
+
+const STEPS = [
+  { label: "Placing Order", detail: "Securing your items…" },
+  { label: "Verifying Payment", detail: "Confirming your transfer…" },
+  { label: "Confirmed", detail: "Your order is on its way!" },
+];
 
 function ProcessingContent() {
   const params = useSearchParams();
   const router = useRouter();
   const orderId = params.get("orderId");
+  const method = params.get("method") ?? "bank";
+  const [step, setStep] = useState(0);
 
-  // Poll for payment status - in production this checks the DB
   useEffect(() => {
-    const timeout = setTimeout(() => {
-      router.replace(`/checkout/success?orderId=${orderId}&method=bank`);
-    }, 4000);
-    return () => clearTimeout(timeout);
-  }, [orderId, router]);
+    const t1 = setTimeout(() => setStep(1), 1200);
+    const t2 = setTimeout(() => setStep(2), 2800);
+    const t3 = setTimeout(() => {
+      router.replace(`/checkout/success?orderId=${orderId}&method=${method}`);
+    }, 4200);
+    return () => { clearTimeout(t1); clearTimeout(t2); clearTimeout(t3); };
+  }, [orderId, method, router]);
+
+  const methodIcon = method === "cod" ? "💵" : method === "gcash" ? "📱" : method === "maya" ? "💳" : "🏦";
+  const methodLabel = method === "cod" ? "Cash on Delivery" : method === "gcash" ? "GCash" : method === "maya" ? "Maya" : "Bank Transfer";
 
   return (
     <div className="min-h-screen bg-background flex flex-col items-center justify-center px-4 py-12 text-center">
+      {/* Animated icon */}
       <div className="relative mb-8">
-        <div className="h-24 w-24 rounded-full border-4 border-brand-100 border-t-brand-500 animate-spin" />
+        <div className={cn(
+          "h-24 w-24 rounded-full border-4 transition-colors duration-700",
+          step < 2
+            ? "border-brand-100 border-t-brand-500 animate-spin"
+            : "border-success-500 animate-none"
+        )} />
         <div className="absolute inset-0 flex items-center justify-center">
-          <span className="text-2xl">🏦</span>
+          <span className="text-2xl">{step === 2 ? "✅" : methodIcon}</span>
         </div>
       </div>
 
-      <h1 className="font-display text-xl font-bold text-foreground mb-2">Verifying Payment</h1>
-      <p className="text-muted-foreground text-sm mb-2 max-w-xs">
-        We&apos;re confirming your bank transfer. This usually takes a few seconds.
+      {/* Step label */}
+      <h1 className="font-display text-xl font-bold text-foreground mb-1">
+        {STEPS[step]?.label}
+      </h1>
+      <p className="text-muted-foreground text-sm mb-5 max-w-xs">
+        {STEPS[step]?.detail}
       </p>
-      {orderId && (
-        <p className="text-xs text-muted-foreground font-mono bg-surface-100 rounded-lg px-3 py-1.5 mt-2">
-          Ref: {orderId}
-        </p>
-      )}
+
+      {/* Step dots */}
+      <div className="flex items-center gap-2 mb-5">
+        {STEPS.map((s, i) => (
+          <div key={i} className="flex items-center gap-2">
+            <div className={cn(
+              "h-2.5 w-2.5 rounded-full transition-all duration-500",
+              i < step ? "bg-success-500 scale-100" :
+              i === step ? "bg-brand-500 scale-125" :
+              "bg-muted-foreground/30 scale-100"
+            )} />
+            {i < STEPS.length - 1 && (
+              <div className={cn(
+                "h-0.5 w-8 rounded-full transition-all duration-700",
+                i < step ? "bg-success-500" : "bg-muted-foreground/20"
+              )} />
+            )}
+          </div>
+        ))}
+      </div>
+
+      {/* Step labels row */}
+      <div className="flex gap-6 mb-6">
+        {STEPS.map((s, i) => (
+          <span key={i} className={cn(
+            "text-xs transition-colors duration-300",
+            i === step ? "text-brand-500 font-semibold" :
+            i < step ? "text-success-600 font-medium" :
+            "text-muted-foreground/50"
+          )}>
+            {s.label}
+          </span>
+        ))}
+      </div>
+
+      {/* Reference */}
+      <div className="space-y-2">
+        <div className="flex items-center gap-2 justify-center text-xs text-muted-foreground">
+          <span>{methodLabel}</span>
+        </div>
+        {orderId && (
+          <p className="text-xs text-muted-foreground font-mono bg-surface-100 rounded-lg px-3 py-1.5">
+            Ref: {orderId}
+          </p>
+        )}
+      </div>
+
       <p className="text-xs text-muted-foreground mt-6 max-w-xs leading-relaxed">
         Please don&apos;t close this page. You&apos;ll be redirected automatically once confirmed.
       </p>
@@ -43,7 +107,11 @@ function ProcessingContent() {
 
 export default function CheckoutProcessingPage() {
   return (
-    <Suspense fallback={<div className="min-h-screen flex items-center justify-center"><div className="animate-spin h-8 w-8 rounded-full border-4 border-brand-500 border-t-transparent" /></div>}>
+    <Suspense fallback={
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="animate-spin h-8 w-8 rounded-full border-4 border-brand-500 border-t-transparent" />
+      </div>
+    }>
       <ProcessingContent />
     </Suspense>
   );

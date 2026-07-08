@@ -1,7 +1,8 @@
 "use client";
 
 import { useState, useRef } from "react";
-import { ScanLine, Search, CheckCircle2, XCircle, Plus, Minus } from "lucide-react";
+import { Camera, Search, CheckCircle2, XCircle, Plus, Minus } from "lucide-react";
+import { BarcodeScanner } from "@/components/pos/barcode-scanner";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -36,6 +37,7 @@ export default function ScanPage() {
   const [quantity, setQuantity] = useState(1);
   const [logged, setLogged] = useState(false);
   const [recentScans, setRecentScans] = useState<ScanEntry[]>([]);
+  const [showScanner, setShowScanner] = useState(false);
   const debounceRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   const foundProduct = searchedValue
@@ -75,6 +77,12 @@ export default function ScanPage() {
     }
   }
 
+  function handleScanResult(code: string) {
+    setBarcode(code);
+    runSearch(code);
+    setShowScanner(false);
+  }
+
   function handleLogReceipt() {
     if (!foundProduct) return;
     const entry: ScanEntry = {
@@ -98,23 +106,19 @@ export default function ScanPage() {
         </p>
       </div>
 
-      {/* Camera viewfinder */}
-      <div className="flex flex-col items-center gap-3">
-        <div className="relative aspect-square w-full max-w-sm rounded-2xl border-2 border-brand-500 bg-black overflow-hidden flex items-center justify-center">
-          <ScanLine className="h-16 w-16 text-brand-500/60" />
-          <div
-            className="absolute left-0 right-0 h-0.5 bg-brand-500/40"
-            style={{ animation: "scanline 2s ease-in-out infinite" }}
-          />
-          <style>{`
-            @keyframes scanline {
-              0%, 100% { top: 10%; }
-              50% { top: 90%; }
-            }
-          `}</style>
+      {/* Camera scan button */}
+      <button
+        onClick={() => setShowScanner(true)}
+        className="w-full max-w-sm mx-auto flex flex-col items-center justify-center gap-3 rounded-2xl border-2 border-dashed border-brand-300 bg-brand-50/50 dark:bg-brand-500/5 py-10 hover:bg-brand-50 dark:hover:bg-brand-500/10 transition-colors group"
+      >
+        <div className="h-16 w-16 rounded-2xl bg-brand-500 flex items-center justify-center shadow-lg group-hover:scale-105 transition-transform">
+          <Camera className="h-8 w-8 text-white" />
         </div>
-        <p className="text-xs text-muted-foreground">Camera access required</p>
-      </div>
+        <div className="text-center">
+          <p className="font-semibold text-foreground">Tap to Scan Barcode</p>
+          <p className="text-xs text-muted-foreground mt-0.5">Opens camera for live scanning</p>
+        </div>
+      </button>
 
       {/* Manual search */}
       <div className="space-y-2">
@@ -246,6 +250,14 @@ export default function ScanPage() {
             )}
           </CardContent>
         </Card>
+      )}
+
+      {/* Barcode scanner overlay */}
+      {showScanner && (
+        <BarcodeScanner
+          onScan={handleScanResult}
+          onClose={() => setShowScanner(false)}
+        />
       )}
 
       {/* Recent scans */}
