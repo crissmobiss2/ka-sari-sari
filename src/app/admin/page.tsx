@@ -5,9 +5,9 @@ import { TrendingUp, TrendingDown, Package, Users, ShoppingCart, AlertTriangle, 
 import Link from "next/link";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { StatusBadge } from "@/components/ui/status-badge";
-import { formatPHP, formatDateTime } from "@/lib/utils";
+import { formatPHP, formatDateTime, type OrderStatus } from "@/lib/utils";
 import { ADMIN_STATS, ADMIN_RECENT_ORDERS } from "@/lib/mock-data";
-import type { AdminStats, OrderStatus } from "@/types";
+import type { AdminStats } from "@/types";
 
 // ── Normalized order shape for the dashboard table ────────────────────────────
 interface DisplayOrder {
