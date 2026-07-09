@@ -3,6 +3,7 @@
 import { useState, useEffect, type ReactNode } from "react";
 import Link from "next/link";
 import { Bell } from "lucide-react";
+import { LogoMark } from "@/components/ui/logo";
 import { DriverBottomNav } from "@/components/driver/driver-bottom-nav";
 import { LogoutButton } from "@/components/ui/logout-button";
 import { NexoflowFooter } from "@/components/ui/nexoflow-footer";
@@ -32,11 +33,7 @@ export default function DriverLayout({ children }: { children: ReactNode }) {
       <header className="sticky top-0 z-40 bg-card border-b border-border">
         <div className="max-w-md mx-auto px-4 h-14 flex items-center justify-between">
           <div className="flex items-center gap-2.5">
-            <div className="w-7 h-7 rounded-lg bg-brand-500 flex items-center justify-center flex-shrink-0">
-              <svg viewBox="0 0 20 20" fill="white" className="w-4 h-4">
-                <path d="M3 5a2 2 0 012-2h10a2 2 0 012 2v2H3V5zM3 9h14v6a2 2 0 01-2 2H5a2 2 0 01-2-2V9z" />
-              </svg>
-            </div>
+            <LogoMark size={28} className="rounded-lg" />
             <div className="leading-none">
               <p className="font-display text-sm font-bold text-foreground">Ka Sari-Sari</p>
               <p className="text-[10px] text-muted-foreground tracking-wide uppercase">Driver App</p>

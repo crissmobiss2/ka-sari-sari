@@ -1,7 +1,8 @@
 "use client";
 import Link from "next/link";
 import { useState } from "react";
-import { Menu, X, ShoppingBasket } from "lucide-react";
+import { Menu, X } from "lucide-react";
+import { LogoMark } from "@/components/ui/logo";
 import { ButtonLink } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 
@@ -13,9 +14,7 @@ export function PublicNav() {
       <div className="mx-auto flex h-16 max-w-6xl items-center justify-between px-4 sm:px-6">
         {/* Logo */}
         <Link href="/" className="flex items-center gap-2.5">
-          <div className="flex h-8 w-8 items-center justify-center rounded-xl bg-brand-500">
-            <ShoppingBasket className="h-4.5 w-4.5 text-white" strokeWidth={2.2} />
-          </div>
+          <LogoMark size={32} />
           <span className="font-display text-base font-bold text-foreground tracking-tight">
             Ka Sari-Sari
           </span>

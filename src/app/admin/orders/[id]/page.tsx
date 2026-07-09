@@ -1,14 +1,15 @@
 "use client";
 import { useParams } from "next/navigation";
+import { useState } from "react";
 import Link from "next/link";
-import { ArrowLeft, Package, MapPin, CreditCard, CheckCircle2, Clock } from "lucide-react";
+import { ArrowLeft, Package, MapPin, CreditCard, CheckCircle2, Clock, Truck, XCircle } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { StatusBadge } from "@/components/ui/status-badge";
 import { Button } from "@/components/ui/button";
 import { formatPHP, formatDateTime, type OrderStatus, ORDER_STATUS_LABELS } from "@/lib/utils";
 import { ADMIN_RECENT_ORDERS, MOCK_ORDERS, PRODUCTS } from "@/lib/mock-data";
 import { useOrdersStore } from "@/store/orders";
-import { toastSuccess } from "@/store/toast";
+import { toastSuccess, toastError } from "@/store/toast";
 
 const NEXT_STATUS: Partial<Record<OrderStatus, OrderStatus>> = {
   pending: "confirmed",
@@ -20,12 +21,28 @@ const NEXT_STATUS: Partial<Record<OrderStatus, OrderStatus>> = {
 
 const TERMINAL_STATUSES: OrderStatus[] = ["delivered", "cancelled", "failed_delivery", "returned"];
 
+// Statuses where a driver can be assigned
+const ASSIGNABLE_STATUSES: OrderStatus[] = ["confirmed", "picking", "packed"];
+
 export default function AdminOrderDetailPage() {
   const params = useParams();
   const id = Array.isArray(params.id) ? params.id[0] : params.id;
 
+  // Driver assignment state
+  const [driverId, setDriverId] = useState("");
+  const [assigning, setAssigning] = useState(false);
+
+  // Cancel order state
+  const [cancelReason, setCancelReason] = useState("");
+  const [cancelling, setCancelling] = useState(false);
+  const [showCancelForm, setShowCancelForm] = useState(false);
+
+  // Local status override (after API actions)
+  const [localStatus, setLocalStatus] = useState<OrderStatus | null>(null);
+
   const storeOrders = useOrdersStore((s) => s.orders);
   const advance = useOrdersStore((s) => s.advance);
+  const storeDispatch = useOrdersStore((s) => s.dispatch);
 
   // Look up order: store first (live status), then ADMIN_RECENT_ORDERS, then MOCK_ORDERS, then first available
   const storeOrder = storeOrders.find((o) => o.id === id);
@@ -36,16 +53,60 @@ export default function AdminOrderDetailPage() {
 
   // Overlay live status from store if the store knows this order
   const liveStatus = storeOrder?.status ?? baseOrder.status;
-  const order = { ...baseOrder, status: liveStatus };
+  const effectiveStatus: OrderStatus = localStatus ?? liveStatus;
+  const order = { ...baseOrder, status: effectiveStatus };
 
   const nextStatus = NEXT_STATUS[order.status];
   const isTerminal = TERMINAL_STATUSES.includes(order.status);
+  const canAssignDriver = ASSIGNABLE_STATUSES.includes(order.status);
 
   function handleAdvance() {
     advance(order.id);
     const next = NEXT_STATUS[order.status];
     const label = next ? ORDER_STATUS_LABELS[next] : "next status";
     toastSuccess(`Order ${order.orderNumber} marked as ${label}`);
+  }
+
+  async function handleAssignDriver() {
+    if (!driverId.trim()) return;
+    setAssigning(true);
+    try {
+      const res = await fetch(`/api/admin/orders/${order.id}`, {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ action: "assign_driver", driverId: driverId.trim() }),
+      });
+      if (!res.ok) throw new Error("Failed");
+      storeDispatch(order.id, driverId.trim());
+      setLocalStatus("out_for_delivery");
+      toastSuccess(`Driver assigned — Order ${order.orderNumber} dispatched`);
+      setDriverId("");
+    } catch {
+      toastError("Failed to assign driver. Please try again.");
+    } finally {
+      setAssigning(false);
+    }
+  }
+
+  async function handleCancelOrder() {
+    if (!cancelReason.trim()) return;
+    setCancelling(true);
+    try {
+      const res = await fetch(`/api/admin/orders/${order.id}`, {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ action: "cancel", reason: cancelReason.trim() }),
+      });
+      if (!res.ok) throw new Error("Failed");
+      setLocalStatus("cancelled");
+      toastSuccess(`Order ${order.orderNumber} has been cancelled`);
+      setShowCancelForm(false);
+      setCancelReason("");
+    } catch {
+      toastError("Failed to cancel order. Please try again.");
+    } finally {
+      setCancelling(false);
+    }
   }
 
   // Resolve items: use order.items if present, else show a placeholder row
@@ -181,6 +242,84 @@ export default function AdminOrderDetailPage() {
               </div>
             </CardContent>
           </Card>
+
+          {/* Admin Actions — driver assignment + cancel */}
+          {!isTerminal && (
+            <Card>
+              <CardHeader><CardTitle>Admin Actions</CardTitle></CardHeader>
+              <CardContent className="space-y-4">
+                {/* Assign & Dispatch — only when order is ready */}
+                {canAssignDriver && (
+                  <div className="space-y-2">
+                    <p className="text-xs font-semibold text-muted-foreground flex items-center gap-1.5">
+                      <Truck className="h-3.5 w-3.5" /> Assign Driver
+                    </p>
+                    <input
+                      type="text"
+                      value={driverId}
+                      onChange={(e) => setDriverId(e.target.value)}
+                      placeholder="Driver ID or name"
+                      className="w-full h-9 rounded-xl border border-input bg-background px-3 text-sm focus:outline-none focus:ring-2 focus:ring-brand-500"
+                      onKeyDown={(e) => { if (e.key === "Enter") handleAssignDriver(); }}
+                    />
+                    <Button
+                      size="sm"
+                      className="w-full bg-brand-500 hover:bg-brand-600 text-white"
+                      onClick={handleAssignDriver}
+                      disabled={!driverId.trim() || assigning}
+                    >
+                      <Truck className="h-3.5 w-3.5" />
+                      {assigning ? "Dispatching…" : "Assign & Dispatch"}
+                    </Button>
+                  </div>
+                )}
+
+                {/* Cancel Order */}
+                <div className="space-y-2">
+                  {!showCancelForm ? (
+                    <button
+                      onClick={() => setShowCancelForm(true)}
+                      className="w-full rounded-xl border border-danger-200 text-danger-600 py-2 text-sm font-semibold hover:bg-danger-50 transition-colors flex items-center justify-center gap-1.5"
+                    >
+                      <XCircle className="h-3.5 w-3.5" /> Cancel Order
+                    </button>
+                  ) : (
+                    <>
+                      <p className="text-xs font-semibold text-muted-foreground flex items-center gap-1.5">
+                        <XCircle className="h-3.5 w-3.5 text-danger-500" /> Cancellation Reason
+                      </p>
+                      <input
+                        type="text"
+                        value={cancelReason}
+                        onChange={(e) => setCancelReason(e.target.value)}
+                        placeholder="e.g. Out of stock"
+                        className="w-full h-9 rounded-xl border border-input bg-background px-3 text-sm focus:outline-none focus:ring-2 focus:ring-danger-500"
+                        autoFocus
+                        onKeyDown={(e) => { if (e.key === "Enter") handleCancelOrder(); }}
+                      />
+                      <div className="flex gap-2">
+                        <Button
+                          size="sm"
+                          variant="outline"
+                          className="flex-1"
+                          onClick={() => { setShowCancelForm(false); setCancelReason(""); }}
+                        >
+                          Back
+                        </Button>
+                        <button
+                          onClick={handleCancelOrder}
+                          disabled={!cancelReason.trim() || cancelling}
+                          className="flex-1 rounded-xl bg-danger-500 text-white py-1.5 text-sm font-semibold hover:bg-danger-600 transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
+                        >
+                          {cancelling ? "Cancelling…" : "Confirm Cancel"}
+                        </button>
+                      </div>
+                    </>
+                  )}
+                </div>
+              </CardContent>
+            </Card>
+          )}
         </div>
       </div>
     </div>

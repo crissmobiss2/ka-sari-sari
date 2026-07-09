@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo } from "react";
+import { useMemo, useState, useEffect, useCallback } from "react";
 import {
   TrendingUp,
   Download,
@@ -14,15 +14,36 @@ import {
   Zap,
   Package,
   ShoppingCart,
+  Sparkles,
+  TriangleAlert,
 } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
-import { toastSuccess, toastInfo } from "@/store/toast";
+import { toastSuccess, toastInfo, toastError } from "@/store/toast";
 import { MOCK_ORDERS, PRODUCTS, CATEGORIES } from "@/lib/mock-data";
 
 // ── Types ─────────────────────────────────────────────────────────────────────
+
+// Claude AI forecast shape
+interface AiReorder {
+  productName: string;
+  urgency: "critical" | "high" | "medium";
+  suggestedQty: number;
+  reason: string;
+}
+
+interface AiSeasonalAlert {
+  alert: string;
+  affectedProducts: string[];
+}
+
+interface AiForecast {
+  topReorders: AiReorder[];
+  seasonalAlerts: AiSeasonalAlert[];
+  insights: string;
+}
 
 type ActionType = "URGENT" | "Reorder" | "Watch" | "OK";
 
@@ -102,6 +123,14 @@ function actionStyles(action: ActionType): string {
   }
 }
 
+function urgencyBadgeClass(urgency: AiReorder["urgency"]): string {
+  switch (urgency) {
+    case "critical": return "bg-danger-50 text-danger-600 border border-danger-200";
+    case "high":     return "bg-warning-50 text-warning-700 border border-warning-200";
+    case "medium":   return "bg-info-50 text-info-600 border border-info-200";
+  }
+}
+
 function confidenceBarColor(pct: number): string {
   if (pct >= 90) return "bg-success-500";
   if (pct >= 80) return "bg-amber-500";
@@ -178,6 +207,28 @@ function ConfidenceBar({ pct }: { pct: number }) {
 // ── Page ──────────────────────────────────────────────────────────────────────
 
 export default function AdminForecastPage() {
+
+  // ── Claude AI forecast state ──────────────────────────────────────────────
+  const [aiData, setAiData] = useState<AiForecast | null>(null);
+  const [aiLoading, setAiLoading] = useState(true);
+  const [isMockData, setIsMockData] = useState(false);
+
+  const fetchForecast = useCallback(async () => {
+    setAiLoading(true);
+    try {
+      const res = await fetch("/api/admin/forecast");
+      if (!res.ok) throw new Error("Failed");
+      const data = await res.json();
+      setAiData(data.forecast as AiForecast);
+      setIsMockData(data.source === "mock");
+    } catch {
+      toastError("Could not load AI forecast");
+    } finally {
+      setAiLoading(false);
+    }
+  }, []);
+
+  useEffect(() => { fetchForecast(); }, [fetchForecast]);
 
   // ── Velocity computation from MOCK_ORDERS ────────────────────────────────
   const velocityData = useMemo<VelocityEntry[]>(() => {
@@ -280,9 +331,14 @@ export default function AdminForecastPage() {
             <Download className="h-4 w-4" />
             Export Report
           </Button>
-          <Button size="sm" className="bg-brand-500 hover:bg-brand-600 text-white" onClick={() => toastSuccess("Forecast refreshed successfully")}>
-            <RefreshCw className="h-4 w-4" />
-            Refresh Forecast
+          <Button
+            size="sm"
+            className="bg-brand-500 hover:bg-brand-600 text-white"
+            onClick={() => { fetchForecast(); toastSuccess("Refreshing AI forecast…"); }}
+            disabled={aiLoading}
+          >
+            <RefreshCw className={cn("h-4 w-4", aiLoading && "animate-spin")} />
+            {aiLoading ? "Generating…" : "Refresh Forecast"}
           </Button>
         </div>
       </div>
@@ -322,6 +378,98 @@ export default function AdminForecastPage() {
           iconColor="text-muted-foreground"
         />
       </div>
+
+      {/* ── Claude AI Forecast section ───────────────────────────────────────── */}
+      <Card>
+        <CardHeader className="pb-3">
+          <div className="flex items-center justify-between gap-3 flex-wrap">
+            <div className="flex items-center gap-2">
+              <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-brand-50">
+                <Sparkles className="h-4 w-4 text-brand-500" />
+              </div>
+              <div>
+                <CardTitle className="text-base">Claude AI Recommendations</CardTitle>
+                <p className="text-xs text-muted-foreground mt-0.5">Real-time demand insights from AI analysis</p>
+              </div>
+            </div>
+            {isMockData && (
+              <span className="text-[11px] text-muted-foreground bg-muted rounded-lg px-2.5 py-1">
+                Using demo data — connect Anthropic API for live forecasting
+              </span>
+            )}
+          </div>
+        </CardHeader>
+        <CardContent className="pt-0">
+          {aiLoading ? (
+            <div className="flex items-center gap-3 py-6 justify-center">
+              <Sparkles className="h-4 w-4 text-brand-400 animate-pulse" />
+              <span className="text-sm text-muted-foreground">Generating with Claude AI…</span>
+            </div>
+          ) : aiData ? (
+            <div className="space-y-5">
+              {/* Top reorders list */}
+              <div>
+                <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wide mb-3">Top Reorder Recommendations</p>
+                <div className="space-y-2">
+                  {aiData.topReorders.map((item, i) => (
+                    <div key={i} className="flex items-start gap-3 py-2.5 border-b border-border last:border-0">
+                      <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-brand-100 text-brand-700 text-xs font-bold mt-0.5">
+                        {i + 1}
+                      </span>
+                      <div className="flex-1 min-w-0">
+                        <p className="text-sm font-medium text-foreground leading-tight">{item.productName}</p>
+                        <p className="text-xs text-muted-foreground mt-0.5">{item.reason}</p>
+                      </div>
+                      <div className="shrink-0 text-right space-y-1">
+                        <span className={cn("inline-block text-xs font-semibold rounded-full px-2 py-0.5 capitalize", urgencyBadgeClass(item.urgency))}>
+                          {item.urgency}
+                        </span>
+                        <p className="text-xs font-bold text-success-600 tabular-nums">+{item.suggestedQty} units</p>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              {/* Seasonal alerts */}
+              {aiData.seasonalAlerts.length > 0 && (
+                <div>
+                  <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wide mb-3">Seasonal Alerts</p>
+                  <div className="space-y-2">
+                    {aiData.seasonalAlerts.map((alert, i) => (
+                      <div key={i} className="rounded-xl bg-warning-50/60 border border-warning-200 p-3.5">
+                        <div className="flex items-start gap-2">
+                          <TriangleAlert className="h-4 w-4 text-warning-600 shrink-0 mt-0.5" />
+                          <div>
+                            <p className="text-sm font-medium text-foreground">{alert.alert}</p>
+                            {alert.affectedProducts.length > 0 && (
+                              <p className="text-xs text-muted-foreground mt-1">
+                                Affects: {alert.affectedProducts.join(", ")}
+                              </p>
+                            )}
+                          </div>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
+
+              {/* Insights text */}
+              {aiData.insights && (
+                <div className="rounded-xl bg-brand-50/60 border border-brand-200 p-3.5">
+                  <div className="flex items-start gap-2">
+                    <Lightbulb className="h-4 w-4 text-brand-500 shrink-0 mt-0.5" />
+                    <p className="text-sm text-foreground leading-relaxed">{aiData.insights}</p>
+                  </div>
+                </div>
+              )}
+            </div>
+          ) : (
+            <p className="text-sm text-muted-foreground py-4 text-center">No forecast data available</p>
+          )}
+        </CardContent>
+      </Card>
 
       {/* ── Velocity-driven intelligence cards ──────────────────────────────── */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">

@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import Link from "next/link";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -12,11 +12,21 @@ import { useOrdersStore } from "@/store/orders";
 const driver = DRIVERS[0]; // Rodrigo Delos Santos
 const route = ROUTES[0];   // Caloocan North
 
+interface ApiDeliveryCounts {
+  total: number;
+  delivered: number;
+  pending: number;
+  codToCollect: number;
+}
+
 export default function DriverHomePage() {
   // Persist duty state to sessionStorage so it survives page navigation within the session
   const [onDuty, setOnDuty] = useState(() =>
     typeof window !== "undefined" ? sessionStorage.getItem("driver-duty") === "1" : false
   );
+
+  // Ref to hold the geolocation watchPosition ID so we can clear it later
+  const watchIdRef = useRef<number | null>(null);
 
   const [greeting, setGreeting] = useState("Good day");
   useEffect(() => {
@@ -24,9 +34,44 @@ export default function DriverHomePage() {
     setGreeting(h < 12 ? "Good morning" : h < 18 ? "Good afternoon" : "Good evening");
   }, []);
 
+  // API-derived delivery counts — fetched on mount, used in summary cards
+  const [apiCounts, setApiCounts] = useState<ApiDeliveryCounts | null>(null);
+
+  useEffect(() => {
+    async function fetchDeliveryCounts() {
+      try {
+        const res = await fetch("/api/driver/deliveries");
+        if (!res.ok) return;
+        const data = await res.json();
+        const deliveries: Array<{ status: string; codAmount?: number }> = data.deliveries ?? [];
+        const total = deliveries.length;
+        const delivered = deliveries.filter((d) => d.status === "delivered").length;
+        const pending = deliveries.filter((d) =>
+          ["assigned", "pending", "out_for_delivery"].includes(d.status)
+        ).length;
+        const codToCollect = deliveries
+          .filter((d) => ["assigned", "pending", "out_for_delivery"].includes(d.status) && d.codAmount)
+          .reduce((sum, d) => sum + (d.codAmount ?? 0), 0);
+        setApiCounts({ total, delivered, pending, codToCollect });
+      } catch {
+        // Fall back to store data silently
+      }
+    }
+    fetchDeliveryCounts();
+  }, []);
+
+  // Clear geolocation watch when component unmounts
+  useEffect(() => {
+    return () => {
+      if (watchIdRef.current !== null && typeof navigator !== "undefined" && navigator.geolocation) {
+        navigator.geolocation.clearWatch(watchIdRef.current);
+      }
+    };
+  }, []);
+
   const progressPct = Math.round((route.completedStops / route.stops) * 100);
 
-  // Derive real metrics from the orders store
+  // Derive fallback metrics from the orders store (also drives the "Next stop" card)
   const orders = useOrdersStore((s) => s.orders);
   const myDeliveries = orders.filter((o) =>
     ["out_for_delivery", "delivered", "failed_delivery"].includes(o.status)
@@ -38,13 +83,56 @@ export default function DriverHomePage() {
     .reduce((s, o) => s + o.total, 0);
   const nextStop = pendingDeliveries[0] ?? null; // first pending delivery
 
+  // Prefer API counts; fall back to store-derived values
+  const displayTotal         = apiCounts?.total       ?? myDeliveries.length;
+  const displayDelivered     = apiCounts?.delivered   ?? deliveredToday;
+  const displayPending       = apiCounts?.pending     ?? pendingDeliveries.length;
+  const displayCodToCollect  = apiCounts?.codToCollect ?? codToCollect;
+
   // Estimated earnings: ₱80/stop + 2% COD incentive
-  const estEarnings = (deliveredToday || route.completedStops) * 80 + codToCollect * 0.02;
+  const estEarnings = displayDelivered * 80 + displayCodToCollect * 0.02;
+
+  // ── GPS helpers ──────────────────────────────────────────────────────────────
+
+  function startLocationSharing() {
+    if (typeof navigator === "undefined" || !navigator.geolocation) return;
+    const id = navigator.geolocation.watchPosition(
+      (pos) => {
+        fetch("/api/driver/location", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            lat: pos.coords.latitude,
+            lng: pos.coords.longitude,
+            heading: pos.coords.heading ?? null,
+            speed: pos.coords.speed ?? null,
+          }),
+        }).catch(() => {}); // fire-and-forget; don't block the driver
+      },
+      (err) => console.warn("Geolocation error:", err),
+      { enableHighAccuracy: true, maximumAge: 5000, timeout: 10000 }
+    );
+    watchIdRef.current = id;
+  }
+
+  function stopLocationSharing() {
+    if (watchIdRef.current !== null && typeof navigator !== "undefined" && navigator.geolocation) {
+      navigator.geolocation.clearWatch(watchIdRef.current);
+      watchIdRef.current = null;
+    }
+  }
+
+  // ── Duty toggle ──────────────────────────────────────────────────────────────
 
   const handleDutyToggle = () => {
     const next = !onDuty;
     sessionStorage.setItem("driver-duty", next ? "1" : "0");
     setOnDuty(next);
+    if (next) {
+      startLocationSharing();
+    } else {
+      stopLocationSharing();
+    }
   };
 
   return (
@@ -81,19 +169,19 @@ export default function DriverHomePage() {
         <div className="grid grid-cols-2 gap-3">
           <SummaryCard
             label="Assigned"
-            value={myDeliveries.length}
-            badge={`${deliveredToday} done`}
+            value={displayTotal}
+            badge={`${displayDelivered} done`}
             badgeVariant="success"
           />
           <SummaryCard
             label="Delivered"
-            value={deliveredToday}
-            badge={`${pendingDeliveries.length} left`}
+            value={displayDelivered}
+            badge={`${displayPending} left`}
             badgeVariant="warning"
           />
           <SummaryCard
             label="COD to Collect"
-            value={formatPHP(codToCollect)}
+            value={formatPHP(displayCodToCollect)}
             valueClass="text-brand-500"
             badge="cash"
             badgeVariant="default"
@@ -112,8 +200,12 @@ export default function DriverHomePage() {
       <Card className="p-4">
         <div className="grid grid-cols-3 divide-x divide-border">
           <StatCell label="Distance" value={route.distance} />
-          <StatCell label="Done" value={String(deliveredToday)} />
-          <StatCell label="Success" value={myDeliveries.length > 0 ? `${Math.round((deliveredToday / myDeliveries.length) * 100)}%` : "—"} valueClass="text-success-600" />
+          <StatCell label="Done" value={String(displayDelivered)} />
+          <StatCell
+            label="Success"
+            value={displayTotal > 0 ? `${Math.round((displayDelivered / displayTotal) * 100)}%` : "—"}
+            valueClass="text-success-600"
+          />
         </div>
       </Card>
 

@@ -3,13 +3,14 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import {
   LayoutDashboard, Package, ShoppingCart, Users, BarChart3,
-  Warehouse, Truck, CreditCard, Settings, ShoppingBasket,
+  Warehouse, Truck, CreditCard, Settings,
   ClipboardList, Tag, ChevronRight, Map,
   Banknote, Building2, FileText, Monitor,
   PackageCheck, Boxes, ScanLine, TrendingUp, Brain, MessageCircle, UserCog, Landmark,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { ThemeToggle } from "@/components/ui/theme-toggle";
+import { LogoMark } from "@/components/ui/logo";
 
 const navGroups = [
   {
@@ -83,9 +84,7 @@ export function AdminSidebar() {
     <aside className="hidden md:flex flex-col w-60 border-r border-border bg-card h-screen sticky top-0 overflow-y-auto">
       {/* Logo */}
       <div className="flex items-center gap-2.5 px-5 py-4 border-b border-border">
-        <div className="flex h-7 w-7 items-center justify-center rounded-lg bg-brand-500">
-          <ShoppingBasket className="h-4 w-4 text-white" strokeWidth={2.2} />
-        </div>
+        <LogoMark size={28} className="rounded-lg" />
         <div>
           <p className="font-display text-sm font-bold text-foreground leading-tight">Ka Sari-Sari</p>
           <p className="text-[10px] text-muted-foreground">Admin Console</p>

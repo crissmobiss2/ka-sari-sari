@@ -171,6 +171,22 @@ function formatTimestamp(iso: string): string {
   }).format(new Date(iso));
 }
 
+// ─── Helper: get current GPS coords (resolves null if unavailable) ────────────
+
+async function getCurrentGPS(): Promise<{ lat: number; lng: number } | null> {
+  return new Promise((resolve) => {
+    if (typeof navigator === "undefined" || !navigator.geolocation) {
+      resolve(null);
+      return;
+    }
+    navigator.geolocation.getCurrentPosition(
+      (pos) => resolve({ lat: pos.coords.latitude, lng: pos.coords.longitude }),
+      () => resolve(null),
+      { timeout: 5000 }
+    );
+  });
+}
+
 // ─── Main component ───────────────────────────────────────────────────────────
 
 export default function DeliveryDetailPage() {
@@ -196,6 +212,12 @@ export default function DeliveryDetailPage() {
   const [showDeliverConfirm, setShowDeliverConfirm] = useState(false);
   const [selectedFailReason, setSelectedFailReason] = useState(FAIL_REASONS[0]);
 
+  // Delivery record ID (looked up from API by matching orderId === id)
+  const [deliveryId, setDeliveryId] = useState<string | null>(null);
+
+  // Loading state during API submission — disables action buttons
+  const [isSubmitting, setIsSubmitting] = useState(false);
+
   // POD photo state
   const [photoUrl, setPhotoUrl] = useState<string | null>(null);
   const [captureTime, setCaptureTime] = useState<string | null>(null);
@@ -208,6 +230,24 @@ export default function DeliveryDetailPage() {
   const isDrawingRef = useRef(false);
 
   const photoTaken = photoUrl !== null;
+
+  // ─── Fetch delivery record ID on mount ───────────────────────────────────────
+
+  useEffect(() => {
+    async function fetchDeliveryId() {
+      try {
+        const res = await fetch("/api/driver/deliveries");
+        if (!res.ok) return;
+        const data = await res.json();
+        const deliveries: Array<{ id: string; orderId: string }> = data.deliveries ?? [];
+        const found = deliveries.find((d) => d.orderId === id);
+        if (found) setDeliveryId(found.id);
+      } catch {
+        // deliveryId remains null — API calls will be skipped (local-only fallback)
+      }
+    }
+    fetchDeliveryId();
+  }, [id]);
 
   // ─── Event handlers ───────────────────────────────────────────────────────
 
@@ -284,7 +324,61 @@ export default function DeliveryDetailPage() {
     setShowSignaturePad(false);
   }
 
-  function handleDeliver() {
+  // ─── Handle deliver (async — calls API then updates local state) ──────────
+
+  async function handleDeliver() {
+    setIsSubmitting(true);
+
+    // 1. Try to get GPS coordinates
+    let lat: number | undefined;
+    let lng: number | undefined;
+    const gps = await getCurrentGPS();
+    if (gps) {
+      lat = gps.lat;
+      lng = gps.lng;
+    }
+
+    // 2. Try to upload POD photo if it's a local blob URL
+    let uploadedUrl: string | null = photoUrl;
+    if (photoUrl && photoUrl.startsWith("blob:")) {
+      try {
+        const resp = await fetch(photoUrl);
+        const blob = await resp.blob();
+        const formData = new FormData();
+        formData.append("file", blob, "pod-photo.jpg");
+        const uploadRes = await fetch("/api/upload", { method: "POST", body: formData });
+        if (uploadRes.ok) {
+          const uploadData = await uploadRes.json();
+          uploadedUrl = uploadData.url ?? photoUrl;
+        }
+      } catch {
+        // Keep blob URL as fallback — don't block the delivery flow
+      }
+    }
+
+    // 3. Call API (best-effort; falls back to local-only if unavailable)
+    if (process.env.NEXT_PUBLIC_SUPABASE_URL || deliveryId) {
+      try {
+        await fetch(`/api/driver/deliveries/${deliveryId}`, {
+          method: "PATCH",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            action: "delivered",
+            orderId: id,
+            proofPhotoUrl: uploadedUrl,
+            signatureUrl: signatureData,
+            recipientName: customerName,
+            codCollected: cashCollected ? order.total : undefined,
+            lat,
+            lng,
+          }),
+        });
+      } catch (err) {
+        console.warn("Deliver API call failed:", err);
+      }
+    }
+
+    // 4. Update local state regardless of API outcome
     const now = new Intl.DateTimeFormat("en-PH", {
       hour: "2-digit",
       minute: "2-digit",
@@ -295,12 +389,36 @@ export default function DeliveryDetailPage() {
     markDelivered(id);
     setDelivered(true);
     setShowDeliverConfirm(false);
+    setIsSubmitting(false);
   }
 
-  function handleConfirmFailed() {
+  // ─── Handle confirmed failed delivery (async — calls API then local state) ─
+
+  async function handleConfirmFailed() {
+    setIsSubmitting(true);
+
+    // Call API (best-effort)
+    if (process.env.NEXT_PUBLIC_SUPABASE_URL || deliveryId) {
+      try {
+        await fetch(`/api/driver/deliveries/${deliveryId}`, {
+          method: "PATCH",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            action: "failed_attempt",
+            orderId: id,
+            failureReason: selectedFailReason,
+          }),
+        });
+      } catch (err) {
+        console.warn("Failed delivery API call failed:", err);
+      }
+    }
+
+    // Update local state regardless of API outcome
     markFailed(id, selectedFailReason);
     setShowFailPicker(false);
     setFailed(true);
+    setIsSubmitting(false);
   }
 
   function handleOpenMaps() {
@@ -364,9 +482,10 @@ export default function DeliveryDetailPage() {
 
   // ─── Deliver button state ─────────────────────────────────────────────────
 
-  const isDeliverDisabled = (isCOD && !cashCollected) || !photoTaken;
+  const isDeliverDisabled = (isCOD && !cashCollected) || !photoTaken || isSubmitting;
 
   function getDeliverButtonLabel(): string {
+    if (isSubmitting) return "Submitting...";
     if (!photoTaken) return "Take photo first";
     if (isCOD && !cashCollected) return "Collect cash first";
     return "Mark as Delivered";
@@ -781,7 +900,7 @@ export default function DeliveryDetailPage() {
             {getDeliverButtonLabel()}
           </button>
 
-          {isDeliverDisabled && (
+          {isDeliverDisabled && !isSubmitting && (
             <p className="text-center text-xs text-muted-foreground -mt-1">
               {!photoTaken
                 ? "Take a proof of delivery photo above before marking delivered"
@@ -827,13 +946,15 @@ export default function DeliveryDetailPage() {
             <div className="flex flex-col gap-2">
               <button
                 onClick={handleDeliver}
-                className="w-full h-12 rounded-xl bg-success-600 hover:bg-success-700 text-white font-bold text-sm transition-colors"
+                disabled={isSubmitting}
+                className="w-full h-12 rounded-xl bg-success-600 hover:bg-success-700 text-white font-bold text-sm transition-colors disabled:opacity-60 disabled:cursor-not-allowed"
               >
-                Yes, Mark as Delivered
+                {isSubmitting ? "Submitting..." : "Yes, Mark as Delivered"}
               </button>
               <button
                 onClick={() => setShowDeliverConfirm(false)}
-                className="w-full h-12 rounded-xl border border-border text-foreground font-medium text-sm hover:bg-muted transition-colors"
+                disabled={isSubmitting}
+                className="w-full h-12 rounded-xl border border-border text-foreground font-medium text-sm hover:bg-muted transition-colors disabled:opacity-50"
               >
                 Cancel
               </button>
@@ -884,13 +1005,15 @@ export default function DeliveryDetailPage() {
             </div>
             <button
               onClick={handleConfirmFailed}
-              className="w-full h-12 rounded-2xl bg-danger-600 hover:bg-danger-700 text-white font-bold text-sm transition-colors"
+              disabled={isSubmitting}
+              className="w-full h-12 rounded-2xl bg-danger-600 hover:bg-danger-700 text-white font-bold text-sm transition-colors disabled:opacity-60 disabled:cursor-not-allowed"
             >
-              Confirm Failed Delivery
+              {isSubmitting ? "Submitting..." : "Confirm Failed Delivery"}
             </button>
             <button
               onClick={() => setShowFailPicker(false)}
-              className="w-full text-center text-sm text-muted-foreground py-1 hover:text-foreground transition-colors"
+              disabled={isSubmitting}
+              className="w-full text-center text-sm text-muted-foreground py-1 hover:text-foreground transition-colors disabled:opacity-50"
             >
               Cancel
             </button>

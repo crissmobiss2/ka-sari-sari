@@ -1017,6 +1017,8 @@ export const ADMIN_STATS: AdminStats = {
   activeRetailers: 312,
   newRetailersMonth: 24,
   pendingOrders: 14,
+  processingOrders: 8,
+  outForDelivery: 5,
   lowStockItems: 6,
 };
 

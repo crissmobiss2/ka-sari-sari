@@ -60,6 +60,83 @@ const STAGES: { key: Stage; label: string; sublabel: string }[] = [
   { key: "delivered",        label: "Delivered",        sublabel: "Awaiting delivery" },
 ];
 
+// ── Live Location Section ─────────────────────────────────────────────────────
+
+interface DriverLocation {
+  lat: number;
+  lng: number;
+  heading?: number;
+  speed?: number;
+  updatedAt?: string;
+}
+
+function LiveLocationSection({ location }: { location: DriverLocation | null }) {
+  if (!location) return null;
+
+  const mapsKey = process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY;
+
+  return (
+    <div className="mx-4 rounded-2xl border border-border bg-card shadow-card overflow-hidden">
+      <div className="px-4 py-2.5 border-b border-border flex items-center justify-between">
+        <div className="flex items-center gap-2">
+          <MapPin className="h-3.5 w-3.5 text-brand-500" />
+          <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wide">Driver GPS</p>
+        </div>
+        <div className="flex items-center gap-1.5">
+          <span className="relative flex h-2 w-2">
+            <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-success-500 opacity-75" />
+            <span className="relative inline-flex rounded-full h-2 w-2 bg-success-500" />
+          </span>
+          <span className="text-[11px] text-success-600 font-semibold">Live</span>
+        </div>
+      </div>
+
+      {mapsKey ? (
+        <iframe
+          title="Driver live location"
+          width="100%"
+          height="220"
+          loading="lazy"
+          referrerPolicy="no-referrer-when-downgrade"
+          src={`https://www.google.com/maps/embed/v1/place?key=${mapsKey}&q=${location.lat},${location.lng}&zoom=15`}
+          style={{ border: 0, display: "block" }}
+          allowFullScreen
+        />
+      ) : (
+        <div className="p-4 space-y-3">
+          <div className="flex items-start gap-3 rounded-xl bg-surface-50 border border-border px-4 py-3">
+            <MapPin className="h-4 w-4 text-brand-500 shrink-0 mt-0.5" />
+            <div className="min-w-0">
+              <p className="text-xs font-semibold text-foreground">Current GPS Coordinates</p>
+              <p className="text-xs text-muted-foreground font-mono mt-0.5">
+                {location.lat.toFixed(6)}°N, {location.lng.toFixed(6)}°E
+              </p>
+              {location.heading != null && (
+                <p className="text-[11px] text-muted-foreground mt-0.5">
+                  Heading: {Math.round(location.heading)}° · Speed: {location.speed != null ? `${Math.round(location.speed)} km/h` : "—"}
+                </p>
+              )}
+            </div>
+          </div>
+          <p className="text-xs text-muted-foreground text-center">
+            Driver is approximately nearby · Real-time tracking active
+          </p>
+        </div>
+      )}
+
+      <div className="px-4 py-2.5 border-t border-border">
+        <p className="text-xs text-muted-foreground">
+          <span className="font-medium text-foreground">Driver is approximately nearby</span>
+          {location.updatedAt
+            ? ` · Updated ${new Date(location.updatedAt).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })}`
+            : " · Updated just now"
+          }
+        </p>
+      </div>
+    </div>
+  );
+}
+
 // ── Route Map SVG ─────────────────────────────────────────────────────────────
 
 function RouteMap() {
@@ -443,6 +520,40 @@ function StatusTracker() {
 // ── Page ──────────────────────────────────────────────────────────────────────
 
 export default function TrackingPage() {
+  const [driverId, setDriverId]         = useState<string | null>(null);
+  const [driverLocation, setDriverLocation] = useState<DriverLocation | null>(null);
+
+  // Resolve driverId from URL query param (?driverId=...)
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      const params = new URLSearchParams(window.location.search);
+      const id = params.get("driverId");
+      if (id) setDriverId(id);
+    }
+  }, []);
+
+  // Poll driver location every 10 seconds
+  useEffect(() => {
+    if (!driverId) return;
+
+    async function fetchLocation() {
+      try {
+        const res = await fetch(`/api/driver/location?driverId=${encodeURIComponent(driverId!)}`);
+        if (!res.ok) return;
+        const data = await res.json();
+        if (data.location) {
+          setDriverLocation(data.location);
+        }
+      } catch {
+        // Silently ignore network errors — keep showing last known location
+      }
+    }
+
+    fetchLocation();
+    const interval = setInterval(fetchLocation, 10_000);
+    return () => clearInterval(interval);
+  }, [driverId]);
+
   return (
     <div className="min-h-screen bg-background pb-28">
       <RetailerTopBar title="Live Tracking" />
@@ -453,6 +564,9 @@ export default function TrackingPage() {
             <ArrowLeft className="h-4 w-4" /> {ORDER.number}
           </Link>
         </div>
+
+        {/* Live GPS section — only shown when real coordinates are available */}
+        <LiveLocationSection location={driverLocation} />
 
         <RouteMap />
         <EtaCard />

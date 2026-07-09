@@ -1,7 +1,8 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { ShoppingBasket, Bell } from "lucide-react";
+import { Bell } from "lucide-react";
+import { LogoMark } from "@/components/ui/logo";
 import { WarehouseNav } from "@/components/warehouse/warehouse-nav";
 import { LogoutButton } from "@/components/ui/logout-button";
 import { NexoflowFooter } from "@/components/ui/nexoflow-footer";
@@ -23,9 +24,7 @@ export default function WarehouseLayout({ children }: { children: React.ReactNod
       {/* Top Header */}
       <header className="sticky top-0 z-50 flex items-center justify-between bg-card border-b border-border px-4 py-3 shadow-sm">
         <div className="flex items-center gap-3">
-          <div className="flex items-center justify-center w-10 h-10 rounded-xl bg-brand-500/10">
-            <ShoppingBasket className="h-6 w-6 text-brand-500" />
-          </div>
+          <LogoMark size={40} />
           <div>
             <p className="font-display font-bold text-base text-foreground leading-tight">Ka Sari-Sari</p>
             <p className="text-xs text-muted-foreground leading-tight">Warehouse</p>

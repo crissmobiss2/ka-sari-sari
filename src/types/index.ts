@@ -226,6 +226,8 @@ export interface AdminStats {
   activeRetailers: number;
   newRetailersMonth: number;
   pendingOrders: number;
+  processingOrders: number;
+  outForDelivery: number;
   lowStockItems: number;
 }
 

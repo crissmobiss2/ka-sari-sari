@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import {
   PackageCheck,
   ScanLine,
@@ -15,8 +15,27 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { cn } from "@/lib/utils";
 import { GOODS_RECEIPTS } from "@/lib/mock-data";
-import { toastError } from "@/store/toast";
-import type { GoodsReceipt } from "@/types";
+import { toastError, toastSuccess } from "@/store/toast";
+
+// ─── Local types ──────────────────────────────────────────────────────────────
+
+type ReceivingItem = {
+  purchaseOrderItemId: string;
+  productId: string;
+  productName: string;
+  sku: string;
+  expectedQty: number;
+  receivedQty: number;
+};
+
+type ReceivingPO = {
+  id: string;          // purchase order id (used as purchaseOrderId in POST)
+  poNumber: string;
+  supplierName: string;
+  status: "pending" | "in_progress" | "completed";
+  items: ReceivingItem[];
+  createdAt: string;
+};
 
 type ReceiveFormState = {
   grId: string;
@@ -29,6 +48,57 @@ type ReceiveFormState = {
   error: string;
 };
 
+// ─── Data mapping helpers ─────────────────────────────────────────────────────
+
+// Map raw API/Supabase PO object (may be snake_case) to ReceivingPO
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+function mapPOToReceivingPO(po: any): ReceivingPO {
+  const rawStatus: string = po.status ?? "";
+  const status: ReceivingPO["status"] =
+    rawStatus === "partial" ? "in_progress"
+    : rawStatus === "received" ? "completed"
+    : "pending";
+
+  return {
+    id: po.id,
+    poNumber: po.po_number ?? po.poNumber ?? "",
+    supplierName: po.supplier?.name ?? po.supplierName ?? "",
+    status,
+    items: (po.items ?? []).map(
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      (item: any): ReceivingItem => ({
+        purchaseOrderItemId: item.id ?? "",
+        productId: item.product_id ?? item.productId ?? "",
+        productName:
+          item.product?.name ?? item.product_name ?? item.productName ?? "",
+        sku: item.product?.sku ?? item.sku ?? "",
+        expectedQty: item.qty_ordered ?? item.orderedQty ?? item.expectedQty ?? 0,
+        receivedQty: item.qty_received ?? item.receivedQty ?? 0,
+      })
+    ),
+    createdAt: po.created_at ?? po.createdAt ?? new Date().toISOString(),
+  };
+}
+
+// Convert mock GOODS_RECEIPTS to ReceivingPO shape for offline fallback
+const FALLBACK_RECEIVING: ReceivingPO[] = GOODS_RECEIPTS.map((gr) => ({
+  id: gr.id,
+  poNumber: gr.poNumber,
+  supplierName: gr.supplierName,
+  status: gr.status,
+  items: gr.items.map((item) => ({
+    purchaseOrderItemId: "",
+    productId: "",
+    productName: item.productName,
+    sku: item.sku,
+    expectedQty: item.expectedQty,
+    receivedQty: item.receivedQty,
+  })),
+  createdAt: gr.createdAt,
+}));
+
+// ─── Formatters ───────────────────────────────────────────────────────────────
+
 function formatDate(isoString: string) {
   return new Date(isoString).toLocaleDateString("en-PH", {
     month: "short",
@@ -37,7 +107,7 @@ function formatDate(isoString: string) {
   });
 }
 
-function statusBadge(status: GoodsReceipt["status"]) {
+function statusBadge(status: ReceivingPO["status"]) {
   if (status === "completed")
     return <Badge variant="success">Received</Badge>;
   if (status === "in_progress")
@@ -45,11 +115,32 @@ function statusBadge(status: GoodsReceipt["status"]) {
   return <Badge variant="warning">Pending</Badge>;
 }
 
+// ─── Page ─────────────────────────────────────────────────────────────────────
+
 export default function ReceivingPage() {
-  const [receipts, setReceipts] = useState<GoodsReceipt[]>(GOODS_RECEIPTS);
+  const [receipts, setReceipts] = useState<ReceivingPO[]>([]);
+  const [loading, setLoading] = useState(true);
   // Fix #4: allow multiple cards expanded at once via a Set
   const [expandedIds, setExpandedIds] = useState<Set<string>>(new Set());
   const [form, setForm] = useState<ReceiveFormState | null>(null);
+
+  async function fetchPOs() {
+    try {
+      const res = await fetch("/api/warehouse/receive");
+      if (!res.ok) throw new Error("Failed to fetch");
+      const data = await res.json();
+      const pos: unknown[] = data.purchaseOrders ?? [];
+      setReceipts(pos.length > 0 ? pos.map(mapPOToReceivingPO) : FALLBACK_RECEIVING);
+    } catch {
+      setReceipts(FALLBACK_RECEIVING);
+    }
+  }
+
+  useEffect(() => {
+    setLoading(true);
+    fetchPOs().finally(() => setLoading(false));
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   function toggleExpand(id: string) {
     setExpandedIds((prev) => {
@@ -93,7 +184,7 @@ export default function ReceivingPage() {
     setForm((f) => f && { ...f, qty: num, error: "" });
   }
 
-  function handleConfirm() {
+  async function handleConfirm() {
     if (!form) return;
 
     // Validate
@@ -117,7 +208,7 @@ export default function ReceivingPage() {
       return;
     }
 
-    // Update state
+    // Optimistic local update
     setReceipts((prev) =>
       prev.map((gr) => {
         if (gr.id !== form.grId) return gr;
@@ -142,8 +233,37 @@ export default function ReceivingPage() {
     );
 
     setForm((f) => f && { ...f, confirmed: true, error: "" });
+
+    // POST to API
+    try {
+      const res = await fetch("/api/warehouse/receive", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          purchaseOrderId: receipt.id,
+          items: [
+            {
+              purchaseOrderItemId: item.purchaseOrderItemId,
+              productId: item.productId,
+              qtyReceived: qty,
+            },
+          ],
+          notes: "",
+        }),
+      });
+      if (res.ok) {
+        toastSuccess("Items received successfully");
+      }
+    } catch {
+      // Optimistic update stays in place even on network error
+    }
+
     // Fix #2: increased from 1500ms to 3000ms so users can read the confirmation
-    setTimeout(() => setForm(null), 3000);
+    // Refetch after form closes to sync server state
+    setTimeout(() => {
+      setForm(null);
+      fetchPOs();
+    }, 3000);
   }
 
   const pending = receipts.filter((gr) => gr.status === "pending");
@@ -155,6 +275,17 @@ export default function ReceivingPage() {
     { label: "In Progress", items: inProgress, accent: "text-blue-600" },
     { label: "Completed", items: completed, accent: "text-success-700" },
   ];
+
+  if (loading) {
+    return (
+      <div className="px-4 py-6 max-w-2xl mx-auto flex items-center justify-center min-h-[40vh]">
+        <div className="flex flex-col items-center gap-3 text-muted-foreground">
+          <div className="h-8 w-8 rounded-full border-4 border-brand-500 border-t-transparent animate-spin" />
+          <p className="text-sm">Loading deliveries…</p>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="px-4 py-6 max-w-2xl mx-auto space-y-6">
@@ -218,8 +349,8 @@ export default function ReceivingPage() {
         <Card>
           <CardContent className="p-10 text-center">
             <CheckCircle2 className="h-12 w-12 text-success-700 mx-auto mb-3" />
-            <p className="text-lg font-semibold text-foreground">All caught up!</p>
-            <p className="text-muted-foreground mt-1">No goods receipts to process.</p>
+            <p className="text-lg font-semibold text-foreground">No pending deliveries</p>
+            <p className="text-muted-foreground mt-1">No purchase orders are awaiting receipt.</p>
           </CardContent>
         </Card>
       )}
@@ -241,7 +372,7 @@ function ReceiptCard({
   onConfirm,
   onToggleManual,
 }: {
-  gr: GoodsReceipt;
+  gr: ReceivingPO;
   isExpanded: boolean;
   form: ReceiveFormState | null;
   onToggle: () => void;
@@ -316,7 +447,7 @@ function ReceiptCard({
               const isActiveForm = form?.itemIdx === idx;
 
               return (
-                <div key={item.sku} className="space-y-3">
+                <div key={item.sku || idx} className="space-y-3">
                   {/* Item row */}
                   <div className="flex items-start justify-between gap-3">
                     <div className="min-w-0 flex-1">

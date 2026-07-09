@@ -1,54 +1,68 @@
 import { NextRequest, NextResponse } from "next/server";
-import { db, findUserByPhone } from "@/lib/db";
+import { sendSMS, generateOTP, hashOTP } from "@/lib/sms";
+import { saveOTP, verifyOTP, findUserByPhone, updateUser } from "@/lib/supabase-db";
 import bcrypt from "bcryptjs";
 
-// In-memory OTP store (resets on cold start — production should use Redis/Supabase)
-const otpStore = new Map<string, { otp: string; expires: number }>();
+const useSupabase = !!process.env.NEXT_PUBLIC_SUPABASE_URL;
 
+// POST — send OTP
 export async function POST(req: NextRequest) {
-  const { phone } = await req.json();
+  try {
+    const { phone } = await req.json();
+    if (!phone) return NextResponse.json({ error: "Phone required" }, { status: 400 });
 
-  if (!phone || typeof phone !== "string") {
-    return NextResponse.json({ error: "Phone number required" }, { status: 400 });
+    if (useSupabase) {
+      const user = await findUserByPhone(phone);
+      if (!user) return NextResponse.json({ ok: true }); // Don't reveal if account exists
+
+      const otp = generateOTP();
+      const codeHash = await hashOTP(otp);
+      const expiresAt = new Date(Date.now() + 10 * 60 * 1000);
+
+      await saveOTP(phone, codeHash, expiresAt);
+      const sent = await sendSMS(phone, `Your Ka Sari-Sari reset code is: ${otp}. Valid for 10 minutes.`);
+      if (!sent) console.log(`[DEV] OTP for ${phone}: ${otp}`);
+    } else {
+      console.log(`[DEV] OTP for ${phone}: 123456`);
+    }
+
+    return NextResponse.json({ ok: true });
+  } catch (err) {
+    console.error("Forgot password error:", err);
+    return NextResponse.json({ error: "Failed to send OTP" }, { status: 500 });
   }
-
-  // Always return success (don't reveal if phone exists)
-  const user = findUserByPhone(phone);
-  if (!user) {
-    return NextResponse.json({ success: true });
-  }
-
-  // Generate 6-digit OTP
-  const otp = Math.floor(100000 + Math.random() * 900000).toString();
-  otpStore.set(phone, { otp, expires: Date.now() + 5 * 60 * 1000 });
-
-  // In production: send via Semaphore SMS. For now, log to console.
-  console.log(`[OTP] Phone: ${phone}, Code: ${otp}`);
-
-  return NextResponse.json({ success: true });
 }
 
+// PUT — verify OTP + reset password
 export async function PUT(req: NextRequest) {
-  const { phone, otp, newPassword } = await req.json();
+  try {
+    const { phone, otp, newPassword } = await req.json();
+    if (!phone || !otp || !newPassword) {
+      return NextResponse.json({ error: "Phone, OTP, and new password required" }, { status: 400 });
+    }
+    if (newPassword.length < 8) {
+      return NextResponse.json({ error: "Password must be at least 8 characters" }, { status: 400 });
+    }
 
-  if (!phone || !otp || !newPassword) {
-    return NextResponse.json({ error: "Missing required fields" }, { status: 400 });
+    if (useSupabase) {
+      const codeHash = await hashOTP(otp);
+      const valid = await verifyOTP(phone, codeHash);
+      if (!valid) return NextResponse.json({ error: "Invalid or expired OTP" }, { status: 400 });
+
+      const user = await findUserByPhone(phone);
+      if (!user) return NextResponse.json({ error: "Account not found" }, { status: 404 });
+
+      const passwordHash = await bcrypt.hash(newPassword, 10);
+      await updateUser(user.id, { passwordHash });
+    } else {
+      if (otp !== "123456") {
+        return NextResponse.json({ error: "Invalid OTP (use 123456 in dev mode)" }, { status: 400 });
+      }
+    }
+
+    return NextResponse.json({ ok: true });
+  } catch (err) {
+    console.error("Reset password error:", err);
+    return NextResponse.json({ error: "Failed to reset password" }, { status: 500 });
   }
-
-  const record = otpStore.get(phone);
-  if (!record || record.otp !== otp || Date.now() > record.expires) {
-    return NextResponse.json({ error: "Invalid or expired OTP" }, { status: 400 });
-  }
-
-  const user = findUserByPhone(phone);
-  if (!user) {
-    return NextResponse.json({ error: "User not found" }, { status: 404 });
-  }
-
-  // Hash new password and update in DB
-  user.passwordHash = bcrypt.hashSync(newPassword, 10);
-  db.users.set(user.id, user);
-  otpStore.delete(phone);
-
-  return NextResponse.json({ success: true });
 }

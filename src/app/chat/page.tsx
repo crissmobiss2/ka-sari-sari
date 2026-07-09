@@ -1,13 +1,16 @@
 "use client";
 import { useState, useEffect, useRef, useCallback } from "react";
+import { useRouter } from "next/navigation";
 import Link from "next/link";
 import {
   Mic, MicOff, Send, ShoppingCart, X, ChevronRight,
-  Volume2, Globe, MessageSquare,
+  Volume2, Globe, MessageSquare, Loader2,
 } from "lucide-react";
 import { RetailerTopBar, RetailerBottomNav } from "@/components/layout/retailer-nav";
 import { NexoflowFooter } from "@/components/ui/nexoflow-footer";
+import { useCartStore } from "@/store/cart";
 import { cn } from "@/lib/utils";
+import type { Product } from "@/types";
 
 // ── Language configs ──────────────────────────────────────────────────────────
 
@@ -20,7 +23,7 @@ const LANGUAGES = [
   { id: "war",    label: "Waray",       note: "Waray-Waray",     apiCode: "fil-PH" },
 ];
 
-// ── Product catalog for voice parsing ────────────────────────────────────────
+// ── Product catalog (used for price look-up when building cart items) ─────────
 
 const CATALOG = [
   { id: "c1",  keywords: ["coke", "coca cola", "coca-cola"],          name: "Coca-Cola Regular 330ml",         price: 22  },
@@ -40,59 +43,25 @@ const CATALOG = [
   { id: "c15", keywords: ["boy bawang", "bawang", "peanuts"],         name: "Boy Bawang Cornick Garlic 100g",  price: 19  },
 ];
 
-// ── Number word → digit (multi-dialect) ──────────────────────────────────────
-
-const NUMBER_MAP: Record<string, number> = {
-  // Filipino/Tagalog
-  "isa": 1, "isang": 1, "dalawa": 2, "dalawang": 2, "tatlo": 3, "tatlong": 3,
-  "apat": 4, "lima": 5, "anim": 6, "pito": 7, "walo": 8, "siyam": 9,
-  "sampu": 10, "sampung": 10, "labing-isa": 11, "labindalawa": 12, "labintatlo": 13,
-  "labinapat": 14, "labinlima": 15, "labinwalo": 18, "dalawampu": 20, "dalawampung": 20,
-  "tatlumpu": 30, "apatnapu": 40, "limampu": 50,
-  // Cebuano
-  "usa": 1, "duha": 2, "tulo": 3, "upat": 4, "unom": 6, "napulo": 10, "baynte": 20,
-  // Ilocano
-  "maysa": 1, "dua": 2, "tallo": 3, "uppat": 4, "innem": 6, "sangapulo": 10, "duapulo": 20,
-  // Hiligaynon
-  "isa_h": 1, "duha_h": 2, "tulo_h": 3, "anum": 6, "napulo_h": 10,
-  // English
-  "one": 1, "two": 2, "three": 3, "four": 4, "five": 5,
-  "six": 6, "seven": 7, "eight": 8, "nine": 9, "ten": 10,
-  "eleven": 11, "twelve": 12, "fifteen": 15, "twenty": 20, "thirty": 30,
-  "forty": 40, "fifty": 50, "a": 1, "an": 1, "dozen": 12,
-};
-
-function extractQty(surroundingWords: string[]): number {
-  for (const w of surroundingWords) {
-    const num = parseInt(w, 10);
-    if (!isNaN(num) && num > 0 && num < 1000) return num;
-    if (NUMBER_MAP[w]) return NUMBER_MAP[w];
-  }
-  return 1;
-}
-
-function parseOrder(text: string): { id: string; name: string; qty: number; price: number }[] {
-  const lower = text.toLowerCase().replace(/[.,!?]/g, " ");
-  const words = lower.split(/\s+/);
-  const results: { id: string; name: string; qty: number; price: number }[] = [];
-
-  for (const product of CATALOG) {
-    for (const kw of product.keywords) {
-      if (lower.includes(kw)) {
-        const kwIdx = words.findIndex((_, i) => words.slice(i, i + kw.split(" ").length).join(" ") === kw);
-        const window = words.slice(Math.max(0, kwIdx - 4), kwIdx + kw.split(" ").length + 3);
-        const qty = extractQty(window);
-        if (!results.find((r) => r.id === product.id)) {
-          results.push({ id: product.id, name: product.name, qty, price: product.price });
-        }
-        break;
-      }
-    }
-  }
-  return results;
-}
-
 // ── Types ─────────────────────────────────────────────────────────────────────
+
+interface ConvHistoryItem {
+  role: "user" | "assistant";
+  content: string;
+}
+
+interface ParsedOrderItem {
+  productName: string;
+  quantity: number;
+  unit: string;
+  confidence: "high" | "medium" | "low";
+}
+
+interface AIParsedOrder {
+  items: ParsedOrderItem[];
+  totalEstimate: number;
+  clarifications: string[];
+}
 
 interface Message {
   id: string;
@@ -109,7 +78,7 @@ interface CartItem {
   price: number;
 }
 
-// ── Welcome messages (in Tagalog) ─────────────────────────────────────────────
+// ── Welcome messages ──────────────────────────────────────────────────────────
 
 const WELCOME: Message[] = [
   {
@@ -157,6 +126,9 @@ function ChatBubble({ message }: { message: Message }) {
 // ── Page ──────────────────────────────────────────────────────────────────────
 
 export default function ChatPage() {
+  const router = useRouter();
+  const { addItem: addCartItem } = useCartStore();
+
   const [messages, setMessages]         = useState<Message[]>(WELCOME);
   const [input, setInput]               = useState("");
   const [isListening, setIsListening]   = useState(false);
@@ -167,8 +139,19 @@ export default function ChatPage() {
   const [speechSupported, setSpeechSupported] = useState(true);
   const [orderConfirmed, setOrderConfirmed] = useState(false);
 
-  const recognitionRef = useRef<any>(null);
-  const chatEndRef     = useRef<HTMLDivElement>(null);
+  // AI conversation state
+  const [conversationHistory, setConversationHistory] = useState<ConvHistoryItem[]>([]);
+  const [isAiLoading, setIsAiLoading]   = useState(false);
+  const [aiParsedOrder, setAiParsedOrder] = useState<AIParsedOrder | null>(null);
+
+  const recognitionRef          = useRef<any>(null);
+  const chatEndRef              = useRef<HTMLDivElement>(null);
+  const conversationHistoryRef  = useRef<ConvHistoryItem[]>([]);
+
+  // Keep ref in sync with state so useCallback can access latest history
+  useEffect(() => {
+    conversationHistoryRef.current = conversationHistory;
+  }, [conversationHistory]);
 
   // Init/reinit speech recognition when language changes
   useEffect(() => {
@@ -199,12 +182,12 @@ export default function ChatPage() {
 
     recognitionRef.current = rec;
     return () => { try { rec.abort(); } catch {} };
-  }, [selectedLang]);
+  }, [selectedLang]); // eslint-disable-line react-hooks/exhaustive-deps
 
-  // Auto-scroll
+  // Auto-scroll on new messages, loading state, or parsed order
   useEffect(() => {
     chatEndRef.current?.scrollIntoView({ behavior: "smooth" });
-  }, [messages, liveTranscript]);
+  }, [messages, liveTranscript, isAiLoading, aiParsedOrder]);
 
   function addMsg(from: "user" | "bot", text: string, isVoice = false): void {
     const msg: Message = {
@@ -217,57 +200,104 @@ export default function ChatPage() {
     setMessages((prev) => [...prev, msg]);
   }
 
+  // ── AI-powered text processing ──────────────────────────────────────────────
+
+  const processTextWithAI = useCallback(async (text: string) => {
+    setIsAiLoading(true);
+    try {
+      const res = await fetch("/api/ai/order-assistant", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          message: text,
+          conversationHistory: conversationHistoryRef.current,
+        }),
+      });
+
+      const data = await res.json();
+
+      if (!res.ok || !data.response) {
+        addMsg("bot", "Sorry, may problema. Subukan ulit mamaya.");
+        return;
+      }
+
+      addMsg("bot", data.response);
+
+      // Append to conversation history
+      setConversationHistory((prev) => [
+        ...prev,
+        { role: "user" as const, content: text },
+        { role: "assistant" as const, content: data.response },
+      ]);
+
+      // Handle parsed order from AI
+      if (data.parsedOrder?.items?.length > 0) {
+        setAiParsedOrder(data.parsedOrder);
+
+        // Mirror detected items into the local sticky-cart state
+        const aiItems: CartItem[] = (data.parsedOrder.items as ParsedOrderItem[]).map((item) => {
+          const cat = CATALOG.find((c) =>
+            c.keywords.some((k) => item.productName.toLowerCase().includes(k))
+          );
+          return {
+            id: cat?.id ?? `ai-${item.productName.replace(/\s+/g, "-").toLowerCase().slice(0, 16)}`,
+            name: item.productName,
+            qty: item.quantity,
+            price: cat?.price ?? 0,
+          };
+        });
+        setCart((prev) => {
+          const next = [...prev];
+          aiItems.forEach((item) => {
+            const ex = next.find((p) => p.id === item.id);
+            if (ex) ex.qty += item.qty;
+            else next.push({ ...item });
+          });
+          return next;
+        });
+        setShowCart(true);
+      }
+    } catch {
+      addMsg("bot", "Sorry, may problema. Subukan ulit mamaya.");
+    } finally {
+      setIsAiLoading(false);
+    }
+  }, []); // stable — uses ref for history, stable setters for the rest
+
   const handleSubmit = useCallback((text: string, isVoice = false) => {
-    if (!text.trim()) return;
+    if (!text.trim() || isAiLoading) return;
     setInput("");
     setLiveTranscript("");
     addMsg("user", text.trim(), isVoice);
-    processText(text.trim());
-  }, []);
+    processTextWithAI(text.trim());
+  }, [processTextWithAI, isAiLoading]); // eslint-disable-line react-hooks/exhaustive-deps
 
-  function processText(text: string) {
-    const lower = text.toLowerCase();
+  // ── Place order via cart store ──────────────────────────────────────────────
 
-    // Confirm/checkout intent
-    if (/confirm|order na|sige na|i-order|i-checkout|bayad|checkout|yes please|oo|yep/i.test(lower) && cart.length > 0) {
-      setOrderConfirmed(true);
-      addMsg("bot", `Salamat! Na-record na ang inyong order:\n\n${cart.map(i => `• ${i.qty}× ${i.name}`).join("\n")}\n\nTotal: ₱${cart.reduce((s, i) => s + i.qty * i.price, 0).toLocaleString()}\n\nPumunta na sa cart para i-checkout! ✅`);
-      return;
-    }
-
-    // Clear/reset
-    if (/clear|bago|ulit|new order|reset|cancel/i.test(lower) && cart.length > 0) {
-      setCart([]);
-      setOrderConfirmed(false);
-      addMsg("bot", "Ayos, binura ko na ang listahan. Ano po ang gustong i-order muli?");
-      return;
-    }
-
-    // Parse for products
-    const items = parseOrder(text);
-
-    if (items.length > 0) {
-      setCart((prev) => {
-        const next = [...prev];
-        items.forEach((item) => {
-          const existing = next.find((p) => p.id === item.id);
-          if (existing) existing.qty += item.qty;
-          else next.push({ ...item });
-        });
-        return next;
-      });
-      setShowCart(true);
-
-      const listed = items.map((i) => `${i.qty}× ${i.name.split(" ").slice(0, 3).join(" ")}`).join("\n");
-      addMsg("bot", `Nakuha ko po:\n${listed}\n\nGusto pa bang magdagdag o i-confirm na ang order?\nSabihin "confirm" para i-order.`);
-    } else {
-      const helpTexts = [
-        "Hindi ko po nakilala ang produkto. Subukan sabihin ang brand name, halimbawa: \"sampung Coke\" o \"24 na Lucky Me\".",
-        "Pakiulit po. Sabihin ang produkto at dami — hal. \"dalawampung C2\" o \"30 na sardines\".",
-        "Sorry, hindi ko po maintindihan. Pwedeng i-type ang order o subukan muli ng boses.",
-      ];
-      addMsg("bot", helpTexts[messages.length % helpTexts.length]);
-    }
+  function placeOrder() {
+    if (!aiParsedOrder) return;
+    aiParsedOrder.items.forEach((item) => {
+      const cat = CATALOG.find((c) =>
+        c.keywords.some((k) => item.productName.toLowerCase().includes(k))
+      );
+      const product: Product = {
+        id: cat?.id ?? `ai-${item.productName.replace(/[^a-z0-9]/gi, "-").toLowerCase()}`,
+        categoryId: "ai-detected",
+        name: item.productName,
+        slug: item.productName.toLowerCase().replace(/[^a-z0-9]+/g, "-"),
+        unit: item.unit || "piece",
+        price: cat?.price ?? 0,
+        sku: `AI-${item.productName.slice(0, 8).toUpperCase().replace(/\s/g, "")}`,
+        minOrderQty: 1,
+        isActive: true,
+        isFeatured: false,
+        stock: 999,
+        lowStockThreshold: 0,
+        createdAt: new Date().toISOString(),
+      };
+      addCartItem(product, item.quantity);
+    });
+    router.push("/cart");
   }
 
   function toggleMic() {
@@ -348,25 +378,14 @@ export default function ChatPage() {
               <span className="text-sm font-bold">Total</span>
               <span className="text-sm font-bold text-brand-500">₱{cartTotal.toLocaleString()}</span>
             </div>
-            {orderConfirmed ? (
-              <div className="p-2">
-                <Link
-                  href="/cart"
-                  className="flex items-center justify-center gap-2 w-full rounded-xl bg-brand-500 py-2.5 text-sm font-bold text-white hover:bg-brand-600 transition-colors"
-                >
-                  <ShoppingCart className="h-4 w-4" /> Go to Cart & Checkout
-                </Link>
-              </div>
-            ) : (
-              <div className="p-2">
-                <button
-                  onClick={() => processText("confirm")}
-                  className="w-full rounded-xl bg-brand-500 py-2.5 text-sm font-bold text-white hover:bg-brand-600 transition-colors"
-                >
-                  Confirm Order →
-                </button>
-              </div>
-            )}
+            <div className="p-2">
+              <Link
+                href="/cart"
+                className="flex items-center justify-center gap-2 w-full rounded-xl bg-brand-500 py-2.5 text-sm font-bold text-white hover:bg-brand-600 transition-colors"
+              >
+                <ShoppingCart className="h-4 w-4" /> Go to Cart & Checkout
+              </Link>
+            </div>
           </div>
         )}
       </div>
@@ -374,6 +393,87 @@ export default function ChatPage() {
       {/* Chat messages */}
       <div className="flex-1 overflow-y-auto px-4 py-4 space-y-3">
         {messages.map((msg) => <ChatBubble key={msg.id} message={msg} />)}
+
+        {/* AI typing / loading indicator */}
+        {isAiLoading && (
+          <div className="flex gap-2 justify-start">
+            <div className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-brand-500 text-white text-[10px] font-bold mt-1">
+              KSS
+            </div>
+            <div className="rounded-2xl rounded-bl-sm bg-muted border border-border px-4 py-3 flex items-center gap-2">
+              <Loader2 className="h-4 w-4 animate-spin text-muted-foreground" />
+              <span className="text-xs text-muted-foreground">Nag-iisip...</span>
+            </div>
+          </div>
+        )}
+
+        {/* AI Order Summary card — appears below the last AI response */}
+        {aiParsedOrder && aiParsedOrder.items.length > 0 && !isAiLoading && (
+          <div className="rounded-2xl border border-success-200 bg-success-50 p-4 space-y-3">
+            <div className="flex items-center justify-between">
+              <h3 className="text-sm font-bold text-success-700">Order Summary</h3>
+              <button
+                onClick={() => setAiParsedOrder(null)}
+                className="text-muted-foreground hover:text-foreground transition-colors"
+              >
+                <X className="h-3.5 w-3.5" />
+              </button>
+            </div>
+
+            <div className="space-y-1.5">
+              {aiParsedOrder.items.map((item, i) => (
+                <div key={i} className="flex items-center justify-between">
+                  <span className="text-sm text-foreground font-medium">
+                    {item.quantity}× {item.productName}
+                  </span>
+                  <span className={cn(
+                    "text-[10px] rounded-full px-1.5 py-0.5 font-semibold",
+                    item.confidence === "high"
+                      ? "bg-success-100 text-success-700"
+                      : item.confidence === "medium"
+                        ? "bg-warning-100 text-warning-700"
+                        : "bg-surface-200 text-muted-foreground"
+                  )}>
+                    {item.confidence}
+                  </span>
+                </div>
+              ))}
+            </div>
+
+            {aiParsedOrder.totalEstimate > 0 && (
+              <div className="flex justify-between border-t border-success-200 pt-2">
+                <span className="text-sm font-semibold text-foreground">Estimated Total</span>
+                <span className="text-sm font-bold text-brand-500">
+                  ₱{aiParsedOrder.totalEstimate.toLocaleString()}
+                </span>
+              </div>
+            )}
+
+            {aiParsedOrder.clarifications.length > 0 && (
+              <div className="rounded-lg bg-warning-50 border border-warning-200 px-3 py-2 space-y-0.5">
+                <p className="text-xs font-medium text-warning-700">Needs clarification:</p>
+                {aiParsedOrder.clarifications.map((c, i) => (
+                  <p key={i} className="text-xs text-warning-600">• {c}</p>
+                ))}
+              </div>
+            )}
+
+            <div className="flex gap-2">
+              <button
+                onClick={() => setAiParsedOrder(null)}
+                className="flex-1 rounded-xl border border-border bg-card py-2.5 text-sm font-semibold text-foreground hover:bg-muted transition-colors"
+              >
+                Cancel
+              </button>
+              <button
+                onClick={placeOrder}
+                className="flex-1 rounded-xl bg-brand-500 py-2.5 text-sm font-bold text-white hover:bg-brand-600 transition-colors flex items-center justify-center gap-1.5"
+              >
+                <ShoppingCart className="h-3.5 w-3.5" /> Place This Order
+              </button>
+            </div>
+          </div>
+        )}
 
         {/* Live voice transcript bubble */}
         {isListening && (
@@ -411,11 +511,22 @@ export default function ChatPage() {
             type="text"
             value={input}
             onChange={(e) => setInput(e.target.value)}
-            onKeyDown={(e) => { if (e.key === "Enter" && !e.shiftKey) { e.preventDefault(); handleSubmit(input); } }}
+            onKeyDown={(e) => {
+              if (e.key === "Enter" && !e.shiftKey && !isAiLoading) {
+                e.preventDefault();
+                handleSubmit(input);
+              }
+            }}
             placeholder={selectedLang.id === "en" ? "Type your order…" : "I-type ang order…"}
-            className="flex-1 h-11 rounded-xl border border-input bg-muted px-4 text-sm focus:outline-none focus:ring-2 focus:ring-brand-500 focus:border-transparent"
+            disabled={isAiLoading}
+            className="flex-1 h-11 rounded-xl border border-input bg-muted px-4 text-sm focus:outline-none focus:ring-2 focus:ring-brand-500 focus:border-transparent disabled:opacity-60 disabled:cursor-not-allowed"
           />
-          {input.trim() ? (
+
+          {isAiLoading ? (
+            <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-muted text-muted-foreground">
+              <Loader2 className="h-4 w-4 animate-spin" />
+            </div>
+          ) : input.trim() ? (
             <button
               onClick={() => handleSubmit(input)}
               className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-brand-500 text-white hover:bg-brand-600 transition-colors"
@@ -452,11 +563,6 @@ export default function ChatPage() {
           </p>
         )}
       </div>
-
-      {/* Tip card at top of messages when no orders yet */}
-      {cart.length === 0 && messages.length <= 1 && (
-        <></>
-      )}
 
       <RetailerBottomNav />
 

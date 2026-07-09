@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { ScanLine, ChevronRight, CheckCircle2, Clock, Package, ChevronDown } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -40,10 +40,6 @@ function getPickedCount(pl: PickList) {
 
 function getTotalCount(pl: PickList) {
   return pl.items.reduce((sum, item) => sum + item.quantity, 0);
-}
-
-function getRemainingItems(pl: PickList, checkedItems: Record<string, boolean>) {
-  return pl.items.filter((item) => !checkedItems[item.id] && item.status !== "picked").length;
 }
 
 function StatusBanner({ status }: { status: PickList["status"] }) {
@@ -323,9 +319,27 @@ function EmptyState({ filter }: { filter: FilterTab }) {
 
 export default function PickingPage() {
   const [activeFilter, setActiveFilter] = useState<FilterTab>("all");
-  const [lists, setLists] = useState<PickList[]>(PICK_LISTS);
+  const [lists, setLists] = useState<PickList[]>([]);
+  const [loading, setLoading] = useState(true);
   const [activePicking, setActivePicking] = useState<string | null>(null);
   const [checkedItems, setCheckedItems] = useState<Record<string, boolean>>({});
+
+  useEffect(() => {
+    async function fetchPickLists() {
+      try {
+        const res = await fetch("/api/warehouse/pick-lists");
+        if (!res.ok) throw new Error("Failed to fetch pick lists");
+        const data = await res.json();
+        const fetched: PickList[] = data.pickLists ?? [];
+        setLists(fetched.length > 0 ? fetched : PICK_LISTS);
+      } catch {
+        setLists(PICK_LISTS);
+      } finally {
+        setLoading(false);
+      }
+    }
+    fetchPickLists();
+  }, []);
 
   // Sort: open first, then in_progress, then completed; within each group oldest first (most urgent)
   const sorted = [...lists].sort((a, b) => {
@@ -359,32 +373,53 @@ export default function PickingPage() {
 
   function handleToggleItem(itemId: string, checked: boolean) {
     setCheckedItems((prev) => ({ ...prev, [itemId]: checked }));
+
+    if (checked) {
+      // Find which pick list owns this item and its required quantity
+      const pl = lists.find((l) => l.items.some((i) => i.id === itemId));
+      const item = pl?.items.find((i) => i.id === itemId);
+      if (pl && item) {
+        fetch(`/api/warehouse/pick-lists/${pl.id}`, {
+          method: "PATCH",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ itemId, qtyPicked: item.quantity, status: "picked" }),
+        }).catch(() => {
+          // Fire-and-forget — optimistic UI update already applied
+        });
+      }
+    }
   }
 
-  function handleComplete(id: string) {
-    setLists((prev) =>
-      prev.map((pl) => {
-        if (pl.id !== id) return pl;
-        return {
-          ...pl,
-          status: "completed" as const,
-          completedAt: new Date().toISOString(),
-          items: pl.items.map((item) => ({
-            ...item,
-            status: "picked" as const,
-            pickedQty: item.quantity,
-          })),
-        };
-      })
-    );
+  async function handleComplete(id: string) {
+    try {
+      await fetch(`/api/warehouse/pick-lists/${id}`, {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ action: "complete" }),
+      });
+    } catch {
+      // Continue even if API call fails — remove from list optimistically
+    }
+
+    setLists((prev) => prev.filter((pl) => pl.id !== id));
     setActivePicking(null);
-    // Clear checked state for items of this list
     setCheckedItems((prev) => {
       const updated = { ...prev };
       const pl = lists.find((l) => l.id === id);
       if (pl) pl.items.forEach((item) => delete updated[item.id]);
       return updated;
     });
+  }
+
+  if (loading) {
+    return (
+      <div className="px-4 py-6 max-w-2xl mx-auto flex items-center justify-center min-h-[40vh]">
+        <div className="flex flex-col items-center gap-3 text-muted-foreground">
+          <div className="h-8 w-8 rounded-full border-4 border-brand-500 border-t-transparent animate-spin" />
+          <p className="text-sm">Loading pick lists…</p>
+        </div>
+      </div>
+    );
   }
 
   return (

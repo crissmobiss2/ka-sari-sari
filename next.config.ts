@@ -11,6 +11,10 @@ const nextConfig: NextConfig = {
       { protocol: "https", hostname: "upload.wikimedia.org" },
       { protocol: "https", hostname: "**.cloudfront.net" },
       { protocol: "https", hostname: "**.amazonaws.com" },
+      // Supabase Storage
+      { protocol: "https", hostname: "**.supabase.co" },
+      // Vercel Blob
+      { protocol: "https", hostname: "**.public.blob.vercel-storage.com" },
     ],
   },
 };

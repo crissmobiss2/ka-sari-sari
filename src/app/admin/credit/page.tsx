@@ -1,6 +1,6 @@
 "use client";
-import { useState } from "react";
-import { CreditCard, AlertTriangle, CheckCircle2, Clock, TrendingUp, Search, Filter, ChevronRight, X } from "lucide-react";
+import { useState, useEffect, useCallback } from "react";
+import { CreditCard, AlertTriangle, CheckCircle2, Clock, TrendingUp, Search, X, FileText, RefreshCw } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { cn, formatPHP, formatDate } from "@/lib/utils";
@@ -33,6 +33,24 @@ const CREDIT_ACCOUNTS: CreditAccount[] = [
   { id: "ca-08", retailer: "Amelia Flores",   store: "Flores Corner",         city: "Calamba",     creditLimit: 20000, outstanding: 17000, oldestInvoiceDays: 25, terms: 30, status: "overdue",   lastPayment: "2025-11-05", nextDue: "2025-12-05" },
 ];
 
+// ── Credit Application types (from /api/user/credit) ─────────────────────────
+interface CreditApplication {
+  id: string;
+  retailerId: string;
+  retailerName: string;
+  storeName?: string;
+  requestedLimit: number;
+  requestedTerms: number;
+  status: "pending" | "approved" | "rejected";
+  createdAt: string;
+}
+
+const APPLICATION_STATUS_CONFIG = {
+  pending:  { label: "Pending",   variant: "warning",  class: "bg-warning-50 text-warning-700 border border-warning-200"  },
+  approved: { label: "Approved",  variant: "success",  class: "bg-success-50 text-success-700 border border-success-200"  },
+  rejected: { label: "Rejected",  variant: "danger",   class: "bg-danger-50 text-danger-700 border border-danger-200"     },
+} as const;
+
 const STATUS_CONFIG: Record<CreditStatus, { label: string; color: string; badge: string; icon: typeof CheckCircle2 }> = {
   good:      { label: "Good Standing",  color: "text-success-600 bg-success-50 border-success-200",  badge: "success",  icon: CheckCircle2 },
   overdue:   { label: "Overdue",        color: "text-danger-600 bg-danger-50 border-danger-200",      badge: "danger",   icon: AlertTriangle },
@@ -64,6 +82,80 @@ export default function AdminCreditPage() {
   const [newRetailer, setNewRetailer] = useState("");
   const [newLimit, setNewLimit] = useState("");
   const [newTerms, setNewTerms] = useState<7 | 14 | 30 | 45>(30);
+
+  // ── Credit applications ───────────────────────────────────────────────────
+  const [applications, setApplications] = useState<CreditApplication[]>([]);
+  const [appLoading, setAppLoading] = useState(true);
+
+  // Approve modal
+  const [approveApp, setApproveApp] = useState<CreditApplication | null>(null);
+  const [approveLimit, setApproveLimit] = useState("");
+  const [approving, setApproving] = useState(false);
+
+  // Reject modal
+  const [rejectApp, setRejectApp] = useState<CreditApplication | null>(null);
+  const [rejectReason, setRejectReason] = useState("");
+  const [rejecting, setRejecting] = useState(false);
+
+  const fetchApplications = useCallback(async () => {
+    setAppLoading(true);
+    try {
+      const res = await fetch("/api/user/credit");
+      if (!res.ok) throw new Error("Failed");
+      const data = await res.json();
+      setApplications((data.applications ?? []) as CreditApplication[]);
+    } catch {
+      // silently fail — no applications shown
+    } finally {
+      setAppLoading(false);
+    }
+  }, []);
+
+  useEffect(() => { fetchApplications(); }, [fetchApplications]);
+
+  async function handleApprove() {
+    if (!approveApp) return;
+    const limit = Number(approveLimit);
+    if (!limit || limit <= 0) return;
+    setApproving(true);
+    try {
+      const res = await fetch("/api/user/credit", {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ applicationId: approveApp.id, decision: "approved", approvedLimit: limit }),
+      });
+      if (!res.ok) throw new Error("Failed");
+      toastSuccess(`Credit approved for ${approveApp.retailerName}`);
+      setApproveApp(null);
+      setApproveLimit("");
+      fetchApplications();
+    } catch {
+      toastError("Failed to approve application");
+    } finally {
+      setApproving(false);
+    }
+  }
+
+  async function handleReject() {
+    if (!rejectApp || !rejectReason.trim()) return;
+    setRejecting(true);
+    try {
+      const res = await fetch("/api/user/credit", {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ applicationId: rejectApp.id, decision: "rejected", rejectionReason: rejectReason.trim() }),
+      });
+      if (!res.ok) throw new Error("Failed");
+      toastError(`Application rejected for ${rejectApp.retailerName}`);
+      setRejectApp(null);
+      setRejectReason("");
+      fetchApplications();
+    } catch {
+      toastError("Failed to reject application");
+    } finally {
+      setRejecting(false);
+    }
+  }
 
   const filtered = accounts.filter((a) => {
     const matchSearch = !search ||
@@ -157,6 +249,90 @@ export default function AdminCreditPage() {
 
   return (
     <div className="p-6 space-y-5 max-w-7xl mx-auto">
+      {/* Approve Application Modal */}
+      {approveApp && (
+        <div className="fixed inset-0 bg-black/40 z-50" onClick={() => setApproveApp(null)}>
+          <div className="max-w-sm mx-auto mt-24 bg-card rounded-2xl p-6 shadow-xl" onClick={(e) => e.stopPropagation()}>
+            <div className="flex items-center justify-between mb-4">
+              <h2 className="font-display text-lg font-bold text-foreground">Approve Credit</h2>
+              <button onClick={() => setApproveApp(null)} className="flex h-7 w-7 items-center justify-center rounded-lg text-muted-foreground hover:text-foreground hover:bg-muted/40 transition-colors">
+                <X className="h-4 w-4" />
+              </button>
+            </div>
+            <p className="text-sm text-muted-foreground mb-4">{approveApp.retailerName}{approveApp.storeName ? ` · ${approveApp.storeName}` : ""}</p>
+            <div className="mb-4">
+              <label className="block text-xs font-semibold text-muted-foreground mb-1.5">Approved Limit (PHP)</label>
+              <input
+                type="number"
+                value={approveLimit}
+                onChange={(e) => setApproveLimit(e.target.value)}
+                className="w-full h-10 rounded-xl border border-input bg-background px-4 text-sm focus:outline-none focus:ring-2 focus:ring-brand-500"
+                autoFocus
+                onKeyDown={(e) => { if (e.key === "Enter") handleApprove(); }}
+              />
+              <p className="text-[11px] text-muted-foreground mt-1">Requested: {formatPHP(approveApp.requestedLimit)}</p>
+            </div>
+            <div className="flex gap-2">
+              <button
+                onClick={handleApprove}
+                disabled={!approveLimit || Number(approveLimit) <= 0 || approving}
+                className="flex-1 rounded-xl bg-success-500 text-white py-2.5 text-sm font-semibold hover:bg-success-600 transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
+              >
+                {approving ? "Approving…" : "Approve"}
+              </button>
+              <button
+                onClick={() => setApproveApp(null)}
+                className="flex-1 rounded-xl border border-border text-foreground py-2.5 text-sm font-semibold hover:bg-muted/40 transition-colors"
+              >
+                Cancel
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Reject Application Modal */}
+      {rejectApp && (
+        <div className="fixed inset-0 bg-black/40 z-50" onClick={() => setRejectApp(null)}>
+          <div className="max-w-sm mx-auto mt-24 bg-card rounded-2xl p-6 shadow-xl" onClick={(e) => e.stopPropagation()}>
+            <div className="flex items-center justify-between mb-4">
+              <h2 className="font-display text-lg font-bold text-foreground">Reject Application</h2>
+              <button onClick={() => setRejectApp(null)} className="flex h-7 w-7 items-center justify-center rounded-lg text-muted-foreground hover:text-foreground hover:bg-muted/40 transition-colors">
+                <X className="h-4 w-4" />
+              </button>
+            </div>
+            <p className="text-sm text-muted-foreground mb-4">{rejectApp.retailerName}{rejectApp.storeName ? ` · ${rejectApp.storeName}` : ""}</p>
+            <div className="mb-4">
+              <label className="block text-xs font-semibold text-muted-foreground mb-1.5">Rejection Reason</label>
+              <input
+                type="text"
+                value={rejectReason}
+                onChange={(e) => setRejectReason(e.target.value)}
+                placeholder="e.g. Insufficient order history"
+                className="w-full h-10 rounded-xl border border-input bg-background px-4 text-sm focus:outline-none focus:ring-2 focus:ring-danger-500"
+                autoFocus
+                onKeyDown={(e) => { if (e.key === "Enter") handleReject(); }}
+              />
+            </div>
+            <div className="flex gap-2">
+              <button
+                onClick={handleReject}
+                disabled={!rejectReason.trim() || rejecting}
+                className="flex-1 rounded-xl bg-danger-500 text-white py-2.5 text-sm font-semibold hover:bg-danger-600 transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
+              >
+                {rejecting ? "Rejecting…" : "Reject"}
+              </button>
+              <button
+                onClick={() => setRejectApp(null)}
+                className="flex-1 rounded-xl border border-border text-foreground py-2.5 text-sm font-semibold hover:bg-muted/40 transition-colors"
+              >
+                Cancel
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
       {/* Payment Modal */}
       {paymentModal && paymentModalAccount && (
         <div className="fixed inset-0 bg-black/40 z-50" onClick={() => setPaymentModal(null)}>
@@ -284,6 +460,84 @@ export default function AdminCreditPage() {
           + New Credit Line
         </button>
       </div>
+
+      {/* Credit Applications */}
+      <Card>
+        <CardHeader className="py-3 px-5 border-b border-border bg-muted/20">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-2">
+              <FileText className="h-4 w-4 text-muted-foreground" />
+              <CardTitle className="text-sm font-semibold text-foreground">Credit Applications</CardTitle>
+              {applications.filter((a) => a.status === "pending").length > 0 && (
+                <span className="rounded-full bg-warning-100 text-warning-700 px-2 py-0.5 text-xs font-bold">
+                  {applications.filter((a) => a.status === "pending").length} pending
+                </span>
+              )}
+            </div>
+            <button onClick={fetchApplications} className="flex items-center gap-1.5 text-xs text-muted-foreground hover:text-foreground transition-colors">
+              <RefreshCw className={cn("h-3.5 w-3.5", appLoading && "animate-spin")} />
+              Refresh
+            </button>
+          </div>
+        </CardHeader>
+        <CardContent className="p-0">
+          {appLoading ? (
+            <div className="divide-y divide-border">
+              {Array.from({ length: 3 }).map((_, i) => (
+                <div key={i} className="px-5 py-4 flex items-center justify-between gap-4">
+                  <div className="space-y-1.5 flex-1">
+                    <div className="h-4 w-36 rounded animate-pulse bg-muted" />
+                    <div className="h-3 w-24 rounded animate-pulse bg-muted" />
+                  </div>
+                  <div className="h-5 w-20 rounded-full animate-pulse bg-muted" />
+                </div>
+              ))}
+            </div>
+          ) : applications.length === 0 ? (
+            <div className="py-10 text-center text-sm text-muted-foreground">
+              <FileText className="h-6 w-6 mx-auto mb-2 opacity-30" />
+              No credit applications yet
+            </div>
+          ) : (
+            <div className="divide-y divide-border">
+              {applications.map((app) => {
+                const cfg = APPLICATION_STATUS_CONFIG[app.status];
+                return (
+                  <div key={app.id} className="px-5 py-4 flex items-center gap-4 flex-wrap">
+                    <div className="flex-1 min-w-0">
+                      <p className="text-sm font-semibold text-foreground truncate">{app.retailerName}</p>
+                      <p className="text-xs text-muted-foreground">
+                        {app.storeName ? `${app.storeName} · ` : ""}
+                        {formatPHP(app.requestedLimit)} requested · {app.requestedTerms}-day terms
+                      </p>
+                      <p className="text-[11px] text-muted-foreground/70 mt-0.5">{formatDate(app.createdAt)}</p>
+                    </div>
+                    <span className={cn("text-[11px] font-semibold rounded-full px-2.5 py-0.5 shrink-0", cfg.class)}>
+                      {cfg.label}
+                    </span>
+                    {app.status === "pending" && (
+                      <div className="flex gap-2 shrink-0">
+                        <button
+                          onClick={() => { setApproveApp(app); setApproveLimit(app.requestedLimit.toString()); }}
+                          className="rounded-lg bg-success-500 text-white px-3 py-1.5 text-xs font-semibold hover:bg-success-600 transition-colors"
+                        >
+                          Approve
+                        </button>
+                        <button
+                          onClick={() => { setRejectApp(app); setRejectReason(""); }}
+                          className="rounded-lg border border-danger-200 text-danger-600 px-3 py-1.5 text-xs font-semibold hover:bg-danger-50 transition-colors"
+                        >
+                          Reject
+                        </button>
+                      </div>
+                    )}
+                  </div>
+                );
+              })}
+            </div>
+          )}
+        </CardContent>
+      </Card>
 
       {/* KPI strip */}
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">

@@ -3,7 +3,8 @@
 import { useState, useEffect, useRef } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { Phone, ShoppingBasket, ArrowLeft, ArrowRight, Eye, EyeOff, CheckCircle2, Lock } from "lucide-react";
+import { Phone, ArrowLeft, ArrowRight, Eye, EyeOff, CheckCircle2, Lock } from "lucide-react";
+import { LogoMark } from "@/components/ui/logo";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { cn } from "@/lib/utils";
@@ -160,9 +161,7 @@ export default function ForgotPasswordPage() {
       {/* Brand header */}
       <div className="flex items-center gap-2.5 px-5 py-4 border-b border-border bg-card">
         <Link href="/" className="flex items-center gap-2.5">
-          <div className="flex h-7 w-7 items-center justify-center rounded-xl bg-brand-500">
-            <ShoppingBasket className="h-4 w-4 text-white" strokeWidth={2.2} />
-          </div>
+          <LogoMark size={28} />
           <span className="font-display text-sm font-bold text-foreground">Ka Sari-Sari</span>
         </Link>
       </div>

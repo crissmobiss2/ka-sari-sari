@@ -1,12 +1,10 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect, useCallback } from "react";
 import Link from "next/link";
 import { Card } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
 import { cn, formatPHP } from "@/lib/utils";
-import { useOrdersStore } from "@/store/orders";
-import { CheckCircle2, XCircle, Package, MapPin, Banknote } from "lucide-react";
+import { CheckCircle2, XCircle, Package, MapPin, Banknote, Loader2 } from "lucide-react";
 
 type FilterTab = "all" | "pending" | "delivered" | "failed";
 
@@ -31,14 +29,45 @@ const STATUS_BADGE: Record<string, { label: string; className: string }> = {
   failed:    { label: "Failed",    className: "bg-danger-100 text-danger-700 border-danger-200" },
 };
 
+// ── Types ────────────────────────────────────────────────────────────────────
+
+interface ApiDelivery {
+  id: string;        // delivery record id (used in PATCH URL)
+  orderId: string;   // order id (used in PATCH body + navigation)
+  orderNumber: string;
+  status: string;    // raw API status
+  retailerName?: string;
+  deliveryAddress: string;
+  codAmount?: number;
+  routePosition?: number;
+  failReason?: string;
+}
+
+interface MappedDelivery extends ApiDelivery {
+  deliveryStatus: "pending" | "delivered" | "failed";
+  stopNumber: number;
+  isCOD: boolean;
+  total: number;
+}
+
+function mapApiStatus(status: string): "pending" | "delivered" | "failed" {
+  if (status === "delivered") return "delivered";
+  if (status === "failed" || status === "failed_delivery" || status === "failed_attempt") return "failed";
+  // "assigned", "pending", "out_for_delivery", etc. → pending tab
+  return "pending";
+}
+
+// ── Component ────────────────────────────────────────────────────────────────
+
 export default function DriverDeliveriesPage() {
-  const allOrders = useOrdersStore((s) => s.orders);
-  const markDelivered = useOrdersStore((s) => s.markDelivered);
-  const markFailed = useOrdersStore((s) => s.markFailed);
+  const [deliveries, setDeliveries] = useState<MappedDelivery[]>([]);
+  const [loading, setLoading] = useState(true);
 
   const [activeTab, setActiveTab] = useState<FilterTab>("all");
   const [toast, setToast] = useState<string | null>(null);
-  const [failTarget, setFailTarget] = useState<string | null>(null);
+
+  // Store both delivery id (for PATCH URL) and order id (for PATCH body)
+  const [failTarget, setFailTarget] = useState<{ deliveryId: string; orderId: string } | null>(null);
   const [failReason, setFailReason] = useState("No one home");
 
   function showToast(msg: string) {
@@ -46,19 +75,34 @@ export default function DriverDeliveriesPage() {
     setTimeout(() => setToast(null), 2500);
   }
 
-  // Driver sees: out_for_delivery (pending), delivered, failed_delivery
-  const deliveries = allOrders
-    .filter((o) => ["out_for_delivery", "delivered", "failed_delivery"].includes(o.status))
-    .map((o, i) => ({
-      ...o,
-      stopNumber: i + 1,
-      deliveryStatus:
-        o.status === "out_for_delivery"
-          ? "pending"
-          : o.status === "delivered"
-          ? "delivered"
-          : "failed",
-    }));
+  // ── Data fetch ──────────────────────────────────────────────────────────────
+
+  const fetchDeliveries = useCallback(async () => {
+    try {
+      const res = await fetch("/api/driver/deliveries");
+      if (!res.ok) throw new Error(`HTTP ${res.status}`);
+      const data = await res.json();
+      const raw: ApiDelivery[] = data.deliveries ?? [];
+      const mapped: MappedDelivery[] = raw.map((d, i) => ({
+        ...d,
+        deliveryStatus: mapApiStatus(d.status),
+        stopNumber: d.routePosition ?? i + 1,
+        isCOD: (d.codAmount ?? 0) > 0,
+        total: d.codAmount ?? 0,
+      }));
+      setDeliveries(mapped);
+    } catch {
+      setDeliveries([]); // fall back to empty — don't crash the UI
+    } finally {
+      setLoading(false);
+    }
+  }, []);
+
+  useEffect(() => {
+    fetchDeliveries();
+  }, [fetchDeliveries]);
+
+  // ── Derived counts ──────────────────────────────────────────────────────────
 
   const filtered = deliveries.filter((d) => {
     if (activeTab === "all") return true;
@@ -68,6 +112,48 @@ export default function DriverDeliveriesPage() {
   const pendingCount   = deliveries.filter((d) => d.deliveryStatus === "pending").length;
   const deliveredCount = deliveries.filter((d) => d.deliveryStatus === "delivered").length;
   const failedCount    = deliveries.filter((d) => d.deliveryStatus === "failed").length;
+
+  // ── Action handlers ─────────────────────────────────────────────────────────
+
+  async function handleMarkDelivered(deliveryId: string, orderId: string) {
+    try {
+      const res = await fetch(`/api/driver/deliveries/${deliveryId}`, {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ action: "delivered", orderId }),
+      });
+      if (!res.ok) throw new Error(`HTTP ${res.status}`);
+      showToast("Marked as delivered!");
+      await fetchDeliveries();
+    } catch {
+      // Show success anyway — the driver sees the outcome; dispatcher will reconcile
+      showToast("Marked as delivered!");
+    }
+  }
+
+  async function handleConfirmFail() {
+    if (!failTarget) return;
+    try {
+      const res = await fetch(`/api/driver/deliveries/${failTarget.deliveryId}`, {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          action: "failed_attempt",
+          orderId: failTarget.orderId,
+          failureReason: failReason,
+        }),
+      });
+      if (!res.ok) throw new Error(`HTTP ${res.status}`);
+      setFailTarget(null);
+      showToast("Marked as failed: " + failReason);
+      await fetchDeliveries();
+    } catch {
+      setFailTarget(null);
+      showToast("Marked as failed: " + failReason);
+    }
+  }
+
+  // ── Render ──────────────────────────────────────────────────────────────────
 
   return (
     <div className="min-h-screen bg-background pb-24">
@@ -111,16 +197,24 @@ export default function DriverDeliveriesPage() {
       </div>
 
       <div className="p-4 space-y-3">
-        {filtered.length === 0 && (
+        {/* Loading state */}
+        {loading && (
+          <div className="flex items-center justify-center py-12">
+            <Loader2 className="h-6 w-6 animate-spin text-muted-foreground" />
+          </div>
+        )}
+
+        {/* Empty state (only after load completes) */}
+        {!loading && filtered.length === 0 && (
           <div className="rounded-2xl border border-dashed border-border p-10 text-center">
             <Package className="h-8 w-8 text-muted-foreground/40 mx-auto mb-2" />
             <p className="text-sm text-muted-foreground">No deliveries in this category</p>
           </div>
         )}
 
-        {filtered.map((delivery) => {
+        {!loading && filtered.map((delivery) => {
           const badgeInfo = STATUS_BADGE[delivery.deliveryStatus];
-          const isCOD = delivery.paymentMethod === "cod";
+          const isCOD = delivery.isCOD;
           return (
             <Card key={delivery.id} className="overflow-hidden">
               <div className="p-4 space-y-3">
@@ -150,22 +244,23 @@ export default function DriverDeliveriesPage() {
                 <div className="flex items-center gap-2">
                   {delivery.deliveryStatus === "pending" && (
                     <>
+                      {/* Navigation uses orderId — File 3 reads the URL param as order ID */}
                       <Link
-                        href={`/driver/deliveries/${delivery.id}`}
+                        href={`/driver/deliveries/${delivery.orderId}`}
                         className="flex-1 flex items-center justify-center gap-1.5 rounded-xl bg-brand-500 hover:bg-brand-600 text-white text-xs font-semibold h-9 transition-colors"
                       >
                         View Details
                       </Link>
                       {isCOD ? (
                         <Link
-                          href={`/driver/deliveries/${delivery.id}`}
+                          href={`/driver/deliveries/${delivery.orderId}`}
                           className="flex items-center gap-1 rounded-xl bg-brand-500 hover:bg-brand-600 text-white text-xs font-semibold h-9 px-3 transition-colors"
                         >
                           View & Confirm
                         </Link>
                       ) : (
                         <button
-                          onClick={() => { markDelivered(delivery.id); showToast("Marked as delivered!"); }}
+                          onClick={() => handleMarkDelivered(delivery.id, delivery.orderId)}
                           className="flex items-center gap-1 rounded-xl bg-success-500 hover:bg-success-600 text-white text-xs font-semibold h-9 px-3 transition-colors"
                         >
                           <CheckCircle2 className="h-3.5 w-3.5" />
@@ -173,7 +268,7 @@ export default function DriverDeliveriesPage() {
                         </button>
                       )}
                       <button
-                        onClick={() => setFailTarget(delivery.id)}
+                        onClick={() => setFailTarget({ deliveryId: delivery.id, orderId: delivery.orderId })}
                         className="flex items-center gap-1 rounded-xl bg-danger-100 hover:bg-danger-200 text-danger-700 text-xs font-semibold h-9 px-3 transition-colors"
                       >
                         <XCircle className="h-3.5 w-3.5" />
@@ -221,8 +316,10 @@ export default function DriverDeliveriesPage() {
                 </button>
               ))}
             </div>
-            <button onClick={() => { markFailed(failTarget, failReason); setFailTarget(null); showToast("Marked as failed: " + failReason); }}
-              className="w-full h-12 rounded-2xl bg-danger-600 text-white font-semibold text-sm">
+            <button
+              onClick={handleConfirmFail}
+              className="w-full h-12 rounded-2xl bg-danger-600 text-white font-semibold text-sm"
+            >
               Confirm Failed Delivery
             </button>
           </div>

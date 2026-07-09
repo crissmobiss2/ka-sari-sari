@@ -2,7 +2,7 @@
 import { useState } from "react";
 import {
   Wallet, ArrowUpRight, ArrowDownLeft, Plus, CreditCard,
-  Building2, ChevronRight, X, AlertCircle, CheckCircle2
+  Building2, ChevronRight, X, AlertCircle, CheckCircle2, Clock, ExternalLink,
 } from "lucide-react";
 import { RetailerTopBar, RetailerBottomNav } from "@/components/layout/retailer-nav";
 import { Button } from "@/components/ui/button";
@@ -10,7 +10,7 @@ import { useWalletStore } from "@/store/wallet";
 import { formatPHP, formatDateTime } from "@/lib/utils";
 import { cn } from "@/lib/utils";
 
-const TOP_UP_AMOUNTS = [200, 500, 1000, 2000];
+const TOP_UP_AMOUNTS = [100, 300, 500, 1000];
 const WITHDRAW_AMOUNTS = [100, 200, 500, 1000];
 
 const TOP_UP_METHODS = [
@@ -31,33 +31,66 @@ export default function WalletPage() {
   const { balance, transactions, credit, debit } = useWalletStore();
 
   // Top-up state
-  const [showTopUp, setShowTopUp] = useState(false);
+  const [showTopUp, setShowTopUp]           = useState(false);
   const [selectedAmount, setSelectedAmount] = useState(500);
+  const [isCustomAmount, setIsCustomAmount] = useState(false);
+  const [customAmount, setCustomAmount]     = useState("");
   const [selectedMethod, setSelectedMethod] = useState("gcash");
-  const [topUpLoading, setTopUpLoading] = useState(false);
-  const [topUpSuccess, setTopUpSuccess] = useState(false);
-  const [topUpRef, setTopUpRef] = useState("");
+  const [topUpLoading, setTopUpLoading]     = useState(false);
+  const [topUpError, setTopUpError]         = useState("");
+  const [paymentPending, setPaymentPending] = useState(false);
 
   // Withdraw state
-  const [showWithdraw, setShowWithdraw] = useState(false);
-  const [withdrawStep, setWithdrawStep] = useState<"amount" | "account" | "confirm" | "done">("amount");
-  const [withdrawAmount, setWithdrawAmount] = useState(500);
-  const [withdrawMethod, setWithdrawMethod] = useState("gcash");
-  const [accountNumber, setAccountNumber] = useState("");
-  const [accountName, setAccountName] = useState("");
-  const [withdrawLoading, setWithdrawLoading] = useState(false);
-  const [withdrawError, setWithdrawError] = useState("");
+  const [showWithdraw, setShowWithdraw]         = useState(false);
+  const [withdrawStep, setWithdrawStep]         = useState<"amount" | "account" | "confirm" | "done">("amount");
+  const [withdrawAmount, setWithdrawAmount]     = useState(500);
+  const [withdrawMethod, setWithdrawMethod]     = useState("gcash");
+  const [accountNumber, setAccountNumber]       = useState("");
+  const [accountName, setAccountName]           = useState("");
+  const [withdrawLoading, setWithdrawLoading]   = useState(false);
+  const [withdrawError, setWithdrawError]       = useState("");
   const [withdrawAmountError, setWithdrawAmountError] = useState("");
 
+  // ── Resolve the effective top-up amount ────────────────────────────────────
+
+  function getEffectiveAmount(): number {
+    if (isCustomAmount) {
+      const parsed = parseInt(customAmount.replace(/[^0-9]/g, ""), 10);
+      return isNaN(parsed) ? 0 : parsed;
+    }
+    return selectedAmount;
+  }
+
+  // ── Top-up: call PayMongo API, open checkout URL ───────────────────────────
+
   async function handleTopUp() {
+    const amount = getEffectiveAmount();
+    if (amount < 50) {
+      setTopUpError("Minimum top-up is ₱50");
+      return;
+    }
     setTopUpLoading(true);
-    await new Promise((r) => setTimeout(r, 1500));
-    const ref = "KSS-" + Math.random().toString(36).slice(2, 8).toUpperCase() + "-" + new Date().getFullYear();
-    credit(selectedAmount, `Top-up via ${selectedMethod.toUpperCase()}`, ref);
-    setTopUpRef(ref);
-    setTopUpLoading(false);
-    setTopUpSuccess(true);
-    setTimeout(() => { setTopUpSuccess(false); setTopUpRef(""); setShowTopUp(false); }, 2000);
+    setTopUpError("");
+    try {
+      const res = await fetch("/api/payments/topup", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ amount }),
+      });
+      const data = await res.json();
+      if (!res.ok) {
+        setTopUpError(data.error ?? "Failed to create payment link. Try again.");
+        return;
+      }
+      // Open PayMongo checkout in a new tab
+      window.open(data.checkoutUrl, "_blank");
+      setShowTopUp(false);
+      setPaymentPending(true);
+    } catch {
+      setTopUpError("Network error. Please check your connection and try again.");
+    } finally {
+      setTopUpLoading(false);
+    }
   }
 
   function openWithdraw() {
@@ -158,10 +191,29 @@ export default function WalletPage() {
           </div>
         </div>
 
+        {/* Payment pending notice */}
+        {paymentPending && (
+          <div className="flex items-start gap-3 rounded-2xl border border-warning-200 bg-warning-50 px-4 py-3.5">
+            <Clock className="h-4 w-4 text-warning-600 shrink-0 mt-0.5" />
+            <div className="flex-1">
+              <p className="text-sm font-semibold text-warning-700">Waiting for payment confirmation…</p>
+              <p className="text-xs text-warning-600 mt-0.5">
+                Complete your payment in the checkout page. Your wallet balance will update automatically once confirmed.
+              </p>
+            </div>
+            <button
+              onClick={() => setPaymentPending(false)}
+              className="text-warning-500 hover:text-warning-700 transition-colors shrink-0"
+            >
+              <X className="h-4 w-4" />
+            </button>
+          </div>
+        )}
+
         {/* Actions */}
         <div className="grid grid-cols-2 gap-3">
           <button
-            onClick={() => setShowTopUp(true)}
+            onClick={() => { setShowTopUp(true); setTopUpError(""); setIsCustomAmount(false); setCustomAmount(""); }}
             className="flex items-center gap-3 rounded-2xl border border-border bg-card shadow-card px-4 py-4 hover:border-brand-300 transition-colors active:scale-95"
           >
             <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-brand-50 text-brand-500">
@@ -196,71 +248,103 @@ export default function WalletPage() {
               </button>
             </div>
 
-            {topUpSuccess ? (
-              <div className="rounded-xl bg-success-50 border border-success-200 p-4 text-center space-y-1">
-                <CheckCircle2 className="h-6 w-6 text-success-600 mx-auto mb-1" />
-                <p className="text-success-700 font-semibold text-sm">
-                  {formatPHP(selectedAmount)} added via {selectedMethod.toUpperCase()}
-                </p>
-                <p className="text-success-600 text-xs font-mono">Ref: #{topUpRef.split("-").slice(1, 2).join("")}</p>
-              </div>
-            ) : (
-              <>
-                <div>
-                  <p className="text-xs text-muted-foreground mb-2 font-medium">Select amount</p>
-                  <div className="grid grid-cols-4 gap-2">
-                    {TOP_UP_AMOUNTS.map((amt) => (
-                      <button
-                        key={amt}
-                        onClick={() => setSelectedAmount(amt)}
-                        className={cn(
-                          "rounded-xl border py-2.5 text-sm font-bold transition-colors",
-                          selectedAmount === amt
-                            ? "border-brand-500 bg-brand-500 text-white"
-                            : "border-border bg-card text-foreground hover:border-brand-300"
-                        )}
-                      >
-                        ₱{amt}
-                      </button>
-                    ))}
-                  </div>
-                </div>
-
-                <div>
-                  <p className="text-xs text-muted-foreground mb-2 font-medium">Pay via</p>
-                  <div className="space-y-2">
-                    {TOP_UP_METHODS.map((m) => (
-                      <button
-                        key={m.id}
-                        onClick={() => setSelectedMethod(m.id)}
-                        className={cn(
-                          "flex w-full items-center gap-3 rounded-xl border px-4 py-3 transition-colors",
-                          selectedMethod === m.id ? "border-brand-500 bg-white" : "border-border bg-card hover:border-brand-200"
-                        )}
-                      >
-                        <span className="text-lg">{m.icon}</span>
-                        <span className="text-sm font-semibold text-foreground">{m.label}</span>
-                        {selectedMethod === m.id && (
-                          <span className="ml-auto text-brand-500 text-xs font-bold">Selected</span>
-                        )}
-                      </button>
-                    ))}
-                  </div>
-                </div>
-
-                <div className="flex gap-2">
+            <div>
+              <p className="text-xs text-muted-foreground mb-2 font-medium">Select amount</p>
+              <div className="grid grid-cols-4 gap-2 mb-2">
+                {TOP_UP_AMOUNTS.map((amt) => (
                   <button
-                    onClick={() => setShowTopUp(false)}
-                    className="flex-1 rounded-xl border border-border bg-card py-3 text-sm font-semibold text-foreground hover:bg-muted transition-colors"
+                    key={amt}
+                    onClick={() => { setSelectedAmount(amt); setIsCustomAmount(false); setTopUpError(""); }}
+                    className={cn(
+                      "rounded-xl border py-2.5 text-sm font-bold transition-colors",
+                      !isCustomAmount && selectedAmount === amt
+                        ? "border-brand-500 bg-brand-500 text-white"
+                        : "border-border bg-card text-foreground hover:border-brand-300"
+                    )}
                   >
-                    Cancel
+                    ₱{amt}
                   </button>
-                  <Button size="md" className="flex-1" onClick={handleTopUp} loading={topUpLoading}>
-                    Add {formatPHP(selectedAmount)}
-                  </Button>
+                ))}
+              </div>
+              {/* Custom amount */}
+              <button
+                onClick={() => { setIsCustomAmount(true); setTopUpError(""); }}
+                className={cn(
+                  "w-full rounded-xl border py-2.5 text-sm font-semibold transition-colors",
+                  isCustomAmount
+                    ? "border-brand-500 bg-brand-50 text-brand-600"
+                    : "border-border bg-card text-muted-foreground hover:border-brand-300 hover:text-foreground"
+                )}
+              >
+                Custom amount
+              </button>
+              {isCustomAmount && (
+                <div className="mt-2 relative">
+                  <span className="absolute left-3 top-1/2 -translate-y-1/2 text-sm font-bold text-muted-foreground">₱</span>
+                  <input
+                    type="number"
+                    value={customAmount}
+                    onChange={(e) => { setCustomAmount(e.target.value); setTopUpError(""); }}
+                    placeholder="Enter amount (min ₱50)"
+                    min={50}
+                    className="h-11 w-full rounded-xl border border-input bg-background pl-7 pr-3 text-sm focus:outline-none focus:ring-2 focus:ring-brand-500"
+                    autoFocus
+                  />
                 </div>
-              </>
+              )}
+            </div>
+
+            <div>
+              <p className="text-xs text-muted-foreground mb-2 font-medium">Pay via</p>
+              <div className="space-y-2">
+                {TOP_UP_METHODS.map((m) => (
+                  <button
+                    key={m.id}
+                    onClick={() => setSelectedMethod(m.id)}
+                    className={cn(
+                      "flex w-full items-center gap-3 rounded-xl border px-4 py-3 transition-colors",
+                      selectedMethod === m.id ? "border-brand-500 bg-white" : "border-border bg-card hover:border-brand-200"
+                    )}
+                  >
+                    <span className="text-lg">{m.icon}</span>
+                    <span className="text-sm font-semibold text-foreground">{m.label}</span>
+                    {selectedMethod === m.id && (
+                      <span className="ml-auto text-brand-500 text-xs font-bold">Selected</span>
+                    )}
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            {topUpError && (
+              <div className="flex items-center gap-2 rounded-xl bg-danger-50 border border-danger-200 px-3 py-2.5">
+                <AlertCircle className="h-4 w-4 text-danger-500 shrink-0" />
+                <p className="text-xs text-danger-700">{topUpError}</p>
+              </div>
             )}
+
+            <p className="text-[11px] text-muted-foreground flex items-center gap-1">
+              <ExternalLink className="h-3 w-3 shrink-0" />
+              You'll be redirected to a secure PayMongo checkout page.
+            </p>
+
+            <div className="flex gap-2">
+              <button
+                onClick={() => setShowTopUp(false)}
+                className="flex-1 rounded-xl border border-border bg-card py-3 text-sm font-semibold text-foreground hover:bg-muted transition-colors"
+              >
+                Cancel
+              </button>
+              <Button
+                size="md"
+                className="flex-1"
+                onClick={handleTopUp}
+                loading={topUpLoading}
+                disabled={isCustomAmount ? parseInt(customAmount || "0", 10) < 50 : false}
+              >
+                Proceed to Payment · {formatPHP(getEffectiveAmount())}
+              </Button>
+            </div>
           </div>
         )}
 

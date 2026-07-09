@@ -1,51 +1,40 @@
 "use client";
 // v2
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { TrendingUp, TrendingDown, Package, Users, ShoppingCart, AlertTriangle, ArrowRight, Clock } from "lucide-react";
 import Link from "next/link";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { StatusBadge } from "@/components/ui/status-badge";
 import { formatPHP, formatDateTime } from "@/lib/utils";
 import { ADMIN_STATS, ADMIN_RECENT_ORDERS } from "@/lib/mock-data";
+import type { AdminStats, OrderStatus } from "@/types";
 
-const STAT_CARDS = [
-  {
-    label: "Orders Today",
-    value: ADMIN_STATS.ordersToday.toString(),
-    change: "+12% vs yesterday",
-    up: true,
-    icon: ShoppingCart,
-    href: "/admin/orders",
-    color: "text-info-600 bg-info-50",
-  },
-  {
-    label: "Revenue Today",
-    value: formatPHP(ADMIN_STATS.revenueToday),
-    change: "+8% vs yesterday",
-    up: true,
-    icon: TrendingUp,
-    href: "/admin/reports",
-    color: "text-success-600 bg-success-50",
-  },
-  {
-    label: "Active Retailers",
-    value: ADMIN_STATS.activeRetailers.toString(),
-    change: `+${ADMIN_STATS.newRetailersMonth} this month`,
-    up: true,
-    icon: Users,
-    href: "/admin/retailers",
-    color: "text-brand-600 bg-brand-50",
-  },
-  {
-    label: "Low Stock Items",
-    value: ADMIN_STATS.lowStockItems.toString(),
-    change: "Needs attention",
-    up: false,
-    icon: AlertTriangle,
-    href: "/admin/inventory",
-    color: "text-warning-600 bg-warning-50",
-  },
-];
+// ── Normalized order shape for the dashboard table ────────────────────────────
+interface DisplayOrder {
+  id: string;
+  orderNumber: string;
+  storeName: string;
+  createdAt: string;
+  total: number;
+  status: OrderStatus;
+}
+
+function normalizeOrder(o: unknown): DisplayOrder {
+  const order = o as Record<string, unknown>;
+  const retailer = order.retailer as Record<string, unknown> | null | undefined;
+  return {
+    id: String(order.id ?? ""),
+    orderNumber: String(order.order_number ?? order.orderNumber ?? order.id ?? ""),
+    storeName: retailer
+      ? String(retailer.store_name ?? retailer.name ?? "—")
+      : String((order.deliveryAddress as string | undefined)?.split(",")[0] ?? "—"),
+    createdAt: String(order.created_at ?? order.createdAt ?? new Date().toISOString()),
+    total: Number(order.total ?? 0),
+    status: (order.status ?? "pending") as OrderStatus,
+  };
+}
+
+const FALLBACK_ORDERS: DisplayOrder[] = ADMIN_RECENT_ORDERS.map(normalizeOrder);
 
 const MONTHS = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
 const REVENUE_VALUES = [312000, 428000, 541000, 380000, 623000, 568000, 657000, 485000, 610000, 519000, 637000, 693000];
@@ -100,7 +89,11 @@ function RevenueChart() {
 export default function AdminDashboardPage() {
   const [timeStr, setTimeStr] = useState<string>("");
   const [dateStr, setDateStr] = useState<string>("");
+  const [stats, setStats] = useState<AdminStats>(ADMIN_STATS);
+  const [recentOrders, setRecentOrders] = useState<DisplayOrder[]>(FALLBACK_ORDERS);
+  const [loading, setLoading] = useState(true);
 
+  // Clock
   useEffect(() => {
     const update = () => {
       setTimeStr(new Date().toLocaleTimeString("en-PH", { hour: "2-digit", minute: "2-digit" }));
@@ -110,6 +103,68 @@ export default function AdminDashboardPage() {
     const t = setInterval(update, 60000);
     return () => clearInterval(t);
   }, []);
+
+  // Fetch live stats — auto-refreshes every 30s
+  const fetchStats = useCallback(async () => {
+    try {
+      const res = await fetch("/api/admin/stats");
+      if (!res.ok) throw new Error("Failed");
+      const data = await res.json();
+      if (data.stats) setStats(data.stats as AdminStats);
+      if (Array.isArray(data.recentOrders) && data.recentOrders.length > 0) {
+        setRecentOrders(data.recentOrders.map(normalizeOrder));
+      }
+    } catch {
+      // Keep fallback data already in state
+    } finally {
+      setLoading(false);
+    }
+  }, []);
+
+  useEffect(() => {
+    fetchStats();
+    const interval = setInterval(fetchStats, 30000);
+    return () => clearInterval(interval);
+  }, [fetchStats]);
+
+  const statCards = [
+    {
+      label: "Orders Today",
+      value: stats.ordersToday.toString(),
+      change: "+12% vs yesterday",
+      up: true,
+      icon: ShoppingCart,
+      href: "/admin/orders",
+      color: "text-info-600 bg-info-50",
+    },
+    {
+      label: "Revenue Today",
+      value: formatPHP(stats.revenueToday),
+      change: "+8% vs yesterday",
+      up: true,
+      icon: TrendingUp,
+      href: "/admin/reports",
+      color: "text-success-600 bg-success-50",
+    },
+    {
+      label: "Active Retailers",
+      value: stats.activeRetailers.toString(),
+      change: `+${stats.newRetailersMonth} this month`,
+      up: true,
+      icon: Users,
+      href: "/admin/retailers",
+      color: "text-brand-600 bg-brand-50",
+    },
+    {
+      label: "Low Stock Items",
+      value: stats.lowStockItems.toString(),
+      change: "Needs attention",
+      up: false,
+      icon: AlertTriangle,
+      href: "/admin/inventory",
+      color: "text-warning-600 bg-warning-50",
+    },
+  ];
 
   return (
     <div className="p-6 space-y-6 max-w-7xl mx-auto">
@@ -131,25 +186,40 @@ export default function AdminDashboardPage() {
 
       {/* Stat cards */}
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
-        {STAT_CARDS.map((s) => (
-          <Link key={s.label} href={s.href}>
-            <Card className="hover:shadow-card-md transition-shadow cursor-pointer">
+        {loading ? (
+          Array.from({ length: 4 }).map((_, i) => (
+            <Card key={i}>
               <CardContent className="p-5">
                 <div className="flex items-start justify-between mb-4">
-                  <div className={`flex h-9 w-9 items-center justify-center rounded-xl ${s.color}`}>
-                    <s.icon className="h-4.5 w-4.5" />
-                  </div>
-                  <div className={`flex items-center gap-1 text-xs font-medium ${s.up ? "text-success-600" : "text-warning-600"}`}>
-                    {s.up ? <TrendingUp className="h-3 w-3" /> : <TrendingDown className="h-3 w-3" />}
-                  </div>
+                  <div className="h-9 w-9 rounded-xl animate-pulse bg-muted" />
                 </div>
-                <p className="font-display text-2xl font-bold text-foreground">{s.value}</p>
-                <p className="text-xs text-muted-foreground mt-1">{s.label}</p>
-                <p className={`text-xs mt-0.5 font-medium ${s.up ? "text-success-600" : "text-warning-600"}`}>{s.change}</p>
+                <div className="h-8 w-20 rounded animate-pulse bg-muted mb-2" />
+                <div className="h-3 w-28 rounded animate-pulse bg-muted mb-1" />
+                <div className="h-3 w-20 rounded animate-pulse bg-muted" />
               </CardContent>
             </Card>
-          </Link>
-        ))}
+          ))
+        ) : (
+          statCards.map((s) => (
+            <Link key={s.label} href={s.href}>
+              <Card className="hover:shadow-card-md transition-shadow cursor-pointer">
+                <CardContent className="p-5">
+                  <div className="flex items-start justify-between mb-4">
+                    <div className={`flex h-9 w-9 items-center justify-center rounded-xl ${s.color}`}>
+                      <s.icon className="h-4.5 w-4.5" />
+                    </div>
+                    <div className={`flex items-center gap-1 text-xs font-medium ${s.up ? "text-success-600" : "text-warning-600"}`}>
+                      {s.up ? <TrendingUp className="h-3 w-3" /> : <TrendingDown className="h-3 w-3" />}
+                    </div>
+                  </div>
+                  <p className="font-display text-2xl font-bold text-foreground">{s.value}</p>
+                  <p className="text-xs text-muted-foreground mt-1">{s.label}</p>
+                  <p className={`text-xs mt-0.5 font-medium ${s.up ? "text-success-600" : "text-warning-600"}`}>{s.change}</p>
+                </CardContent>
+              </Card>
+            </Link>
+          ))
+        )}
       </div>
 
       {/* Revenue summary */}
@@ -158,7 +228,11 @@ export default function AdminDashboardPage() {
           <CardHeader>
             <div className="flex items-center justify-between">
               <CardTitle>Monthly Revenue</CardTitle>
-              <span className="text-2xl font-bold text-foreground">{formatPHP(ADMIN_STATS.revenueMonth)}</span>
+              {loading ? (
+                <div className="h-8 w-28 rounded animate-pulse bg-muted" />
+              ) : (
+                <span className="text-2xl font-bold text-foreground">{formatPHP(stats.revenueMonth)}</span>
+              )}
             </div>
           </CardHeader>
           <CardContent>
@@ -170,10 +244,10 @@ export default function AdminDashboardPage() {
           <CardHeader><CardTitle>Pending Actions</CardTitle></CardHeader>
           <CardContent className="space-y-3">
             {[
-              { label: "Orders to pick", count: 8, color: "text-warning-600 bg-warning-50", href: "/admin/fulfillment" },
-              { label: "Orders to pack", count: 4, color: "text-info-600 bg-info-50", href: "/admin/fulfillment" },
-              { label: "Out for delivery", count: 6, color: "text-brand-600 bg-brand-50", href: "/admin/delivery" },
-              { label: "Pending payments", count: 2, color: "text-danger-600 bg-danger-50", href: "/admin/subscriptions" },
+              { label: "Orders to pick", count: stats.pendingOrders, color: "text-warning-600 bg-warning-50", href: "/admin/fulfillment" },
+              { label: "Orders to pack", count: stats.processingOrders, color: "text-info-600 bg-info-50", href: "/admin/fulfillment" },
+              { label: "Out for delivery", count: stats.outForDelivery, color: "text-brand-600 bg-brand-50", href: "/admin/delivery" },
+              { label: "Low stock items", count: stats.lowStockItems, color: "text-danger-600 bg-danger-50", href: "/admin/inventory" },
             ].map((item) => (
               <Link key={item.label} href={item.href} className="flex items-center justify-between hover:opacity-80 transition-opacity">
                 <span className="text-sm text-foreground">{item.label}</span>
@@ -209,19 +283,31 @@ export default function AdminDashboardPage() {
                 </tr>
               </thead>
               <tbody className="divide-y divide-border">
-                {ADMIN_RECENT_ORDERS.map((order) => (
-                  <tr key={order.id} className="hover:bg-muted/50 transition-colors">
-                    <td className="px-5 py-3.5">
-                      <Link href={`/admin/orders/${order.id}`} className="font-medium text-foreground hover:text-brand-500">
-                        {order.orderNumber}
-                      </Link>
-                    </td>
-                    <td className="px-5 py-3.5 text-muted-foreground hidden md:table-cell">{order.deliveryAddress.split(",")[0]}</td>
-                    <td className="px-5 py-3.5 text-muted-foreground hidden lg:table-cell text-xs">{formatDateTime(order.createdAt)}</td>
-                    <td className="px-5 py-3.5 text-right font-semibold text-foreground">{formatPHP(order.total)}</td>
-                    <td className="px-5 py-3.5 text-right"><StatusBadge status={order.status} /></td>
-                  </tr>
-                ))}
+                {loading ? (
+                  Array.from({ length: 5 }).map((_, i) => (
+                    <tr key={i}>
+                      <td className="px-5 py-3.5"><div className="h-4 w-32 rounded animate-pulse bg-muted" /></td>
+                      <td className="px-5 py-3.5 hidden md:table-cell"><div className="h-4 w-24 rounded animate-pulse bg-muted" /></td>
+                      <td className="px-5 py-3.5 hidden lg:table-cell"><div className="h-4 w-20 rounded animate-pulse bg-muted" /></td>
+                      <td className="px-5 py-3.5 text-right"><div className="h-4 w-16 rounded animate-pulse bg-muted ml-auto" /></td>
+                      <td className="px-5 py-3.5 text-right"><div className="h-5 w-16 rounded-full animate-pulse bg-muted ml-auto" /></td>
+                    </tr>
+                  ))
+                ) : (
+                  recentOrders.map((order) => (
+                    <tr key={order.id} className="hover:bg-muted/50 transition-colors">
+                      <td className="px-5 py-3.5">
+                        <Link href={`/admin/orders/${order.id}`} className="font-medium text-foreground hover:text-brand-500">
+                          {order.orderNumber}
+                        </Link>
+                      </td>
+                      <td className="px-5 py-3.5 text-muted-foreground hidden md:table-cell">{order.storeName}</td>
+                      <td className="px-5 py-3.5 text-muted-foreground hidden lg:table-cell text-xs">{formatDateTime(order.createdAt)}</td>
+                      <td className="px-5 py-3.5 text-right font-semibold text-foreground">{formatPHP(order.total)}</td>
+                      <td className="px-5 py-3.5 text-right"><StatusBadge status={order.status} /></td>
+                    </tr>
+                  ))
+                )}
               </tbody>
             </table>
           </div>

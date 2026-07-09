@@ -1,6 +1,8 @@
 import { NextRequest, NextResponse } from "next/server";
 import { getSessionFromRequest } from "@/lib/auth";
 import { getAllPickLists, getPickListById, updatePickList } from "@/lib/db";
+import { getPickLists } from "@/lib/supabase-db";
+import { supabaseAdmin } from "@/lib/supabase";
 
 export async function GET(req: NextRequest) {
   const session = await getSessionFromRequest(req);
@@ -8,13 +10,18 @@ export async function GET(req: NextRequest) {
     return NextResponse.json({ error: "Forbidden" }, { status: 403 });
   }
 
+  if (process.env.NEXT_PUBLIC_SUPABASE_URL) {
+    const { searchParams } = new URL(req.url);
+    const status = searchParams.get("status") ?? undefined;
+    const lists = await getPickLists(status);
+    return NextResponse.json({ pickLists: lists, total: lists.length });
+  }
+
   const { searchParams } = new URL(req.url);
   const status = searchParams.get("status");
 
   let lists = getAllPickLists();
-  if (status) {
-    lists = lists.filter((pl) => pl.status === status);
-  }
+  if (status) lists = lists.filter((pl) => pl.status === status);
 
   return NextResponse.json({ pickLists: lists, total: lists.length });
 }
@@ -27,15 +34,37 @@ export async function PATCH(req: NextRequest) {
 
   const { id, status, itemUpdates } = await req.json();
 
-  const pl = getPickListById(id);
-  if (!pl) {
-    return NextResponse.json({ error: "Pick list not found" }, { status: 404 });
+  if (process.env.NEXT_PUBLIC_SUPABASE_URL) {
+    if (status) {
+      await supabaseAdmin
+        .from("pick_lists")
+        .update({
+          status,
+          assigned_to: session.userId,
+          completed_at: status === "completed" ? new Date().toISOString() : undefined,
+        })
+        .eq("id", id);
+    }
+
+    if (itemUpdates?.length) {
+      for (const upd of itemUpdates) {
+        await supabaseAdmin
+          .from("pick_list_items")
+          .update({ qty_picked: upd.pickedQty, status: upd.status })
+          .eq("id", upd.id);
+      }
+    }
+
+    return NextResponse.json({ ok: true });
   }
+
+  const pl = getPickListById(id);
+  if (!pl) return NextResponse.json({ error: "Pick list not found" }, { status: 404 });
 
   const updated = {
     ...pl,
-    status:      status || pl.status,
-    assignedTo:  session.name,
+    status: status || pl.status,
+    assignedTo: session.name,
     completedAt: status === "completed" ? new Date().toISOString() : pl.completedAt,
     items: pl.items.map((item) => {
       const upd = itemUpdates?.find((u: { id: string }) => u.id === item.id);

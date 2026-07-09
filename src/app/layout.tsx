@@ -65,7 +65,7 @@ export const metadata: Metadata = {
     images: ["https://ka-sari-sari.vercel.app/opengraph-image"],
   },
   icons: {
-    icon: "/icon.svg",
+    icon: "/icon-192.png",
     apple: "/apple-touch-icon.png",
   },
 };
@@ -77,7 +77,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <link rel="manifest" href="/manifest.json" />
         <meta name="theme-color" content="#f47028" />
         {/* Favicon — SVG scales perfectly at any size */}
-        <link rel="icon" href="/icon.svg" type="image/svg+xml" />
+        <link rel="icon" href="/icon-192.png" type="image/png" sizes="192x192" />
         <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
         <link rel="apple-touch-icon" sizes="180x180" href="/icon-192.png" />
         <meta name="mobile-web-app-capable" content="yes" />
