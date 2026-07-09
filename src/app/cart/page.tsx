@@ -1,5 +1,5 @@
 "use client";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Image from "next/image";
 import { Minus, Plus, Trash2, ShoppingCart, ArrowRight, Truck, Gift } from "lucide-react";
 import { RetailerTopBar, RetailerBottomNav } from "@/components/layout/retailer-nav";
@@ -47,13 +47,30 @@ function ProductThumb({ product }: { product: { imageUrl?: string; categoryId: s
 }
 
 export default function CartPage() {
-  const { items, updateQty, removeItem, clearCart } = useCartStore();
+  const { items, updateQty, removeItem, clearCart, _hasHydrated } = useCartStore();
+  const [mounted, setMounted] = useState(false);
+  useEffect(() => { setMounted(true); }, []);
+
   const subtotal    = items.reduce((s, i) => s + i.product.price * i.quantity, 0);
   const freeDelivery = subtotal >= FREE_DELIVERY_THRESHOLD;
   const toFree      = FREE_DELIVERY_THRESHOLD - subtotal;
   const progress    = Math.min(100, (subtotal / FREE_DELIVERY_THRESHOLD) * 100);
   const deliveryFee = freeDelivery ? 0 : DELIVERY_FEE;
   const total       = subtotal + deliveryFee;
+
+  if (!mounted || !_hasHydrated) {
+    return (
+      <div className="min-h-screen bg-background pb-24">
+        <RetailerTopBar title="Cart" />
+        <div className="px-4 py-5 space-y-4 animate-pulse">
+          <div className="h-16 rounded-2xl bg-muted" />
+          <div className="h-28 rounded-2xl bg-muted" />
+          <div className="h-20 rounded-2xl bg-muted" />
+        </div>
+        <RetailerBottomNav />
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-background pb-24">

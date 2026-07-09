@@ -1,4 +1,3 @@
-"use client";
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
 import type { CartItem, Product } from "@/types";
@@ -6,23 +5,21 @@ import { toastSuccess } from "@/store/toast";
 
 interface CartStore {
   items: CartItem[];
+  _hasHydrated: boolean;
+  setHasHydrated: (val: boolean) => void;
   addItem: (product: Product, qty?: number) => void;
   removeItem: (productId: string) => void;
   updateQty: (productId: string, qty: number) => void;
   clearCart: () => void;
-  totalItems: number;
-  subtotal: number;
 }
 
 export const useCartStore = create<CartStore>()(
   persist(
     (set, get) => ({
       items: [],
-      get totalItems() {
-        return get().items.reduce((sum, i) => sum + i.quantity, 0);
-      },
-      get subtotal() {
-        return get().items.reduce((sum, i) => sum + i.product.price * i.quantity, 0);
+      _hasHydrated: false,
+      setHasHydrated(val: boolean) {
+        set({ _hasHydrated: val });
       },
       addItem(product, qty = product.minOrderQty) {
         set((s) => {
@@ -54,6 +51,11 @@ export const useCartStore = create<CartStore>()(
         set({ items: [] });
       },
     }),
-    { name: "kss-cart" }
+    {
+      name: "kss-cart",
+      onRehydrateStorage: () => (state) => {
+        state?.setHasHydrated(true);
+      },
+    }
   )
 );
