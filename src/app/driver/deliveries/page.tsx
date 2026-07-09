@@ -85,6 +85,7 @@ export default function DriverDeliveriesPage() {
       const raw: ApiDelivery[] = data.deliveries ?? [];
       const mapped: MappedDelivery[] = raw.map((d, i) => ({
         ...d,
+        orderId: d.orderId ?? d.id,   // mock API returns orders where id IS the orderId
         deliveryStatus: mapApiStatus(d.status),
         stopNumber: d.routePosition ?? i + 1,
         isCOD: (d.codAmount ?? 0) > 0,

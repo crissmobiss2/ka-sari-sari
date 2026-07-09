@@ -240,7 +240,7 @@ export default function DeliveryDetailPage() {
         if (!res.ok) return;
         const data = await res.json();
         const deliveries: Array<{ id: string; orderId: string }> = data.deliveries ?? [];
-        const found = deliveries.find((d) => d.orderId === id);
+        const found = deliveries.find((d) => d.orderId === id || d.id === id);
         if (found) setDeliveryId(found.id);
       } catch {
         // deliveryId remains null — API calls will be skipped (local-only fallback)
