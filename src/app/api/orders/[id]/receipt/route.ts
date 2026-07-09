@@ -36,7 +36,8 @@ export async function GET(
     const raw = legacyGet(id);
     if (!raw) return new NextResponse("Order not found", { status: 404 });
     const o = toOrderData(raw);
-    if (session.role === "retailer" && o.retailerId !== session.userId) {
+    const ownerId = o.retailerId ?? o.retailer_id ?? o.userId ?? o.user_id;
+    if (session.role === "retailer" && ownerId !== session.userId) {
       return new NextResponse("Forbidden", { status: 403 });
     }
     order = o;
