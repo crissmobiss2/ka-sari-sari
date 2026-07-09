@@ -3,10 +3,20 @@ import bcrypt from "bcryptjs";
 import { signToken, COOKIE_NAME, COOKIE_MAX_AGE } from "@/lib/auth";
 import { findUserByPhone } from "@/lib/supabase-db";
 import { findUserByPhone as findUserByPhoneLegacy } from "@/lib/db";
+import { checkRateLimit, getClientIp } from "@/lib/rate-limit";
 
 const useSupabase = !!process.env.NEXT_PUBLIC_SUPABASE_URL;
 
 export async function POST(req: NextRequest) {
+  const ip = getClientIp(req);
+  const { allowed, retryAfterSecs } = checkRateLimit(`login:${ip}`, 10, 60_000);
+  if (!allowed) {
+    return NextResponse.json(
+      { error: `Too many login attempts. Try again in ${retryAfterSecs}s.` },
+      { status: 429, headers: { "Retry-After": String(retryAfterSecs) } }
+    );
+  }
+
   try {
     const { phone, password } = await req.json();
 

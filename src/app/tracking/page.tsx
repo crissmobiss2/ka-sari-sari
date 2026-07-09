@@ -1,5 +1,5 @@
 "use client";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import Link from "next/link";
 import {
   Truck, Phone, CheckCircle2, Clock, Package, ArrowLeft,
@@ -427,8 +427,18 @@ function StopsBreakdown() {
 
 // ── Live Updates ──────────────────────────────────────────────────────────────
 
-function LiveUpdates() {
+function LiveUpdates({ extraUpdates = [] }: { extraUpdates?: typeof INITIAL_UPDATES }) {
   const [updates, setUpdates] = useState(INITIAL_UPDATES);
+  const absorbedLen = useRef(0);
+
+  useEffect(() => {
+    if (extraUpdates.length > absorbedLen.current) {
+      const newOnes = extraUpdates.slice(absorbedLen.current);
+      absorbedLen.current = extraUpdates.length;
+      setUpdates((prev) => [...prev, ...newOnes]);
+    }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [extraUpdates.length]);
 
   useEffect(() => {
     const t = setTimeout(() => {
@@ -475,8 +485,8 @@ function LiveUpdates() {
 
 // ── Status Tracker ────────────────────────────────────────────────────────────
 
-function StatusTracker() {
-  const currentIdx = STAGE_ORDER.indexOf(ORDER.status);
+function StatusTracker({ liveStatus }: { liveStatus?: string }) {
+  const currentIdx = STAGE_ORDER.indexOf((liveStatus as Stage) ?? ORDER.status);
   return (
     <div className="mx-4 bg-card border border-border rounded-2xl p-5 shadow-card">
       <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wide mb-4">Order Progress</p>
@@ -520,17 +530,81 @@ function StatusTracker() {
 // ── Page ──────────────────────────────────────────────────────────────────────
 
 export default function TrackingPage() {
-  const [driverId, setDriverId]         = useState<string | null>(null);
+  const [driverId, setDriverId]             = useState<string | null>(null);
+  const [orderId, setOrderId]               = useState<string | null>(null);
   const [driverLocation, setDriverLocation] = useState<DriverLocation | null>(null);
+  const [liveStatus, setLiveStatus]         = useState<string | undefined>(undefined);
+  const [liveOrderNum, setLiveOrderNum]     = useState<string | null>(null);
+  const [realtimeUpdates, setRealtimeUpdates] = useState<typeof INITIAL_UPDATES>([]);
 
-  // Resolve driverId from URL query param (?driverId=...)
+  // Resolve URL params: ?orderId=...&driverId=...
   useEffect(() => {
     if (typeof window !== "undefined") {
       const params = new URLSearchParams(window.location.search);
-      const id = params.get("driverId");
-      if (id) setDriverId(id);
+      const did = params.get("driverId");
+      const oid = params.get("orderId");
+      if (did) setDriverId(did);
+      if (oid) setOrderId(oid);
     }
   }, []);
+
+  // Fetch order data when orderId is known
+  useEffect(() => {
+    if (!orderId) return;
+    fetch(`/api/orders/${orderId}`)
+      .then((r) => r.json())
+      .then((d) => {
+        if (d.order) {
+          setLiveStatus(d.order.status ?? d.order.status);
+          setLiveOrderNum(d.order.orderNumber ?? d.order.order_number ?? null);
+        }
+      })
+      .catch(() => {});
+  }, [orderId]);
+
+  // Supabase Realtime subscription — live order status
+  useEffect(() => {
+    if (!orderId) return;
+    const supabaseUrl  = process.env.NEXT_PUBLIC_SUPABASE_URL;
+    const supabaseAnon = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
+    if (!supabaseUrl || !supabaseAnon) return;
+
+    let channel: { unsubscribe: () => void } | null = null;
+
+    import("@supabase/supabase-js")
+      .then(({ createClient }) => {
+        const client = createClient(supabaseUrl, supabaseAnon);
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        const ch = (client.channel(`order-status-${orderId}`) as any)
+          .on("postgres_changes", { event: "UPDATE", schema: "public", table: "orders", filter: `id=eq.${orderId}` },
+            (payload: { new: { status?: string } }) => {
+              const newStatus = payload.new?.status;
+              if (newStatus) {
+                setLiveStatus(newStatus);
+                const now = new Date().toLocaleTimeString("en-PH", { hour: "2-digit", minute: "2-digit" });
+                const statusLabels: Record<string, string> = {
+                  picking:          "Warehouse is picking your items",
+                  packed:           "Order packed — ready for dispatch",
+                  dispatched:       "Driver assigned — order dispatched",
+                  out_for_delivery: "Order is out for delivery!",
+                  delivered:        "Order delivered successfully ✓",
+                  cancelled:        "Order was cancelled",
+                };
+                const text = statusLabels[newStatus] ?? `Order status updated: ${newStatus}`;
+                setRealtimeUpdates((prev) => [
+                  ...prev,
+                  { time: now, text, type: (newStatus === "delivered" ? "success" : "highlight") as "success" | "highlight" },
+                ]);
+              }
+            }
+          )
+          .subscribe();
+        channel = ch;
+      })
+      .catch(() => {});
+
+    return () => { channel?.unsubscribe(); };
+  }, [orderId]);
 
   // Poll driver location every 10 seconds
   useEffect(() => {
@@ -561,7 +635,7 @@ export default function TrackingPage() {
       <div className="py-4 space-y-4">
         <div className="px-4">
           <Link href="/orders" className="inline-flex items-center gap-1.5 text-sm text-muted-foreground hover:text-foreground transition-colors">
-            <ArrowLeft className="h-4 w-4" /> {ORDER.number}
+            <ArrowLeft className="h-4 w-4" /> {liveOrderNum ?? ORDER.number}
           </Link>
         </div>
 
@@ -572,8 +646,8 @@ export default function TrackingPage() {
         <EtaCard />
         <DriverCard />
         <StopsBreakdown />
-        <LiveUpdates />
-        <StatusTracker />
+        <LiveUpdates extraUpdates={realtimeUpdates} />
+        <StatusTracker liveStatus={liveStatus} />
 
         {/* Order summary */}
         <div className="mx-4 rounded-2xl border border-border bg-card overflow-hidden shadow-card">

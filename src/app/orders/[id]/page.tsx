@@ -765,13 +765,15 @@ export default function OrderDetailPage() {
             </ButtonLink>
           )}
 
-          <button
-            onClick={() => window.print()}
+          <a
+            href={`/api/orders/${id}/receipt`}
+            target="_blank"
+            rel="noopener noreferrer"
             className="w-full flex items-center justify-center gap-2 rounded-2xl border border-border bg-surface-50 py-3.5 text-sm font-semibold text-foreground hover:bg-surface-100 active:scale-[0.98] transition-all"
           >
             <Download className="h-4 w-4" />
-            Download Receipt
-          </button>
+            Download Receipt (OR)
+          </a>
         </div>
       </div>
 

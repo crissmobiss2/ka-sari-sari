@@ -222,10 +222,22 @@ function SuccessContent() {
 
       {/* ── action buttons ── */}
       <div className="w-full max-w-sm flex flex-col gap-3">
-        <ButtonLink href="/tracking" size="lg" className="w-full">
+        <ButtonLink href={`/tracking?orderId=${rawId ?? ""}`} size="lg" className="w-full">
           <MapPin className="h-4 w-4 shrink-0" />
           Track Order
         </ButtonLink>
+
+        {rawId && (
+          <a
+            href={`/api/orders/${rawId}/receipt`}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="inline-flex items-center justify-center gap-2 rounded-2xl border border-border bg-card hover:bg-muted text-foreground text-sm font-semibold px-6 h-11 transition-colors w-full"
+          >
+            <ClipboardList className="h-4 w-4 shrink-0" />
+            Download Receipt (OR)
+          </a>
+        )}
 
         <ButtonLink href="/catalog" variant="outline" size="md" className="w-full">
           <ShoppingBag className="h-4 w-4 shrink-0" />

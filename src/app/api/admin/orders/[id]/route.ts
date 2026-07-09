@@ -112,6 +112,36 @@ export async function PATCH(
         url: "/driver/deliveries",
       }).catch(() => {});
 
+    } else if (action === "start_picking") {
+      await updateOrderStatus(id, "picking");
+      if (order.retailerId) {
+        await createNotification(order.retailerId, {
+          title: "Order Being Prepared",
+          body: `Order #${order.orderNumber ?? id} is now being picked by our warehouse team.`,
+          type: "order_picking",
+          data: { orderId: id },
+        });
+        sendPushToUser(order.retailerId, {
+          title: "Preparing your order",
+          body: `Order #${order.orderNumber ?? id} is being picked.`,
+          url: `/orders/${id}`,
+        }).catch(() => {});
+      }
+    } else if (action === "mark_packed") {
+      await updateOrderStatus(id, "packed");
+      if (order.retailerId) {
+        await createNotification(order.retailerId, {
+          title: "Order Packed",
+          body: `Order #${order.orderNumber ?? id} is packed and ready for dispatch.`,
+          type: "order_packed",
+          data: { orderId: id },
+        });
+        sendPushToUser(order.retailerId, {
+          title: "Order Packed",
+          body: `Order #${order.orderNumber ?? id} is ready to ship!`,
+          url: `/orders/${id}`,
+        }).catch(() => {});
+      }
     } else if (action === "cancel") {
       await updateOrderStatus(id, "cancelled");
       if (order.retailerId) {
@@ -121,6 +151,11 @@ export async function PATCH(
           type: "order_cancelled",
           data: { orderId: id },
         });
+        sendPushToUser(order.retailerId, {
+          title: "Order Cancelled",
+          body: reason ?? "Your order has been cancelled.",
+          url: `/orders/${id}`,
+        }).catch(() => {});
       }
     } else {
       return NextResponse.json({ error: "Invalid action" }, { status: 400 });

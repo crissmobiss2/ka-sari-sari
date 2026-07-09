@@ -4,10 +4,20 @@ import { findUserByPhone, createUser } from "@/lib/supabase-db";
 import { findUserByPhone as legacyFind, createUser as legacyCreate } from "@/lib/db";
 import type { DBUser } from "@/lib/db";
 import bcrypt from "bcryptjs";
+import { checkRateLimit, getClientIp } from "@/lib/rate-limit";
 
 const useSupabase = !!process.env.NEXT_PUBLIC_SUPABASE_URL;
 
 export async function POST(req: NextRequest) {
+  const ip = getClientIp(req);
+  const { allowed, retryAfterSecs } = checkRateLimit(`register:${ip}`, 5, 3_600_000);
+  if (!allowed) {
+    return NextResponse.json(
+      { error: `Too many registration attempts. Try again in ${Math.ceil(retryAfterSecs / 60)} minutes.` },
+      { status: 429, headers: { "Retry-After": String(retryAfterSecs) } }
+    );
+  }
+
   try {
     const { phone, password, name, storeName, address, city, province } = await req.json();
 

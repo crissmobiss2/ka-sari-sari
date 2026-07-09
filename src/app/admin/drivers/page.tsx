@@ -152,28 +152,47 @@ export default function AdminDriversPage() {
   async function handleAddDriver() {
     if (!addForm.name || !addForm.phone || !addForm.plate) return;
     setAddLoading(true);
-    await new Promise((r) => setTimeout(r, 1200));
-    const initials = addForm.name.split(" ").map((w) => w[0]).join("").slice(0, 2).toUpperCase();
-    const newDriver: Driver = {
-      id: `drv-${Date.now()}`,
-      name: addForm.name,
-      phone: addForm.phone,
-      vehiclePlate: addForm.plate.toUpperCase(),
-      vehicleType: addForm.vehicleType,
-      status: "active",
-      rating: 0,
-      deliveriesToday: 0,
-      deliveriesTotal: 0,
-      deliveriesMonth: 0,
-      initials,
-      area: addForm.area,
-      joined: new Date().toLocaleDateString("en-US", { month: "short", year: "numeric" }),
-    };
-    setDrivers((prev) => [...prev, newDriver]);
-    setAddLoading(false);
-    setShowAdd(false);
-    setAddForm({ name: "", phone: "", plate: "", vehicleType: "Van", area: "" });
-    showToast(`${newDriver.name} added as a driver.`);
+    try {
+      const res = await fetch("/api/admin/drivers", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          name: addForm.name,
+          phone: addForm.phone,
+          vehiclePlate: addForm.plate,
+          vehicleType: addForm.vehicleType,
+          area: addForm.area,
+        }),
+      });
+      if (!res.ok) {
+        const err = await res.json().catch(() => ({}));
+        showToast(err.error ?? "Failed to add driver");
+        return;
+      }
+      const { driver } = await res.json();
+      const initials = addForm.name.split(" ").map((w: string) => w[0]).join("").slice(0, 2).toUpperCase();
+      const newDriver: Driver = {
+        id: driver.id,
+        name: addForm.name,
+        phone: addForm.phone,
+        vehiclePlate: (driver.vehicle_plate ?? addForm.plate).toUpperCase(),
+        vehicleType: addForm.vehicleType,
+        status: "active",
+        rating: 0,
+        deliveriesToday: 0,
+        deliveriesTotal: 0,
+        deliveriesMonth: 0,
+        initials,
+        area: addForm.area,
+        joined: new Date().toLocaleDateString("en-US", { month: "short", year: "numeric" }),
+      };
+      setDrivers((prev) => [...prev, newDriver]);
+      setShowAdd(false);
+      setAddForm({ name: "", phone: "", plate: "", vehicleType: "Van", area: "" });
+      showToast(`${newDriver.name} added as a driver.`);
+    } finally {
+      setAddLoading(false);
+    }
   }
 
   async function handleAssignRoute() {

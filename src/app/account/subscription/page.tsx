@@ -1,6 +1,8 @@
 "use client";
+
+import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
-import { Shield, CheckCircle2, Clock, CreditCard, ArrowLeft, ArrowRight } from "lucide-react";
+import { Shield, CheckCircle2, Clock, CreditCard, ArrowLeft, ArrowRight, Loader2 } from "lucide-react";
 import { RetailerTopBar, RetailerBottomNav } from "@/components/layout/retailer-nav";
 import { ButtonLink } from "@/components/ui/button";
 import { formatPHP } from "@/lib/utils";
@@ -14,10 +16,35 @@ const FEATURES = [
   "Price transparency, no hidden fees",
 ];
 
+interface PaymentRecord {
+  date: string;
+  method: string;
+  amount: number;
+}
+
+interface Subscription {
+  status: string;
+  plan: string;
+  amount: number;
+  renewalDate: string;
+  daysLeft: number;
+  paymentHistory: PaymentRecord[];
+}
+
 export default function SubscriptionPage() {
   const router = useRouter();
-  const renewalDate = "February 1, 2026";
-  const daysLeft = 211;
+  const [sub, setSub] = useState<Subscription | null>(null);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    fetch("/api/user/subscription")
+      .then((r) => r.json())
+      .then((d) => setSub(d.subscription ?? null))
+      .catch(() => {})
+      .finally(() => setLoading(false));
+  }, []);
+
+  const isActive = sub ? sub.status === "active" : false;
 
   return (
     <div className="min-h-screen bg-background pb-24">
@@ -32,36 +59,50 @@ export default function SubscriptionPage() {
         </button>
 
         {/* Status card */}
-        <div className="rounded-2xl border border-success-500/25 bg-success-50 p-6 space-y-4">
-          <div className="flex items-center gap-3">
-            <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-success-100 text-success-600">
-              <Shield className="h-6 w-6" />
-            </div>
-            <div>
-              <p className="font-display text-lg font-bold text-success-700">Active</p>
-              <p className="text-sm text-success-600">Ka Sari-Sari Platform Access</p>
-            </div>
+        {loading ? (
+          <div className="rounded-2xl border border-border bg-card p-6 flex items-center justify-center min-h-[160px]">
+            <Loader2 className="h-6 w-6 animate-spin text-muted-foreground" />
           </div>
+        ) : (
+          <div className={`rounded-2xl border p-6 space-y-4 ${isActive ? "border-success-500/25 bg-success-50" : "border-border bg-card"}`}>
+            <div className="flex items-center gap-3">
+              <div className={`flex h-12 w-12 items-center justify-center rounded-2xl ${isActive ? "bg-success-100 text-success-600" : "bg-surface-100 text-muted-foreground"}`}>
+                <Shield className="h-6 w-6" />
+              </div>
+              <div>
+                <p className={`font-display text-lg font-bold ${isActive ? "text-success-700" : "text-foreground"}`}>
+                  {sub ? (isActive ? "Active" : "Inactive") : "No Subscription"}
+                </p>
+                <p className={`text-sm ${isActive ? "text-success-600" : "text-muted-foreground"}`}>
+                  Ka Sari-Sari Platform Access
+                </p>
+              </div>
+            </div>
 
-          <div className="grid grid-cols-2 gap-3">
-            <div className="rounded-xl bg-white/60 p-3">
-              <p className="text-xs text-success-600 mb-0.5">Plan</p>
-              <p className="text-sm font-bold text-success-700">Annual</p>
-            </div>
-            <div className="rounded-xl bg-white/60 p-3">
-              <p className="text-xs text-success-600 mb-0.5">Amount paid</p>
-              <p className="text-sm font-bold text-success-700">{formatPHP(1000)}</p>
-            </div>
-            <div className="rounded-xl bg-white/60 p-3">
-              <p className="text-xs text-success-600 mb-0.5">Renews on</p>
-              <p className="text-sm font-bold text-success-700">{renewalDate}</p>
-            </div>
-            <div className="rounded-xl bg-white/60 p-3">
-              <p className="text-xs text-success-600 mb-0.5">Days remaining</p>
-              <p className="text-sm font-bold text-success-700">{daysLeft} days</p>
-            </div>
+            {sub && (
+              <div className="grid grid-cols-2 gap-3">
+                <div className={`rounded-xl p-3 ${isActive ? "bg-white/60" : "bg-surface-50"}`}>
+                  <p className={`text-xs mb-0.5 ${isActive ? "text-success-600" : "text-muted-foreground"}`}>Plan</p>
+                  <p className={`text-sm font-bold ${isActive ? "text-success-700" : "text-foreground"}`}>
+                    {sub.plan.charAt(0).toUpperCase() + sub.plan.slice(1)}
+                  </p>
+                </div>
+                <div className={`rounded-xl p-3 ${isActive ? "bg-white/60" : "bg-surface-50"}`}>
+                  <p className={`text-xs mb-0.5 ${isActive ? "text-success-600" : "text-muted-foreground"}`}>Amount paid</p>
+                  <p className={`text-sm font-bold ${isActive ? "text-success-700" : "text-foreground"}`}>{formatPHP(sub.amount)}</p>
+                </div>
+                <div className={`rounded-xl p-3 ${isActive ? "bg-white/60" : "bg-surface-50"}`}>
+                  <p className={`text-xs mb-0.5 ${isActive ? "text-success-600" : "text-muted-foreground"}`}>Renews on</p>
+                  <p className={`text-sm font-bold ${isActive ? "text-success-700" : "text-foreground"}`}>{sub.renewalDate}</p>
+                </div>
+                <div className={`rounded-xl p-3 ${isActive ? "bg-white/60" : "bg-surface-50"}`}>
+                  <p className={`text-xs mb-0.5 ${isActive ? "text-success-600" : "text-muted-foreground"}`}>Days remaining</p>
+                  <p className={`text-sm font-bold ${isActive ? "text-success-700" : "text-foreground"}`}>{sub.daysLeft} days</p>
+                </div>
+              </div>
+            )}
           </div>
-        </div>
+        )}
 
         {/* What's included */}
         <div className="rounded-2xl border border-border bg-card shadow-card p-5">
@@ -77,35 +118,43 @@ export default function SubscriptionPage() {
         </div>
 
         {/* Payment history */}
-        <div className="rounded-2xl border border-border bg-card shadow-card p-5">
-          <h3 className="font-display text-sm font-semibold text-foreground mb-4">Payment history</h3>
-          <div className="flex items-center justify-between py-2">
-            <div className="flex items-center gap-3">
-              <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-success-50 text-success-600">
-                <CreditCard className="h-4 w-4" />
-              </div>
-              <div>
-                <p className="text-sm font-medium text-foreground">Annual subscription</p>
-                <p className="text-xs text-muted-foreground">Feb 1, 2025 · GCash</p>
-              </div>
+        {!loading && sub && sub.paymentHistory.length > 0 && (
+          <div className="rounded-2xl border border-border bg-card shadow-card p-5">
+            <h3 className="font-display text-sm font-semibold text-foreground mb-4">Payment history</h3>
+            <div className="space-y-3 divide-y divide-border">
+              {sub.paymentHistory.map((h, i) => (
+                <div key={i} className="flex items-center justify-between py-2 first:pt-0">
+                  <div className="flex items-center gap-3">
+                    <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-success-50 text-success-600">
+                      <CreditCard className="h-4 w-4" />
+                    </div>
+                    <div>
+                      <p className="text-sm font-medium text-foreground">Annual subscription</p>
+                      <p className="text-xs text-muted-foreground">{h.date} · {h.method}</p>
+                    </div>
+                  </div>
+                  <span className="text-sm font-bold text-foreground">{formatPHP(h.amount)}</span>
+                </div>
+              ))}
             </div>
-            <span className="text-sm font-bold text-foreground">{formatPHP(1000)}</span>
           </div>
-        </div>
+        )}
 
         {/* Renew CTA */}
-        <div className="rounded-2xl border border-brand-200 bg-brand-50 p-5 space-y-3">
-          <div className="flex items-start gap-2">
-            <Clock className="h-4 w-4 text-brand-500 mt-0.5 shrink-0" />
-            <p className="text-sm text-brand-700">
-              Your subscription renews on <span className="font-semibold">{renewalDate}</span>.
-              Renew early to avoid any interruption.
-            </p>
+        {!loading && sub && (
+          <div className="rounded-2xl border border-brand-200 bg-brand-50 p-5 space-y-3">
+            <div className="flex items-start gap-2">
+              <Clock className="h-4 w-4 text-brand-500 mt-0.5 shrink-0" />
+              <p className="text-sm text-brand-700">
+                Your subscription renews on <span className="font-semibold">{sub.renewalDate}</span>.
+                Renew early to avoid any interruption.
+              </p>
+            </div>
+            <ButtonLink size="md" href="/checkout" className="w-full">
+              Renew now — {formatPHP(sub.amount)} <ArrowRight className="h-4 w-4" />
+            </ButtonLink>
           </div>
-          <ButtonLink size="md" href="/checkout" className="w-full">
-            Renew now - {formatPHP(1000)} <ArrowRight className="h-4 w-4" />
-          </ButtonLink>
-        </div>
+        )}
       </div>
 
       <RetailerBottomNav />
