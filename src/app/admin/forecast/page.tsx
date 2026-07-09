@@ -379,7 +379,7 @@ export default function AdminForecastPage() {
         />
       </div>
 
-      {/* ── Claude AI Forecast section ───────────────────────────────────────── */}
+      {/* ── AI Forecast section ───────────────────────────────────────────────── */}
       <Card>
         <CardHeader className="pb-3">
           <div className="flex items-center justify-between gap-3 flex-wrap">
@@ -388,13 +388,13 @@ export default function AdminForecastPage() {
                 <Sparkles className="h-4 w-4 text-brand-500" />
               </div>
               <div>
-                <CardTitle className="text-base">Claude AI Recommendations</CardTitle>
+                <CardTitle className="text-base">AI Recommendations</CardTitle>
                 <p className="text-xs text-muted-foreground mt-0.5">Real-time demand insights from AI analysis</p>
               </div>
             </div>
             {isMockData && (
               <span className="text-[11px] text-muted-foreground bg-muted rounded-lg px-2.5 py-1">
-                Using demo data — connect Anthropic API for live forecasting
+                Using demo data — connect AI API for live forecasting
               </span>
             )}
           </div>
@@ -403,7 +403,7 @@ export default function AdminForecastPage() {
           {aiLoading ? (
             <div className="flex items-center gap-3 py-6 justify-center">
               <Sparkles className="h-4 w-4 text-brand-400 animate-pulse" />
-              <span className="text-sm text-muted-foreground">Generating with Claude AI…</span>
+              <span className="text-sm text-muted-foreground">Analyzing demand data…</span>
             </div>
           ) : aiData ? (
             <div className="space-y-5">
