@@ -53,6 +53,7 @@ export const useCartStore = create<CartStore>()(
     }),
     {
       name: "kss-cart",
+      partialize: (state) => ({ items: state.items }),
       onRehydrateStorage: () => (state) => {
         state?.setHasHydrated(true);
       },

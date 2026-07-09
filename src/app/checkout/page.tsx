@@ -65,8 +65,8 @@ export default function CheckoutPage() {
   const [draftAddress, setDraftAddress] = useState(MOCK_ADDRESS);
 
   useEffect(() => {
-    if (_hasHydrated && items.length === 0) router.push("/catalog");
-  }, [_hasHydrated, items.length, router]);
+    if (_hasHydrated && items.length === 0 && !loading) router.push("/catalog");
+  }, [_hasHydrated, items.length, loading, router]);
 
   if (items.length === 0) return null;
 
