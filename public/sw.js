@@ -1,43 +1,45 @@
-const CACHE_NAME = 'kss-v3';
-const STATIC_ASSETS = ['/', '/catalog', '/deals', '/orders'];
+const CACHE_NAME = 'kss-v4';
 
-// Install: cache static assets
+// Install: skip waiting immediately
 self.addEventListener('install', (event) => {
-  event.waitUntil(
-    caches.open(CACHE_NAME).then((cache) => cache.addAll(STATIC_ASSETS))
-  );
   self.skipWaiting();
 });
 
-// Activate: clean old caches
+// Activate: delete ALL old caches and claim clients
 self.addEventListener('activate', (event) => {
   event.waitUntil(
     caches.keys().then((keys) =>
       Promise.all(keys.filter((k) => k !== CACHE_NAME).map((k) => caches.delete(k)))
-    )
+    ).then(() => self.clients.claim())
   );
-  self.clients.claim();
 });
 
-// Fetch: network-first for API, cache-first for static
+// Fetch strategy:
+// - /_next/static/  → cache-first (content-hashed, truly immutable)
+// - Everything else → network-first (HTML pages, RSC payloads, API)
 self.addEventListener('fetch', (event) => {
-  if (event.request.url.includes('/api/')) {
-    // Network first for API
+  const url = event.request.url;
+
+  // Only intercept same-origin GET requests
+  if (event.request.method !== 'GET' || !url.startsWith(self.location.origin)) return;
+
+  if (url.includes('/_next/static/')) {
+    // Cache-first for immutable hashed assets
     event.respondWith(
-      fetch(event.request).catch(() => caches.match(event.request))
-    );
-  } else {
-    // Cache first for static
-    event.respondWith(
-      caches.match(event.request).then((cached) =>
-        cached || fetch(event.request).then((res) => {
-          if (res.status === 200) {
-            const clone = res.clone();
-            caches.open(CACHE_NAME).then((c) => c.put(event.request, clone));
-          }
-          return res;
+      caches.open(CACHE_NAME).then((cache) =>
+        cache.match(event.request).then((cached) => {
+          if (cached) return cached;
+          return fetch(event.request).then((res) => {
+            if (res.status === 200) cache.put(event.request, res.clone());
+            return res;
+          });
         })
       )
+    );
+  } else {
+    // Network-first for HTML, RSC, and API so deploys take effect immediately
+    event.respondWith(
+      fetch(event.request).catch(() => caches.match(event.request))
     );
   }
 });
