@@ -1,4 +1,4 @@
-const CACHE_NAME = 'kss-v5';
+const CACHE_NAME = 'kss-v6';
 
 // Install: skip waiting immediately
 self.addEventListener('install', (event) => {
