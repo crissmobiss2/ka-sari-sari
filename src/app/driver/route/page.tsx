@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import {
   MapPin, CheckCircle2, Clock, Banknote, Navigation,
   Phone, ChevronDown, ChevronUp, AlertTriangle, Package,
@@ -8,7 +8,7 @@ import {
 } from "lucide-react";
 import { Card } from "@/components/ui/card";
 import { cn, formatPHP } from "@/lib/utils";
-import { toastSuccess } from "@/store/toast";
+import { toastSuccess, toastError } from "@/store/toast";
 
 type StopStatus = "done" | "next" | "pending" | "failed";
 
@@ -89,6 +89,43 @@ const INITIAL_STOPS: Stop[] = [
   },
 ];
 
+interface ApiStop {
+  id: string;
+  sequence: number;
+  orderId: string;
+  customerName: string;
+  address: string;
+  phone: string;
+  items: string[] | number;
+  codAmount: number;
+  paymentMethod: string;
+  status: string;
+}
+
+function mapApiStop(s: ApiStop, isNext: boolean): Stop {
+  const apiStatus = s.status;
+  const baseStatus: StopStatus =
+    apiStatus === "delivered" ? "done" :
+    apiStatus === "failed" ? "failed" : "pending";
+  return {
+    stopNumber: s.sequence,
+    customer: s.customerName,
+    storeName: s.customerName,
+    area: "",
+    barangay: s.address.split(",")[0]?.trim() ?? "",
+    city: s.address.split(",").slice(-1)[0]?.trim() ?? "",
+    address: s.address,
+    orderNumber: s.orderId,
+    total: s.codAmount,
+    paymentMethod: s.paymentMethod as Stop["paymentMethod"],
+    status: isNext ? "next" : baseStatus,
+    collectedCOD: baseStatus === "done" && s.paymentMethod === "cod" ? s.codAmount : 0,
+    phone: s.phone,
+    items: Array.isArray(s.items) ? s.items.length : (typeof s.items === "number" ? s.items : 0),
+    weight: "—",
+  };
+}
+
 function payIcon(method: Stop["paymentMethod"]) {
   if (method === "cod") return <Banknote className="h-3 w-3" />;
   if (method === "gcash") return <span className="text-[10px] font-bold">G</span>;
@@ -104,6 +141,28 @@ export default function RouteMapPage() {
   const [stops, setStops] = useState<Stop[]>(INITIAL_STOPS);
   const [expanded, setExpanded] = useState<number | null>(3);
   const [showReconcile, setShowReconcile] = useState(false);
+  const [loading, setLoading] = useState(true);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [reportSubmitted, setReportSubmitted] = useState(false);
+  const [reportNotes] = useState("");
+
+  useEffect(() => {
+    fetch("/api/driver/route")
+      .then(r => r.json())
+      .then(d => {
+        if (d.stops?.length) {
+          let nextAssigned = false;
+          const mapped = (d.stops as ApiStop[]).map(s => {
+            const isNext = (s.status !== "delivered" && s.status !== "failed") && !nextAssigned;
+            if (isNext) nextAssigned = true;
+            return mapApiStop(s, isNext);
+          });
+          setStops(mapped);
+        }
+      })
+      .catch(() => {})
+      .finally(() => setLoading(false));
+  }, []);
 
   const totalStops   = stops.length;
   const doneStops    = stops.filter((s) => s.status === "done").length;
@@ -149,6 +208,31 @@ export default function RouteMapPage() {
       })
     );
     setExpanded(null);
+  }
+
+  async function handleSubmitReport() {
+    setIsSubmitting(true);
+    try {
+      await fetch("/api/driver/cod-settlement", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          deliveredCount: stops.filter(s => s.status === "done").length,
+          failedCount: stops.filter(s => s.status === "failed").length,
+          codCollected: stops
+            .filter(s => s.status === "done" && s.paymentMethod === "cod")
+            .reduce((sum, s) => sum + (s.collectedCOD ?? s.total), 0),
+          notes: reportNotes,
+        }),
+      });
+      toastSuccess(`EOD report submitted — ${formatPHP(collectedCOD)} COD collected`);
+      setReportSubmitted(true);
+      setShowReconcile(false);
+    } catch {
+      toastError("Failed to submit report. Please try again.");
+    } finally {
+      setIsSubmitting(false);
+    }
   }
 
   const allDone = stops.every((s) => s.status === "done" || s.status === "failed");
@@ -396,13 +480,11 @@ export default function RouteMapPage() {
             </div>
 
             <button
-              onClick={() => {
-                toastSuccess(`EOD report submitted — ${formatPHP(collectedCOD)} COD collected`);
-                setShowReconcile(false);
-              }}
-              className="w-full rounded-2xl bg-brand-500 hover:bg-brand-600 text-white font-bold h-12 transition-colors"
+              onClick={handleSubmitReport}
+              disabled={isSubmitting}
+              className="w-full rounded-2xl bg-brand-500 hover:bg-brand-600 text-white font-bold h-12 transition-colors disabled:opacity-60"
             >
-              Confirm & Submit Report
+              {isSubmitting ? "Submitting…" : "Confirm & Submit Report"}
             </button>
             <button onClick={() => setShowReconcile(false)} className="w-full text-sm text-muted-foreground py-2">
               Cancel

@@ -131,6 +131,13 @@ const CUSTOMER_DETAILS: Record<string, {
   },
 };
 
+interface OrderDetail {
+  retailerName?: string;
+  customerPhone?: string;
+  retailerPhone?: string;
+  address?: string;
+}
+
 const FAIL_REASONS = [
   "No one home",
   "Wrong address",
@@ -198,9 +205,13 @@ export default function DeliveryDetailPage() {
   const markDelivered = useOrdersStore((s) => s.markDelivered);
   const markFailed = useOrdersStore((s) => s.markFailed);
 
+  // Real order/delivery data from API — must be declared before derived customerName/phone below
+  const [orderData, setOrderData] = useState<OrderDetail | null>(null);
+
   const order = storeOrders.find((o) => o.id === id) ?? MOCK_ORDERS.find((o) => o.id === id) ?? MOCK_ORDERS[0];
   const customer = CUSTOMER_DETAILS[order.id];
-  const customerName = customer?.name ?? order.deliveryAddress?.split(",")[0] ?? "Customer";
+  const customerName = orderData?.retailerName ?? customer?.name ?? order.deliveryAddress?.split(",")[0] ?? "Customer";
+  const customerPhone = orderData?.customerPhone ?? orderData?.retailerPhone ?? customer?.phone;
 
   const isCOD = order.paymentMethod === "cod";
 
@@ -249,23 +260,59 @@ export default function DeliveryDetailPage() {
     fetchDeliveryId();
   }, [id]);
 
+  // ─── Fetch real order data for name/phone fallback ───────────────────────
+
+  useEffect(() => {
+    if (!id) return;
+    fetch(`/api/driver/deliveries/${id}`)
+      .then(r => r.json())
+      .then(d => {
+        setOrderData(d.delivery ?? d.order ?? null);
+      })
+      .catch(() => {});
+  }, [id]);
+
   // ─── Event handlers ───────────────────────────────────────────────────────
 
-  function handlePhotoChange(e: React.ChangeEvent<HTMLInputElement>) {
-    const file = e.target.files?.[0];
-    if (file) {
-      setPhotoUrl(URL.createObjectURL(file));
-      setCaptureTime(
-        new Intl.DateTimeFormat("en-PH", {
-          hour: "2-digit",
-          minute: "2-digit",
-        }).format(new Date())
-      );
+  async function uploadPhoto(file: File): Promise<string | null> {
+    const formData = new FormData();
+    formData.append("file", file);
+    formData.append("folder", "pod");
+    try {
+      const res = await fetch("/api/upload", { method: "POST", body: formData });
+      if (res.ok) {
+        const data = await res.json();
+        return data.url ?? null;
+      }
+    } catch {
+      // Upload failed — caller keeps blob URL as fallback
     }
+    return null;
+  }
+
+  async function handlePhotoChange(e: React.ChangeEvent<HTMLInputElement>) {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    // Show blob URL immediately for instant preview
+    const blobUrl = URL.createObjectURL(file);
+    setPhotoUrl(blobUrl);
+    setCaptureTime(
+      new Intl.DateTimeFormat("en-PH", {
+        hour: "2-digit",
+        minute: "2-digit",
+      }).format(new Date())
+    );
+    // Upload to API in background; swap to real URL when done
+    const realUrl = await uploadPhoto(file);
+    if (realUrl) {
+      URL.revokeObjectURL(blobUrl);
+      setPhotoUrl(realUrl);
+    }
+    // If upload fails, blobUrl stays — handleDeliver will retry the upload
   }
 
   function handleRetakePhoto() {
-    if (photoUrl) {
+    if (photoUrl?.startsWith("blob:")) {
       URL.revokeObjectURL(photoUrl);
     }
     setPhotoUrl(null);
@@ -598,9 +645,9 @@ export default function DeliveryDetailPage() {
           {/* Quick-action buttons */}
           <div className="grid grid-cols-3 gap-2 mt-3">
             {/* Call */}
-            {customer?.phone ? (
+            {customerPhone ? (
               <a
-                href={`tel:${customer.phone}`}
+                href={`tel:${customerPhone}`}
                 className="flex flex-col items-center gap-1.5 px-2 py-3 rounded-xl bg-brand-50 border border-brand-200 text-brand-700 active:bg-brand-100 transition-colors"
               >
                 <PhoneIcon className="w-5 h-5" />
@@ -614,9 +661,9 @@ export default function DeliveryDetailPage() {
             )}
 
             {/* WhatsApp */}
-            {customer?.phone ? (
+            {customerPhone ? (
               <a
-                href={`https://wa.me/${customer.phone.replace(/\D/g, "")}`}
+                href={`https://wa.me/${customerPhone.replace(/\D/g, "")}`}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="flex flex-col items-center gap-1.5 px-2 py-3 rounded-xl bg-[#dcfce7] border border-[#86efac] text-[#166534] active:bg-[#bbf7d0] transition-colors"

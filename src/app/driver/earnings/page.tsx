@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { TrendingUp, Wallet, Clock, CheckCircle2, Banknote, MapPin, Star, Gift } from "lucide-react";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -57,10 +57,70 @@ const weeklyTotal = WEEKLY.reduce((sum, w) => sum + w.earned, 0);
 const monthlyTotal = weeklyTotal * 4;
 const yearToDateTotal = monthlyTotal * 8;
 
+interface EarningsBreakdown { day: string; amount: number; deliveries: number }
+interface EarningsDelivery { id: string; date: string; address: string; amount: number; tip: number; status: string }
+interface EarningsData {
+  weeklyTotal: number;
+  monthlyTotal: number;
+  ytdTotal: number;
+  deliveryCount: number;
+  completionRate: number;
+  gcashNumber: string;
+  nextPaymentDate: string;
+  weeklyBreakdown: EarningsBreakdown[];
+  recentDeliveries: EarningsDelivery[];
+}
+
 type Tab = "overview" | "history" | "areas";
 
 export default function EarningsPage() {
   const [tab, setTab] = useState<Tab>("overview");
+  const [earnings, setEarnings] = useState<EarningsData | null>(null);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    fetch("/api/driver/earnings")
+      .then(r => r.json())
+      .then(d => setEarnings(d))
+      .catch(() => {})
+      .finally(() => setLoading(false));
+  }, []);
+
+  // Derive display values — prefer API data, fall back to hardcoded constants
+  const displayWeekly = earnings?.weeklyBreakdown?.map(w => ({
+    day: w.day,
+    deliveries: w.deliveries,
+    earned: w.amount,
+  })) ?? WEEKLY;
+  const displayMaxEarned = Math.max(...displayWeekly.map(d => d.earned));
+  const displayWeeklyTotal = earnings?.weeklyTotal ?? weeklyTotal;
+  const displayMonthlyTotal = earnings?.monthlyTotal ?? monthlyTotal;
+  const displayYtdTotal = earnings?.ytdTotal ?? yearToDateTotal;
+  const displayDeliveryCount = earnings?.deliveryCount ?? 23;
+  const displayHistory: Array<{ date: string; order: string; area: string; earned: number; cod: number; status: string }> =
+    earnings?.recentDeliveries?.map(d => ({
+      date: d.date,
+      order: d.id,
+      area: d.address,
+      earned: d.amount,
+      cod: 0,
+      status: d.status === "delivered" ? "paid" : "pending",
+    })) ?? HISTORY;
+  const displayGcash = earnings?.gcashNumber ?? "09171234567";
+  const displayNextPayment = earnings?.nextPaymentDate ?? "Friday";
+
+  if (loading) {
+    return (
+      <div className="flex flex-col gap-4 pb-8">
+        <div className="px-4 pt-5 pb-1">
+          <h1 className="font-display text-xl font-bold text-foreground">My Earnings</h1>
+        </div>
+        <div className="flex items-center justify-center h-40">
+          <p className="text-muted-foreground text-sm animate-pulse">Loading earnings…</p>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="flex flex-col gap-4 pb-8">
@@ -72,8 +132,8 @@ export default function EarningsPage() {
       {/* Hero card */}
       <div className="mx-4 rounded-2xl bg-brand-500 text-white p-5">
         <p className="text-xs opacity-80 uppercase tracking-wider font-medium mb-1">This Week</p>
-        <p className="font-display text-4xl font-black leading-none mb-1">{formatPHP(weeklyTotal)}</p>
-        <p className="text-sm opacity-90 mb-3">23 deliveries</p>
+        <p className="font-display text-4xl font-black leading-none mb-1">{formatPHP(displayWeeklyTotal)}</p>
+        <p className="text-sm opacity-90 mb-3">{displayDeliveryCount} deliveries</p>
         <div className="flex items-center gap-1.5 opacity-80">
           <TrendingUp className="w-3.5 h-3.5" />
           <span className="text-xs">+₱320 vs last week</span>
@@ -87,7 +147,7 @@ export default function EarningsPage() {
             <Wallet className="w-4 h-4 text-brand-500 flex-shrink-0" />
             <p className="text-xs text-muted-foreground font-medium uppercase tracking-wider">This Month</p>
           </div>
-          <p className="font-display text-xl font-black text-foreground">{formatPHP(monthlyTotal)}</p>
+          <p className="font-display text-xl font-black text-foreground">{formatPHP(displayMonthlyTotal)}</p>
           <p className="text-xs text-muted-foreground mt-0.5">95 deliveries</p>
         </Card>
         <Card className="p-4">
@@ -95,7 +155,7 @@ export default function EarningsPage() {
             <TrendingUp className="w-4 h-4 text-brand-500 flex-shrink-0" />
             <p className="text-xs text-muted-foreground font-medium uppercase tracking-wider">Year to Date</p>
           </div>
-          <p className="font-display text-xl font-black text-foreground">{formatPHP(yearToDateTotal)}</p>
+          <p className="font-display text-xl font-black text-foreground">{formatPHP(displayYtdTotal)}</p>
           <p className="text-xs text-muted-foreground mt-0.5">559 deliveries</p>
         </Card>
       </div>
@@ -123,8 +183,8 @@ export default function EarningsPage() {
           <Card className="mx-4 p-4">
             <p className="text-sm font-semibold text-foreground mb-4">This Week</p>
             <div className="flex items-end gap-1" style={{ height: MAX_BAR_HEIGHT + 28 }}>
-              {WEEKLY.map((d, i) => {
-                const barH = d.earned > 0 ? Math.max(6, (d.earned / maxEarned) * MAX_BAR_HEIGHT) : 4;
+              {displayWeekly.map((d, i) => {
+                const barH = d.earned > 0 ? Math.max(6, (d.earned / displayMaxEarned) * MAX_BAR_HEIGHT) : 4;
                 const isToday = i === TODAY_INDEX;
                 return (
                   <div key={d.day} className="flex-1 flex flex-col items-center justify-end gap-1">
@@ -215,8 +275,8 @@ export default function EarningsPage() {
             </div>
             <div className="space-y-2">
               {[
-                { label: "GCash number", value: "09171234567" },
-                { label: "Schedule", value: "Every Friday" },
+                { label: "GCash number", value: displayGcash },
+                { label: "Schedule", value: `Every ${displayNextPayment}` },
               ].map(({ label, value }) => (
                 <div key={label} className="flex justify-between items-center">
                   <span className="text-xs text-muted-foreground">{label}</span>
@@ -240,10 +300,10 @@ export default function EarningsPage() {
         <Card className="mx-4 overflow-hidden">
           <div className="px-4 py-3 border-b border-border flex items-center justify-between">
             <p className="text-sm font-semibold text-foreground">Delivery History</p>
-            <span className="text-xs text-muted-foreground">{HISTORY.length} deliveries</span>
+            <span className="text-xs text-muted-foreground">{displayHistory.length} deliveries</span>
           </div>
           <div className="divide-y divide-border">
-            {HISTORY.map((item) => (
+            {displayHistory.map((item) => (
               <div key={item.order} className="px-4 py-3 flex items-center gap-3">
                 <div className="flex-1 min-w-0">
                   <p className="text-xs font-medium text-foreground truncate">{item.order}</p>

@@ -32,7 +32,7 @@ function timeAgo(date: Date): string {
 
 export default function ScanPage() {
   const [barcode, setBarcode] = useState("");
-  const [loading, setLoading] = useState(false);
+  const [loading] = useState(false);
   const [searchedValue, setSearchedValue] = useState("");
   const [quantity, setQuantity] = useState(1);
   const [logged, setLogged] = useState(false);
@@ -53,13 +53,9 @@ export default function ScanPage() {
 
   function runSearch(value: string) {
     if (!value.trim()) return;
-    setLoading(true);
     setLogged(false);
     setQuantity(1);
-    setTimeout(() => {
-      setSearchedValue(value.trim());
-      setLoading(false);
-    }, 800);
+    setSearchedValue(value.trim());
   }
 
   function handleSearch() {
@@ -94,6 +90,16 @@ export default function ScanPage() {
     setRecentScans((prev) => [entry, ...prev].slice(0, 5));
     toastSuccess("Receipt logged");
     setLogged(true);
+    fetch("/api/warehouse/inventory/adjust", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        productId: foundProduct.id,
+        adjustment: quantity,
+        reason: "Scan receipt",
+        location: "Main Warehouse",
+      }),
+    }).catch(() => {});
   }
 
   return (

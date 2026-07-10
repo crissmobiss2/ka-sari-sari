@@ -21,12 +21,14 @@ function toDispatch(status: string): DispatchStatus | null {
   return null;
 }
 
-const DRIVERS = [
+const DEFAULT_DRIVERS = [
   { id: "drv-1", name: "Rodrigo Santos" },
   { id: "drv-2", name: "Benjamin Cruz" },
   { id: "drv-3", name: "Antonio Reyes" },
   { id: "drv-5", name: "Jose Dela Cruz" },
 ];
+
+type Driver = { id: string; name: string };
 
 const COLUMNS: { status: DispatchStatus; label: string; bgClass: string; countClass: string }[] = [
   { status: "ready",     label: "Ready to Dispatch", bgClass: "bg-warning-50",  countClass: "bg-warning-100 text-warning-700" },
@@ -35,7 +37,7 @@ const COLUMNS: { status: DispatchStatus; label: string; bgClass: string; countCl
   { status: "failed",    label: "Failed",             bgClass: "bg-danger-50",   countClass: "bg-danger-100 text-danger-700" },
 ];
 
-function DriverSelect({ value, onChange }: { value: string | null | undefined; onChange: (v: string) => void }) {
+function DriverSelect({ value, onChange, drivers }: { value: string | null | undefined; onChange: (v: string) => void; drivers: Driver[] }) {
   return (
     <div className="relative">
       <select
@@ -44,7 +46,7 @@ function DriverSelect({ value, onChange }: { value: string | null | undefined; o
         className="w-full appearance-none rounded-lg border border-border bg-background px-2.5 py-1.5 pr-7 text-xs font-medium text-foreground focus:outline-none focus:ring-2 focus:ring-brand-500 focus:ring-offset-1 cursor-pointer"
       >
         <option value="">Select driver…</option>
-        {DRIVERS.map((d) => (
+        {drivers.map((d) => (
           <option key={d.id} value={d.name}>{d.name}</option>
         ))}
       </select>
@@ -55,6 +57,7 @@ function DriverSelect({ value, onChange }: { value: string | null | undefined; o
 
 function DispatchCard({
   id, orderNumber, amount, address, driverName, eta, failReason, dispatchStatus,
+  drivers,
   onDispatch, onDelivered, onFailed, onRetry, onContact, onAssignDriver,
 }: {
   id: string;
@@ -65,6 +68,7 @@ function DispatchCard({
   eta?: string;
   failReason?: string;
   dispatchStatus: DispatchStatus;
+  drivers: Driver[];
   onDispatch: (id: string) => void;
   onDelivered: (id: string) => void;
   onFailed: (id: string) => void;
@@ -85,7 +89,7 @@ function DispatchCard({
       </div>
 
       {dispatchStatus === "ready" && (
-        <DriverSelect value={driverName} onChange={(v) => onAssignDriver(id, v)} />
+        <DriverSelect value={driverName} onChange={(v) => onAssignDriver(id, v)} drivers={drivers} />
       )}
 
       {dispatchStatus === "out" && driverName && (
@@ -174,6 +178,7 @@ export default function AdminDeliveryPage() {
   const markFailed = useOrdersStore((s) => s.markFailed);
   const advance = useOrdersStore((s) => s.advance);
 
+  const [drivers, setDrivers] = useState<Driver[]>(DEFAULT_DRIVERS);
   const [assigned, setAssigned] = useState<Record<string, string>>({});
   const [toast, setToast] = useState<string | null>(null);
   const [failTarget, setFailTarget] = useState<string | null>(null);
@@ -195,6 +200,13 @@ export default function AdminDeliveryPage() {
     update();
     const id = setInterval(update, 60000);
     return () => clearInterval(id);
+  }, []);
+
+  useEffect(() => {
+    fetch("/api/admin/drivers")
+      .then((r) => r.json())
+      .then((d) => { if (d.drivers?.length) setDrivers(d.drivers); })
+      .catch(() => {});
   }, []);
 
   function showToast(msg: string) {
@@ -318,6 +330,7 @@ export default function AdminDeliveryPage() {
                       eta={order.eta}
                       failReason={order.failReason}
                       dispatchStatus={status}
+                      drivers={drivers}
                       onDispatch={handleDispatch}
                       onDelivered={handleDelivered}
                       onFailed={handleFailed}

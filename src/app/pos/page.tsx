@@ -69,6 +69,9 @@ export default function RetailerPOSPage() {
   const [mobileView, setMobileView] = useState<"products" | "cart">("products");
   const [showScanner, setShowScanner] = useState(false);
   const [scanFeedback, setScanFeedback] = useState<{ ok: boolean; text: string } | null>(null);
+  const [txnReceiptNo, setTxnReceiptNo] = useState<string | null>(null);
+  const [txnError, setTxnError] = useState<string | null>(null);
+  const [txnLoading, setTxnLoading] = useState(false);
   const feedbackTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const searchRef = useRef<HTMLInputElement>(null);
 
@@ -103,10 +106,39 @@ export default function RetailerPOSPage() {
     setCart((prev) => prev.filter((i) => i.product.id !== productId));
   }
 
-  function handlePay() {
+  async function handlePay() {
     if (method === "cash" && tenderedNum < total) return;
-    setStep("done");
-    setReceiptNo((n) => n + 1);
+    setTxnLoading(true);
+    setTxnError(null);
+    try {
+      const res = await fetch("/api/pos/transaction", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          items: cart.map((i) => ({
+            productId: i.product.id,
+            name: i.product.name,
+            price: i.product.srp ?? i.product.price,
+            qty: i.quantity,
+          })),
+          total,
+          method,
+          posType: "retailer",
+        }),
+      });
+      const data = await res.json();
+      if (res.ok) {
+        setTxnReceiptNo(data.receiptNumber ?? null);
+        setStep("done");
+        setReceiptNo((n) => n + 1);
+      } else {
+        setTxnError("Transaction failed. Please try again.");
+      }
+    } catch {
+      setTxnError("Network error.");
+    } finally {
+      setTxnLoading(false);
+    }
   }
 
   function handleNewSale() {
@@ -115,6 +147,8 @@ export default function RetailerPOSPage() {
     setTendered("0");
     setMethod("cash");
     setMobileView("products");
+    setTxnReceiptNo(null);
+    setTxnError(null);
     setTimeout(() => searchRef.current?.focus(), 100);
   }
 
@@ -146,7 +180,7 @@ export default function RetailerPOSPage() {
           </div>
           <div>
             <p className="font-display text-xl font-bold text-foreground">Payment received!</p>
-            <p className="text-sm text-muted-foreground mt-1">Receipt #{receiptNo - 1}</p>
+            <p className="text-sm text-muted-foreground mt-1">Receipt {txnReceiptNo ?? `#${receiptNo - 1}`}</p>
           </div>
           <div className="w-full max-w-xs rounded-2xl border border-border p-4 text-left space-y-2 text-sm">
             <div className="flex justify-between">
@@ -416,14 +450,28 @@ export default function RetailerPOSPage() {
                 )}
               </div>
 
-              <div className="p-4 border-t border-border">
+              <div className="p-4 border-t border-border space-y-2">
+                {txnError && (
+                  <div className="rounded-xl bg-danger-50 border border-danger-200 px-3 py-2 text-xs text-danger-700">
+                    {txnError}
+                  </div>
+                )}
                 <button
                   onClick={handlePay}
-                  disabled={method === "cash" && tenderedNum < total}
+                  disabled={(method === "cash" && tenderedNum < total) || txnLoading}
                   className="w-full rounded-2xl bg-success-500 hover:bg-success-600 disabled:opacity-40 text-white text-sm font-bold h-12 transition-colors flex items-center justify-center gap-2"
                 >
-                  <CheckCircle2 className="h-5 w-5" />
-                  Confirm Payment
+                  {txnLoading ? (
+                    <>
+                      <span className="h-5 w-5 rounded-full border-2 border-white border-t-transparent animate-spin" />
+                      Processing…
+                    </>
+                  ) : (
+                    <>
+                      <CheckCircle2 className="h-5 w-5" />
+                      Confirm Payment
+                    </>
+                  )}
                 </button>
               </div>
             </div>

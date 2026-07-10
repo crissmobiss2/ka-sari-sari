@@ -45,7 +45,7 @@ const PAYMENT_OPTIONS: {
 
 const DELIVERY_FEE = 80;
 const FREE_DELIVERY_THRESHOLD = 1500;
-const MOCK_ADDRESS = "123 Rosal Street, Brgy. 5, Caloocan City, Metro Manila";
+const DEFAULT_ADDRESS = "123 Rosal Street, Brgy. 5, Caloocan City, Metro Manila";
 
 export default function CheckoutPage() {
   const router = useRouter();
@@ -61,12 +61,24 @@ export default function CheckoutPage() {
   const [error, setError] = useState<string | null>(null);
   const [showItems, setShowItems] = useState(false);
   const [editingAddress, setEditingAddress] = useState(false);
-  const [address, setAddress] = useState(MOCK_ADDRESS);
-  const [draftAddress, setDraftAddress] = useState(MOCK_ADDRESS);
+  const [address, setAddress] = useState(DEFAULT_ADDRESS);
+  const [draftAddress, setDraftAddress] = useState(DEFAULT_ADDRESS);
 
   useEffect(() => {
     if (_hasHydrated && items.length === 0 && !loading) router.push("/catalog");
   }, [_hasHydrated, items.length, loading, router]);
+
+  useEffect(() => {
+    fetch("/api/auth/me")
+      .then((r) => r.json())
+      .then((d) => {
+        if (d.user?.address) {
+          setAddress(d.user.address);
+          setDraftAddress(d.user.address);
+        }
+      })
+      .catch(() => {});
+  }, []);
 
   if (items.length === 0) return null;
 
@@ -112,7 +124,7 @@ export default function CheckoutPage() {
 
       if (selectedPayment === "cod") {
         clearCart();
-        router.push(`/checkout/success?orderId=${orderId}&method=cod`);
+        router.push(`/checkout/success?orderId=${orderId}&method=cod&total=${total}`);
         return;
       }
 
@@ -130,11 +142,6 @@ export default function CheckoutPage() {
         const payData = await payRes.json();
 
         if (!payRes.ok) {
-          if (payRes.status === 503) {
-            clearCart();
-            router.push(`/checkout/success?orderId=${orderId}&method=${selectedPayment}`);
-            return;
-          }
           throw new Error(payData.error || "Payment initiation failed");
         }
 
@@ -143,7 +150,7 @@ export default function CheckoutPage() {
           window.location.href = payData.checkoutUrl;
         } else {
           clearCart();
-          router.push(`/checkout/success?orderId=${orderId}&method=${selectedPayment}`);
+          router.push(`/checkout/success?orderId=${orderId}&method=${selectedPayment}&total=${total}`);
         }
         return;
       }

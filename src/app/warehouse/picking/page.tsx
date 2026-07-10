@@ -364,29 +364,36 @@ export default function PickingPage() {
     setLists((prev) =>
       prev.map((pl) => {
         if (pl.id !== id) return pl;
-        if (pl.status === "open") return { ...pl, status: "in_progress" as const, assignedTo: "Juan Dela Cruz" };
+        if (pl.status === "open") return { ...pl, status: "in_progress" as const, assignedTo: "Warehouse Staff" };
         return pl;
       })
     );
     setActivePicking(id);
+    fetch(`/api/warehouse/pick-lists/${id}`, {
+      method: "PATCH",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ action: "start", status: "in_progress" }),
+    }).catch(() => {});
   }
 
   function handleToggleItem(itemId: string, checked: boolean) {
     setCheckedItems((prev) => ({ ...prev, [itemId]: checked }));
 
-    if (checked) {
-      // Find which pick list owns this item and its required quantity
-      const pl = lists.find((l) => l.items.some((i) => i.id === itemId));
-      const item = pl?.items.find((i) => i.id === itemId);
-      if (pl && item) {
-        fetch(`/api/warehouse/pick-lists/${pl.id}`, {
-          method: "PATCH",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ itemId, qtyPicked: item.quantity, status: "picked" }),
-        }).catch(() => {
-          // Fire-and-forget — optimistic UI update already applied
-        });
-      }
+    // Find which pick list owns this item and its required quantity
+    const pl = lists.find((l) => l.items.some((i) => i.id === itemId));
+    const item = pl?.items.find((i) => i.id === itemId);
+    if (pl && item) {
+      fetch(`/api/warehouse/pick-lists/${pl.id}`, {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          itemId,
+          qtyPicked: checked ? item.quantity : 0,
+          status: checked ? "picked" : "pending",
+        }),
+      }).catch(() => {
+        // Fire-and-forget — optimistic UI update already applied
+      });
     }
   }
 
@@ -401,7 +408,13 @@ export default function PickingPage() {
       // Continue even if API call fails — remove from list optimistically
     }
 
-    setLists((prev) => prev.filter((pl) => pl.id !== id));
+    setLists((prev) =>
+      prev.map((pl) =>
+        pl.id === id
+          ? { ...pl, status: "completed" as const, completedAt: new Date().toISOString() }
+          : pl
+      )
+    );
     setActivePicking(null);
     setCheckedItems((prev) => {
       const updated = { ...prev };

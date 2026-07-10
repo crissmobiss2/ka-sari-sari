@@ -32,7 +32,7 @@ type ReceivingPO = {
   id: string;          // purchase order id (used as purchaseOrderId in POST)
   poNumber: string;
   supplierName: string;
-  status: "pending" | "in_progress" | "completed";
+  status: "pending" | "in_progress" | "completed" | "rejected";
   items: ReceivingItem[];
   createdAt: string;
 };
@@ -258,12 +258,21 @@ export default function ReceivingPage() {
       // Optimistic update stays in place even on network error
     }
 
-    // Fix #2: increased from 1500ms to 3000ms so users can read the confirmation
-    // Refetch after form closes to sync server state
     setTimeout(() => {
       setForm(null);
-      fetchPOs();
     }, 3000);
+  }
+
+  function handleReject(id: string) {
+    fetch("/api/warehouse/receive", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ action: "reject", purchaseOrderId: id }),
+    }).catch(() => {});
+    setReceipts((prev) =>
+      prev.map((r) => (r.id === id ? { ...r, status: "rejected" as const } : r))
+    );
+    toastError("Shipment rejected — admin notified");
   }
 
   const pending = receipts.filter((gr) => gr.status === "pending");
@@ -335,6 +344,7 @@ export default function ReceivingPage() {
                   onBarcodeChange={handleBarcodeChange}
                   onQtyChange={handleQtyChange}
                   onConfirm={handleConfirm}
+                  onReject={handleReject}
                   onToggleManual={() =>
                     setForm((f) => f && { ...f, manualMode: !f.manualMode, barcode: "" })
                   }
@@ -370,6 +380,7 @@ function ReceiptCard({
   onBarcodeChange,
   onQtyChange,
   onConfirm,
+  onReject,
   onToggleManual,
 }: {
   gr: ReceivingPO;
@@ -381,17 +392,17 @@ function ReceiptCard({
   onBarcodeChange: (v: string) => void;
   onQtyChange: (v: string) => void;
   onConfirm: () => void;
+  onReject: (id: string) => void;
   onToggleManual: () => void;
 }) {
   const totalExpected = gr.items.reduce((s, i) => s + i.expectedQty, 0);
   const totalReceived = gr.items.reduce((s, i) => s + i.receivedQty, 0);
   const pct = totalExpected === 0 ? 0 : Math.round((totalReceived / totalExpected) * 100);
 
-  // Fix #3: handler for rejecting a shipment
   function handleReject() {
     const confirmed = window.confirm("Reject this shipment? This cannot be undone.");
     if (confirmed) {
-      toastError("Shipment rejected — admin notified");
+      onReject(gr.id);
     }
   }
 
@@ -608,11 +619,9 @@ function ReceiptCard({
                           size="lg"
                           onClick={onConfirm}
                           disabled={
-                            // Fix #1: in scanner mode, require a non-empty barcode that matches the SKU
                             !form.qty ||
                             parseInt(form.qty) <= 0 ||
-                            (!form.manualMode && form.barcode === "") ||
-                            (!form.manualMode && form.barcode !== item.sku)
+                            (!form.manualMode && (!form.barcode || form.barcode.trim() === ""))
                           }
                         >
                           <PackageCheck className="h-5 w-5" />

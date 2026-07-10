@@ -2,7 +2,7 @@
 import { useParams, useSearchParams } from "next/navigation";
 import Link from "next/link";
 import Image from "next/image";
-import { useState, Suspense } from "react";
+import { useState, useEffect, Suspense } from "react";
 import {
   ArrowLeft, Package, MapPin, CreditCard, CheckCircle2,
   Phone, Star, Truck, Clock, Download, MessageCircle,
@@ -683,8 +683,50 @@ function Toast({ message, onDismiss }: { message: string; onDismiss: () => void 
 
 export default function OrderDetailPage() {
   const { id } = useParams();
-  const order = MOCK_ORDERS.find((o) => o.id === id) || MOCK_ORDERS[0];
+  const orderId = typeof id === "string" ? id : Array.isArray(id) ? id[0] : "";
+
+  const [order, setOrder] = useState<typeof MOCK_ORDERS[number] | null>(
+    MOCK_ORDERS.find((o) => o.id === orderId) ?? null
+  );
+  const [orderLoading, setOrderLoading] = useState(true);
   const [toast, setToast] = useState<string | null>(null);
+
+  useEffect(() => {
+    if (!orderId) { setOrderLoading(false); return; }
+    fetch(`/api/orders/${orderId}`)
+      .then((r) => r.json())
+      .then((d) => {
+        if (d.order) {
+          setOrder(d.order as typeof MOCK_ORDERS[number]);
+        } else {
+          // fallback to mock
+          setOrder(MOCK_ORDERS.find((o) => o.id === orderId) ?? MOCK_ORDERS[0]);
+        }
+      })
+      .catch(() => {
+        setOrder(MOCK_ORDERS.find((o) => o.id === orderId) ?? MOCK_ORDERS[0]);
+      })
+      .finally(() => setOrderLoading(false));
+  }, [orderId]);
+
+  if (orderLoading) {
+    return (
+      <div className="min-h-screen bg-background flex items-center justify-center">
+        <div className="h-8 w-8 animate-spin rounded-full border-2 border-brand-500 border-t-transparent" />
+      </div>
+    );
+  }
+
+  if (!order) {
+    return (
+      <div className="min-h-screen bg-background flex items-center justify-center px-4 text-center">
+        <div>
+          <p className="text-foreground font-semibold">Order not found</p>
+          <Link href="/orders" className="mt-3 block text-sm text-brand-500">Back to orders</Link>
+        </div>
+      </div>
+    );
+  }
 
   const isOutForDelivery = order.status === "out_for_delivery";
   const isDelivered = order.status === "delivered";

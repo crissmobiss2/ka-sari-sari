@@ -83,6 +83,7 @@ function generateRef() {
 }
 
 export default function POSPage() {
+  const [otcCode] = useState(() => `KSS-${Math.random().toString(36).toUpperCase().slice(2, 8)}`);
   const [mobileTab, setMobileTab] = useState<"products" | "cart" | "pay">("products");
   const [showScanner, setShowScanner] = useState(false);
   const [scanFeedback, setScanFeedback] = useState<{ ok: boolean; text: string } | null>(null);
@@ -151,10 +152,26 @@ export default function POSPage() {
 
   async function charge() {
     setLoading(true);
-    await new Promise(r => setTimeout(r, 1000));
-    setOrderRef(generateRef());
-    setDone(true);
-    setLoading(false);
+    try {
+      const res = await fetch("/api/pos/transaction", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          items: cart,
+          total,
+          method: payMethod,
+          posType: "admin",
+        }),
+      });
+      const data = res.ok ? await res.json() : null;
+      setOrderRef(data?.receiptNumber ?? generateRef());
+      setDone(true);
+    } catch {
+      setOrderRef(generateRef());
+      setDone(true);
+    } finally {
+      setLoading(false);
+    }
   }
 
   function reset() {
@@ -511,7 +528,7 @@ export default function POSPage() {
               {["palawan", "cebuana", "mlhuillier"].includes(payMethod) && (
                 <div className="rounded-xl bg-yellow-50 border border-yellow-200 p-3 text-xs space-y-1 pt-1">
                   <p className="font-bold text-yellow-800">OTC Payment Code</p>
-                  <p className="font-mono font-black text-yellow-900 text-lg tracking-widest">KSS-{Math.random().toString(36).toUpperCase().slice(2, 8)}</p>
+                  <p className="font-mono font-black text-yellow-900 text-lg tracking-widest">{otcCode}</p>
                   <p className="text-yellow-700">Show this code at {payMethod === "palawan" ? "Palawan Express" : payMethod === "cebuana" ? "Cebuana Lhuillier" : "M Lhuillier"}</p>
                   <p className="text-yellow-600">Amount: {formatPHP(total)}</p>
                 </div>

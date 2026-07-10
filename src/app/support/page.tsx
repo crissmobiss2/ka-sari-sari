@@ -324,11 +324,25 @@ export default function SupportPage() {
   async function handleTicketSubmit() {
     if (!ticketCategory || !ticketMessage.trim()) return;
     setTicketSubmitting(true);
-    await new Promise((r) => setTimeout(r, 700));
-    setTicketSubmitting(false);
-    setTicketCategory("");
-    setTicketMessage("");
-    showToast("Natanggap ang iyong ticket! Sasagutin namin sa loob ng 24 oras.");
+    try {
+      const res = await fetch("/api/support/ticket", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ category: ticketCategory, subject: ticketCategory, message: ticketMessage }),
+      });
+      const data = await res.json();
+      if (res.ok) {
+        setTicketCategory("");
+        setTicketMessage("");
+        showToast(`Natanggap ang iyong ticket! Ref: ${data.ticketId}. Sasagutin namin sa loob ng 24 oras.`);
+      } else {
+        showToast("Hindi natanggap ang ticket. Subukan muli.");
+      }
+    } catch {
+      showToast("Network error. Please check your connection.");
+    } finally {
+      setTicketSubmitting(false);
+    }
   }
 
   return (
@@ -384,7 +398,7 @@ export default function SupportPage() {
 
             {/* Call */}
             <a
-              href="tel:+6328XXXXXXX"
+              href="tel:+63288881234"
               className="flex flex-col items-center gap-2 rounded-2xl border border-border bg-card p-4 text-center shadow-card hover:bg-muted transition-colors"
             >
               <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-brand-50 text-brand-500">

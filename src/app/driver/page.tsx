@@ -6,10 +6,9 @@ import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { formatPHP } from "@/lib/utils";
-import { DRIVERS, ROUTES } from "@/lib/mock-data";
+import { ROUTES } from "@/lib/mock-data";
 import { useOrdersStore } from "@/store/orders";
 
-const driver = DRIVERS[0]; // Rodrigo Delos Santos
 const route = ROUTES[0];   // Caloocan North
 
 interface ApiDeliveryCounts {
@@ -29,9 +28,22 @@ export default function DriverHomePage() {
   const watchIdRef = useRef<number | null>(null);
 
   const [greeting, setGreeting] = useState("Good day");
+  const [driverName, setDriverName] = useState("Driver");
+  const [driverHub, setDriverHub] = useState("Caloocan North");
+
   useEffect(() => {
     const h = new Date().getHours();
     setGreeting(h < 12 ? "Good morning" : h < 18 ? "Good afternoon" : "Good evening");
+  }, []);
+
+  useEffect(() => {
+    fetch("/api/auth/me")
+      .then(r => r.json())
+      .then(d => {
+        if (d.user?.name) setDriverName(d.user.name);
+        if (d.user?.hub) setDriverHub(d.user.hub);
+      })
+      .catch(() => {});
   }, []);
 
   // API-derived delivery counts — fetched on mount, used in summary cards
@@ -140,7 +152,7 @@ export default function DriverHomePage() {
       {/* Greeting */}
       <div>
         <h1 className="font-display text-2xl font-bold text-foreground text-balance">
-          {greeting}, {driver.name.split(" ")[0]}! 🚗
+          {greeting}, {driverName.split(" ")[0]}! 🚗
         </h1>
         <p className="text-sm text-muted-foreground mt-0.5">
           {onDuty ? "You're on duty — keep it moving!" : "You're off duty. Start your shift when ready."}

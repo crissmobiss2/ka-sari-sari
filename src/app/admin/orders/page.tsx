@@ -1,5 +1,5 @@
 "use client";
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect } from "react";
 import Link from "next/link";
 import { Search, Download, ChevronLeft, ChevronRight } from "lucide-react";
 import { Card } from "@/components/ui/card";
@@ -23,6 +23,8 @@ const STATUS_TABS: { id: string; label: string }[] = [
 ];
 
 export default function AdminOrdersPage() {
+  const [orders, setOrders] = useState(ADMIN_RECENT_ORDERS);
+  const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState("");
   const [activeTab, setActiveTab] = useState("all");
   const [paymentFilter, setPaymentFilter] = useState("all");
@@ -30,8 +32,19 @@ export default function AdminOrdersPage() {
   const [dateTo, setDateTo] = useState("");
   const [page, setPage] = useState(1);
 
+  useEffect(() => {
+    fetch("/api/orders")
+      .then((r) => r.json())
+      .then((d) => {
+        const apiOrders = d.orders ?? [];
+        setOrders(apiOrders.length > 0 ? apiOrders : ADMIN_RECENT_ORDERS);
+      })
+      .catch(() => setOrders(ADMIN_RECENT_ORDERS))
+      .finally(() => setLoading(false));
+  }, []);
+
   const filtered = useMemo(() => {
-    return ADMIN_RECENT_ORDERS.filter((o) => {
+    return orders.filter((o) => {
       if (activeTab !== "all" && o.status !== activeTab) return false;
       if (paymentFilter !== "all" && o.paymentStatus !== paymentFilter) return false;
       if (search) {
@@ -47,7 +60,7 @@ export default function AdminOrdersPage() {
       }
       return true;
     });
-  }, [search, activeTab, paymentFilter, dateFrom, dateTo]);
+  }, [orders, search, activeTab, paymentFilter, dateFrom, dateTo]);
 
   const totalPages = Math.max(1, Math.ceil(filtered.length / PAGE_SIZE));
   const safePage = Math.min(page, totalPages);
@@ -89,7 +102,7 @@ export default function AdminOrdersPage() {
             {hasFilters ? " matching filters" : ""}
           </p>
         </div>
-        <Button variant="outline" size="sm" onClick={exportCSV} className="gap-2">
+        <Button variant="outline" size="sm" onClick={exportCSV} className="gap-2" disabled={loading}>
           <Download className="h-4 w-4" />
           Export CSV
         </Button>

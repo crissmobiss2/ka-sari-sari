@@ -1,11 +1,12 @@
 "use client";
+import { useEffect } from "react";
 import { Package, CheckCircle2, Clock, AlertTriangle, Truck } from "lucide-react";
 import { Card } from "@/components/ui/card";
 import { StatusBadge } from "@/components/ui/status-badge";
 import { Button } from "@/components/ui/button";
 import { formatPHP, type OrderStatus } from "@/lib/utils";
 import { cn } from "@/lib/utils";
-import { useOrdersStore, NEXT_STATUS } from "@/store/orders";
+import { useOrdersStore, NEXT_STATUS, type FulfillOrder } from "@/store/orders";
 
 const LANES: { status: OrderStatus; label: string; color: string }[] = [
   { status: "confirmed",        label: "To Pick",          color: "border-t-warning-400" },
@@ -42,8 +43,27 @@ function advanceLabel(status: OrderStatus): string {
 }
 
 export default function FulfillmentPage() {
-  const orders  = useOrdersStore((s) => s.orders);
-  const advance = useOrdersStore((s) => s.advance);
+  const orders    = useOrdersStore((s) => s.orders);
+  const advance   = useOrdersStore((s) => s.advance);
+  const setOrders = useOrdersStore((s) => s.setOrders);
+
+  useEffect(() => {
+    fetch("/api/orders?status=confirmed,picking,packed,dispatched")
+      .then((r) => r.json())
+      .then((d) => {
+        const apiOrders: FulfillOrder[] = d.orders ?? [];
+        if (apiOrders.length > 0) {
+          setOrders(
+            apiOrders.map((o) => ({
+              ...o,
+              status: (o.status === "pending" ? "confirmed" : o.status) as OrderStatus,
+            }))
+          );
+        }
+      })
+      .catch(() => {});
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   // Summary counts — derived from live store state
   const confirmedCount      = orders.filter((o) => o.status === "confirmed").length;

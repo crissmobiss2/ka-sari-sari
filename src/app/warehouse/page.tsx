@@ -98,6 +98,14 @@ export default function WarehouseDashboard() {
   const [now, setNow] = useState<Date | null>(null);
   const [activeHub, setActiveHub] = useState<HubKey>("NCR");
   const [preppedTransfers, setPreppedTransfers] = useState<number[]>([]);
+  const [userName, setUserName] = useState("there");
+
+  useEffect(() => {
+    fetch("/api/auth/me")
+      .then((r) => r.json())
+      .then((d) => { if (d.user?.name) setUserName(d.user.name.split(" ")[0]); })
+      .catch(() => {});
+  }, []);
 
   const storeOrders = useOrdersStore(s => s.orders);
   const packedCount = storeOrders.filter(o => o.status === "packed").length;
@@ -133,7 +141,7 @@ export default function WarehouseDashboard() {
 
       {/* Greeting */}
       <div>
-        <h1 className="font-display text-xl font-bold text-foreground">{greeting}, Juan!</h1>
+        <h1 className="font-display text-xl font-bold text-foreground">{greeting}, {userName}!</h1>
         <div className="flex items-center gap-2 mt-0.5 text-muted-foreground">
           <Clock className="h-3.5 w-3.5" />
           <span className="text-sm">{now ? formatTime(now) : '--:--'}</span>
@@ -294,6 +302,15 @@ export default function WarehouseDashboard() {
                     onClick={() => {
                       setPreppedTransfers(prev => [...prev, i]);
                       toastSuccess("Transfer prep started — route to dispatch area");
+                      fetch("/api/warehouse/transfers", {
+                        method: "POST",
+                        headers: { "Content-Type": "application/json" },
+                        body: JSON.stringify({
+                          fromHub: t.from,
+                          toHub: t.to,
+                          items: [{ product: t.product, qty: t.qty }],
+                        }),
+                      }).catch(() => {});
                     }}
                     className={cn(
                       "shrink-0 rounded-lg text-xs font-semibold px-2.5 py-1.5 transition-colors",

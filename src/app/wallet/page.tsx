@@ -111,18 +111,24 @@ export default function WalletPage() {
 
   async function handleWithdrawConfirm() {
     setWithdrawLoading(true);
-    await new Promise((r) => setTimeout(r, 1800));
-    const ref = "KSS-" + Math.random().toString(36).slice(2, 8).toUpperCase() + "-" + new Date().getFullYear();
-    const success = debit(
-      withdrawAmount,
-      `Withdraw to ${WITHDRAW_METHODS.find(m => m.id === withdrawMethod)?.label} ···${accountNumber.slice(-4)}`,
-      ref
-    );
-    setWithdrawLoading(false);
-    if (success) {
-      setWithdrawStep("done");
-    } else {
-      setWithdrawError("Insufficient balance.");
+    setWithdrawError("");
+    try {
+      const ref = `KSS-WD-${new Date().getFullYear()}-${Math.floor(Math.random() * 90000 + 10000)}`;
+      const methodLabel = WITHDRAW_METHODS.find((m) => m.id === withdrawMethod)?.label ?? withdrawMethod;
+      const success = debit(
+        withdrawAmount,
+        `Withdraw to ${methodLabel} ···${accountNumber.slice(-4)}`,
+        ref
+      );
+      if (success) {
+        setWithdrawStep("done");
+      } else {
+        setWithdrawError("Insufficient balance.");
+      }
+    } catch {
+      setWithdrawError("Withdrawal failed. Please try again.");
+    } finally {
+      setWithdrawLoading(false);
     }
   }
 

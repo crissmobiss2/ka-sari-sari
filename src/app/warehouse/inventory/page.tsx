@@ -103,6 +103,15 @@ export default function InventoryPage() {
     const newTotal = Math.max(0, base + prevAdj + delta);
     const newAdj = newTotal - base;
     setAdjustments((prev) => ({ ...prev, [productId]: newAdj }));
+    fetch("/api/warehouse/inventory/adjust", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        productId,
+        adjustment: delta,
+        reason: "Manual stock adjustment",
+      }),
+    }).catch(() => {});
     setAdjustingId(null);
     const productName = PRODUCTS.find((p) => p.id === productId)?.name ?? productId;
     const sign = delta >= 0 ? `+${delta}` : `${delta}`;

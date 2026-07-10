@@ -6,7 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { formatPHP, cn } from "@/lib/utils";
 import { PRODUCTS, CATEGORIES } from "@/lib/mock-data";
-import { toastSuccess } from "@/store/toast";
+import { toastSuccess, toastError } from "@/store/toast";
 import type { Product } from "@/types";
 
 function toSlug(name: string) {
@@ -119,11 +119,12 @@ export default function AdminProductsPage() {
   async function handleSave() {
     if (!validate()) return;
     setSaving(true);
-    await new Promise(r => setTimeout(r, 500));
+    try {
+      const isNew = modal === "add";
+      const url = isNew ? "/api/products" : `/api/products/${editing!.id}`;
+      const method = isNew ? "POST" : "PATCH";
 
-    if (modal === "add") {
-      const newProduct: Product = {
-        id: `prod-${Date.now()}`,
+      const payload = {
         slug: toSlug(draft.name),
         name: draft.name.trim(),
         brand: draft.brand.trim() || undefined,
@@ -140,38 +141,56 @@ export default function AdminProductsPage() {
         lowStockThreshold: Number(draft.lowStockThreshold) || 20,
         isActive: draft.isActive,
         isFeatured: draft.isFeatured,
-        createdAt: new Date().toISOString(),
       };
-      setProducts(prev => [newProduct, ...prev]);
-      toastSuccess(`${newProduct.name} added`);
-    } else if (editing) {
-      setProducts(prev => prev.map(p => p.id !== editing.id ? p : {
-        ...p,
-        name: draft.name.trim(),
-        slug: toSlug(draft.name),
-        brand: draft.brand.trim() || undefined,
-        description: draft.description.trim() || undefined,
-        sku: draft.sku.trim(),
-        categoryId: draft.categoryId,
-        price: Number(draft.price),
-        srp: draft.srp ? Number(draft.srp) : undefined,
-        unit: draft.unit,
-        unitSize: draft.unitSize.trim() || undefined,
-        imageUrl: draft.imageUrl.trim() || undefined,
-        stock: Number(draft.stock) || 0,
-        minOrderQty: Number(draft.minOrderQty) || 1,
-        lowStockThreshold: Number(draft.lowStockThreshold) || 20,
-        isActive: draft.isActive,
-        isFeatured: draft.isFeatured,
-      }));
-      toastSuccess(`${draft.name} updated`);
+
+      const res = await fetch(url, {
+        method,
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(isNew ? { ...payload, createdAt: new Date().toISOString() } : payload),
+      });
+
+      if (res.ok) {
+        const data = await res.json();
+        if (isNew) {
+          const newProduct: Product = data.product ?? { id: `prod-${Date.now()}`, ...payload, createdAt: new Date().toISOString() };
+          setProducts(prev => [newProduct, ...prev]);
+          toastSuccess(`${newProduct.name} added`);
+        } else {
+          setProducts(prev => prev.map(p => p.id !== editing!.id ? p : { ...p, ...payload }));
+          toastSuccess(`${draft.name} updated`);
+        }
+        closeModal();
+      } else {
+        toastError("Failed to save product");
+      }
+    } catch {
+      toastError("Network error");
+    } finally {
+      setSaving(false);
     }
-    setSaving(false);
-    closeModal();
   }
 
-  function toggleActive(id: string) {
-    setProducts(prev => prev.map(p => p.id === id ? { ...p, isActive: !p.isActive } : p));
+  async function toggleActive(id: string) {
+    const product = products.find(p => p.id === id);
+    if (!product) return;
+    const next = !product.isActive;
+    // Optimistic update
+    setProducts(prev => prev.map(p => p.id === id ? { ...p, isActive: next } : p));
+    try {
+      const res = await fetch(`/api/products/${id}`, {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ isActive: next }),
+      });
+      if (!res.ok) {
+        // Roll back on failure
+        setProducts(prev => prev.map(p => p.id === id ? { ...p, isActive: !next } : p));
+        toastError("Failed to update product");
+      }
+    } catch {
+      setProducts(prev => prev.map(p => p.id === id ? { ...p, isActive: !next } : p));
+      toastError("Network error");
+    }
   }
 
   return (

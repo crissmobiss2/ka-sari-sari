@@ -1,5 +1,5 @@
 "use client";
-import React, { useState, useMemo } from "react";
+import React, { useState, useMemo, useCallback } from "react";
 import {
   Download, Search, TrendingUp, TrendingDown,
   AlertCircle, CheckCircle2, Clock, XCircle, ArrowUpRight,
@@ -10,6 +10,7 @@ import { formatPHP, formatDate } from "@/lib/utils";
 import { MOCK_ORDERS, ADMIN_RECENT_ORDERS } from "@/lib/mock-data";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
+import { toastSuccess } from "@/store/toast";
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 
@@ -183,54 +184,55 @@ const METHOD_TABS: { id: MethodTab; label: string; icon: React.ReactNode }[] = [
 // ─── Component ───────────────────────────────────────────────────────────────
 
 export default function PaymentsPage() {
+  const [transactions, setTransactions] = useState<Transaction[]>(ALL_TXS);
   const [methodTab, setMethodTab] = useState<MethodTab>("all");
   const [statusFilter, setStatusFilter] = useState<string>("all");
   const [search, setSearch] = useState("");
   const [selected, setSelected] = useState<Transaction | null>(null);
   const [reconciledIds, setReconciledIds] = useState<Set<string>>(new Set());
 
-  // ── Derived KPIs from MOCK_ORDERS ────────────────────────────────────────
+  // ── Derived KPIs ─────────────────────────────────────────────────────────
   const collected = useMemo(
-    () => sumWhere(ALL_TXS, (t) => t.status === "completed"),
-    []
+    () => sumWhere(transactions, (t) => t.status === "completed"),
+    [transactions]
   );
   const collectedCount = useMemo(
-    () => countWhere(ALL_TXS, (t) => t.status === "completed"),
-    []
+    () => countWhere(transactions, (t) => t.status === "completed"),
+    [transactions]
   );
   const pendingCodTotal = useMemo(
-    () => sumWhere(ALL_TXS, (t) => t.method === "cod" && (t.status === "pending" || t.status === "processing")),
-    []
+    () => sumWhere(transactions, (t) => t.method === "cod" && (t.status === "pending" || t.status === "processing")),
+    [transactions]
   );
   const pendingCodCount = useMemo(
-    () => countWhere(ALL_TXS, (t) => t.method === "cod" && (t.status === "pending" || t.status === "processing")),
-    []
+    () => countWhere(transactions, (t) => t.method === "cod" && (t.status === "pending" || t.status === "processing")),
+    [transactions]
   );
   const failedTotal = useMemo(
-    () => sumWhere(ALL_TXS, (t) => t.status === "failed"),
-    []
+    () => sumWhere(transactions, (t) => t.status === "failed"),
+    [transactions]
   );
   const failedCount = useMemo(
-    () => countWhere(ALL_TXS, (t) => t.status === "failed"),
-    []
+    () => countWhere(transactions, (t) => t.status === "failed"),
+    [transactions]
   );
   const totalPending = useMemo(
-    () => sumWhere(ALL_TXS, (t) => t.status === "pending" || t.status === "processing"),
-    []
+    () => sumWhere(transactions, (t) => t.status === "pending" || t.status === "processing"),
+    [transactions]
   );
   const totalPendingCount = useMemo(
-    () => countWhere(ALL_TXS, (t) => t.status === "pending" || t.status === "processing"),
-    []
+    () => countWhere(transactions, (t) => t.status === "pending" || t.status === "processing"),
+    [transactions]
   );
 
   // ── Method stats ─────────────────────────────────────────────────────────
-  const codStats  = useMemo(() => computeMethodStats(ALL_TXS, "cod"),   []);
-  const gcashStats= useMemo(() => computeMethodStats(ALL_TXS, "gcash"), []);
-  const mayaStats = useMemo(() => computeMethodStats(ALL_TXS, "maya"),  []);
+  const codStats   = useMemo(() => computeMethodStats(transactions, "cod"),   [transactions]);
+  const gcashStats = useMemo(() => computeMethodStats(transactions, "gcash"), [transactions]);
+  const mayaStats  = useMemo(() => computeMethodStats(transactions, "maya"),  [transactions]);
 
   // ── Filtered transaction list ─────────────────────────────────────────────
   const filtered = useMemo(() => {
-    return ALL_TXS.filter((t) => {
+    return transactions.filter((t) => {
       const matchTab =
         methodTab === "all" ||
         t.method === (methodTab as TxPaymentMethod);
@@ -244,7 +246,7 @@ export default function PaymentsPage() {
         (t.reference ?? "").toLowerCase().includes(q);
       return matchTab && matchStatus && matchSearch;
     });
-  }, [methodTab, statusFilter, search]);
+  }, [transactions, methodTab, statusFilter, search]);
 
   // ── Reconcile action ─────────────────────────────────────────────────────
   function reconcile(id: string) {
@@ -257,11 +259,33 @@ export default function PaymentsPage() {
 
   const needsReconcile = useMemo(
     () =>
-      ALL_TXS.filter(
+      transactions.filter(
         (t) => t.method === "cod" && (t.status === "pending" || t.status === "processing") && !reconciledIds.has(t.id)
       ),
-    [reconciledIds]
+    [transactions, reconciledIds]
   );
+
+  // ── Mark Paid / Mark Failed ───────────────────────────────────────────────
+  const handleMarkPaid = useCallback((paymentId: string) => {
+    fetch("/api/payments/topup", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ paymentId, status: "paid" }),
+    }).catch(() => {});
+    setTransactions((prev) =>
+      prev.map((p) => p.id === paymentId ? { ...p, status: "completed" as TxPaymentStatus } : p)
+    );
+    setSelected((prev) => prev?.id === paymentId ? { ...prev, status: "completed" as TxPaymentStatus } : prev);
+    toastSuccess("Marked as paid");
+  }, []);
+
+  const handleMarkFailed = useCallback((paymentId: string) => {
+    setTransactions((prev) =>
+      prev.map((p) => p.id === paymentId ? { ...p, status: "failed" as TxPaymentStatus } : p)
+    );
+    setSelected((prev) => prev?.id === paymentId ? { ...prev, status: "failed" as TxPaymentStatus } : prev);
+    toastSuccess("Marked as failed");
+  }, []);
 
   return (
     <div className="p-5 space-y-5">
@@ -429,8 +453,8 @@ export default function PaymentsPage() {
                 methodTab === tab.id ? "bg-brand-100 text-brand-700" : "bg-muted text-muted-foreground"
               )}>
                 {tab.id === "all"
-                  ? ALL_TXS.length
-                  : ALL_TXS.filter((t) => t.method === tab.id).length}
+                  ? transactions.length
+                  : transactions.filter((t) => t.method === tab.id).length}
               </span>
             </button>
           ))}
@@ -575,7 +599,7 @@ export default function PaymentsPage() {
         </div>
         <div className="border-t border-border px-4 py-3 flex items-center justify-between">
           <p className="text-xs text-muted-foreground">
-            {filtered.length} of {ALL_TXS.length} transactions
+            {filtered.length} of {transactions.length} transactions
           </p>
           <p className="text-xs font-semibold text-foreground">
             Filtered total: {formatPHP(filtered.reduce((s, t) => s + t.amount, 0))}
@@ -687,10 +711,16 @@ export default function PaymentsPage() {
             {selected.method !== "cod" &&
               (selected.status === "pending" || selected.status === "processing") && (
                 <div className="flex gap-2">
-                  <button className="flex-1 h-10 rounded-xl bg-success-500 text-white text-sm font-semibold hover:bg-success-600 transition-colors">
+                  <button
+                    onClick={() => { handleMarkPaid(selected.id); }}
+                    className="flex-1 h-10 rounded-xl bg-success-500 text-white text-sm font-semibold hover:bg-success-600 transition-colors"
+                  >
                     Mark Paid
                   </button>
-                  <button className="flex-1 h-10 rounded-xl border border-danger-200 text-danger-600 text-sm font-semibold hover:bg-danger-50 transition-colors">
+                  <button
+                    onClick={() => { handleMarkFailed(selected.id); }}
+                    className="flex-1 h-10 rounded-xl border border-danger-200 text-danger-600 text-sm font-semibold hover:bg-danger-50 transition-colors"
+                  >
                     Mark Failed
                   </button>
                 </div>

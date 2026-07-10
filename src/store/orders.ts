@@ -24,6 +24,7 @@ const SEED: FulfillOrder[] = ADMIN_RECENT_ORDERS.map((o) => ({
 
 interface OrdersStore {
   orders: FulfillOrder[];
+  setOrders: (orders: FulfillOrder[]) => void;
   advance: (id: string) => void;
   dispatch: (id: string, driverName: string, eta?: string) => void;
   markDelivered: (id: string) => void;
@@ -32,6 +33,10 @@ interface OrdersStore {
 
 export const useOrdersStore = create<OrdersStore>()((set) => ({
   orders: SEED,
+
+  setOrders(orders) {
+    set({ orders });
+  },
 
   advance(id) {
     set((s) => ({

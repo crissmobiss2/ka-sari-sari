@@ -1,5 +1,5 @@
 "use client";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import {
@@ -125,7 +125,7 @@ function buildDisplayOrder(o: typeof MOCK_ORDERS[number]): DisplayOrder {
   };
 }
 
-const ALL_ORDERS: DisplayOrder[] = [
+const FALLBACK_ORDERS: DisplayOrder[] = [
   ...MOCK_ORDERS.map(buildDisplayOrder),
   ...EXTRA_ORDERS,
 ].sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
@@ -284,17 +284,36 @@ function OrderCard({ order }: { order: DisplayOrder }) {
 
 export default function OrdersPage() {
   const [tab, setTab] = useState("all");
+  const [orders, setOrders] = useState<DisplayOrder[]>(FALLBACK_ORDERS);
+  const [loading, setLoading] = useState(true);
 
-  const filtered = ALL_ORDERS.filter((o) => {
+  useEffect(() => {
+    fetch("/api/orders")
+      .then((r) => r.json())
+      .then((d) => {
+        const apiOrders = (d.orders ?? []) as typeof MOCK_ORDERS;
+        if (apiOrders.length > 0) {
+          setOrders(
+            apiOrders
+              .map(buildDisplayOrder)
+              .sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime())
+          );
+        }
+      })
+      .catch(() => {})
+      .finally(() => setLoading(false));
+  }, []);
+
+  const filtered = orders.filter((o) => {
     if (tab === "active") return ACTIVE_STATUSES.includes(o.status);
     if (tab === "done")   return DONE_STATUSES.includes(o.status);
     return true;
   });
 
   const counts = {
-    all:    ALL_ORDERS.length,
-    active: ALL_ORDERS.filter((o) => ACTIVE_STATUSES.includes(o.status)).length,
-    done:   ALL_ORDERS.filter((o) => DONE_STATUSES.includes(o.status)).length,
+    all:    orders.length,
+    active: orders.filter((o) => ACTIVE_STATUSES.includes(o.status)).length,
+    done:   orders.filter((o) => DONE_STATUSES.includes(o.status)).length,
   };
 
   return (
@@ -338,7 +357,11 @@ export default function OrdersPage() {
 
       {/* Order list */}
       <div className="px-4 py-2">
-        {filtered.length === 0 ? (
+        {loading ? (
+          <div className="flex justify-center py-8">
+            <div className="h-8 w-8 animate-spin rounded-full border-2 border-brand-500 border-t-transparent" />
+          </div>
+        ) : filtered.length === 0 ? (
           <EmptyState
             icon={<Package className="h-8 w-8" />}
             title={tab === "active" ? "No active orders" : tab === "done" ? "No completed orders" : "No orders yet"}
