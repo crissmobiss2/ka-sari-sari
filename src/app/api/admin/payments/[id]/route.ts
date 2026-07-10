@@ -1,6 +1,7 @@
 // PATCH /api/admin/payments/[id] — update payment status (admin only)
 import { NextRequest, NextResponse } from "next/server";
 import { getSessionFromRequest } from "@/lib/auth";
+import { supabaseAdmin } from "@/lib/supabase";
 
 export async function PATCH(
   req: NextRequest,
@@ -14,7 +15,8 @@ export async function PATCH(
   const { id } = await params;
   const { status } = await req.json();
   const allowed = ["completed", "failed", "pending", "processing"] as const;
-  if (!allowed.includes(status)) {
+  type PaymentStatus = typeof allowed[number];
+  if (!allowed.includes(status as PaymentStatus)) {
     return NextResponse.json({ error: "Invalid status" }, { status: 400 });
   }
 
@@ -22,6 +24,11 @@ export async function PATCH(
     return NextResponse.json({ id, status });
   }
 
-  // TODO: update payment row in Supabase
+  const { error } = await supabaseAdmin
+    .from("orders")
+    .update({ payment_status: status, updated_at: new Date().toISOString() })
+    .eq("id", id);
+
+  if (error) return NextResponse.json({ error: error.message }, { status: 500 });
   return NextResponse.json({ id, status });
 }

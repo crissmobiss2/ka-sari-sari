@@ -1,6 +1,8 @@
 import { NextRequest, NextResponse } from "next/server";
+import { getSessionFromRequest } from "@/lib/auth";
+import { getDriverDeliveries } from "@/lib/supabase-db";
 
-export async function GET(_req: NextRequest) {
+export async function GET(req: NextRequest) {
   if (!process.env.NEXT_PUBLIC_SUPABASE_URL) {
     return NextResponse.json({
       routeId: "ROUTE-001",
@@ -83,6 +85,26 @@ export async function GET(_req: NextRequest) {
     });
   }
 
-  // Supabase implementation placeholder
-  return NextResponse.json({ error: "Not implemented" }, { status: 501 });
+  const session = await getSessionFromRequest(req);
+  if (!session || session.role !== "driver") {
+    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  }
+
+  const deliveries = await getDriverDeliveries(session.userId);
+  const stops = deliveries.map((d) => ({
+    id: d.id,
+    sequence: d.routePosition,
+    orderId: d.orderId,
+    orderNumber: d.orderNumber,
+    customerName: d.retailerName,
+    address: d.deliveryAddress,
+    codAmount: d.codAmount,
+    codCollected: d.codCollected,
+    status: d.status,
+  }));
+
+  return NextResponse.json({
+    totalStops: stops.length,
+    stops,
+  });
 }

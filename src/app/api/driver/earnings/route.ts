@@ -1,6 +1,8 @@
 import { NextRequest, NextResponse } from "next/server";
+import { getSessionFromRequest } from "@/lib/auth";
+import { supabaseAdmin } from "@/lib/supabase";
 
-export async function GET(_req: NextRequest) {
+export async function GET(req: NextRequest) {
   if (!process.env.NEXT_PUBLIC_SUPABASE_URL) {
     return NextResponse.json({
       weeklyTotal: 3850,
@@ -46,6 +48,74 @@ export async function GET(_req: NextRequest) {
     });
   }
 
-  // Supabase implementation placeholder
-  return NextResponse.json({ error: "Not implemented" }, { status: 501 });
+  const session = await getSessionFromRequest(req);
+  if (!session || session.role !== "driver") {
+    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  }
+
+  const now = new Date();
+  const startOfWeek = new Date(now);
+  startOfWeek.setDate(now.getDate() - now.getDay());
+  startOfWeek.setHours(0, 0, 0, 0);
+
+  const startOfMonth = new Date(now.getFullYear(), now.getMonth(), 1);
+  const startOfYear = new Date(now.getFullYear(), 0, 1);
+
+  const { data: deliveries } = await supabaseAdmin
+    .from("deliveries")
+    .select("id, status, updated_at, cod_amount, order:orders(delivery_address, delivery_fee)")
+    .eq("driver_id", session.userId)
+    .order("updated_at", { ascending: false });
+
+  const all = (deliveries ?? []) as {
+    id: string;
+    status: string;
+    updated_at: string;
+    cod_amount: number;
+    order: { delivery_address: string; delivery_fee: number } | null;
+  }[];
+
+  const delivered = all.filter((d) => d.status === "delivered");
+  const completionRate = all.length > 0 ? Math.round((delivered.length / all.length) * 100) : 0;
+
+  const DRIVER_PAY_PER_DELIVERY = 80;
+
+  const weekly = delivered.filter((d) => new Date(d.updated_at) >= startOfWeek);
+  const monthly = delivered.filter((d) => new Date(d.updated_at) >= startOfMonth);
+  const ytd = delivered.filter((d) => new Date(d.updated_at) >= startOfYear);
+
+  const days = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
+  const weeklyBreakdown = days.map((day, i) => {
+    const dayDeliveries = weekly.filter((d) => new Date(d.updated_at).getDay() === i);
+    return { day, amount: dayDeliveries.length * DRIVER_PAY_PER_DELIVERY, deliveries: dayDeliveries.length };
+  });
+
+  const { data: driverUser } = await supabaseAdmin
+    .from("users")
+    .select("phone")
+    .eq("id", session.userId)
+    .single();
+
+  const daysUntilFriday = (5 - now.getDay() + 7) % 7 || 7;
+  const nextFriday = new Date(now);
+  nextFriday.setDate(now.getDate() + daysUntilFriday);
+
+  return NextResponse.json({
+    weeklyTotal: weekly.length * DRIVER_PAY_PER_DELIVERY,
+    monthlyTotal: monthly.length * DRIVER_PAY_PER_DELIVERY,
+    ytdTotal: ytd.length * DRIVER_PAY_PER_DELIVERY,
+    deliveryCount: delivered.length,
+    completionRate,
+    gcashNumber: driverUser?.phone ?? "",
+    nextPaymentDate: nextFriday.toLocaleDateString("en-PH", { month: "short", day: "numeric" }),
+    weeklyBreakdown,
+    recentDeliveries: delivered.slice(0, 10).map((d) => ({
+      id: d.id,
+      date: new Date(d.updated_at).toLocaleDateString("en-PH", { month: "short", day: "numeric" }),
+      address: d.order?.delivery_address ?? "",
+      amount: DRIVER_PAY_PER_DELIVERY,
+      tip: 0,
+      status: d.status,
+    })),
+  });
 }

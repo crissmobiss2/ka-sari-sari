@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { getSessionFromRequest } from "@/lib/auth";
+import { findUserById as sbFindUserById } from "@/lib/supabase-db";
 import { findUserById } from "@/lib/db";
 
 export async function GET(req: NextRequest) {
@@ -8,19 +9,36 @@ export async function GET(req: NextRequest) {
     return NextResponse.json({ error: "Not authenticated" }, { status: 401 });
   }
 
-  const user = findUserById(session.userId);
-  if (!user) {
-    return NextResponse.json({ error: "User not found" }, { status: 404 });
+  if (process.env.NEXT_PUBLIC_SUPABASE_URL) {
+    const user = await sbFindUserById(session.userId);
+    if (!user) return NextResponse.json({ error: "User not found" }, { status: 404 });
+    return NextResponse.json({
+      user: {
+        id: user.id,
+        phone: user.phone,
+        name: user.name,
+        role: user.role,
+        storeName: user.storeName,
+        address: user.address,
+        city: user.city,
+        subscriptionStatus: user.subscriptionStatus,
+        loyaltyPoints: user.loyaltyPoints,
+        walletBalance: user.walletBalance,
+        createdAt: user.createdAt,
+      },
+    });
   }
 
+  const user = findUserById(session.userId);
+  if (!user) return NextResponse.json({ error: "User not found" }, { status: 404 });
   return NextResponse.json({
     user: {
-      id:        user.id,
-      phone:     user.phone,
-      name:      user.name,
-      role:      user.role,
+      id: user.id,
+      phone: user.phone,
+      name: user.name,
+      role: user.role,
       storeName: user.storeName,
-      address:   user.address,
+      address: user.address,
       createdAt: user.createdAt,
     },
   });
