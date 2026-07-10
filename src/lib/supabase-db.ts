@@ -166,11 +166,14 @@ function rowToProduct(row: Record<string, unknown>): DBProduct {
 // ── Users ─────────────────────────────────────────────────────────────────────
 
 export async function findUserByPhone(phone: string): Promise<DBUser | null> {
-  const { data } = await supabaseAdmin
+  const { data, error } = await supabaseAdmin
     .from("users")
     .select("*")
     .eq("phone", phone)
     .single();
+  if (error && error.code !== "PGRST116") {
+    console.error("[supabase-db] findUserByPhone error:", error.code, error.message);
+  }
   return data ? rowToUser(data) : null;
 }
 
