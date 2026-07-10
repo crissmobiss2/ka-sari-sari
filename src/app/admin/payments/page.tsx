@@ -267,10 +267,10 @@ export default function PaymentsPage() {
 
   // ── Mark Paid / Mark Failed ───────────────────────────────────────────────
   const handleMarkPaid = useCallback((paymentId: string) => {
-    fetch("/api/payments/topup", {
-      method: "POST",
+    fetch(`/api/admin/payments/${paymentId}`, {
+      method: "PATCH",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ paymentId, status: "paid" }),
+      body: JSON.stringify({ status: "completed" }),
     }).catch(() => {});
     setTransactions((prev) =>
       prev.map((p) => p.id === paymentId ? { ...p, status: "completed" as TxPaymentStatus } : p)

@@ -1,6 +1,7 @@
 import type { Metadata, Viewport } from "next";
 import { Inter, Plus_Jakarta_Sans } from "next/font/google";
 import { Providers } from "@/components/providers";
+import { DevRoleSwitcher } from "@/components/dev/role-switcher";
 import "./globals.css";
 
 const inter = Inter({
@@ -94,6 +95,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       </head>
       <body className="min-h-screen antialiased">
         <Providers>{children}</Providers>
+        {!process.env.NEXT_PUBLIC_SUPABASE_URL && <DevRoleSwitcher />}
       </body>
     </html>
   );
