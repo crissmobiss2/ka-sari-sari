@@ -67,13 +67,14 @@ export async function GET(req: NextRequest) {
     .eq("driver_id", session.userId)
     .order("updated_at", { ascending: false });
 
-  const all = (deliveries ?? []) as {
+  type DeliveryRow = {
     id: string;
     status: string;
     updated_at: string;
     cod_amount: number;
-    order: { delivery_address: string; delivery_fee: number } | null;
-  }[];
+    order: { delivery_address: string; delivery_fee: number } | { delivery_address: string; delivery_fee: number }[] | null;
+  };
+  const all = (deliveries ?? []) as unknown as DeliveryRow[];
 
   const delivered = all.filter((d) => d.status === "delivered");
   const completionRate = all.length > 0 ? Math.round((delivered.length / all.length) * 100) : 0;
@@ -109,13 +110,16 @@ export async function GET(req: NextRequest) {
     gcashNumber: driverUser?.phone ?? "",
     nextPaymentDate: nextFriday.toLocaleDateString("en-PH", { month: "short", day: "numeric" }),
     weeklyBreakdown,
-    recentDeliveries: delivered.slice(0, 10).map((d) => ({
-      id: d.id,
-      date: new Date(d.updated_at).toLocaleDateString("en-PH", { month: "short", day: "numeric" }),
-      address: d.order?.delivery_address ?? "",
-      amount: DRIVER_PAY_PER_DELIVERY,
-      tip: 0,
-      status: d.status,
-    })),
+    recentDeliveries: delivered.slice(0, 10).map((d) => {
+      const orderRow = Array.isArray(d.order) ? d.order[0] : d.order;
+      return {
+        id: d.id,
+        date: new Date(d.updated_at).toLocaleDateString("en-PH", { month: "short", day: "numeric" }),
+        address: orderRow?.delivery_address ?? "",
+        amount: DRIVER_PAY_PER_DELIVERY,
+        tip: 0,
+        status: d.status,
+      };
+    }),
   });
 }
