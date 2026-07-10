@@ -15,18 +15,11 @@ export async function GET(req: NextRequest) {
     return NextResponse.json({
       subscription: {
         status: "active",
-        plan: "annual",
-        amount: 1000,
+        plan: "free_trial",
+        amount: 0,
         renewalDate: renewal.toLocaleDateString("en-PH", { year: "numeric", month: "long", day: "numeric" }),
         daysLeft,
-        paymentHistory: [
-          {
-            date: new Date(now.getFullYear(), now.getMonth(), now.getDate() - 365)
-              .toLocaleDateString("en-PH", { year: "numeric", month: "short", day: "numeric" }),
-            method: "GCash",
-            amount: 1000,
-          },
-        ],
+        paymentHistory: [],
       },
     });
   }

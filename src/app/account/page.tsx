@@ -572,7 +572,7 @@ export default function AccountPage() {
             </div>
             <div className="flex-1">
               <p className="text-sm font-semibold text-success-700">Active Subscription</p>
-              <p className="text-xs text-success-600 mt-0.5">Platform access · Annual · PHP 1,000</p>
+              <p className="text-xs text-success-600 mt-0.5">Platform access · Free Trial · Year 1</p>
               <div className="flex items-center gap-2 mt-2">
                 <Check className="h-3.5 w-3.5 text-success-500" />
                 <span className="text-xs text-success-600">Unlimited orders</span>

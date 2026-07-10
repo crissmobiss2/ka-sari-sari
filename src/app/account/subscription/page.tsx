@@ -84,12 +84,12 @@ export default function SubscriptionPage() {
                 <div className={`rounded-xl p-3 ${isActive ? "bg-white/60" : "bg-surface-50"}`}>
                   <p className={`text-xs mb-0.5 ${isActive ? "text-success-600" : "text-muted-foreground"}`}>Plan</p>
                   <p className={`text-sm font-bold ${isActive ? "text-success-700" : "text-foreground"}`}>
-                    {sub.plan.charAt(0).toUpperCase() + sub.plan.slice(1)}
+                    {sub.plan === "free_trial" ? "Free Trial (Year 1)" : sub.plan.charAt(0).toUpperCase() + sub.plan.slice(1)}
                   </p>
                 </div>
                 <div className={`rounded-xl p-3 ${isActive ? "bg-white/60" : "bg-surface-50"}`}>
                   <p className={`text-xs mb-0.5 ${isActive ? "text-success-600" : "text-muted-foreground"}`}>Amount paid</p>
-                  <p className={`text-sm font-bold ${isActive ? "text-success-700" : "text-foreground"}`}>{formatPHP(sub.amount)}</p>
+                  <p className={`text-sm font-bold ${isActive ? "text-success-700" : "text-foreground"}`}>{sub.amount === 0 ? "Free" : formatPHP(sub.amount)}</p>
                 </div>
                 <div className={`rounded-xl p-3 ${isActive ? "bg-white/60" : "bg-surface-50"}`}>
                   <p className={`text-xs mb-0.5 ${isActive ? "text-success-600" : "text-muted-foreground"}`}>Renews on</p>
@@ -129,7 +129,7 @@ export default function SubscriptionPage() {
                       <CreditCard className="h-4 w-4" />
                     </div>
                     <div>
-                      <p className="text-sm font-medium text-foreground">Annual subscription</p>
+                      <p className="text-sm font-medium text-foreground">Monthly subscription</p>
                       <p className="text-xs text-muted-foreground">{h.date} · {h.method}</p>
                     </div>
                   </div>
@@ -140,8 +140,8 @@ export default function SubscriptionPage() {
           </div>
         )}
 
-        {/* Renew CTA */}
-        {!loading && sub && (
+        {/* Renew CTA — shown only after free trial (monthly subscribers) */}
+        {!loading && sub && sub.plan !== "free_trial" && (
           <div className="rounded-2xl border border-brand-200 bg-brand-50 p-5 space-y-3">
             <div className="flex items-start gap-2">
               <Clock className="h-4 w-4 text-brand-500 mt-0.5 shrink-0" />
@@ -153,6 +153,19 @@ export default function SubscriptionPage() {
             <ButtonLink size="md" href="/checkout" className="w-full">
               Renew now — {formatPHP(sub.amount)} <ArrowRight className="h-4 w-4" />
             </ButtonLink>
+          </div>
+        )}
+
+        {/* Free trial info */}
+        {!loading && sub && sub.plan === "free_trial" && (
+          <div className="rounded-2xl border border-brand-200 bg-brand-50 p-5 space-y-2">
+            <div className="flex items-start gap-2">
+              <Clock className="h-4 w-4 text-brand-500 mt-0.5 shrink-0" />
+              <p className="text-sm text-brand-700">
+                Your free trial runs until <span className="font-semibold">{sub.renewalDate}</span>.
+                After that, ₱200/month keeps your store active.
+              </p>
+            </div>
           </div>
         )}
       </div>

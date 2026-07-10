@@ -237,16 +237,16 @@ export default function RegisterPage() {
             <div className="space-y-6">
               <div>
                 <h1 className="font-display text-2xl font-bold text-foreground">Activate your account</h1>
-                <p className="mt-1 text-sm text-muted-foreground">One annual platform fee unlocks unlimited ordering.</p>
+                <p className="mt-1 text-sm text-muted-foreground">Your first year is completely free. No payment needed today.</p>
               </div>
               <div className="rounded-2xl border border-brand-200 bg-brand-50 dark:bg-brand-500/10 dark:border-brand-500/30 p-6">
                 <div className="flex items-start justify-between mb-4">
                   <div>
-                    <p className="font-display text-3xl font-bold text-foreground">₱1,000</p>
-                    <p className="text-sm text-muted-foreground">Annual platform access fee</p>
+                    <p className="font-display text-3xl font-bold text-brand-500">FREE</p>
+                    <p className="text-sm text-muted-foreground">First year on us</p>
                   </div>
                   <span className="rounded-full bg-success-50 border border-success-500/25 px-2.5 py-1 text-xs font-medium text-success-600">
-                    Best value
+                    No credit card
                   </span>
                 </div>
                 <ul className="space-y-2 text-sm text-foreground">
@@ -258,16 +258,6 @@ export default function RegisterPage() {
                 </ul>
               </div>
 
-              <div className="space-y-3">
-                <p className="text-sm font-medium text-foreground">Choose payment method</p>
-                {["GCash", "Maya", "Bank Transfer", "Cash on Delivery"].map((m) => (
-                  <label key={m} className="flex items-center gap-3 rounded-xl border border-border bg-card px-4 py-3 cursor-pointer hover:border-brand-300 transition-colors">
-                    <input type="radio" name="pm" value={m} className="accent-brand-500" defaultChecked={m === "GCash"} />
-                    <span className="text-sm font-medium text-foreground">{m}</span>
-                  </label>
-                ))}
-              </div>
-
               {error && (
                 <div className="rounded-xl bg-danger-50 border border-danger-500/25 px-4 py-3 text-sm text-danger-600">
                   {error}
@@ -275,10 +265,10 @@ export default function RegisterPage() {
               )}
 
               <Button size="lg" className="w-full" onClick={handleSubmit} loading={loading}>
-                Pay ₱1,000 and start ordering <ArrowRight className="h-4 w-4" />
+                Activate free account <ArrowRight className="h-4 w-4" />
               </Button>
               <p className="text-center text-xs text-muted-foreground">
-                Secure payment. Renews automatically after 1 year.
+                Free for 1 year. Then ₱200/month per store from Year 2.
               </p>
             </div>
           )}

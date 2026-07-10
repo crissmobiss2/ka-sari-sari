@@ -50,7 +50,7 @@ export function PublicNav() {
           <Link href="/#about" className="block px-3 py-2.5 text-sm text-foreground hover:bg-muted rounded-xl" onClick={() => setOpen(false)}>About</Link>
           <div className="pt-2 flex flex-col gap-2">
             <ButtonLink variant="outline" size="md" href="/login" className="w-full">Sign in</ButtonLink>
-            <ButtonLink size="md" href="/register" className="w-full">Get started - PHP 1,000</ButtonLink>
+            <ButtonLink size="md" href="/register" className="w-full">Get started — free</ButtonLink>
           </div>
         </div>
       )}

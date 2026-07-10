@@ -12,7 +12,7 @@ const HOW_IT_WORKS = [
   {
     step: "01",
     title: "Register your store",
-    description: "Sign up with your phone number, add your store details, and pay the PHP 1,000 platform fee to unlock ordering.",
+    description: "Sign up with your phone number, add your store details, and activate your free account — your first year is completely free.",
     icon: Store,
   },
   {
@@ -67,7 +67,7 @@ export default function HomePage() {
           </p>
           <div className="mt-10 flex flex-col sm:flex-row items-center justify-center gap-3">
             <ButtonLink size="lg" href="/register" className="w-full sm:w-auto">
-                Start ordering - PHP 1,000
+                Start for free
                 <ArrowRight className="h-4 w-4" />
             </ButtonLink>
             <ButtonLink variant="outline" size="lg" href="/#how-it-works" className="w-full sm:w-auto">
@@ -75,7 +75,7 @@ export default function HomePage() {
             </ButtonLink>
           </div>
           <p className="mt-4 text-xs text-muted-foreground">
-            One-time annual platform fee. Order as much as you need, anytime.
+            Free for your first year. Then just ₱200/month per store.
           </p>
         </div>
 
@@ -175,17 +175,20 @@ export default function HomePage() {
       <section id="pricing" className="py-20 px-4 bg-surface-50">
         <div className="mx-auto max-w-xl text-center">
           <p className="text-xs font-semibold uppercase tracking-widest text-brand-500 mb-2">Simple pricing</p>
-          <h2 className="font-display text-3xl font-bold text-foreground mb-4">One flat fee. Unlimited orders.</h2>
+          <h2 className="font-display text-3xl font-bold text-foreground mb-4">Simple pricing. No surprises.</h2>
           <div className="rounded-2xl border border-border bg-card shadow-card-md p-8 text-left mt-8">
-            <div className="flex items-start justify-between mb-6">
+            <div className="flex items-start justify-between mb-2">
               <div>
-                <p className="font-display text-4xl font-bold text-foreground">PHP 1,000</p>
-                <p className="text-sm text-muted-foreground mt-1">per year, per store</p>
+                <p className="font-display text-4xl font-bold text-brand-500">FREE</p>
+                <p className="text-sm text-muted-foreground mt-1">for your first year</p>
               </div>
-              <span className="rounded-full bg-success-50 border border-success-500/25 px-3 py-1 text-xs font-medium text-success-600">
-                Most affordable
+              <span className="rounded-full bg-brand-50 border border-brand-200 px-3 py-1 text-xs font-medium text-brand-600">
+                No credit card needed
               </span>
             </div>
+            <p className="text-sm text-muted-foreground mb-6">
+              Then ₱200/month per store from Year 2. Cancel anytime.
+            </p>
             <ul className="space-y-3 mb-8">
               {[
                 "Unlimited orders from our warehouse",
@@ -202,7 +205,7 @@ export default function HomePage() {
               ))}
             </ul>
             <ButtonLink size="lg" href="/register" className="w-full">
-              Register your store <ArrowRight className="h-4 w-4" />
+              Register your store — it&apos;s free <ArrowRight className="h-4 w-4" />
             </ButtonLink>
           </div>
         </div>
@@ -249,7 +252,7 @@ export default function HomePage() {
             Join hundreds of sari-sari store owners already ordering directly from our warehouse.
           </p>
           <ButtonLink size="lg" variant="secondary" href="/register">
-            Get started today - PHP 1,000
+            Get started — free for your first year
             <ArrowRight className="h-4 w-4" />
           </ButtonLink>
         </div>

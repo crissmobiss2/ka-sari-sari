@@ -5,11 +5,11 @@ import { Badge } from "@/components/ui/badge";
 import { formatPHP, formatDate } from "@/lib/utils";
 
 const MOCK_SUBSCRIPTIONS = [
-  { id: "s1", retailer: "Maria Santos", store: "Santos Sari-Sari Store", status: "active", paid: 1000, startDate: "2025-02-01", endDate: "2026-02-01", method: "GCash" },
-  { id: "s2", retailer: "Jun Dela Cruz", store: "Dela Cruz Tindahan", status: "active", paid: 1000, startDate: "2024-09-15", endDate: "2025-09-15", method: "Maya" },
-  { id: "s3", retailer: "Nena Reyes", store: "Ate Nena Store", status: "active", paid: 1000, startDate: "2024-07-20", endDate: "2025-07-20", method: "GCash" },
-  { id: "s4", retailer: "Lito Garcia", store: "Garcia Grocery", status: "expired", paid: 1000, startDate: "2023-11-01", endDate: "2024-11-01", method: "COD" },
-  { id: "s5", retailer: "Elena Cruz", store: "Cruz Corner Store", status: "pending_payment", paid: 0, startDate: "", endDate: "", method: "" },
+  { id: "s1", retailer: "Maria Santos", store: "Santos Sari-Sari Store", status: "active", paid: 0, startDate: "2025-07-01", endDate: "2026-07-01", method: "—", plan: "Free Trial" },
+  { id: "s2", retailer: "Jun Dela Cruz", store: "Dela Cruz Tindahan", status: "active", paid: 200, startDate: "2024-09-15", endDate: "2025-10-15", method: "Maya", plan: "Monthly" },
+  { id: "s3", retailer: "Nena Reyes", store: "Ate Nena Store", status: "active", paid: 200, startDate: "2024-07-20", endDate: "2025-08-20", method: "GCash", plan: "Monthly" },
+  { id: "s4", retailer: "Lito Garcia", store: "Garcia Grocery", status: "expired", paid: 200, startDate: "2024-06-01", endDate: "2025-07-01", method: "COD", plan: "Monthly" },
+  { id: "s5", retailer: "Elena Cruz", store: "Cruz Corner Store", status: "pending_payment", paid: 0, startDate: "", endDate: "", method: "", plan: "Monthly" },
 ];
 
 const statusMap = {
@@ -67,6 +67,7 @@ export default function AdminSubscriptionsPage() {
                     <td className="px-5 py-3.5">
                       <p className="font-medium text-foreground">{sub.retailer}</p>
                       <p className="text-xs text-muted-foreground">{sub.store}</p>
+                      <p className="text-xs text-brand-500 font-medium mt-0.5">{sub.plan}</p>
                     </td>
                     <td className="px-5 py-3.5 text-xs text-muted-foreground hidden md:table-cell">
                       {sub.startDate ? `${formatDate(sub.startDate)} - ${formatDate(sub.endDate)}` : "-"}
