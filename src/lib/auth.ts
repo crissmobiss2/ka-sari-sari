@@ -1,9 +1,13 @@
 import { SignJWT, jwtVerify, type JWTPayload } from "jose";
 import type { NextRequest } from "next/server";
 
-const SECRET = new TextEncoder().encode(
-  process.env.JWT_SECRET || "ka-sari-sari-dev-secret-please-change-in-prod"
-);
+function getSecret(): Uint8Array {
+  const raw = process.env.JWT_SECRET;
+  if (!raw && process.env.NODE_ENV === "production") {
+    throw new Error("JWT_SECRET environment variable is required in production");
+  }
+  return new TextEncoder().encode(raw || "ka-sari-sari-dev-secret-please-change-in-prod");
+}
 
 export const COOKIE_NAME = "ks-session";
 export const COOKIE_MAX_AGE = 60 * 60 * 24 * 7; // 7 days
@@ -22,12 +26,12 @@ export async function signToken(payload: SessionPayload): Promise<string> {
     .setProtectedHeader({ alg: "HS256" })
     .setIssuedAt()
     .setExpirationTime("7d")
-    .sign(SECRET);
+    .sign(getSecret());
 }
 
 export async function verifyToken(token: string): Promise<SessionPayload | null> {
   try {
-    const { payload } = await jwtVerify(token, SECRET);
+    const { payload } = await jwtVerify(token, getSecret());
     return payload as unknown as SessionPayload;
   } catch {
     return null;

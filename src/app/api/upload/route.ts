@@ -18,7 +18,9 @@ export async function POST(req: NextRequest) {
   try {
     const formData = await req.formData();
     const file = formData.get("file") as File | null;
-    const folder = (formData.get("folder") as string) ?? "uploads";
+    const ALLOWED_FOLDERS = ["uploads", "products", "pod", "receipts"];
+    const rawFolder = (formData.get("folder") as string) ?? "uploads";
+    const folder = ALLOWED_FOLDERS.includes(rawFolder) ? rawFolder : "uploads";
 
     if (!file) return NextResponse.json({ error: "No file provided" }, { status: 400 });
 
@@ -33,7 +35,13 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: "File too large. Maximum 10MB." }, { status: 400 });
     }
 
-    const ext = file.name.split(".").pop() ?? "jpg";
+    const MIME_TO_EXT: Record<string, string> = {
+      "image/jpeg": "jpg",
+      "image/jpg": "jpg",
+      "image/png": "png",
+      "image/webp": "webp",
+    };
+    const ext = MIME_TO_EXT[file.type] ?? "jpg";
     const filename = `${folder}/${session.userId}-${Date.now()}.${ext}`;
 
     const blob = await put(filename, file, {

@@ -16,7 +16,7 @@ const ROLE_HOME: Record<string, string> = {
 };
 
 export async function GET(req: NextRequest) {
-  if (process.env.NEXT_PUBLIC_SUPABASE_URL) {
+  if (process.env.NODE_ENV !== "development") {
     return NextResponse.json({ error: "Not available in production mode" }, { status: 403 });
   }
 
@@ -34,7 +34,7 @@ export async function GET(req: NextRequest) {
   const res = NextResponse.redirect(url);
   res.cookies.set(COOKIE_NAME, token, {
     httpOnly: true,
-    secure: process.env.NODE_ENV === "production",
+    secure: false,
     sameSite: "lax",
     maxAge: COOKIE_MAX_AGE,
     path: "/",

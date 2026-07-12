@@ -10,6 +10,7 @@ export async function POST(req: NextRequest) {
   try {
     const { phone } = await req.json();
     if (!phone) return NextResponse.json({ error: "Phone required" }, { status: 400 });
+    if (!/^09\d{9}$/.test(phone)) return NextResponse.json({ error: "Invalid phone number format" }, { status: 400 });
 
     if (useSupabase) {
       const user = await findUserByPhone(phone);
@@ -21,7 +22,11 @@ export async function POST(req: NextRequest) {
 
       await saveOTP(phone, codeHash, expiresAt);
       const sent = await sendSMS(phone, `Your Ka Sari-Sari reset code is: ${otp}. Valid for 10 minutes.`);
-      if (!sent) console.log(`[DEV] OTP for ${phone}: ${otp}`);
+      if (!sent && process.env.NODE_ENV !== "production") {
+        console.log(`[DEV] OTP for ${phone}: ${otp}`);
+      } else if (!sent) {
+        console.error(`[forgot-password] SMS delivery failed for phone ending ${phone.slice(-4)}`);
+      }
     } else {
       console.log(`[DEV] OTP for ${phone}: 123456`);
     }
@@ -40,6 +45,7 @@ export async function PUT(req: NextRequest) {
     if (!phone || !otp || !newPassword) {
       return NextResponse.json({ error: "Phone, OTP, and new password required" }, { status: 400 });
     }
+    if (!/^09\d{9}$/.test(phone)) return NextResponse.json({ error: "Invalid phone number format" }, { status: 400 });
     if (newPassword.length < 8) {
       return NextResponse.json({ error: "Password must be at least 8 characters" }, { status: 400 });
     }

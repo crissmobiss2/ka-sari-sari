@@ -3,6 +3,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { getSessionFromRequest } from "@/lib/auth";
 import { getProducts } from "@/lib/supabase-db";
 import Anthropic from "@anthropic-ai/sdk";
+import { checkRateLimit, getClientIp } from "@/lib/rate-limit";
 
 type ParsedItem = {
   productName: string;
@@ -24,10 +25,32 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 
+  const ip = getClientIp(req as unknown as Request);
+  const rateKey = `ai:${session.userId}:${ip}`;
+  const { allowed, retryAfterSecs } = checkRateLimit(rateKey, 20, 60_000);
+  if (!allowed) {
+    return NextResponse.json(
+      { error: "Too many requests. Please wait before sending another message." },
+      { status: 429, headers: { "Retry-After": String(retryAfterSecs) } }
+    );
+  }
+
   const { message, conversationHistory = [] } = await req.json();
   if (!message?.trim()) {
     return NextResponse.json({ error: "Message required" }, { status: 400 });
   }
+  if (message.length > 2000) {
+    return NextResponse.json({ error: "Message too long (max 2000 characters)" }, { status: 400 });
+  }
+  // Limit conversation history to last 20 messages to control token usage
+  const safeHistory = (conversationHistory as unknown[])
+    .filter((m): m is { role: "user" | "assistant"; content: string } =>
+      typeof m === "object" && m !== null &&
+      ("role" in m) && ("content" in m) &&
+      ((m as {role: unknown}).role === "user" || (m as {role: unknown}).role === "assistant") &&
+      typeof (m as {content: unknown}).content === "string"
+    )
+    .slice(-20);
 
   if (!process.env.ANTHROPIC_API_KEY) {
     // Dev fallback
@@ -77,7 +100,7 @@ When you identify ordered items, include a JSON block in this exact format at th
 If no order items are detected, return empty items array. Always include the JSON block.`;
 
     const messages: Anthropic.Messages.MessageParam[] = [
-      ...conversationHistory,
+      ...safeHistory,
       { role: "user", content: message },
     ];
 

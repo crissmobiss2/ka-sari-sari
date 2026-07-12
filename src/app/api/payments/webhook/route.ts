@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { createHmac } from "crypto";
+import { createHmac, timingSafeEqual } from "crypto";
 import { updateOrderPayment, updateOrderStatus, getOrderById, creditWallet, createNotification } from "@/lib/supabase-db";
 import { sendPushToUser } from "@/lib/push";
 
@@ -9,18 +9,25 @@ export async function POST(req: NextRequest) {
     const signature = req.headers.get("paymongo-signature");
     const webhookSecret = process.env.PAYMONGO_WEBHOOK_SECRET;
 
-    if (webhookSecret && signature) {
-      const parts = signature.split(",");
-      const timestamp = parts.find(p => p.startsWith("t="))?.split("=")[1];
-      const sigHash = parts.find(p => p.startsWith("te="))?.split("=")[1];
-      if (timestamp && sigHash) {
-        const expected = createHmac("sha256", webhookSecret)
-          .update(`${timestamp}.${rawBody}`)
-          .digest("hex");
-        if (expected !== sigHash) {
-          return NextResponse.json({ error: "Invalid signature" }, { status: 401 });
-        }
-      }
+    if (!webhookSecret) {
+      console.error("[PayMongo webhook] PAYMONGO_WEBHOOK_SECRET is not configured");
+      return NextResponse.json({ error: "Webhook not configured" }, { status: 500 });
+    }
+    if (!signature) {
+      return NextResponse.json({ error: "Missing signature" }, { status: 401 });
+    }
+    const parts = signature.split(",");
+    const timestamp = parts.find(p => p.startsWith("t="))?.split("=")[1];
+    const sigHash = parts.find(p => p.startsWith("te="))?.split("=")[1];
+    if (!timestamp || !sigHash) {
+      return NextResponse.json({ error: "Malformed signature" }, { status: 401 });
+    }
+    const expectedBuf = Buffer.from(
+      createHmac("sha256", webhookSecret).update(`${timestamp}.${rawBody}`).digest("hex")
+    );
+    const actualBuf = Buffer.from(sigHash);
+    if (expectedBuf.length !== actualBuf.length || !timingSafeEqual(expectedBuf, actualBuf)) {
+      return NextResponse.json({ error: "Invalid signature" }, { status: 401 });
     }
 
     const event = JSON.parse(rawBody);

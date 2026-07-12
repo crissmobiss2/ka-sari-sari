@@ -6,7 +6,6 @@ import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { StatusBadge } from "@/components/ui/status-badge";
 import { formatPHP, formatDateTime } from "@/lib/utils";
-import { ADMIN_RECENT_ORDERS } from "@/lib/mock-data";
 import { cn } from "@/lib/utils";
 
 const PAGE_SIZE = 15;
@@ -23,7 +22,8 @@ const STATUS_TABS: { id: string; label: string }[] = [
 ];
 
 export default function AdminOrdersPage() {
-  const [orders, setOrders] = useState(ADMIN_RECENT_ORDERS);
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const [orders, setOrders] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState("");
   const [activeTab, setActiveTab] = useState("all");
@@ -36,10 +36,9 @@ export default function AdminOrdersPage() {
     fetch("/api/orders")
       .then((r) => r.json())
       .then((d) => {
-        const apiOrders = d.orders ?? [];
-        setOrders(apiOrders.length > 0 ? apiOrders : ADMIN_RECENT_ORDERS);
+        setOrders(d.orders ?? []);
       })
-      .catch(() => setOrders(ADMIN_RECENT_ORDERS))
+      .catch(() => {})
       .finally(() => setLoading(false));
   }, []);
 

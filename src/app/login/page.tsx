@@ -123,7 +123,8 @@ export default function LoginPage() {
             </p>
           </div>
 
-          {/* Demo hint */}
+          {/* Demo hint — development only */}
+          {process.env.NEXT_PUBLIC_SHOW_DEMO === "true" && (
           <div className="mt-8 rounded-xl bg-surface-100 border border-border p-4 text-xs text-muted-foreground space-y-1">
             <p className="font-medium text-foreground mb-1.5">Demo accounts</p>
             <p><span className="font-mono text-foreground">09171234567</span> + <span className="font-mono text-foreground">admin</span> → Admin</p>
@@ -132,6 +133,7 @@ export default function LoginPage() {
             <p><span className="font-mono text-foreground">09181234567</span> + <span className="font-mono text-foreground">demo1234</span> → Retailer</p>
             <p className="text-muted-foreground/70 mt-1.5">Or use any 09XX number with any password to auto-register as a retailer.</p>
           </div>
+          )}
         </div>
       </div>
     </div>

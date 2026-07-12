@@ -6,7 +6,7 @@ import Link from "next/link";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { StatusBadge } from "@/components/ui/status-badge";
 import { formatPHP, formatDateTime, type OrderStatus } from "@/lib/utils";
-import { ADMIN_STATS, ADMIN_RECENT_ORDERS } from "@/lib/mock-data";
+import { ADMIN_STATS } from "@/lib/mock-data";
 import type { AdminStats } from "@/types";
 
 // ── Normalized order shape for the dashboard table ────────────────────────────
@@ -34,7 +34,6 @@ function normalizeOrder(o: unknown): DisplayOrder {
   };
 }
 
-const FALLBACK_ORDERS: DisplayOrder[] = ADMIN_RECENT_ORDERS.map(normalizeOrder);
 
 const MONTHS = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
 const REVENUE_VALUES = [312000, 428000, 541000, 380000, 623000, 568000, 657000, 485000, 610000, 519000, 637000, 693000];
@@ -90,7 +89,7 @@ export default function AdminDashboardPage() {
   const [timeStr, setTimeStr] = useState<string>("");
   const [dateStr, setDateStr] = useState<string>("");
   const [stats, setStats] = useState<AdminStats>(ADMIN_STATS);
-  const [recentOrders, setRecentOrders] = useState<DisplayOrder[]>(FALLBACK_ORDERS);
+  const [recentOrders, setRecentOrders] = useState<DisplayOrder[]>([]);
   const [loading, setLoading] = useState(true);
 
   // Clock

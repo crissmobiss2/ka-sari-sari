@@ -82,6 +82,11 @@
   .scrollbar-hide::-webkit-scrollbar { display: none; }
 
   .text-balance { text-wrap: balance; }
+
+  /* Safe-area padding for iOS home indicator */
+  .safe-area-pb {
+    padding-bottom: env(safe-area-inset-bottom, 16px);
+  }
 }
 
 @keyframes shimmer {

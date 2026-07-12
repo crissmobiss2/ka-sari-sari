@@ -339,6 +339,35 @@ export async function upsertProduct(product: Partial<DBProduct> & { id: string }
   return rowToProduct(data);
 }
 
+export async function getCategories(): Promise<{
+  id: string; name: string; slug?: string; description?: string; imageUrl?: string; isActive: boolean; sortOrder: number;
+}[]> {
+  const { data } = await supabaseAdmin
+    .from("categories")
+    .select("*")
+    .eq("is_active", true)
+    .order("sort_order");
+  return (data ?? []).map((c) => ({
+    id: c.id as string,
+    name: c.name as string,
+    slug: c.slug as string | undefined,
+    description: c.description as string | undefined,
+    imageUrl: c.image_url as string | undefined,
+    isActive: Boolean(c.is_active),
+    sortOrder: Number(c.sort_order ?? 0),
+  }));
+}
+
+export async function getProductByIdOrSlug(idOrSlug: string): Promise<DBProduct | null> {
+  const { data } = await supabaseAdmin
+    .from("products")
+    .select("*")
+    .or(`id.eq.${idOrSlug},slug.eq.${idOrSlug}`)
+    .eq("is_active", true)
+    .single();
+  return data ? rowToProduct(data) : null;
+}
+
 // ── Orders ────────────────────────────────────────────────────────────────────
 
 export async function getOrdersByUser(retailerId: string): Promise<DBOrder[]> {

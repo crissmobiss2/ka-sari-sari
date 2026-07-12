@@ -125,10 +125,7 @@ function buildDisplayOrder(o: typeof MOCK_ORDERS[number]): DisplayOrder {
   };
 }
 
-const FALLBACK_ORDERS: DisplayOrder[] = [
-  ...MOCK_ORDERS.map(buildDisplayOrder),
-  ...EXTRA_ORDERS,
-].sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
+const FALLBACK_ORDERS: DisplayOrder[] = [];
 
 // ─── Constants ────────────────────────────────────────────────────────────────
 
@@ -282,8 +279,9 @@ function OrderCard({ order }: { order: DisplayOrder }) {
 // ─── Page ─────────────────────────────────────────────────────────────────────
 
 export default function OrdersPage() {
+  const router = useRouter();
   const [tab, setTab] = useState("all");
-  const [orders, setOrders] = useState<DisplayOrder[]>(FALLBACK_ORDERS);
+  const [orders, setOrders] = useState<DisplayOrder[]>([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -291,13 +289,11 @@ export default function OrdersPage() {
       .then((r) => r.json())
       .then((d) => {
         const apiOrders = (d.orders ?? []) as typeof MOCK_ORDERS;
-        if (apiOrders.length > 0) {
-          setOrders(
-            apiOrders
-              .map(buildDisplayOrder)
-              .sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime())
-          );
-        }
+        setOrders(
+          apiOrders
+            .map(buildDisplayOrder)
+            .sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime())
+        );
       })
       .catch(() => {})
       .finally(() => setLoading(false));
@@ -371,7 +367,7 @@ export default function OrdersPage() {
                 ? "Delivered orders will show up here."
                 : "Place your first order from the catalog."
             }
-            action={{ label: "Browse catalog", onClick: () => (window.location.href = "/catalog") }}
+            action={{ label: "Browse catalog", onClick: () => router.push("/catalog") }}
             className="min-h-[50vh]"
           />
         ) : (

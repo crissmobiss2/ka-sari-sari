@@ -1,15 +1,40 @@
 import { NextRequest, NextResponse } from "next/server";
+import { getSessionFromRequest } from "@/lib/auth";
+import { supabaseAdmin } from "@/lib/supabase";
+
+const useSupabase = !!process.env.NEXT_PUBLIC_SUPABASE_URL;
 
 export async function POST(req: NextRequest) {
+  const session = await getSessionFromRequest(req);
+  if (!session || !["retailer", "admin"].includes(session.role)) {
+    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  }
+
   try {
     const body = await req.json();
     const { items, total, method, paymentRef, posType } = body;
-    void items; void total; void method; void paymentRef; void posType;
+
+    if (!items?.length || !total || !method) {
+      return NextResponse.json({ error: "items, total, and method are required" }, { status: 400 });
+    }
 
     const transactionId = `TXN-${Date.now()}`;
-    const receiptNumber = `OR-${new Date().getFullYear()}-${Math.floor(Math.random() * 99999)
-      .toString()
-      .padStart(5, "0")}`;
+    const receiptNumber = `OR-${new Date().getFullYear()}-${String(Math.floor(Math.random() * 99999)).padStart(5, "0")}`;
+
+    if (useSupabase) {
+      const { error } = await supabaseAdmin.from("pos_transactions").insert({
+        retailer_id: session.userId,
+        items,
+        total,
+        payment_method: method,
+        payment_ref: paymentRef,
+        pos_type: posType ?? "walk_in",
+        receipt_number: receiptNumber,
+      });
+      if (error) {
+        console.error("[pos/transaction] DB write error:", error.code, error.message);
+      }
+    }
 
     return NextResponse.json({ success: true, transactionId, receiptNumber });
   } catch {

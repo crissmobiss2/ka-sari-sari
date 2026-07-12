@@ -80,6 +80,6 @@ export async function GET(_req: NextRequest) {
     });
   }
 
-  // Supabase implementation placeholder
-  return NextResponse.json({ error: "Not implemented" }, { status: 501 });
+  // Deals/promotions table not yet implemented — return empty for now
+  return NextResponse.json({ deals: [] });
 }

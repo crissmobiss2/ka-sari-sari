@@ -1,6 +1,5 @@
 "use client";
 import { create } from "zustand";
-import { ADMIN_RECENT_ORDERS } from "@/lib/mock-data";
 import type { Order, OrderStatus } from "@/types";
 
 export interface FulfillOrder extends Order {
@@ -16,12 +15,6 @@ const NEXT_STATUS: Partial<Record<OrderStatus, OrderStatus>> = {
   out_for_delivery: "delivered",
 };
 
-// Normalize "pending" → "confirmed" so new orders land in the fulfillment To-Pick lane
-const SEED: FulfillOrder[] = ADMIN_RECENT_ORDERS.map((o) => ({
-  ...o,
-  status: (o.status === "pending" ? "confirmed" : o.status) as OrderStatus,
-}));
-
 interface OrdersStore {
   orders: FulfillOrder[];
   setOrders: (orders: FulfillOrder[]) => void;
@@ -32,7 +25,7 @@ interface OrdersStore {
 }
 
 export const useOrdersStore = create<OrdersStore>()((set) => ({
-  orders: SEED,
+  orders: [],
 
   setOrders(orders) {
     set({ orders });
