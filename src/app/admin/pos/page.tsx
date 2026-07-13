@@ -167,11 +167,11 @@ export default function POSPage() {
       setOrderRef(data?.receiptNumber ?? generateRef());
       setDone(true);
     } catch {
-      setOrderRef(generateRef());
-      setDone(true);
-    } finally {
       setLoading(false);
+      alert("Transaction failed. Please try again.");
+      return;
     }
+    setLoading(false);
   }
 
   function reset() {
@@ -380,7 +380,7 @@ export default function POSPage() {
                   <div key={product.id} className="flex items-center gap-2 px-4 py-2.5">
                     <div className="flex-1 min-w-0">
                       <p className="text-xs font-semibold text-foreground line-clamp-1">{product.name}</p>
-                      <p className="text-[10px] text-muted-foreground">{formatPHP(product.price)} / {product.unit}</p>
+                      <p className="text-[10px] text-muted-foreground">{formatPHP(product.srp ?? product.price)} / {product.unit}</p>
                     </div>
                     <div className="flex items-center gap-1 shrink-0">
                       <button onClick={() => qty(product.id, -1)} className="h-6 w-6 rounded-lg border border-border flex items-center justify-center text-muted-foreground hover:bg-muted active:scale-90 transition-all">
@@ -394,7 +394,7 @@ export default function POSPage() {
                         <X className="h-3 w-3" />
                       </button>
                     </div>
-                    <span className="text-xs font-bold text-foreground w-14 text-right shrink-0">{formatPHP(product.price * quantity)}</span>
+                    <span className="text-xs font-bold text-foreground w-14 text-right shrink-0">{formatPHP((product.srp ?? product.price) * quantity)}</span>
                   </div>
                 ))}
               </div>
