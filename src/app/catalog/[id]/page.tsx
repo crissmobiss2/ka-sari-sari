@@ -129,6 +129,17 @@ export default function ProductDetailPage() {
   const [qty, setQty] = useState(1);
   const [added, setAdded] = useState(false);
   const [imgError, setImgError] = useState(false);
+  const [reviews, setReviews] = useState(MOCK_REVIEWS);
+
+  useEffect(() => {
+    if (!id) return;
+    fetch(`/api/products/${id}/reviews`)
+      .then((r) => r.ok ? r.json() : null)
+      .then((data) => {
+        if (Array.isArray(data?.reviews) && data.reviews.length > 0) setReviews(data.reviews);
+      })
+      .catch(() => {});
+  }, [id]);
 
   // Sync qty to product's minimum order qty once loaded
   useEffect(() => {
@@ -154,7 +165,9 @@ export default function ProductDetailPage() {
   }
 
   const cartItem = items.find((i) => i.product.id === product.id);
-  const avgRating = (MOCK_REVIEWS.reduce((s, r) => s + r.rating, 0) / MOCK_REVIEWS.length).toFixed(1);
+  const avgRating = reviews.length
+    ? (reviews.reduce((s, r) => s + r.rating, 0) / reviews.length).toFixed(1)
+    : "5.0";
 
   // Savings vs SRP
   const hasSrp = product.srp !== undefined && product.srp > product.price;
@@ -244,7 +257,7 @@ export default function ProductDetailPage() {
             <div className="flex items-center gap-1">
               <Star className="h-3.5 w-3.5 fill-yellow-400 text-yellow-400" />
               <span className="text-xs font-semibold text-foreground">{avgRating}</span>
-              <span className="text-xs text-muted-foreground">({MOCK_REVIEWS.length} reviews)</span>
+              <span className="text-xs text-muted-foreground">({reviews.length} reviews)</span>
             </div>
           </div>
 
@@ -410,10 +423,10 @@ export default function ProductDetailPage() {
         <div>
           <h2 className="font-display text-base font-bold text-foreground mb-3">
             Reviews
-            <span className="ml-2 text-sm font-normal text-muted-foreground">({MOCK_REVIEWS.length})</span>
+            <span className="ml-2 text-sm font-normal text-muted-foreground">({reviews.length})</span>
           </h2>
           <div className="space-y-3">
-            {MOCK_REVIEWS.map((review) => (
+            {reviews.map((review) => (
               <div key={review.id} className="rounded-2xl border border-border bg-card shadow-card p-4">
                 <div className="flex items-center justify-between mb-2">
                   <p className="text-sm font-semibold text-foreground">{review.name}</p>

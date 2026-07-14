@@ -256,7 +256,7 @@ function RouteMap() {
 
 // ── ETA Card ──────────────────────────────────────────────────────────────────
 
-function EtaCard() {
+function EtaCard({ estimatedDelivery = ORDER.estimatedDelivery }: { estimatedDelivery?: string }) {
   const [mins, setMins] = useState(33);
   useEffect(() => {
     const t = setInterval(() => setMins((m) => Math.max(0, m - 1)), 60000);
@@ -275,7 +275,7 @@ function EtaCard() {
             <p className="font-display text-5xl font-black leading-none">{mins}</p>
             <p className="text-xl font-medium opacity-80 mb-1">min</p>
           </div>
-          <p className="text-sm text-brand-100 mt-1">{ORDER.estimatedDelivery}</p>
+          <p className="text-sm text-brand-100 mt-1">{estimatedDelivery}</p>
         </div>
         <div className="text-right shrink-0">
           <div className="rounded-xl bg-white/15 px-3 py-2.5 text-center min-w-[56px]">
@@ -303,9 +303,9 @@ function EtaCard() {
 
 // ── Driver Card ───────────────────────────────────────────────────────────────
 
-function DriverCard() {
+function DriverCard({ driver = DRIVER }: { driver?: typeof DRIVER }) {
   const [called, setCalled] = useState(false);
-  const waLink = `https://wa.me/${DRIVER.whatsapp}?text=Hi%20po%20Rodrigo%2C%20waiting%20po%20sa%20delivery%20KSS-2026-00219.`;
+  const waLink = `https://wa.me/${driver.whatsapp}?text=Hi%20po%2C%20waiting%20po%20sa%20delivery.`;
 
   return (
     <div className="mx-4 rounded-2xl border border-border bg-card shadow-card">
@@ -315,21 +315,21 @@ function DriverCard() {
       <div className="p-4">
         <div className="flex items-center gap-3 mb-4">
           <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-brand-100 text-brand-600 font-bold text-lg">
-            {DRIVER.name.charAt(0)}
+            {driver.name.charAt(0)}
           </div>
           <div className="flex-1 min-w-0">
-            <p className="font-semibold text-foreground">{DRIVER.name}</p>
-            <p className="text-xs text-muted-foreground">{DRIVER.vehicle}</p>
+            <p className="font-semibold text-foreground">{driver.name}</p>
+            <p className="text-xs text-muted-foreground">{driver.vehicle}</p>
             <div className="flex items-center gap-2 mt-0.5">
-              <span className="text-xs text-warning-500 font-medium">★ {DRIVER.rating}</span>
-              <span className="text-[11px] text-muted-foreground">{DRIVER.deliveries} deliveries</span>
+              <span className="text-xs text-warning-500 font-medium">★ {driver.rating}</span>
+              <span className="text-[11px] text-muted-foreground">{driver.deliveries} deliveries</span>
             </div>
           </div>
         </div>
 
         <div className="grid grid-cols-3 gap-2">
           <a
-            href={`tel:${DRIVER.phone}`}
+            href={`tel:${driver.phone}`}
             onClick={() => setCalled(true)}
             className={cn(
               "flex flex-col items-center gap-1.5 rounded-xl border py-3 transition-colors",
@@ -528,6 +528,10 @@ export default function TrackingPage() {
   const [liveStatus, setLiveStatus]         = useState<string | undefined>(undefined);
   const [liveOrderNum, setLiveOrderNum]     = useState<string | null>(null);
   const [realtimeUpdates, setRealtimeUpdates] = useState<typeof INITIAL_UPDATES>([]);
+  const [orderData, setOrderData] = useState<{
+    number: string; estimatedDelivery: string;
+    items: typeof ORDER.items; total: number; paymentMethod: string;
+  } | null>(null);
 
   // Resolve URL params: ?orderId=...&driverId=...
   useEffect(() => {
@@ -547,8 +551,18 @@ export default function TrackingPage() {
       .then((r) => r.json())
       .then((d) => {
         if (d.order) {
-          setLiveStatus(d.order.status ?? d.order.status);
+          setLiveStatus(d.order.status);
           setLiveOrderNum(d.order.orderNumber ?? d.order.order_number ?? null);
+          const rawItems = d.order.items as Array<{ name?: string; quantity?: number; unit?: string }> | undefined;
+          setOrderData({
+            number: d.order.orderNumber ?? d.order.order_number ?? ORDER.number,
+            estimatedDelivery: ORDER.estimatedDelivery,
+            items: rawItems?.length
+              ? rawItems.map((i) => ({ name: i.name ?? "", qty: i.quantity ?? 1, unit: i.unit ?? "pcs" }))
+              : ORDER.items,
+            total: typeof d.order.total === "number" ? d.order.total : ORDER.total,
+            paymentMethod: d.order.paymentMethod ?? d.order.payment_method ?? ORDER.paymentMethod,
+          });
         }
       })
       .catch(() => {});
@@ -657,7 +671,7 @@ export default function TrackingPage() {
         <LiveLocationSection location={driverLocation} />
 
         <RouteMap />
-        <EtaCard />
+        <EtaCard estimatedDelivery={(orderData ?? ORDER).estimatedDelivery} />
         <DriverCard />
         <StopsBreakdown />
         <LiveUpdates extraUpdates={realtimeUpdates} />
@@ -670,7 +684,7 @@ export default function TrackingPage() {
             <p className="text-sm font-semibold text-foreground">Order Summary</p>
           </div>
           <div className="divide-y divide-border">
-            {ORDER.items.map((item) => (
+            {(orderData ?? ORDER).items.map((item) => (
               <div key={item.name} className="px-4 py-3 flex items-center justify-between">
                 <p className="text-sm text-foreground">{item.name}</p>
                 <span className="text-xs font-semibold text-muted-foreground">{item.qty} {item.unit}</span>
@@ -678,19 +692,19 @@ export default function TrackingPage() {
             ))}
           </div>
           <div className="px-4 py-3 border-t border-border flex justify-between items-center bg-surface-50">
-            <span className="text-sm text-muted-foreground">Total · {ORDER.paymentMethod}</span>
-            <span className="text-sm font-bold text-foreground">₱{ORDER.total.toLocaleString()}</span>
+            <span className="text-sm text-muted-foreground">Total · {(orderData ?? ORDER).paymentMethod}</span>
+            <span className="text-sm font-bold text-foreground">₱{(orderData ?? ORDER).total.toLocaleString()}</span>
           </div>
         </div>
 
         {/* COD notice */}
-        {ORDER.paymentMethod === "COD" && (
+        {(orderData ?? ORDER).paymentMethod === "COD" && (
           <div className="mx-4 rounded-xl border border-warning-200 bg-warning-50 px-4 py-3 flex items-start gap-3">
             <Clock className="h-4 w-4 text-warning-600 shrink-0 mt-0.5" />
             <div>
               <p className="text-xs font-bold text-warning-700 mb-0.5">Prepare Cash on Delivery</p>
               <p className="text-xs text-warning-600 leading-relaxed">
-                Have <strong>₱{ORDER.total.toLocaleString()} cash</strong> ready when the driver arrives.
+                Have <strong>₱{(orderData ?? ORDER).total.toLocaleString()} cash</strong> ready when the driver arrives.
                 Payment is collected on delivery.
               </p>
             </div>

@@ -383,6 +383,15 @@ function OptimizeModal({
 export default function AdminRoutesPage() {
   const [routes, setRoutes] = useState(ROUTES_DATA);
   const [toast, setToast] = useState<string | null>(null);
+
+  useEffect(() => {
+    fetch("/api/admin/routes")
+      .then((r) => r.ok ? r.json() : null)
+      .then((data) => {
+        if (Array.isArray(data?.routes) && data.routes.length > 0) setRoutes(data.routes);
+      })
+      .catch(() => {});
+  }, []);
   const [assignModal, setAssignModal] = useState<string | null>(null);
   const [selectedDriver, setSelectedDriver] = useState<string>("");
 
@@ -434,12 +443,13 @@ export default function AdminRoutesPage() {
     setShowModal(false);
   }
 
-  function handleApply() {
+  async function handleApply() {
     setApplying(true);
-    setTimeout(() => {
-      setApplying(false);
-      setStep(3);
-    }, 1200);
+    try {
+      await fetch("/api/admin/routes/optimize", { method: "POST" });
+    } catch { /* proceed regardless */ }
+    setApplying(false);
+    setStep(3);
   }
 
   function showToast(msg: string) {

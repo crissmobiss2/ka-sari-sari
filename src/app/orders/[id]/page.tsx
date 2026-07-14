@@ -531,48 +531,82 @@ function ReorderButton({ orderItems }: { orderItems: OrderItem[] }) {
 
 // ─── DriverCard ───────────────────────────────────────────────────────────────
 
-function DriverCard({ onAction }: { onAction: (msg: string) => void }) {
+interface DriverInfo {
+  name?: string;
+  vehicle?: string;
+  phone?: string;
+  rating?: number;
+}
+
+function DriverCard({ onAction, driver }: { onAction: (msg: string) => void; driver?: DriverInfo }) {
+  const name    = driver?.name    ?? "Your Driver";
+  const vehicle = driver?.vehicle ?? "";
+  const phone   = driver?.phone   ?? "";
+  const rating  = driver?.rating  ?? 4.9;
+  const initials = name.split(" ").filter(Boolean).map((w) => w[0]).join("").slice(0, 2).toUpperCase() || "DR";
+  const ratingFloor = Math.floor(rating);
+
   return (
     <div className="rounded-2xl border border-border bg-card shadow-card p-5 mx-4">
       <h3 className="font-display text-sm font-semibold text-foreground mb-4">Your Driver</h3>
       <div className="flex items-center gap-4">
         <div className="flex h-14 w-14 shrink-0 items-center justify-center rounded-2xl bg-brand-100 text-brand-600 font-display font-bold text-lg">
-          RD
+          {initials}
         </div>
         <div className="flex-1 min-w-0">
-          <p className="font-semibold text-foreground text-sm">Rodrigo Delos Santos</p>
+          <p className="font-semibold text-foreground text-sm">{name}</p>
           <div className="flex items-center gap-1 mt-0.5">
             {[1, 2, 3, 4, 5].map((s) => (
               <Star
                 key={s}
                 className={cn(
                   "h-3 w-3",
-                  s <= 4 ? "fill-warning-400 text-warning-400" : "fill-warning-200 text-warning-200"
+                  s <= ratingFloor ? "fill-warning-400 text-warning-400" : "fill-warning-200 text-warning-200"
                 )}
               />
             ))}
-            <span className="text-xs text-muted-foreground ml-1">4.9</span>
+            <span className="text-xs text-muted-foreground ml-1">{rating.toFixed(1)}</span>
           </div>
-          <p className="text-xs text-muted-foreground mt-0.5">Toyota Hi-Ace Van &middot; AAA 1234</p>
+          {vehicle && <p className="text-xs text-muted-foreground mt-0.5">{vehicle}</p>}
         </div>
       </div>
       <div className="grid grid-cols-2 gap-3 mt-4">
-        <a
-          href="tel:+639171234567"
-          className="flex items-center justify-center gap-2 rounded-xl border border-border bg-surface-50 py-2.5 text-sm font-medium text-foreground hover:bg-surface-100 active:scale-95 transition-all"
-        >
-          <Phone className="h-4 w-4 text-brand-500" />
-          Call Driver
-        </a>
-        <a
-          href="https://wa.me/639171234567"
-          target="_blank"
-          rel="noopener noreferrer"
-          className="flex items-center justify-center gap-2 rounded-xl bg-brand-500 py-2.5 text-sm font-medium text-white hover:bg-brand-600 active:scale-95 transition-all"
-        >
-          <MessageCircle className="h-4 w-4" />
-          Message
-        </a>
+        {phone ? (
+          <a
+            href={`tel:${phone}`}
+            className="flex items-center justify-center gap-2 rounded-xl border border-border bg-surface-50 py-2.5 text-sm font-medium text-foreground hover:bg-surface-100 active:scale-95 transition-all"
+          >
+            <Phone className="h-4 w-4 text-brand-500" />
+            Call Driver
+          </a>
+        ) : (
+          <button
+            disabled
+            className="flex items-center justify-center gap-2 rounded-xl border border-border bg-surface-50 py-2.5 text-sm font-medium text-muted-foreground opacity-40 cursor-not-allowed"
+          >
+            <Phone className="h-4 w-4" />
+            Call Driver
+          </button>
+        )}
+        {phone ? (
+          <a
+            href={`https://wa.me/${phone.replace(/\D/g, "")}`}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="flex items-center justify-center gap-2 rounded-xl bg-brand-500 py-2.5 text-sm font-medium text-white hover:bg-brand-600 active:scale-95 transition-all"
+          >
+            <MessageCircle className="h-4 w-4" />
+            Message
+          </a>
+        ) : (
+          <button
+            disabled
+            className="flex items-center justify-center gap-2 rounded-xl bg-brand-200 py-2.5 text-sm font-medium text-white cursor-not-allowed opacity-40"
+          >
+            <MessageCircle className="h-4 w-4" />
+            Message
+          </button>
+        )}
       </div>
     </div>
   );
@@ -812,7 +846,12 @@ export default function OrderDetailPage() {
         {isOutForDelivery && <MapPlaceholder />}
 
         {/* 3. Driver card (out for delivery only) */}
-        {isOutForDelivery && <DriverCard onAction={showToast} />}
+        {isOutForDelivery && (
+          <DriverCard
+            onAction={showToast}
+            driver={(order as unknown as { driver?: DriverInfo }).driver}
+          />
+        )}
 
         {/* 4. Order Status Timeline (5 steps) */}
         <DeliveryTimeline

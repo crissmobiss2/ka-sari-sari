@@ -307,6 +307,20 @@ export default function SupportPage() {
   // FAQ accordion
   const [openFaq, setOpenFaq] = useState<number | null>(null);
 
+  // Contact info (fetched from API, falls back to defaults)
+  const [whatsappNumber, setWhatsappNumber] = useState("639170000000");
+  const [phoneNumber, setPhoneNumber] = useState("+63288881234");
+
+  useEffect(() => {
+    fetch("/api/config/contact")
+      .then((r) => r.ok ? r.json() : null)
+      .then((data) => {
+        if (data?.whatsapp) setWhatsappNumber(data.whatsapp);
+        if (data?.phone) setPhoneNumber(data.phone);
+      })
+      .catch(() => {});
+  }, []);
+
   // Ticket form
   const [ticketCategory, setTicketCategory] = useState("");
   const [ticketMessage, setTicketMessage] = useState("");
@@ -361,7 +375,7 @@ export default function SupportPage() {
           <div className="grid grid-cols-3 gap-2">
             {/* WhatsApp */}
             <a
-              href="https://wa.me/639170000000"
+              href={`https://wa.me/${whatsappNumber}`}
               target="_blank"
               rel="noopener noreferrer"
               className="flex flex-col items-center gap-2 rounded-2xl border border-border bg-card p-4 text-center shadow-card hover:bg-muted transition-colors"
@@ -398,7 +412,7 @@ export default function SupportPage() {
 
             {/* Call */}
             <a
-              href="tel:+63288881234"
+              href={`tel:${phoneNumber}`}
               className="flex flex-col items-center gap-2 rounded-2xl border border-border bg-card p-4 text-center shadow-card hover:bg-muted transition-colors"
             >
               <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-brand-50 text-brand-500">
