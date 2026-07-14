@@ -34,7 +34,21 @@ export async function GET(req: NextRequest, { params }: { params: Promise<{ id: 
     if (session.role === "retailer" && order.retailerId !== session.userId) {
       return NextResponse.json({ error: "Forbidden" }, { status: 403 });
     }
-    return NextResponse.json({ order });
+    // Normalize item fields to match UI expectations (quantity/totalPrice)
+    const mapped = {
+      ...order,
+      items: (order.items ?? []).map((i) => ({
+        id: i.id,
+        orderId: i.orderId,
+        productId: i.productId,
+        productName: i.productName,
+        productImage: i.productImage,
+        quantity: i.qty,
+        unitPrice: i.unitPrice,
+        totalPrice: i.subtotal,
+      })),
+    };
+    return NextResponse.json({ order: mapped });
   }
 
   const order = legacyGet(id);
