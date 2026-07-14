@@ -35,6 +35,25 @@ export async function POST(req: NextRequest) {
         console.error("[pos/transaction] DB write error:", error.code, error.message);
         return NextResponse.json({ error: "Failed to record transaction" }, { status: 500 });
       }
+
+      // Decrement stock for each sold item
+      const stockItems = items as Array<{ productId?: string; quantity?: number }>;
+      const decrements = stockItems
+        .filter((item) => item.productId)
+        .map(async (item) => {
+          const { data: prod } = await supabaseAdmin
+            .from("products")
+            .select("stock_qty")
+            .eq("id", item.productId!)
+            .single();
+          if (!prod) return;
+          const newQty = Math.max(0, (prod.stock_qty ?? 0) - (item.quantity ?? 1));
+          await supabaseAdmin
+            .from("products")
+            .update({ stock_qty: newQty })
+            .eq("id", item.productId!);
+        });
+      await Promise.allSettled(decrements);
     }
 
     return NextResponse.json({ success: true, transactionId, receiptNumber });

@@ -101,9 +101,10 @@ function SuccessContent() {
     ? rawId.startsWith("KSS-") ? rawId : `KSS-${rawId}`
     : `KSS-${Date.now().toString().slice(-6)}`;
 
-  // Total from URL; used for loyalty computation (Math.floor(total * 0.02))
+  // Total: fetched from API (preferred) or URL param as fallback
   const totalParam = parseFloat(params.get("total") ?? "0");
-  const orderTotal  = totalParam > 0 ? totalParam : 1500; // sensible mock fallback
+  const [orderTotal, setOrderTotal] = useState(totalParam > 0 ? totalParam : 1500);
+  const [realTotalLoaded, setRealTotalLoaded] = useState(!rawId);
 
   const method = params.get("method") || "gcash";
   const methodLabels: Record<string, string> = {
@@ -125,6 +126,19 @@ function SuccessContent() {
     return () => clearTimeout(t);
   }, []);
 
+  // Fetch real order total so loyalty points can't be inflated via URL manipulation
+  useEffect(() => {
+    if (!rawId) return;
+    fetch(`/api/orders/${rawId}`)
+      .then((r) => r.ok ? r.json() : null)
+      .then((data) => {
+        const real = data?.order?.total ?? data?.total;
+        if (typeof real === "number" && real > 0) setOrderTotal(real);
+      })
+      .catch(() => {})
+      .finally(() => setRealTotalLoaded(true));
+  }, [rawId]);
+
   // Clear the cart on first mount of the success page.
   // For online payments (GCash/Maya) the cart is NOT cleared in checkout/page.tsx
   // (in case redirect fails); this is the safe place to clear it after confirmed payment.
@@ -134,15 +148,15 @@ function SuccessContent() {
   }, []);
 
   useEffect(() => {
-    // Guard against duplicate awards across page reloads:
-    // persist the awarded orderId in localStorage so re-mounting this component
-    // (e.g. user refreshes /checkout/success) does not award points a second time.
+    // Wait for the real order total from API before awarding points
+    // so URL-param manipulation can't inflate loyalty balance
+    if (!realTotalLoaded) return;
+
     const storageKey = `kss-pts-awarded-${orderId}`;
     const alreadyAwarded = typeof window !== "undefined" && localStorage.getItem(storageKey);
 
     if (!awardedRef.current && !alreadyAwarded) {
       awardedRef.current = true;
-      // Use the same rate as the loyalty store so UI and store stay in sync
       const pts = Math.floor(orderTotal * POINTS_PER_PESO);
       earnPoints(orderTotal, orderId);
       if (typeof window !== "undefined") {
@@ -150,10 +164,9 @@ function SuccessContent() {
       }
       setPtsEarned(pts);
     } else if (alreadyAwarded) {
-      // Page was reloaded — show the pts that were already awarded without re-awarding
       setPtsEarned(Math.floor(orderTotal * POINTS_PER_PESO));
     }
-  }, [orderId, orderTotal]);
+  }, [orderId, orderTotal, realTotalLoaded]);
 
   return (
     <div className="min-h-screen bg-background flex flex-col items-center justify-center px-4 py-12 text-center">

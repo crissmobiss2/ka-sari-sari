@@ -1,5 +1,5 @@
 "use client";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useParams } from "next/navigation";
 import Link from "next/link";
 import {
@@ -109,7 +109,18 @@ const PAYMENT_CHIP: Record<string, string> = {
 
 export default function AdminRetailerProfilePage() {
   const { id } = useParams<{ id: string }>();
-  const retailer = MOCK_RETAILERS.find((r) => r.id === id) ?? MOCK_RETAILERS[0];
+  const [retailerOverride, setRetailerOverride] = useState<typeof MOCK_RETAILERS[0] | null>(null);
+  const retailer = retailerOverride ?? MOCK_RETAILERS.find((r) => r.id === id) ?? MOCK_RETAILERS[0];
+
+  useEffect(() => {
+    if (!id) return;
+    fetch(`/api/admin/retailers/${id}`)
+      .then((r) => r.ok ? r.json() : null)
+      .then((data) => {
+        if (data?.retailer) setRetailerOverride(data.retailer);
+      })
+      .catch(() => {});
+  }, [id]);
 
   const [suspendConfirm, setSuspendConfirm] = useState(false);
   const [suspended, setSuspended] = useState(false);

@@ -235,17 +235,21 @@ export default function ChatPage() {
         setAiParsedOrder(data.parsedOrder);
 
         // Mirror detected items into the local sticky-cart state
-        const aiItems: CartItem[] = (data.parsedOrder.items as ParsedOrderItem[]).map((item) => {
-          const cat = CATALOG.find((c) =>
-            c.keywords.some((k) => item.productName.toLowerCase().includes(k))
-          );
-          return {
-            id: cat?.id ?? `ai-${item.productName.replace(/\s+/g, "-").toLowerCase().slice(0, 16)}`,
-            name: item.productName,
-            qty: item.quantity,
-            price: cat?.price ?? 0,
-          };
-        });
+        // Items not found in CATALOG are skipped to avoid ₱0 pricing
+        const aiItems: CartItem[] = (data.parsedOrder.items as ParsedOrderItem[])
+          .map((item) => {
+            const cat = CATALOG.find((c) =>
+              c.keywords.some((k) => item.productName.toLowerCase().includes(k))
+            );
+            if (!cat) return null;
+            return {
+              id: cat.id,
+              name: item.productName,
+              qty: item.quantity,
+              price: cat.price,
+            };
+          })
+          .filter((item): item is CartItem => item !== null);
         setCart((prev) => {
           const next = [...prev];
           aiItems.forEach((item) => {
@@ -280,13 +284,14 @@ export default function ChatPage() {
       const cat = CATALOG.find((c) =>
         c.keywords.some((k) => item.productName.toLowerCase().includes(k))
       );
+      if (!cat) return; // skip unknown products — no price available
       const product: Product = {
-        id: cat?.id ?? `ai-${item.productName.replace(/[^a-z0-9]/gi, "-").toLowerCase()}`,
+        id: cat.id,
         categoryId: "ai-detected",
         name: item.productName,
         slug: item.productName.toLowerCase().replace(/[^a-z0-9]+/g, "-"),
         unit: item.unit || "piece",
-        price: cat?.price ?? 0,
+        price: cat.price,
         sku: `AI-${item.productName.slice(0, 8).toUpperCase().replace(/\s/g, "")}`,
         minOrderQty: 1,
         isActive: true,

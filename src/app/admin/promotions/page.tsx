@@ -1,5 +1,5 @@
 "use client";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import {
   Plus, X, Calendar, Tag, Pause, Pencil, Copy, Archive, Ban,
   Zap, TrendingUp, BarChart3,
@@ -507,6 +507,17 @@ function EditPromoModal({ promo, onClose, onSave }: EditPromoModalProps) {
 
 export default function AdminPromotionsPage() {
   const [promos, setPromos] = useState<Promo[]>(INITIAL_PROMOS);
+
+  useEffect(() => {
+    fetch("/api/promotions")
+      .then((r) => r.ok ? r.json() : null)
+      .then((data) => {
+        if (Array.isArray(data?.promotions) && data.promotions.length > 0) {
+          setPromos(data.promotions);
+        }
+      })
+      .catch(() => {});
+  }, []);
   const [activeTab, setActiveTab] = useState("all");
   const [showCreate, setShowCreate] = useState(false);
   const [editingPromo, setEditingPromo] = useState<Promo | null>(null);
@@ -544,12 +555,22 @@ export default function AdminPromotionsPage() {
       usageCount: 0,
     };
     setPromos((prev) => [newPromo, ...prev]);
+    fetch("/api/promotions", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(newPromo),
+    }).catch(() => {});
   }
 
   function handlePause(id: string) {
     setPromos((prev) =>
       prev.map((p) => (p.id === id ? { ...p, status: "paused" } : p))
     );
+    fetch(`/api/promotions/${id}`, {
+      method: "PATCH",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ status: "paused" }),
+    }).catch(() => {});
   }
 
   function handleEdit(promo: Promo) {
@@ -561,6 +582,11 @@ export default function AdminPromotionsPage() {
       prev.map((p) => (p.id === updated.id ? updated : p))
     );
     setEditingPromo(null);
+    fetch(`/api/promotions/${updated.id}`, {
+      method: "PATCH",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(updated),
+    }).catch(() => {});
   }
 
   function handleDuplicate(id: string) {
@@ -579,12 +605,22 @@ export default function AdminPromotionsPage() {
       next.splice(idx + 1, 0, copy);
       return next;
     });
+    fetch("/api/promotions", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(copy),
+    }).catch(() => {});
   }
 
   function handleArchiveOrCancel(id: string) {
     setPromos((prev) =>
       prev.map((p) => (p.id === id ? { ...p, status: "expired" } : p))
     );
+    fetch(`/api/promotions/${id}`, {
+      method: "PATCH",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ status: "expired" }),
+    }).catch(() => {});
   }
 
   return (

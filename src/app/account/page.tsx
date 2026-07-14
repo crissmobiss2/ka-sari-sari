@@ -46,7 +46,7 @@ const needleAngle = 180 - scorePct * 180;
 const BG_ARC = describeArc(75, 80, 60, 180, 0);
 const SCORE_ARC = describeArc(75, 80, 60, 180, needleAngle);
 
-const scoreFactors: { label: string; pct: number; grade: string; color: string }[] = [
+const DEFAULT_SCORE_FACTORS: { label: string; pct: number; grade: string; color: string }[] = [
   { label: "Payment History", pct: 95, grade: "Excellent", color: "#22c55e" },
   { label: "Order Frequency", pct: 78, grade: "Good", color: "#f47028" },
   { label: "Account Age", pct: 62, grade: "Building", color: "#f59e0b" },
@@ -112,6 +112,7 @@ export default function AccountPage() {
 
   // ── Credit application state ──────────────────────────────────────────────
 
+  const [scoreFactors, setScoreFactors] = useState(DEFAULT_SCORE_FACTORS);
   const [creditApplications, setCreditApplications] = useState<CreditApplication[]>([]);
   const [showCreditForm, setShowCreditForm]         = useState(false);
   const [creditLoading, setCreditLoading]           = useState(false);
@@ -178,6 +179,9 @@ export default function AccountPage() {
       .then((r) => { if (!r.ok) return null; return r.json(); })
       .then((data) => {
         if (data?.applications) setCreditApplications(data.applications);
+        if (Array.isArray(data?.scoreFactors) && data.scoreFactors.length > 0) {
+          setScoreFactors(data.scoreFactors);
+        }
         // Update credit score widget with real values if provided
         if (data?.score !== undefined) {
           const score = data.score ?? CREDIT_SCORE;

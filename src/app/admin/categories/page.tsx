@@ -1,15 +1,26 @@
 "use client";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Plus, Edit2, Tag, Check, X } from "lucide-react";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { CATEGORIES } from "@/lib/mock-data";
-import { toastSuccess } from "@/store/toast";
+import { toastSuccess, toastError } from "@/store/toast";
 import type { Category } from "@/types";
 
 export default function AdminCategoriesPage() {
   const [categories, setCategories] = useState<Category[]>(CATEGORIES);
+
+  useEffect(() => {
+    fetch("/api/categories")
+      .then((r) => r.ok ? r.json() : null)
+      .then((data) => {
+        if (Array.isArray(data?.categories) && data.categories.length > 0) {
+          setCategories(data.categories);
+        }
+      })
+      .catch(() => {});
+  }, []);
   const [editingId, setEditingId] = useState<string | null>(null);
   const [editName, setEditName] = useState("");
 
@@ -18,22 +29,32 @@ export default function AdminCategoriesPage() {
     setEditName(cat.name);
   }
 
-  function handleSave(id: string) {
+  async function handleSave(id: string) {
     setCategories((prev) =>
       prev.map((cat) => (cat.id === id ? { ...cat, name: editName } : cat))
     );
     setEditingId(null);
-    toastSuccess("Category updated");
+    try {
+      const res = await fetch(`/api/categories/${id}`, {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ name: editName }),
+      });
+      if (!res.ok) { toastError("Failed to save — please refresh"); return; }
+      toastSuccess("Category updated");
+    } catch {
+      toastError("Network error");
+    }
   }
 
   function handleCancel() {
     setEditingId(null);
   }
 
-  function handleAddCategory() {
-    const newId = `cat-new-${Date.now()}`;
+  async function handleAddCategory() {
+    const tempId = `cat-new-${Date.now()}`;
     const newCat: Category = {
-      id: newId,
+      id: tempId,
       name: "New Category",
       slug: `new-category-${Date.now()}`,
       description: "",
@@ -42,8 +63,24 @@ export default function AdminCategoriesPage() {
       sortOrder: categories.length + 1,
     };
     setCategories((prev) => [...prev, newCat]);
-    setEditingId(newId);
+    setEditingId(tempId);
     setEditName("New Category");
+    try {
+      const res = await fetch("/api/categories", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ name: "New Category" }),
+      });
+      if (res.ok) {
+        const data = await res.json();
+        if (data?.category?.id) {
+          setCategories((prev) =>
+            prev.map((c) => (c.id === tempId ? { ...c, id: data.category.id } : c))
+          );
+          setEditingId(data.category.id);
+        }
+      }
+    } catch { /* keep temp id */ }
   }
 
   return (

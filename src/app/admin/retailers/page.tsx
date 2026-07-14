@@ -55,9 +55,16 @@ export default function AdminRetailersPage() {
   const activeCount = MOCK_RETAILERS.filter((r) => r.isActive).length;
   const hubs = ["all", "NCR", "North Luzon", "South Luzon", "Visayas", "Mindanao"] as HubFilter[];
 
-  function handleSendInvite() {
+  async function handleSendInvite() {
     const phone = invitePhone.trim();
     if (!phone) return;
+    try {
+      await fetch("/api/admin/retailers/invite", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ phone, store: inviteStore.trim() }),
+      });
+    } catch { /* show toast regardless */ }
     setInviteToast("Invite sent to " + phone);
     setInviteModal(false);
     setInvitePhone("");

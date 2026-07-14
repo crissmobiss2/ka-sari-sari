@@ -44,8 +44,8 @@ function getDealLabel(categoryId: string): string {
   return labels[idx] ?? "Hot Pick";
 }
 
-// Compute deal price
-const DEALS = PRODUCTS.map((p, i) => ({
+// Compute deal price (used as fallback when API is unavailable)
+const MOCK_DEALS = PRODUCTS.map((p, i) => ({
   ...p,
   originalPrice: p.price,
   discountPct: [15, 20, 10, 25, 12, 18, 22, 8, 30, 15][i % 10],
@@ -54,8 +54,7 @@ const DEALS = PRODUCTS.map((p, i) => ({
   expiresIn: [3600 * 2 + 1800, 3600 * 5, 3600 * 12, 3600 * 24, 3600 * 8][i % 5],
 }));
 
-const FLASH_DEALS = DEALS.filter((_, i) => i < 4);
-const ALL_DEALS = DEALS;
+type Deal = (typeof MOCK_DEALS)[0];
 
 function getSessionStart(): number {
   const key = "deals-session-start";
@@ -97,7 +96,7 @@ function Countdown({ seconds }: { seconds: number }) {
   );
 }
 
-function DealCard({ deal }: { deal: typeof DEALS[0] }) {
+function DealCard({ deal }: { deal: Deal }) {
   const { addItem, items, updateQty } = useCartStore();
   const cartItem = items.find((i) => i.product.id === deal.id);
   const [imgError, setImgError] = useState(false);
@@ -105,8 +104,8 @@ function DealCard({ deal }: { deal: typeof DEALS[0] }) {
   const showRealImage = !!deal.imageUrl && !imgError;
 
   function handleAddToCart() {
-    const product = PRODUCTS.find((p) => p.id === deal.id);
-    if (product && product.stock === 0) {
+    const product = PRODUCTS.find((p) => p.id === deal.id) ?? deal;
+    if (product && (product as typeof deal).stock === 0) {
       toastError("Out of stock");
       return;
     }
@@ -169,10 +168,23 @@ function DealCard({ deal }: { deal: typeof DEALS[0] }) {
 
 export default function DealsPage() {
   const [activeCategory, setActiveCategory] = useState("all");
+  const [allDeals, setAllDeals] = useState<Deal[]>(MOCK_DEALS);
 
+  useEffect(() => {
+    fetch("/api/deals")
+      .then((r) => r.ok ? r.json() : null)
+      .then((data) => {
+        if (Array.isArray(data?.deals) && data.deals.length > 0) {
+          setAllDeals(data.deals);
+        }
+      })
+      .catch(() => {});
+  }, []);
+
+  const flashDeals = allDeals.slice(0, 4);
   const filtered = activeCategory === "all"
-    ? ALL_DEALS
-    : ALL_DEALS.filter((d) => d.categoryId === activeCategory);
+    ? allDeals
+    : allDeals.filter((d) => d.categoryId === activeCategory);
 
   return (
     <div className="min-h-screen bg-background pb-24">
@@ -206,7 +218,7 @@ export default function DealsPage() {
             <h2 className="font-display text-base font-bold text-foreground">Flash Deals</h2>
           </div>
           <div className="flex gap-3 overflow-x-auto pb-2 scrollbar-hide -mx-4 px-4">
-            {FLASH_DEALS.map((deal) => (
+            {flashDeals.map((deal) => (
               <div key={deal.id} className="w-44 shrink-0">
                 <DealCard deal={deal} />
               </div>

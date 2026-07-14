@@ -18,11 +18,50 @@ function ProcessingContent() {
   const [step, setStep] = useState(0);
 
   useEffect(() => {
+    if (!orderId) {
+      router.replace("/checkout/failed?reason=missing_order");
+      return;
+    }
+
     const t1 = setTimeout(() => setStep(1), 1200);
     const t2 = setTimeout(() => setStep(2), 2800);
-    const t3 = setTimeout(() => {
-      router.replace(`/checkout/success?orderId=${orderId}&method=${method}`);
-    }, 4200);
+
+    // Poll the order status instead of blindly assuming success
+    let attempts = 0;
+    const MAX_ATTEMPTS = 20; // 20 × 2s = 40 second timeout
+
+    const poll = async () => {
+      try {
+        const res = await fetch(`/api/orders/${orderId}`);
+        if (!res.ok) { attempts++; return; }
+        const data = await res.json();
+        const status = data?.order?.status ?? data?.status;
+        if (status === "confirmed" || status === "picking" || status === "packed") {
+          router.replace(`/checkout/success?orderId=${orderId}&method=${method}`);
+        } else if (status === "payment_failed" || status === "cancelled") {
+          router.replace(`/checkout/failed?orderId=${orderId}`);
+        } else {
+          attempts++;
+          if (attempts >= MAX_ATTEMPTS) {
+            // Timeout — treat as failed to avoid stuck UI
+            router.replace(`/checkout/failed?orderId=${orderId}&reason=timeout`);
+          } else {
+            setTimeout(poll, 2000);
+          }
+        }
+      } catch {
+        attempts++;
+        if (attempts >= MAX_ATTEMPTS) {
+          router.replace(`/checkout/failed?orderId=${orderId}&reason=timeout`);
+        } else {
+          setTimeout(poll, 2000);
+        }
+      }
+    };
+
+    // Start polling after a brief initial delay
+    const t3 = setTimeout(poll, 3000);
+
     return () => { clearTimeout(t1); clearTimeout(t2); clearTimeout(t3); };
   }, [orderId, method, router]);
 

@@ -1,5 +1,5 @@
 "use client";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import {
   Search, LayoutGrid, List, Plus, Eye, ShoppingCart, Pencil,
   Phone, Mail, MapPin, User, X, Truck,
@@ -442,6 +442,17 @@ function AddSupplierModal({
 
 export default function AdminSuppliersPage() {
   const [suppliers, setSuppliers] = useState<Supplier[]>(INITIAL_SUPPLIERS);
+
+  useEffect(() => {
+    fetch("/api/admin/suppliers")
+      .then((r) => r.ok ? r.json() : null)
+      .then((data) => {
+        if (Array.isArray(data?.suppliers) && data.suppliers.length > 0) {
+          setSuppliers(data.suppliers);
+        }
+      })
+      .catch(() => {});
+  }, []);
   const [search, setSearch] = useState("");
   const [viewMode, setViewMode] = useState<"card" | "table">("card");
   const [showAdd, setShowAdd] = useState(false);
@@ -458,12 +469,22 @@ export default function AdminSuppliersPage() {
     setSuppliers((prev) => [...prev, s]);
     showToast(`Supplier "${s.name}" added successfully.`);
     setShowAdd(false);
+    fetch("/api/admin/suppliers", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(s),
+    }).catch(() => {});
   }
 
   function handleEdit(updated: Supplier) {
     setSuppliers((prev) => prev.map((s) => (s.id === updated.id ? updated : s)));
     showToast(`Supplier "${updated.name}" updated successfully.`);
     setEditSupplier(null);
+    fetch(`/api/admin/suppliers/${updated.id}`, {
+      method: "PATCH",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(updated),
+    }).catch(() => {});
   }
 
   function handleNewPO(s: Supplier) {

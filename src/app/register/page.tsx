@@ -9,7 +9,7 @@ import { Input } from "@/components/ui/input";
 import { cn } from "@/lib/utils";
 import { NEXOFLOW_CITIES, isCovered, type NexoflowCity } from "@/lib/nexoflow-cities";
 
-const STEPS = ["Phone", "Account", "Store", "Activate"];
+const STEPS = ["Phone", "Verify", "Account", "Store", "Activate"];
 
 export default function RegisterPage() {
   const router = useRouter();
@@ -17,7 +17,7 @@ export default function RegisterPage() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const [form, setForm] = useState({
-    phone: "", name: "", password: "",
+    phone: "", otp: "", name: "", password: "",
     storeName: "", barangay: "", city: "", province: "",
   });
   const [citySearch, setCitySearch] = useState("");
@@ -42,8 +42,51 @@ export default function RegisterPage() {
 
   const covered = isCovered(form.city);
 
-  function handleNext() {
-    if (step < 3) { setStep((s) => s + 1); }
+  async function handleNext() {
+    setError("");
+    if (step === 0) {
+      setLoading(true);
+      try {
+        const res = await fetch("/api/auth/send-otp", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ phone: form.phone }),
+        });
+        if (!res.ok) {
+          const data = await res.json();
+          setError(data.error || "Failed to send OTP. Please try again.");
+          return;
+        }
+        setStep((s) => s + 1);
+      } catch {
+        setError("Network error. Please try again.");
+      } finally {
+        setLoading(false);
+      }
+      return;
+    }
+    if (step === 1) {
+      setLoading(true);
+      try {
+        const res = await fetch("/api/auth/verify-otp", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ phone: form.phone, otp: form.otp }),
+        });
+        if (!res.ok) {
+          const data = await res.json();
+          setError(data.error || "Invalid code. Please check and try again.");
+          return;
+        }
+        setStep((s) => s + 1);
+      } catch {
+        setError("Network error. Please try again.");
+      } finally {
+        setLoading(false);
+      }
+      return;
+    }
+    if (step < 4) { setStep((s) => s + 1); }
   }
 
   async function handleSubmit() {
@@ -125,19 +168,71 @@ export default function RegisterPage() {
                 onChange={(e) => set("phone", e.target.value)}
                 leftIcon={<Phone className="h-4 w-4" />}
               />
+              {error && (
+                <p className="text-sm text-danger-600">{error}</p>
+              )}
               <Button
                 size="lg"
                 className="w-full"
                 onClick={handleNext}
-                disabled={!form.phone.startsWith("09") || form.phone.length < 11}
+                loading={loading}
+                disabled={loading || !form.phone.startsWith("09") || form.phone.length < 11}
               >
-                Continue <ArrowRight className="h-4 w-4" />
+                Send Code <ArrowRight className="h-4 w-4" />
               </Button>
             </div>
           )}
 
-          {/* Step 1 — Account */}
+          {/* Step 1 — OTP Verification */}
           {step === 1 && (
+            <div className="space-y-5">
+              <div>
+                <h1 className="font-display text-2xl font-bold text-foreground">Verify your number</h1>
+                <p className="mt-1 text-sm text-muted-foreground">
+                  Enter the 6-digit code sent to {form.phone}.
+                </p>
+              </div>
+              <Input
+                label="Verification code"
+                type="text"
+                inputMode="numeric"
+                placeholder="000000"
+                maxLength={6}
+                value={form.otp}
+                onChange={(e) => set("otp", e.target.value.replace(/\D/g, "").slice(0, 6))}
+                leftIcon={<CheckCircle2 className="h-4 w-4" />}
+              />
+              {error && (
+                <p className="text-sm text-danger-600">{error}</p>
+              )}
+              <Button
+                size="lg"
+                className="w-full"
+                onClick={handleNext}
+                loading={loading}
+                disabled={loading || form.otp.length < 6}
+              >
+                Verify <ArrowRight className="h-4 w-4" />
+              </Button>
+              <button
+                type="button"
+                onClick={() => {
+                  setError("");
+                  fetch("/api/auth/send-otp", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ phone: form.phone }),
+                  }).catch(() => {});
+                }}
+                className="w-full text-center text-sm text-brand-500 hover:text-brand-600"
+              >
+                Resend code
+              </button>
+            </div>
+          )}
+
+          {/* Step 2 — Account */}
+          {step === 2 && (
             <div className="space-y-5">
               <div>
                 <h1 className="font-display text-2xl font-bold text-foreground">Create your account</h1>
@@ -154,8 +249,8 @@ export default function RegisterPage() {
             </div>
           )}
 
-          {/* Step 2 — Store */}
-          {step === 2 && (
+          {/* Step 3 — Store */}
+          {step === 3 && (
             <div className="space-y-5">
               <div>
                 <h1 className="font-display text-2xl font-bold text-foreground">Your store details</h1>
@@ -232,8 +327,8 @@ export default function RegisterPage() {
             </div>
           )}
 
-          {/* Step 3 — Activate */}
-          {step === 3 && (
+          {/* Step 4 — Activate */}
+          {step === 4 && (
             <div className="space-y-6">
               <div>
                 <h1 className="font-display text-2xl font-bold text-foreground">Activate your account</h1>

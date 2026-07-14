@@ -104,9 +104,12 @@ export default function LoyaltyPage() {
     fetch("/api/auth/me")
       .then((r) => r.ok ? r.json() : null)
       .then((data) => {
-        if (data?.name) {
+        if (data?.referralCode) {
+          setReferralCode(data.referralCode);
+        } else if (data?.name) {
           const first = data.name.split(" ")[0].toUpperCase();
-          setReferralCode(`${first}-KSS-${new Date().getFullYear()}`);
+          const suffix = data.id ? data.id.slice(-4).toUpperCase() : String(new Date().getFullYear());
+          setReferralCode(`${first}-KSS-${suffix}`);
         }
       })
       .catch(() => {/* keep default */});

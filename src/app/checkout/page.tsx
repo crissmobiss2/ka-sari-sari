@@ -200,8 +200,14 @@ export default function CheckoutPage() {
                   size="sm"
                   variant="default"
                   onClick={() => {
-                    setAddress(draftAddress.trim() || address);
+                    const saved = draftAddress.trim() || address;
+                    setAddress(saved);
                     setEditingAddress(false);
+                    fetch("/api/auth/me", {
+                      method: "PATCH",
+                      headers: { "Content-Type": "application/json" },
+                      body: JSON.stringify({ address: saved }),
+                    }).catch(() => {});
                   }}
                   className="flex-1"
                 >

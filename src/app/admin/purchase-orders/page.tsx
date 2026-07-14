@@ -613,6 +613,17 @@ export default function AdminPurchaseOrdersPage() {
   const [showCreate, setShowCreate] = useState(false);
   const [showAutoModal, setShowAutoModal] = useState(false);
   const [poList, setPoList] = useState<PORecord[]>(PO_DATA_INITIAL);
+
+  useEffect(() => {
+    fetch("/api/admin/purchase-orders")
+      .then((r) => r.ok ? r.json() : null)
+      .then((data) => {
+        if (Array.isArray(data?.purchaseOrders) && data.purchaseOrders.length > 0) {
+          setPoList(data.purchaseOrders);
+        }
+      })
+      .catch(() => {});
+  }, []);
   const [poCounter, setPoCounter] = useState(90);
   const [toast, setToast] = useState<string | null>(null);
   const [editingPO, setEditingPO] = useState<PORecord | null>(null);
@@ -657,6 +668,11 @@ export default function AdminPurchaseOrdersPage() {
     };
     setPoList((prev) => [newPO, ...prev]);
     setShowCreate(false);
+    fetch("/api/admin/purchase-orders", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(newPO),
+    }).catch(() => {});
   };
 
   const handleSend = (id: string) => {
@@ -664,6 +680,11 @@ export default function AdminPurchaseOrdersPage() {
       prev.map((po) => po.id === id ? { ...po, status: "sent" } : po)
     );
     showToast("PO sent to supplier");
+    fetch(`/api/admin/purchase-orders/${id}`, {
+      method: "PATCH",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ status: "sent" }),
+    }).catch(() => {});
   };
 
   const handleEditOpen = (po: PORecord) => {

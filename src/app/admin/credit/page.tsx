@@ -73,6 +73,17 @@ function UtilizationBar({ used, limit }: { used: number; limit: number }) {
 
 export default function AdminCreditPage() {
   const [accounts, setAccounts] = useState(CREDIT_ACCOUNTS);
+
+  useEffect(() => {
+    fetch("/api/admin/credit")
+      .then((r) => r.ok ? r.json() : null)
+      .then((data) => {
+        if (Array.isArray(data?.accounts) && data.accounts.length > 0) {
+          setAccounts(data.accounts);
+        }
+      })
+      .catch(() => {});
+  }, []);
   const [search, setSearch] = useState("");
   const [statusFilter, setStatusFilter] = useState<CreditStatus | "all">("all");
   const [selected, setSelected] = useState<string | null>(null);
