@@ -271,6 +271,11 @@ export default function PaymentsPage() {
 
   // ── Reconcile action ─────────────────────────────────────────────────────
   function reconcile(id: string) {
+    fetch(`/api/admin/payments/${id}`, {
+      method: "PATCH",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ reconciled: true }),
+    }).catch(() => {});
     setReconciledIds((prev) => {
       const next = new Set(prev);
       next.add(id);
@@ -301,6 +306,11 @@ export default function PaymentsPage() {
   }, []);
 
   const handleMarkFailed = useCallback((paymentId: string) => {
+    fetch(`/api/admin/payments/${paymentId}`, {
+      method: "PATCH",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ status: "failed" }),
+    }).catch(() => {});
     setTransactions((prev) =>
       prev.map((p) => p.id === paymentId ? { ...p, status: "failed" as TxPaymentStatus } : p)
     );

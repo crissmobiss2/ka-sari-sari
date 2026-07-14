@@ -1,13 +1,13 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { DRIVERS } from "@/lib/mock-data";
 import { toastSuccess } from "@/store/toast";
 
-const driver = DRIVERS[0];
+const FALLBACK_DRIVER = DRIVERS[0];
 
 function StarIcon({ filled }: { filled: boolean }) {
   return (
@@ -28,6 +28,24 @@ function EditIcon() {
 
 export default function ProfilePage() {
   const router = useRouter();
+  const [driver, setDriver] = useState(FALLBACK_DRIVER);
+
+  useEffect(() => {
+    fetch("/api/auth/me")
+      .then((r) => (r.ok ? r.json() : Promise.reject()))
+      .then((d) => {
+        if (d.user) {
+          setDriver((prev) => ({
+            ...prev,
+            name: d.user.name ?? prev.name,
+            phone: d.user.phone ?? prev.phone,
+          }));
+          if (d.user.gcash) setGcash(d.user.gcash);
+        }
+      })
+      .catch(() => {});
+  }, []);
+
   const fullStars = Math.floor(driver.rating);
 
   const [phone, setPhone] = useState(driver.phone);
@@ -44,6 +62,11 @@ export default function ProfilePage() {
       : false;
 
   function savePhone() {
+    fetch("/api/driver/profile", {
+      method: "PATCH",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ phone: phoneTemp }),
+    }).catch(() => {});
     setPhone(phoneTemp);
     setEditingPhone(false);
     toastSuccess("Phone updated");
@@ -55,6 +78,11 @@ export default function ProfilePage() {
   }
 
   function saveGcash() {
+    fetch("/api/driver/profile", {
+      method: "PATCH",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ gcash: gcashTemp }),
+    }).catch(() => {});
     setGcash(gcashTemp);
     setEditingGcash(false);
     toastSuccess("GCash payout number updated");

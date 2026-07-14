@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect } from "react";
 import { Search, Download, ArrowUpDown, CheckCircle2, Package, AlertTriangle, XCircle } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -13,32 +13,6 @@ import { toastSuccess } from "@/store/toast";
 type SortKey = "name-asc" | "stock-asc" | "stock-desc";
 
 // ─── Helpers ──────────────────────────────────────────────────────────────────
-
-function getBaseStock(productId: string): number {
-  return PRODUCTS.find((p) => p.id === productId)?.stock ?? 0;
-}
-
-function getThreshold(productId: string): number {
-  return PRODUCTS.find((p) => p.id === productId)?.lowStockThreshold ?? 20;
-}
-
-function stockColor(stock: number, productId: string) {
-  if (stock === 0) return "text-danger-500";
-  if (stock <= getThreshold(productId)) return "text-warning-600";
-  return "text-success-600";
-}
-
-function stockStatus(stock: number, productId: string) {
-  if (stock === 0) return "Out of Stock";
-  if (stock <= getThreshold(productId)) return "Low Stock";
-  return "In Stock";
-}
-
-function stockBadgeVariant(stock: number, productId: string): "success" | "warning" | "danger" {
-  if (stock === 0) return "danger";
-  if (stock <= getThreshold(productId)) return "warning";
-  return "success";
-}
 
 function downloadInventoryCSV(
   products: Array<{ id: string; name: string; brand?: string; categoryId: string; sku: string }>,
@@ -70,9 +44,20 @@ function downloadInventoryCSV(
 
 export default function InventoryPage() {
   // ── State ─────────────────────────────────────────────────────────────────
+  const [products, setInventoryProducts] = useState(PRODUCTS);
   const [search, setSearch] = useState("");
   const [activeCategory, setActiveCategory] = useState("all");
   const [sortKey, setSortKey] = useState<SortKey>("name-asc");
+
+  useEffect(() => {
+    fetch("/api/products?limit=500")
+      .then((r) => (r.ok ? r.json() : Promise.reject()))
+      .then((d) => {
+        const fetched = d.products ?? d;
+        if (Array.isArray(fetched) && fetched.length > 0) setInventoryProducts(fetched);
+      })
+      .catch(() => {});
+  }, []);
 
   // Delta adjustments layered on top of base stock
   const [adjustments, setAdjustments] = useState<Record<string, number>>({});
@@ -83,7 +68,12 @@ export default function InventoryPage() {
 
   // ── Derived stock ──────────────────────────────────────────────────────────
   function currentStock(productId: string) {
-    return getBaseStock(productId) + (adjustments[productId] ?? 0);
+    const base = products.find((p) => p.id === productId)?.stock ?? 0;
+    return base + (adjustments[productId] ?? 0);
+  }
+
+  function getProductThreshold(productId: string) {
+    return products.find((p) => p.id === productId)?.lowStockThreshold ?? 20;
   }
 
   // ── Inline adjust actions ─────────────────────────────────────────────────
@@ -98,7 +88,7 @@ export default function InventoryPage() {
       setAdjustingId(null);
       return;
     }
-    const base = getBaseStock(productId);
+    const base = products.find((p) => p.id === productId)?.stock ?? 0;
     const prevAdj = adjustments[productId] ?? 0;
     const newTotal = Math.max(0, base + prevAdj + delta);
     const newAdj = newTotal - base;
@@ -113,7 +103,7 @@ export default function InventoryPage() {
       }),
     }).catch(() => {});
     setAdjustingId(null);
-    const productName = PRODUCTS.find((p) => p.id === productId)?.name ?? productId;
+    const productName = products.find((p) => p.id === productId)?.name ?? productId;
     const sign = delta >= 0 ? `+${delta}` : `${delta}`;
     toastSuccess(`Stock adjusted (${sign}) for ${productName}`);
   }
@@ -123,18 +113,18 @@ export default function InventoryPage() {
   }
 
   // ── Summary counts ────────────────────────────────────────────────────────
-  const totalSKUs = PRODUCTS.length;
-  const outOfStockCount = PRODUCTS.filter((p) => currentStock(p.id) === 0).length;
-  const lowStockCount = PRODUCTS.filter((p) => {
+  const totalSKUs = products.length;
+  const outOfStockCount = products.filter((p) => currentStock(p.id) === 0).length;
+  const lowStockCount = products.filter((p) => {
     const s = currentStock(p.id);
-    return s >= 1 && s <= getThreshold(p.id);
+    return s >= 1 && s <= getProductThreshold(p.id);
   }).length;
-  const totalUnits = PRODUCTS.reduce((sum, p) => sum + currentStock(p.id), 0);
+  const totalUnits = products.reduce((sum, p) => sum + currentStock(p.id), 0);
 
   // ── Filtered + sorted list ─────────────────────────────────────────────────
   const filtered = useMemo(() => {
     const q = search.trim().toLowerCase();
-    const base = PRODUCTS.filter((p) => {
+    const base = products.filter((p) => {
       const matchesSearch =
         q === "" ||
         p.name.toLowerCase().includes(q) ||
@@ -151,11 +141,11 @@ export default function InventoryPage() {
       if (sortKey === "stock-desc") return currentStock(b.id) - currentStock(a.id);
       return 0;
     });
-  }, [search, activeCategory, sortKey, adjustments]); // eslint-disable-line react-hooks/exhaustive-deps
+  }, [products, search, activeCategory, sortKey, adjustments]); // eslint-disable-line react-hooks/exhaustive-deps
 
   const lowStockFiltered = filtered.filter((p) => {
     const s = currentStock(p.id);
-    return s >= 1 && s <= getThreshold(p.id);
+    return s >= 1 && s <= getProductThreshold(p.id);
   });
 
   // ── Sort options ──────────────────────────────────────────────────────────
@@ -303,7 +293,8 @@ export default function InventoryPage() {
           ) : (
             filtered.map((product) => {
               const stock = currentStock(product.id);
-              const isLow = stock >= 1 && stock <= getThreshold(product.id);
+              const threshold = product.lowStockThreshold ?? 20;
+              const isLow = stock >= 1 && stock <= threshold;
               const isOut = stock === 0;
               const category = CATEGORIES.find((c) => c.id === product.categoryId);
               const isAdjusting = adjustingId === product.id;
@@ -340,11 +331,11 @@ export default function InventoryPage() {
 
                       {/* Right: stock value + badge + adjust */}
                       <div className="flex flex-col items-end gap-1 shrink-0">
-                        <span className={cn("font-bold text-lg leading-none", stockColor(stock, product.id))}>
+                        <span className={cn("font-bold text-lg leading-none", isOut ? "text-danger-500" : isLow ? "text-warning-600" : "text-success-600")}>
                           {stock.toLocaleString()}
                         </span>
-                        <Badge variant={stockBadgeVariant(stock, product.id)} className="text-xs">
-                          {stockStatus(stock, product.id)}
+                        <Badge variant={isOut ? "danger" : isLow ? "warning" : "success"} className="text-xs">
+                          {isOut ? "Out of Stock" : isLow ? "Low Stock" : "In Stock"}
                         </Badge>
 
                         {/* Adjust Stock button / inline form */}

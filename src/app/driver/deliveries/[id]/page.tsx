@@ -209,12 +209,12 @@ export default function DeliveryDetailPage() {
   // Real order/delivery data from API — must be declared before derived customerName/phone below
   const [orderData, setOrderData] = useState<OrderDetail | null>(null);
 
-  const order = storeOrders.find((o) => o.id === id) ?? MOCK_ORDERS.find((o) => o.id === id) ?? MOCK_ORDERS[0];
-  const customer = CUSTOMER_DETAILS[order.id];
-  const customerName = orderData?.retailerName ?? customer?.name ?? order.deliveryAddress?.split(",")[0] ?? "Customer";
+  const order = storeOrders.find((o) => o.id === id) ?? MOCK_ORDERS.find((o) => o.id === id) ?? null;
+  const customer = order ? CUSTOMER_DETAILS[order.id] : undefined;
+  const customerName = orderData?.retailerName ?? customer?.name ?? order?.deliveryAddress?.split(",")[0] ?? "Customer";
   const customerPhone = orderData?.customerPhone ?? orderData?.retailerPhone ?? customer?.phone;
 
-  const isCOD = order.paymentMethod === "cod";
+  const isCOD = order?.paymentMethod === "cod";
 
   const [cashCollected, setCashCollected] = useState(false);
   const [delivered, setDelivered] = useState(false);
@@ -280,6 +280,19 @@ export default function DeliveryDetailPage() {
     }
     fetchDeliveryId();
   }, [id]);
+
+  // ─── Null guard — must come after all hooks ──────────────────────────────
+  if (!order) {
+    return (
+      <div className="flex flex-col items-center justify-center min-h-screen gap-4 px-6">
+        <p className="text-lg font-semibold text-foreground">Delivery not found</p>
+        <p className="text-sm text-muted-foreground text-center">Could not load delivery details for this order.</p>
+        <Link href="/driver/deliveries" className="rounded-xl bg-brand-500 px-4 py-2 text-sm font-semibold text-white">
+          Back to deliveries
+        </Link>
+      </div>
+    );
+  }
 
   // ─── Event handlers ───────────────────────────────────────────────────────
 
@@ -424,7 +437,7 @@ export default function DeliveryDetailPage() {
             proofPhotoUrl: uploadedUrl,
             signatureUrl: signatureData,
             recipientName: customerName,
-            codCollected: cashCollected ? order.total : undefined,
+            codCollected: cashCollected ? order?.total : undefined,
             lat,
             lng,
           }),
@@ -491,7 +504,7 @@ export default function DeliveryDetailPage() {
         "_blank"
       );
     } else {
-      const encoded = encodeURIComponent(customer?.address ?? order.deliveryAddress ?? "");
+      const encoded = encodeURIComponent(customer?.address ?? order?.deliveryAddress ?? "");
       window.open(`https://www.google.com/maps/search/?api=1&query=${encoded}`, "_blank");
     }
   }

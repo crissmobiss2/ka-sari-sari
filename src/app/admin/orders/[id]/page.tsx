@@ -132,11 +132,25 @@ export default function AdminOrderDetailPage() {
   const isTerminal = TERMINAL_STATUSES.includes(order.status);
   const canAssignDriver = ASSIGNABLE_STATUSES.includes(order.status);
 
-  function handleAdvance() {
-    advance(order.id);
+  async function handleAdvance() {
     const next = NEXT_STATUS[order.status];
-    const label = next ? ORDER_STATUS_LABELS[next] : "next status";
-    toastSuccess(`Order ${order.orderNumber} marked as ${label}`);
+    if (!next) return;
+    const label = ORDER_STATUS_LABELS[next] ?? "next status";
+    advance(order.id);
+    try {
+      const res = await fetch(`/api/admin/orders/${order.id}`, {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ status: next }),
+      });
+      if (!res.ok) {
+        toastError(`Failed to update order status. Please refresh.`);
+        return;
+      }
+      toastSuccess(`Order ${order.orderNumber} marked as ${label}`);
+    } catch {
+      toastError("Network error. Please check your connection.");
+    }
   }
 
   async function handleAssignDriver() {

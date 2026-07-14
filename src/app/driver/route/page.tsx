@@ -141,17 +141,18 @@ function payLabel(method: Stop["paymentMethod"]) {
 }
 
 export default function RouteMapPage() {
-  const [stops, setStops] = useState<Stop[]>(INITIAL_STOPS);
+  const [stops, setStops] = useState<Stop[]>([]);
   const [expanded, setExpanded] = useState<number | null>(3);
   const [showReconcile, setShowReconcile] = useState(false);
   const [loading, setLoading] = useState(true);
+  const [routeError, setRouteError] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [reportSubmitted, setReportSubmitted] = useState(false);
   const [reportNotes] = useState("");
 
   useEffect(() => {
     fetch("/api/driver/route")
-      .then(r => r.json())
+      .then(r => (r.ok ? r.json() : Promise.reject()))
       .then(d => {
         if (d.stops?.length) {
           let nextAssigned = false;
@@ -163,7 +164,7 @@ export default function RouteMapPage() {
           setStops(mapped);
         }
       })
-      .catch(() => {})
+      .catch(() => { setRouteError(true); })
       .finally(() => setLoading(false));
   }, []);
 
@@ -256,6 +257,21 @@ export default function RouteMapPage() {
   }
 
   const allDone = stops.every((s) => s.status === "done" || s.status === "failed");
+
+  if (routeError) {
+    return (
+      <div className="min-h-screen bg-background flex flex-col items-center justify-center gap-4 px-6">
+        <p className="text-lg font-semibold text-foreground">Could not load route</p>
+        <p className="text-sm text-muted-foreground text-center">Check your connection and try again.</p>
+        <button
+          onClick={() => { setRouteError(false); setLoading(true); fetch("/api/driver/route").then(r => r.ok ? r.json() : Promise.reject()).then(d => { if (d.stops?.length) { let na = false; setStops((d.stops as ApiStop[]).map(s => { const isNext = (s.status !== "delivered" && s.status !== "failed") && !na; if (isNext) na = true; return mapApiStop(s, isNext); })); } }).catch(() => setRouteError(true)).finally(() => setLoading(false)); }}
+          className="rounded-xl bg-brand-500 px-4 py-2 text-sm font-semibold text-white"
+        >
+          Retry
+        </button>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-background pb-28">

@@ -440,15 +440,7 @@ function LiveUpdates({ extraUpdates = [] }: { extraUpdates?: typeof INITIAL_UPDA
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [extraUpdates.length]);
 
-  useEffect(() => {
-    const t = setTimeout(() => {
-      setUpdates((prev) => [
-        ...prev,
-        { time: "11:08 AM", text: "Driver is 1 stop away — approximately 27 minutes", type: "highlight" as const },
-      ]);
-    }, 8000);
-    return () => clearTimeout(t);
-  }, []);
+  // Real status updates come from the Supabase Realtime channel subscription below
 
   return (
     <div className="mx-4 rounded-2xl border border-border bg-card overflow-hidden shadow-card">

@@ -1,5 +1,5 @@
 "use client";
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect } from "react";
 import { Search, Plus, Package, Edit2, ToggleLeft, ToggleRight, X } from "lucide-react";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -73,6 +73,16 @@ export default function AdminProductsPage() {
   const [statusFilter, setStatusFilter] = useState<"all" | "active" | "inactive">("all");
   const [products, setProducts] = useState(PRODUCTS);
   const [modal, setModal] = useState<"add" | "edit" | null>(null);
+
+  useEffect(() => {
+    fetch("/api/products?limit=500")
+      .then((r) => (r.ok ? r.json() : Promise.reject()))
+      .then((d) => {
+        const fetched = d.products ?? d;
+        if (Array.isArray(fetched) && fetched.length > 0) setProducts(fetched);
+      })
+      .catch(() => {});
+  }, []);
   const [editing, setEditing] = useState<Product | null>(null);
   const [draft, setDraft] = useState<Draft>(BLANK);
   const [errors, setErrors] = useState<Partial<Record<keyof Draft, string>>>({});

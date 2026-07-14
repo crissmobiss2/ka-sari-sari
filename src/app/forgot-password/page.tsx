@@ -107,7 +107,23 @@ export default function ForgotPasswordPage() {
     const code = otp.join("");
     if (code.length !== 6) return;
     setLoadingVerify(true);
-    await new Promise((r) => setTimeout(r, 400));
+    try {
+      const res = await fetch("/api/auth/verify-otp", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ phone, otp: code }),
+      });
+      if (!res.ok) {
+        const data = await res.json().catch(() => ({}));
+        setPasswordError(data.error ?? "Invalid or expired code. Please try again.");
+        setLoadingVerify(false);
+        return;
+      }
+    } catch {
+      setPasswordError("Network error. Please check your connection and try again.");
+      setLoadingVerify(false);
+      return;
+    }
     setLoadingVerify(false);
     setStep(3);
   }
@@ -149,7 +165,9 @@ export default function ForgotPasswordPage() {
         return;
       }
     } catch {
-      // Network error — proceed for demo
+      setPasswordError("Network error. Please check your connection and try again.");
+      setLoadingReset(false);
+      return;
     }
     setLoadingReset(false);
     setSuccess(true);

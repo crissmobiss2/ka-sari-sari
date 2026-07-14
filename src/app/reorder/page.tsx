@@ -523,7 +523,6 @@ export default function ReorderPage() {
     const product = resolveProduct(productId);
     if (product) {
       addItem(product, qty);
-    } else {
       toastSuccess(`${name} added to cart`);
     }
   }

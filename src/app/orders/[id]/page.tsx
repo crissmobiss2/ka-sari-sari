@@ -817,7 +817,7 @@ export default function OrderDetailPage() {
         {/* 4. Order Status Timeline (5 steps) */}
         <DeliveryTimeline
           status={order.status}
-          fulfillmentEvents={order.fulfillmentEvents}
+          fulfillmentEvents={order.fulfillmentEvents ?? []}
           orderId={order.id}
         />
 

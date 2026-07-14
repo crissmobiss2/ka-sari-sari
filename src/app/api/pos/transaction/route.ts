@@ -33,6 +33,7 @@ export async function POST(req: NextRequest) {
       });
       if (error) {
         console.error("[pos/transaction] DB write error:", error.code, error.message);
+        return NextResponse.json({ error: "Failed to record transaction" }, { status: 500 });
       }
     }
 

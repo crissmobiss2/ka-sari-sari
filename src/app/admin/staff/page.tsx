@@ -417,11 +417,16 @@ export default function AdminStaffPage() {
 
   function handleToggleStatus(id: string) {
     setStaff((prev) =>
-      prev.map((m) =>
-        m.id === id
-          ? { ...m, status: m.status === "active" ? "inactive" : "active" }
-          : m
-      )
+      prev.map((m) => {
+        if (m.id !== id) return m;
+        const newStatus = m.status === "active" ? "inactive" : "active";
+        fetch(`/api/admin/staff/${id}`, {
+          method: "PATCH",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ status: newStatus }),
+        }).catch(() => {});
+        return { ...m, status: newStatus };
+      })
     );
   }
 
@@ -431,6 +436,11 @@ export default function AdminStaffPage() {
   }
 
   function handleSaveEdit(updated: StaffMember) {
+    fetch(`/api/admin/staff/${updated.id}`, {
+      method: "PATCH",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ name: updated.name, role: updated.role, status: updated.status }),
+    }).catch(() => {});
     setStaff((prev) => prev.map((m) => (m.id === updated.id ? updated : m)));
     setEditStaff(null);
   }

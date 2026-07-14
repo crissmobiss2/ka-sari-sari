@@ -51,8 +51,6 @@ export default function FulfillmentPage() {
   async function advanceOrder(orderId: string, currentStatus: OrderStatus) {
     const nextSt = NEXT_STATUS[currentStatus];
     if (!nextSt) return;
-    // Optimistic update
-    advance(orderId);
     try {
       const res = await fetch(`/api/admin/orders/${orderId}`, {
         method: "PATCH",
@@ -60,12 +58,11 @@ export default function FulfillmentPage() {
         body: JSON.stringify({ status: nextSt }),
       });
       if (!res.ok) {
-        // Roll back on failure
-        advance(orderId); // advance again to roll back is not ideal; reload from server instead
         window.location.reload();
+        return;
       }
+      advance(orderId);
     } catch {
-      // Network error — reload so state stays consistent
       window.location.reload();
     }
   }

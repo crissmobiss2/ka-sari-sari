@@ -260,7 +260,7 @@ export default function WarehouseDashboard() {
             { href: "/warehouse/picking",   label: "Start Picking",    icon: ScanLine,   color: "bg-brand-500 text-white",          sub: `${openPickLists + inProgress} lists` },
             { href: "/warehouse/receiving", label: "Receive Goods",    icon: PackageCheck,color: "bg-success-500 text-white",       sub: `${receivingQueue} pending` },
             { href: "/warehouse/scan",      label: "Scan / Lookup",   icon: Zap,         color: "bg-surface-800 text-white",        sub: "Quick scan" },
-            { href: "/warehouse/inventory", label: "Check Inventory",  icon: Package,     color: "bg-surface-100 text-foreground",   sub: "Stock levels" },
+            { href: "/warehouse/inventory", label: "Check Inventory",  icon: Package,     color: "bg-violet-600 text-white",         sub: "Stock levels" },
           ].map(({ href, label, icon: Icon, color, sub }) => (
             <Link key={href} href={href}>
               <div className={cn("rounded-2xl p-4 flex flex-col gap-2 h-full transition-opacity hover:opacity-90", color)}>

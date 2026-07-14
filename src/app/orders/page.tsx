@@ -251,13 +251,15 @@ function OrderCard({ order }: { order: DisplayOrder }) {
         <p className="text-base font-bold text-foreground">{formatPHP(order.total)}</p>
         <div className="flex items-center gap-2">
           {isActive && (
-            <span
+            <Link
+              href={`/tracking?orderId=${order.id}`}
               aria-label="Track order"
-              className="rounded-lg bg-brand-500 px-3 py-1.5 text-xs font-semibold text-white flex items-center gap-1.5"
+              onClick={(e) => e.stopPropagation()}
+              className="rounded-lg bg-brand-500 px-3 py-1.5 text-xs font-semibold text-white flex items-center gap-1.5 hover:bg-brand-600 transition-colors"
             >
               <Truck className="h-3 w-3" />
               Track
-            </span>
+            </Link>
           )}
           {isDelivered && (
             <button

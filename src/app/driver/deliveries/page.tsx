@@ -127,8 +127,7 @@ export default function DriverDeliveriesPage() {
       showToast("Marked as delivered!");
       await fetchDeliveries();
     } catch {
-      // Show success anyway — the driver sees the outcome; dispatcher will reconcile
-      showToast("Marked as delivered!");
+      showToast("Could not sync — please retry");
     }
   }
 
@@ -150,7 +149,7 @@ export default function DriverDeliveriesPage() {
       await fetchDeliveries();
     } catch {
       setFailTarget(null);
-      showToast("Marked as failed: " + failReason);
+      showToast("Could not sync — please retry");
     }
   }
 

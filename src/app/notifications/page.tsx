@@ -198,20 +198,21 @@ const TABS: { id: FilterTab; label: string }[] = [
 // ─── Page ─────────────────────────────────────────────────────────────────────
 
 export default function NotificationsPage() {
-  const [notifs, setNotifs] = useState<Notification[]>(buildSeedNotifications);
+  const [notifs, setNotifs] = useState<Notification[]>([]);
+  const [notifsLoading, setNotifsLoading] = useState(true);
   const [activeTab, setActiveTab] = useState<FilterTab>("all");
 
   // Load real notifications from the API on mount
   useEffect(() => {
     fetch("/api/user/notifications")
-      .then((r) => { if (!r.ok) return null; return r.json(); })
+      .then((r) => (r.ok ? r.json() : Promise.reject()))
       .then((data) => {
-        if (Array.isArray(data?.notifications) && data.notifications.length > 0) {
+        if (Array.isArray(data?.notifications)) {
           setNotifs(data.notifications);
         }
-        // If API returns empty or fails, keep the seeded data for demo purposes
       })
-      .catch(() => {});
+      .catch(() => {})
+      .finally(() => setNotifsLoading(false));
   }, []);
 
   const unreadCount = useMemo(() => notifs.filter((n) => !n.isRead).length, [notifs]);
@@ -328,7 +329,11 @@ export default function NotificationsPage() {
         </div>
 
         {/* Notification list */}
-        {filtered.length === 0 ? (
+        {notifsLoading ? (
+          <div className="flex justify-center py-12">
+            <div className="h-6 w-6 rounded-full border-2 border-brand-500 border-t-transparent animate-spin" />
+          </div>
+        ) : filtered.length === 0 ? (
           <EmptyState
             icon={<Bell className="h-8 w-8" />}
             title={emptyMessages[activeTab].title}
