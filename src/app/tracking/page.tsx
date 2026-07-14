@@ -691,14 +691,14 @@ export default function TrackingPage() {
               </div>
             ))}
           </div>
-          <div className="px-4 py-3 border-t border-border flex justify-between items-center bg-surface-50">
-            <span className="text-sm text-muted-foreground">Total · {(orderData ?? ORDER).paymentMethod}</span>
+          <div className="px-4 py-3 border-t border-border flex justify-between items-center bg-card">
+            <span className="text-sm text-muted-foreground">Total · {(orderData ?? ORDER).paymentMethod.toUpperCase()}</span>
             <span className="text-sm font-bold text-foreground">₱{(orderData ?? ORDER).total.toLocaleString()}</span>
           </div>
         </div>
 
         {/* COD notice */}
-        {(orderData ?? ORDER).paymentMethod === "COD" && (
+        {(orderData ?? ORDER).paymentMethod.toLowerCase() === "cod" && (
           <div className="mx-4 rounded-xl border border-warning-200 bg-warning-50 px-4 py-3 flex items-start gap-3">
             <Clock className="h-4 w-4 text-warning-600 shrink-0 mt-0.5" />
             <div>
