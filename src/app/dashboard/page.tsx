@@ -1,6 +1,7 @@
 "use client";
 // v2
 import Link from "next/link";
+import Image from "next/image";
 import { useSearchParams } from "next/navigation";
 import {
   Package, ArrowRight, RotateCcw, ChevronRight, Zap, TrendingUp,
@@ -29,7 +30,7 @@ const PROMO_BANNERS = [
     id: "free-del",
     label: "New",
     title: "Free Delivery",
-    sub: "Orders ₱2,000 and above",
+    sub: "Orders ₱1,500 and above",
     href: "/catalog",
     gradient: "from-brand-500 to-brand-700",
     icon: "🚚",
@@ -270,9 +271,13 @@ export default function DashboardPage() {
               const salePrice = Math.round(p.price * (1 - discount / 100));
               return (
                 <Link key={p.id} href={`/catalog/${p.id}`} className="shrink-0 w-40 rounded-2xl border border-border bg-card shadow-card overflow-hidden active:scale-95 transition-transform">
-                  <div className="h-24 bg-gradient-to-br from-surface-100 to-surface-200 flex items-center justify-center relative">
-                    <Package className="h-10 w-10 text-muted-foreground/30" />
-                    <span className="absolute top-2 left-2 rounded-full bg-danger-500 text-white text-[10px] font-bold px-1.5 py-0.5">-{discount}%</span>
+                  <div className="h-24 bg-gradient-to-br from-surface-100 to-surface-200 flex items-center justify-center relative overflow-hidden">
+                    {p.imageUrl ? (
+                      <Image src={p.imageUrl} alt={p.name} fill className="object-cover" sizes="160px" />
+                    ) : (
+                      <Package className="h-10 w-10 text-muted-foreground/30" />
+                    )}
+                    <span className="absolute top-2 left-2 rounded-full bg-danger-500 text-white text-[10px] font-bold px-1.5 py-0.5 z-10">-{discount}%</span>
                   </div>
                   <div className="p-2.5">
                     <p className="text-xs font-semibold text-foreground line-clamp-2 leading-tight">{p.name}</p>
