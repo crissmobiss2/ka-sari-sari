@@ -15,9 +15,8 @@ export async function POST(req: NextRequest) {
       id: c.id,
       name: c.name,
       slug: c.slug,
-      description: c.description ?? null,
       is_active: c.isActive,
-      sort_order: c.sortOrder,
+      display_order: c.sortOrder,
     }));
     const { error: catErr } = await supabaseAdmin
       .from("categories")
