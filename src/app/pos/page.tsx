@@ -1,5 +1,5 @@
 "use client";
-import { useState, useMemo, useRef, useCallback } from "react";
+import { useState, useMemo, useRef, useCallback, useEffect } from "react";
 import {
   Search, Plus, Minus, X, CheckCircle2, Printer,
   RefreshCcw, ShoppingCart, Package, Banknote, ArrowLeft, Camera,
@@ -72,16 +72,27 @@ export default function RetailerPOSPage() {
   const [txnReceiptNo, setTxnReceiptNo] = useState<string | null>(null);
   const [txnError, setTxnError] = useState<string | null>(null);
   const [txnLoading, setTxnLoading] = useState(false);
+  const [allProducts, setAllProducts] = useState<Product[]>(PRODUCTS);
   const feedbackTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const searchRef = useRef<HTMLInputElement>(null);
 
+  useEffect(() => {
+    fetch("/api/products")
+      .then((r) => (r.ok ? r.json() : Promise.reject()))
+      .then((data) => {
+        const fetched: Product[] = data.products ?? data;
+        if (Array.isArray(fetched) && fetched.length > 0) setAllProducts(fetched);
+      })
+      .catch(() => {});
+  }, []);
+
   const products = useMemo(() => {
-    return PRODUCTS.filter((p) => {
+    return allProducts.filter((p) => {
       const matchCat = categoryId === "all" || p.categoryId === categoryId;
       const matchQ   = search === "" || p.name.toLowerCase().includes(search.toLowerCase()) || p.sku.toLowerCase().includes(search.toLowerCase());
       return p.isActive && matchCat && matchQ;
     });
-  }, [search, categoryId]);
+  }, [search, categoryId, allProducts]);
 
   const total       = cart.reduce((s, i) => s + (i.product.srp ?? i.product.price) * i.quantity, 0);
   const tenderedNum = parseInt(tendered, 10) || 0;
@@ -153,7 +164,7 @@ export default function RetailerPOSPage() {
   }
 
   const handleScan = useCallback((code: string) => {
-    const product = PRODUCTS.find((p) => p.isActive && p.sku.toLowerCase() === code.toLowerCase());
+    const product = allProducts.find((p) => p.isActive && p.sku.toLowerCase() === code.toLowerCase());
     if (feedbackTimerRef.current) clearTimeout(feedbackTimerRef.current);
     if (product) {
       addToCart(product);
@@ -162,7 +173,7 @@ export default function RetailerPOSPage() {
       setScanFeedback({ ok: false, text: `Not found: ${code}` });
     }
     feedbackTimerRef.current = setTimeout(() => setScanFeedback(null), 2500);
-  }, []);
+  }, [allProducts]);
 
   // ── Receipt screen ──────────────────────────────────────────────────────────
   if (step === "done") {

@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 import { Camera, Search, CheckCircle2, XCircle, Plus, Minus } from "lucide-react";
 import { BarcodeScanner } from "@/components/pos/barcode-scanner";
 import { Card, CardContent } from "@/components/ui/card";
@@ -9,10 +9,7 @@ import { Badge } from "@/components/ui/badge";
 import { cn } from "@/lib/utils";
 import { PRODUCTS, CATEGORIES } from "@/lib/mock-data";
 import { toastSuccess } from "@/store/toast";
-
-function getStock(productId: string): number {
-  return PRODUCTS.find(p => p.id === productId)?.stock ?? 0;
-}
+import type { Product } from "@/types";
 
 type ScanEntry = {
   id: string;
@@ -38,10 +35,21 @@ export default function ScanPage() {
   const [logged, setLogged] = useState(false);
   const [recentScans, setRecentScans] = useState<ScanEntry[]>([]);
   const [showScanner, setShowScanner] = useState(false);
+  const [products, setProducts] = useState<Product[]>(PRODUCTS);
   const debounceRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
+  useEffect(() => {
+    fetch("/api/products")
+      .then((r) => (r.ok ? r.json() : Promise.reject()))
+      .then((data) => {
+        const fetched: Product[] = data.products ?? data;
+        if (Array.isArray(fetched) && fetched.length > 0) setProducts(fetched);
+      })
+      .catch(() => {});
+  }, []);
+
   const foundProduct = searchedValue
-    ? PRODUCTS.find(
+    ? products.find(
         (p) =>
           p.id.toLowerCase().includes(searchedValue.toLowerCase()) ||
           p.name.toLowerCase().includes(searchedValue.toLowerCase()) ||
@@ -191,14 +199,14 @@ export default function ScanPage() {
               <span
                 className={cn(
                   "font-bold text-lg",
-                  getStock(foundProduct.id) === 0
+                  (foundProduct.stock ?? 0) === 0
                     ? "text-danger-500"
-                    : getStock(foundProduct.id) <= 20
+                    : (foundProduct.stock ?? 0) <= 20
                     ? "text-warning-600"
                     : "text-success-600"
                 )}
               >
-                {getStock(foundProduct.id)}
+                {foundProduct.stock ?? 0}
               </span>
               <span className="text-sm text-muted-foreground">{foundProduct.unit}s</span>
             </div>
