@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect, useRef } from "react";
 import {
   CheckCircle2,
   Circle,
@@ -9,11 +9,13 @@ import {
   User,
   Clock,
   PackageCheck,
+  Camera,
 } from "lucide-react";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
-import { PICK_LISTS } from "@/lib/mock-data";
+import { PICK_LISTS, PRODUCTS } from "@/lib/mock-data";
+import { BarcodeScanner } from "@/components/pos/barcode-scanner";
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 
@@ -89,11 +91,45 @@ function ItemStatusIcon({ status }: { status: ItemStatus }) {
 
 // ─── Page ─────────────────────────────────────────────────────────────────────
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+function mapPickList(pl: any): PickListState {
+  return {
+    id: pl.id,
+    orderNumber: pl.orderNumber ?? pl.order_number ?? pl.id,
+    status: pl.status as PickListState["status"],
+    assignedTo: pl.assignedTo ?? pl.assigned_to,
+    createdAt: pl.createdAt ?? pl.created_at ?? new Date().toISOString(),
+    completedAt: pl.completedAt ?? pl.completed_at,
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    items: (pl.items ?? []).map((i: any): PickItem => ({
+      id: i.id,
+      productName: i.productName ?? i.product_name ?? "",
+      sku: i.sku ?? "",
+      quantity: i.quantity ?? 0,
+      pickedQty: i.pickedQty ?? i.picked_qty ?? 0,
+      bin: i.bin ?? "",
+      status: (i.status ?? "pending") as ItemStatus,
+    })),
+  };
+}
+
 export default function PickingPage() {
   const [activeTab, setActiveTab] = useState<FilterTab>("open");
-  const [lists, setLists] = useState<PickListState[]>(seedPickLists);
-  // partialQty[itemId] = qty entered for partial items
+  const [lists, setLists] = useState<PickListState[]>([]);
   const [partialQty, setPartialQty] = useState<Record<string, string>>({});
+  const [showScanner, setShowScanner] = useState(false);
+  const [scanFeedback, setScanFeedback] = useState<{ ok: boolean; text: string } | null>(null);
+  const feedbackTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  useEffect(() => {
+    fetch("/api/warehouse/pick-lists")
+      .then((r) => (r.ok ? r.json() : Promise.reject()))
+      .then((data) => {
+        const fetched = data.pickLists ?? [];
+        setLists(fetched.length > 0 ? fetched.map(mapPickList) : seedPickLists());
+      })
+      .catch(() => setLists(seedPickLists()));
+  }, []);
 
   function startPicking(listId: string) {
     setLists((prev) =>
@@ -102,9 +138,17 @@ export default function PickingPage() {
       )
     );
     setActiveTab("in_progress");
+    fetch("/api/warehouse/pick-lists", {
+      method: "PATCH",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ id: listId, status: "in_progress" }),
+    }).catch(() => {});
   }
 
   function toggleItem(listId: string, itemId: string) {
+    const list = lists.find((l) => l.id === listId);
+    const item = list?.items.find((i) => i.id === itemId);
+
     setLists((prev) =>
       prev.map((l) => {
         if (l.id !== listId) return l;
@@ -115,18 +159,28 @@ export default function PickingPage() {
             if (i.status === "pending") {
               const entered = Number(partialQty[i.id] ?? "");
               if (entered > 0 && entered < i.quantity) {
-                return { ...i, status: "partial", pickedQty: entered };
+                return { ...i, status: "partial" as ItemStatus, pickedQty: entered };
               }
-              return { ...i, status: "picked", pickedQty: i.quantity };
+              return { ...i, status: "picked" as ItemStatus, pickedQty: i.quantity };
             }
             if (i.status === "partial") {
-              return { ...i, status: "picked", pickedQty: i.quantity };
+              return { ...i, status: "picked" as ItemStatus, pickedQty: i.quantity };
             }
-            return { ...i, status: "pending", pickedQty: 0 };
+            return { ...i, status: "pending" as ItemStatus, pickedQty: 0 };
           }),
         };
       })
     );
+
+    if (item) {
+      const newStatus = item.status === "picked" ? "pending" : "picked";
+      const newQty = newStatus === "picked" ? item.quantity : 0;
+      fetch(`/api/warehouse/pick-lists/${listId}`, {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ itemId, qtyPicked: newQty, status: newStatus }),
+      }).catch(() => {});
+    }
   }
 
   function confirmPartial(listId: string, itemId: string, qty: number) {
@@ -172,6 +226,36 @@ export default function PickingPage() {
       )
     );
     setActiveTab("completed");
+    fetch(`/api/warehouse/pick-lists/${listId}`, {
+      method: "PATCH",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ action: "complete" }),
+    }).catch(() => {});
+  }
+
+  function handleScan(code: string) {
+    const activeList = lists.find((l) => l.status === "in_progress");
+    if (!activeList) {
+      setScanFeedback({ ok: false, text: "No in-progress pick list" });
+      return;
+    }
+    const product = PRODUCTS.find(
+      (p) => p.sku.toLowerCase() === code.toLowerCase() || p.id.toLowerCase() === code.toLowerCase()
+    );
+    const item = activeList.items.find((i) => {
+      if (i.status === "picked") return false;
+      if (product) return i.sku.toLowerCase() === product.sku.toLowerCase();
+      return i.sku.toLowerCase().includes(code.toLowerCase());
+    });
+
+    if (feedbackTimerRef.current) clearTimeout(feedbackTimerRef.current);
+    if (item) {
+      toggleItem(activeList.id, item.id);
+      setScanFeedback({ ok: true, text: `✓ Picked: ${item.productName}` });
+    } else {
+      setScanFeedback({ ok: false, text: `No unpicked match: ${code}` });
+    }
+    feedbackTimerRef.current = setTimeout(() => setScanFeedback(null), 2500);
   }
 
   const openLists      = lists.filter((l) => l.status === "open");
@@ -223,6 +307,26 @@ export default function PickingPage() {
           </button>
         ))}
       </div>
+
+      {/* Scan button for in-progress lists */}
+      {activeTab === "in_progress" && inProgressLists.length > 0 && (
+        <div className="flex items-center gap-3 flex-wrap">
+          <Button size="sm" onClick={() => setShowScanner(true)} className="gap-2">
+            <Camera className="h-4 w-4" />
+            Scan to Pick
+          </Button>
+          {scanFeedback && (
+            <span className={cn(
+              "text-sm font-semibold px-3 py-1.5 rounded-xl",
+              scanFeedback.ok
+                ? "bg-success-50 text-success-700 border border-success-200"
+                : "bg-danger-50 text-danger-700 border border-danger-200"
+            )}>
+              {scanFeedback.text}
+            </span>
+          )}
+        </div>
+      )}
 
       {/* List area */}
       <div className="space-y-5">
@@ -446,6 +550,16 @@ export default function PickingPage() {
           );
         })}
       </div>
+
+      {showScanner && (
+        <BarcodeScanner
+          onScan={(code) => {
+            handleScan(code);
+            setShowScanner(false);
+          }}
+          onClose={() => setShowScanner(false)}
+        />
+      )}
     </div>
   );
 }
