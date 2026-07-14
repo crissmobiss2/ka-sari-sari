@@ -553,14 +553,14 @@ export default function TrackingPage() {
         if (d.order) {
           setLiveStatus(d.order.status);
           setLiveOrderNum(d.order.orderNumber ?? d.order.order_number ?? null);
-          const rawItems = d.order.items as Array<{ name?: string; quantity?: number; unit?: string }> | undefined;
+          const rawItems = d.order.items as Array<{ productName?: string; name?: string; quantity?: number; qty?: number; unit?: string }> | undefined;
           setOrderData({
             number: d.order.orderNumber ?? d.order.order_number ?? ORDER.number,
             estimatedDelivery: ORDER.estimatedDelivery,
             items: rawItems?.length
-              ? rawItems.map((i) => ({ name: i.name ?? "", qty: i.quantity ?? 1, unit: i.unit ?? "pcs" }))
+              ? rawItems.map((i) => ({ name: i.productName ?? i.name ?? "", qty: i.quantity ?? i.qty ?? 1, unit: i.unit ?? "pcs" }))
               : ORDER.items,
-            total: typeof d.order.total === "number" ? d.order.total : ORDER.total,
+            total: Number(d.order.total) || ORDER.total,
             paymentMethod: d.order.paymentMethod ?? d.order.payment_method ?? ORDER.paymentMethod,
           });
         }
