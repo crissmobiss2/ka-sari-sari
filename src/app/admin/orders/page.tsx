@@ -48,7 +48,7 @@ export default function AdminOrdersPage() {
       if (paymentFilter !== "all" && o.paymentStatus !== paymentFilter) return false;
       if (search) {
         const q = search.toLowerCase();
-        const addr = o.deliveryAddress.split(",")[0].toLowerCase();
+        const addr = (o.deliveryAddress ?? "").split(",")[0].toLowerCase();
         if (!o.orderNumber.toLowerCase().includes(q) && !addr.includes(q)) return false;
       }
       if (dateFrom && new Date(o.createdAt) < new Date(dateFrom)) return false;
@@ -72,7 +72,7 @@ export default function AdminOrdersPage() {
     const rows = filtered.map((o) =>
       [
         o.orderNumber,
-        o.deliveryAddress.split(",")[0],
+        (o.deliveryAddress ?? "").split(",")[0],
         formatDateTime(o.createdAt),
         o.paymentStatus,
         o.total,
@@ -194,7 +194,7 @@ export default function AdminOrdersPage() {
                     </Link>
                   </td>
                   <td className="px-5 py-3.5 text-muted-foreground hidden md:table-cell">
-                    {order.deliveryAddress.split(",")[0]}
+                    {(order.deliveryAddress ?? "").split(",")[0]}
                   </td>
                   <td className="px-5 py-3.5 text-xs text-muted-foreground hidden lg:table-cell">
                     {formatDateTime(order.createdAt)}

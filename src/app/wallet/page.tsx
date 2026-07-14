@@ -1,5 +1,5 @@
 "use client";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import {
   Wallet, ArrowUpRight, ArrowDownLeft, Plus, CreditCard,
   Building2, ChevronRight, X, AlertCircle, CheckCircle2, Clock, ExternalLink,
@@ -29,6 +29,18 @@ const WITHDRAW_METHODS = [
 
 export default function WalletPage() {
   const { balance, transactions, credit, debit } = useWalletStore();
+
+  // Hydrate wallet balance and transaction history from the server on mount
+  useEffect(() => {
+    fetch("/api/user/wallet")
+      .then((r) => { if (!r.ok) return null; return r.json(); })
+      .then((data) => {
+        if (data?.balance !== undefined) {
+          useWalletStore.getState().hydrate(data.balance, data.transactions ?? []);
+        }
+      })
+      .catch(() => {});
+  }, []);
 
   // Top-up state
   const [showTopUp, setShowTopUp]           = useState(false);
@@ -75,7 +87,7 @@ export default function WalletPage() {
       const res = await fetch("/api/payments/topup", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ amount }),
+        body: JSON.stringify({ amount, method: selectedMethod }),
       });
       const data = await res.json();
       if (!res.ok) {
@@ -113,18 +125,30 @@ export default function WalletPage() {
     setWithdrawLoading(true);
     setWithdrawError("");
     try {
-      const ref = `KSS-WD-${new Date().getFullYear()}-${Math.floor(Math.random() * 90000 + 10000)}`;
+      const res = await fetch("/api/user/wallet/withdraw", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          amount: withdrawAmount,
+          method: withdrawMethod,
+          accountNumber,
+          accountName,
+        }),
+      });
+      const data = await res.json();
+      if (!res.ok) {
+        setWithdrawError(data.error ?? "Withdrawal failed. Please try again.");
+        return;
+      }
+      // Debit the local store using the server-returned reference
+      const ref = data.reference ?? `KSS-WD-${new Date().getFullYear()}-${Math.floor(Math.random() * 90000 + 10000)}`;
       const methodLabel = WITHDRAW_METHODS.find((m) => m.id === withdrawMethod)?.label ?? withdrawMethod;
-      const success = debit(
+      debit(
         withdrawAmount,
         `Withdraw to ${methodLabel} ···${accountNumber.slice(-4)}`,
         ref
       );
-      if (success) {
-        setWithdrawStep("done");
-      } else {
-        setWithdrawError("Insufficient balance.");
-      }
+      setWithdrawStep("done");
     } catch {
       setWithdrawError("Withdrawal failed. Please try again.");
     } finally {

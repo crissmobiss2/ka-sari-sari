@@ -106,7 +106,7 @@ export default function CheckoutPage() {
           items: items.map((i) => ({
             productId: i.product.id,
             name: i.product.name,
-            price: i.product.price,
+            unitPrice: i.product.price,
             quantity: i.quantity,
           })),
           deliveryAddress: address,
@@ -146,7 +146,9 @@ export default function CheckoutPage() {
         }
 
         if (payData.checkoutUrl) {
-          clearCart();
+          // Do NOT clearCart() here — cart is only cleared on the success page
+          // after payment is confirmed. If the user closes the browser before
+          // completing payment, the cart must still be intact for a retry.
           window.location.href = payData.checkoutUrl;
         } else {
           clearCart();

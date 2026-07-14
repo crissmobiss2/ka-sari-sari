@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { getSessionFromRequest } from "@/lib/auth";
+import { checkRateLimit, getClientIp } from "@/lib/rate-limit";
 
 export async function POST(req: NextRequest) {
   try {
@@ -7,6 +8,16 @@ export async function POST(req: NextRequest) {
     if (!session) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
+
+    const rlKey = `payment:card:${session.userId ?? getClientIp(req)}`;
+    const { allowed, retryAfterSecs } = await checkRateLimit(rlKey, 10, 60_000);
+    if (!allowed) {
+      return NextResponse.json(
+        { error: "Too many requests. Please try again later." },
+        { status: 429, headers: { "Retry-After": String(retryAfterSecs) } }
+      );
+    }
+
     const { amount, orderId, paymentMethodId } = await req.json();
 
     if (!amount || amount <= 0) {
@@ -39,6 +50,7 @@ export async function POST(req: NextRequest) {
             description: `Ka Sari-Sari Order ${orderId}`,
             statement_descriptor: "KA SARI-SARI",
             return_url: `${baseUrl}/checkout/success?orderId=${orderId}&method=card`,
+            metadata: { order_id: orderId },
           },
         },
       }),
@@ -68,6 +80,7 @@ export async function POST(req: NextRequest) {
               payment_method: paymentMethodId,
               client_key: clientKey,
               return_url: `${baseUrl}/checkout/success?orderId=${orderId}&method=card`,
+              metadata: { order_id: orderId },
             },
           },
         }),

@@ -47,6 +47,29 @@ export default function FulfillmentPage() {
   const advance   = useOrdersStore((s) => s.advance);
   const setOrders = useOrdersStore((s) => s.setOrders);
 
+  /** Advance an order's status: call API first, then update Zustand store. */
+  async function advanceOrder(orderId: string, currentStatus: OrderStatus) {
+    const nextSt = NEXT_STATUS[currentStatus];
+    if (!nextSt) return;
+    // Optimistic update
+    advance(orderId);
+    try {
+      const res = await fetch(`/api/admin/orders/${orderId}`, {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ status: nextSt }),
+      });
+      if (!res.ok) {
+        // Roll back on failure
+        advance(orderId); // advance again to roll back is not ideal; reload from server instead
+        window.location.reload();
+      }
+    } catch {
+      // Network error — reload so state stays consistent
+      window.location.reload();
+    }
+  }
+
   useEffect(() => {
     fetch("/api/orders?status=confirmed,picking,packed,dispatched")
       .then((r) => r.json())
@@ -144,7 +167,7 @@ export default function FulfillmentPage() {
                           <Button
                             size="sm"
                             className="w-full text-xs h-8"
-                            onClick={() => advance(order.id)}
+                            onClick={() => advanceOrder(order.id, order.status)}
                           >
                             {nextStatus === "out_for_delivery"
                               ? <Truck className="h-3.5 w-3.5" />

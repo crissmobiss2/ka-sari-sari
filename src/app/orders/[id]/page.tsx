@@ -175,14 +175,32 @@ function StatusHero({ status, createdAt }: { status: OrderStatus; createdAt: str
   );
 }
 
+// ─── TrackingLink ─────────────────────────────────────────────────────────────
+
+function TrackingLink({ orderId }: { orderId: string }) {
+  // Include orderId in the tracking URL so it loads real data for this order
+  const href = `/tracking?orderId=${encodeURIComponent(orderId)}`;
+  return (
+    <Link
+      href={href}
+      className="mt-4 flex items-center justify-center gap-2 rounded-xl bg-brand-500 px-4 py-2.5 text-sm font-semibold text-white hover:bg-brand-600 active:scale-95 transition-all"
+    >
+      <Navigation className="h-4 w-4" />
+      View Live Tracking
+    </Link>
+  );
+}
+
 // ─── DeliveryTimeline ─────────────────────────────────────────────────────────
 
 function DeliveryTimeline({
   status,
   fulfillmentEvents,
+  orderId,
 }: {
   status: OrderStatus;
   fulfillmentEvents: Array<{ status: OrderStatus; createdAt: string }>;
+  orderId: string;
 }) {
   const isCancelled = ["cancelled", "failed_delivery", "returned"].includes(status);
   const currentStepIdx = getStepIndex(status);
@@ -295,13 +313,7 @@ function DeliveryTimeline({
 
       {/* Link to live tracking when out for delivery */}
       {status === "out_for_delivery" && (
-        <Link
-          href="/tracking"
-          className="mt-4 flex items-center justify-center gap-2 rounded-xl bg-brand-500 px-4 py-2.5 text-sm font-semibold text-white hover:bg-brand-600 active:scale-95 transition-all"
-        >
-          <Navigation className="h-4 w-4" />
-          View Live Tracking
-        </Link>
+        <TrackingLink orderId={orderId} />
       )}
     </div>
   );
@@ -618,10 +630,12 @@ function MapPlaceholder() {
 
 // ─── RatingSection ────────────────────────────────────────────────────────────
 
-function RatingSection() {
+function RatingSection({ orderId }: { orderId: string }) {
   const [rating, setRating] = useState(0);
   const [hovered, setHovered] = useState(0);
   const [submitted, setSubmitted] = useState(false);
+  const [ratingLoading, setRatingLoading] = useState(false);
+  const [ratingError, setRatingError] = useState<string | null>(null);
 
   if (submitted) {
     return (
@@ -631,6 +645,28 @@ function RatingSection() {
         <p className="text-xs text-success-600 mt-1">Your rating helps us improve our service.</p>
       </div>
     );
+  }
+
+  async function handleSubmitRating() {
+    if (!rating) return;
+    setRatingLoading(true);
+    setRatingError(null);
+    try {
+      const res = await fetch(`/api/orders/${orderId}/rating`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ rating, orderId }),
+      });
+      if (!res.ok) {
+        const data = await res.json().catch(() => ({}));
+        throw new Error(data.error ?? "Failed to submit rating");
+      }
+      setSubmitted(true);
+    } catch (err) {
+      setRatingError(err instanceof Error ? err.message : "Failed to submit rating. Please try again.");
+    } finally {
+      setRatingLoading(false);
+    }
   }
 
   return (
@@ -657,8 +693,11 @@ function RatingSection() {
           </button>
         ))}
       </div>
+      {ratingError && (
+        <p className="text-xs text-danger-500 text-center mb-2">{ratingError}</p>
+      )}
       {rating > 0 && (
-        <Button size="sm" className="w-full" onClick={() => setSubmitted(true)}>
+        <Button size="sm" className="w-full" onClick={handleSubmitRating} loading={ratingLoading} disabled={ratingLoading}>
           Submit Rating ({rating}/5)
         </Button>
       )}
@@ -685,26 +724,28 @@ export default function OrderDetailPage() {
   const { id } = useParams();
   const orderId = typeof id === "string" ? id : Array.isArray(id) ? id[0] : "";
 
-  const [order, setOrder] = useState<typeof MOCK_ORDERS[number] | null>(
-    MOCK_ORDERS.find((o) => o.id === orderId) ?? null
-  );
+  const [order, setOrder] = useState<typeof MOCK_ORDERS[number] | null>(null);
   const [orderLoading, setOrderLoading] = useState(true);
   const [toast, setToast] = useState<string | null>(null);
 
   useEffect(() => {
     if (!orderId) { setOrderLoading(false); return; }
     fetch(`/api/orders/${orderId}`)
-      .then((r) => r.json())
+      .then((r) => {
+        if (!r.ok) throw new Error(r.statusText || `HTTP ${r.status}`);
+        return r.json();
+      })
       .then((d) => {
         if (d.order) {
           setOrder(d.order as typeof MOCK_ORDERS[number]);
         } else {
-          // fallback to mock
-          setOrder(MOCK_ORDERS.find((o) => o.id === orderId) ?? MOCK_ORDERS[0]);
+          // API returned 200 but no order object — show not found
+          setOrder(null);
         }
       })
       .catch(() => {
-        setOrder(MOCK_ORDERS.find((o) => o.id === orderId) ?? MOCK_ORDERS[0]);
+        // On network/API error, show not found rather than wrong mock data
+        setOrder(null);
       })
       .finally(() => setOrderLoading(false));
   }, [orderId]);
@@ -777,6 +818,7 @@ export default function OrderDetailPage() {
         <DeliveryTimeline
           status={order.status}
           fulfillmentEvents={order.fulfillmentEvents}
+          orderId={order.id}
         />
 
         {/* 5. Delivery Address — shown prominently */}
@@ -793,7 +835,7 @@ export default function OrderDetailPage() {
         />
 
         {/* 7. Rating (delivered only) */}
-        {isDelivered && <RatingSection />}
+        {isDelivered && <RatingSection orderId={orderId} />}
 
         {/* 8. Action buttons */}
         <div className="px-4 space-y-3">

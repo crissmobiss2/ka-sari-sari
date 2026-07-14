@@ -1,4 +1,5 @@
 "use client";
+import { useState, useEffect } from "react";
 import { CreditCard, CheckCircle2, Clock, XCircle } from "lucide-react";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -19,10 +20,27 @@ const statusMap = {
   cancelled:       { label: "Cancelled",       variant: "neutral"  as const, icon: XCircle },
 };
 
+type Subscription = typeof MOCK_SUBSCRIPTIONS[0];
+
 export default function AdminSubscriptionsPage() {
-  const totalRevenue = MOCK_SUBSCRIPTIONS.reduce((s, r) => s + r.paid, 0);
-  const active = MOCK_SUBSCRIPTIONS.filter((s) => s.status === "active").length;
-  const pending = MOCK_SUBSCRIPTIONS.filter((s) => s.status === "pending_payment").length;
+  const [subscriptions, setSubscriptions] = useState<Subscription[]>(MOCK_SUBSCRIPTIONS);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    fetch("/api/admin/subscriptions")
+      .then((r) => r.ok ? r.json() : null)
+      .then((data) => {
+        if (Array.isArray(data?.subscriptions) && data.subscriptions.length > 0) {
+          setSubscriptions(data.subscriptions);
+        }
+      })
+      .catch(() => {})
+      .finally(() => setLoading(false));
+  }, []);
+
+  const totalRevenue = subscriptions.reduce((s, r) => s + r.paid, 0);
+  const active = subscriptions.filter((s) => s.status === "active").length;
+  const pending = subscriptions.filter((s) => s.status === "pending_payment").length;
 
   return (
     <div className="p-6 space-y-5 max-w-7xl mx-auto">
@@ -60,7 +78,12 @@ export default function AdminSubscriptionsPage() {
               </tr>
             </thead>
             <tbody className="divide-y divide-border">
-              {MOCK_SUBSCRIPTIONS.map((sub) => {
+              {loading && subscriptions.length === 0 && (
+                <tr>
+                  <td colSpan={5} className="py-12 text-center text-sm text-muted-foreground">Loading subscriptions…</td>
+                </tr>
+              )}
+              {subscriptions.map((sub) => {
                 const { label, variant, icon: Icon } = statusMap[sub.status as keyof typeof statusMap];
                 return (
                   <tr key={sub.id} className="hover:bg-muted/30 transition-colors">

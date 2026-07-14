@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect } from "react";
 import {
   Bell,
   Package,
@@ -201,6 +201,19 @@ export default function NotificationsPage() {
   const [notifs, setNotifs] = useState<Notification[]>(buildSeedNotifications);
   const [activeTab, setActiveTab] = useState<FilterTab>("all");
 
+  // Load real notifications from the API on mount
+  useEffect(() => {
+    fetch("/api/user/notifications")
+      .then((r) => { if (!r.ok) return null; return r.json(); })
+      .then((data) => {
+        if (Array.isArray(data?.notifications) && data.notifications.length > 0) {
+          setNotifs(data.notifications);
+        }
+        // If API returns empty or fails, keep the seeded data for demo purposes
+      })
+      .catch(() => {});
+  }, []);
+
   const unreadCount = useMemo(() => notifs.filter((n) => !n.isRead).length, [notifs]);
 
   const filtered = useMemo(
@@ -212,12 +225,23 @@ export default function NotificationsPage() {
   const earlierItems = useMemo(() => filtered.filter((n) => !isToday(n.createdAt)), [filtered]);
 
   function markAllRead() {
+    // Persist to server
+    fetch("/api/user/notifications/read-all", { method: "POST" }).catch(() => {});
     setNotifs((prev) => prev.map((n) => ({ ...n, isRead: true })));
   }
 
   function toggleRead(id: string) {
+    const notif = notifs.find((n) => n.id === id);
+    if (!notif) return;
+    const newIsRead = !notif.isRead;
+    // Persist to server
+    fetch(`/api/user/notifications/${id}`, {
+      method: "PATCH",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ isRead: newIsRead }),
+    }).catch(() => {});
     setNotifs((prev) =>
-      prev.map((n) => (n.id === id ? { ...n, isRead: !n.isRead } : n))
+      prev.map((n) => (n.id === id ? { ...n, isRead: newIsRead } : n))
     );
   }
 

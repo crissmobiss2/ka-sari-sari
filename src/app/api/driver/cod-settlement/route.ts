@@ -36,11 +36,33 @@ export async function POST(req: NextRequest) {
   }
 
   try {
-    const { date, deliveries } = await req.json();
-    // deliveries = [{ deliveryId, orderId, codExpected, codCollected }]
+    // UI sends { deliveredCount, failedCount, codCollected, notes, date }
+    // Legacy array-based format { date, deliveries } is also supported for backwards compatibility
+    const body = await req.json();
 
-    const totalExpected = deliveries.reduce((s: number, d: { codExpected: number }) => s + (d.codExpected ?? 0), 0);
-    const totalCollected = deliveries.reduce((s: number, d: { codCollected: number }) => s + (d.codCollected ?? 0), 0);
+    let totalCollected: number;
+    let totalExpected: number;
+    let deliveredCount: number | undefined;
+    let failedCount: number | undefined;
+    let notes: string | undefined;
+    let date: string | undefined;
+
+    if (Array.isArray(body.deliveries)) {
+      // Legacy format: per-delivery array
+      const deliveries: { codExpected?: number; codCollected?: number }[] = body.deliveries;
+      totalExpected = deliveries.reduce((s, d) => s + (d.codExpected ?? 0), 0);
+      totalCollected = deliveries.reduce((s, d) => s + (d.codCollected ?? 0), 0);
+      date = body.date;
+    } else {
+      // Current UI format: summary totals
+      totalCollected = Number(body.codCollected ?? 0);
+      totalExpected = Number(body.codExpected ?? body.codCollected ?? 0);
+      deliveredCount = body.deliveredCount;
+      failedCount = body.failedCount;
+      notes = body.notes;
+      date = body.date;
+    }
+
     const variance = totalCollected - totalExpected;
 
     const { data, error } = await supabaseAdmin
@@ -51,6 +73,9 @@ export async function POST(req: NextRequest) {
         total_collected: totalCollected,
         total_expected: totalExpected,
         variance,
+        delivered_count: deliveredCount,
+        failed_count: failedCount,
+        notes: notes ?? null,
         status: "submitted",
         submitted_at: new Date().toISOString(),
       }, { onConflict: "driver_id,date" })

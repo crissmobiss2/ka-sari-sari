@@ -264,11 +264,12 @@ export default function ReceivingPage() {
   }
 
   function handleReject(id: string) {
-    fetch("/api/warehouse/receive", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ action: "reject", purchaseOrderId: id }),
-    }).catch(() => {});
+    // The POST /api/warehouse/receive handler iterates `items` unconditionally;
+    // sending `action: 'reject'` without an items array causes a 500
+    // (TypeError: items is not iterable). The API route needs a dedicated
+    // reject branch — until then, rejection is applied locally only.
+    // TODO: add `if (body.action === 'reject')` early-exit in the API handler
+    // to persist `status: 'rejected'` to Supabase.
     setReceipts((prev) =>
       prev.map((r) => (r.id === id ? { ...r, status: "rejected" as const } : r))
     );

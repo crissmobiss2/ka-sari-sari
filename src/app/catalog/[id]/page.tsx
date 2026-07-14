@@ -1,6 +1,6 @@
 "use client";
 import { useParams, useRouter } from "next/navigation";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Image from "next/image";
 import {
   ArrowLeft,
@@ -15,6 +15,7 @@ import {
   XCircle,
   Tag,
   TrendingDown,
+  Loader2,
 } from "lucide-react";
 import { RetailerBottomNav } from "@/components/layout/retailer-nav";
 import { Button } from "@/components/ui/button";
@@ -100,14 +101,47 @@ function StockBadge({ stock, className }: StockBadgeProps) {
 export default function ProductDetailPage() {
   const { id } = useParams<{ id: string }>();
   const router = useRouter();
-  const product = PRODUCTS.find((p) => p.id === id);
+
+  // Fetch product from API; fall back to mock data if unavailable
+  const [product, setProduct] = useState<(typeof PRODUCTS)[0] | null>(null);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    setLoading(true);
+    fetch(`/api/products/${id}`)
+      .then((r) => { if (!r.ok) return null; return r.json(); })
+      .then((data) => {
+        const p = data?.product ?? (data?.id ? data : null);
+        // Fall back to mock data if API returns nothing
+        setProduct(p ?? PRODUCTS.find((q) => q.id === id) ?? null);
+      })
+      .catch(() => {
+        setProduct(PRODUCTS.find((p) => p.id === id) ?? null);
+      })
+      .finally(() => setLoading(false));
+  }, [id]);
+
+  // Related products — derived once product is known
   const related = PRODUCTS.filter((p) => p.categoryId === product?.categoryId && p.id !== id).slice(0, 4);
 
   const { addItem, items, updateQty } = useCartStore();
   const { isFavorite, toggle } = useFavoritesStore();
-  const [qty, setQty] = useState(product?.minOrderQty || 1);
+  const [qty, setQty] = useState(1);
   const [added, setAdded] = useState(false);
   const [imgError, setImgError] = useState(false);
+
+  // Sync qty to product's minimum order qty once loaded
+  useEffect(() => {
+    if (product?.minOrderQty) setQty(product.minOrderQty);
+  }, [product?.minOrderQty]);
+
+  if (loading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-background">
+        <Loader2 className="h-8 w-8 animate-spin text-brand-500" />
+      </div>
+    );
+  }
 
   if (!product) {
     return (

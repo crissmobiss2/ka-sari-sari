@@ -98,21 +98,46 @@ function AddStaffModal({ onClose, onAdd }: AddStaffModalProps) {
   const [phone, setPhone] = useState("");
   const [role, setRole] = useState<Role>("warehouse");
   const [password, setPassword] = useState("");
+  const [submitting, setSubmitting] = useState(false);
+  const [apiError, setApiError] = useState<string | null>(null);
 
-  function handleSubmit(e: React.FormEvent) {
+  async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
     if (!name.trim() || !phone.trim() || !password.trim()) return;
-    const newMember: StaffMember = {
-      id: `s${Date.now()}`,
-      name: name.trim(),
-      role,
-      phone: phone.trim(),
-      status: "active",
-      lastActive: "Just now",
-      initials: getInitials(name.trim()),
-    };
-    onAdd(newMember);
-    onClose();
+    setSubmitting(true);
+    setApiError(null);
+    try {
+      const res = await fetch("/api/admin/staff", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          name: name.trim(),
+          phone: phone.trim(),
+          role,
+          password, // sent over HTTPS to server; never persisted client-side
+        }),
+      });
+      if (!res.ok) {
+        const body = await res.json().catch(() => ({}));
+        throw new Error(body.error ?? `HTTP ${res.status}`);
+      }
+      const data = await res.json();
+      const newMember: StaffMember = {
+        id: data.id ?? `s${Date.now()}`,
+        name: name.trim(),
+        role,
+        phone: phone.trim(),
+        status: "active",
+        lastActive: "Just now",
+        initials: getInitials(name.trim()),
+      };
+      onAdd(newMember);
+      onClose();
+    } catch (err) {
+      setApiError(err instanceof Error ? err.message : "Failed to create staff member");
+    } finally {
+      setSubmitting(false);
+    }
   }
 
   return (
@@ -176,6 +201,11 @@ function AddStaffModal({ onClose, onAdd }: AddStaffModalProps) {
             required
           />
 
+          {/* API error */}
+          {apiError && (
+            <p className="text-sm text-danger-600 font-medium">{apiError}</p>
+          )}
+
           {/* Actions */}
           <div className="flex gap-3 pt-1">
             <Button
@@ -184,11 +214,12 @@ function AddStaffModal({ onClose, onAdd }: AddStaffModalProps) {
               size="md"
               className="flex-1"
               onClick={onClose}
+              disabled={submitting}
             >
               Cancel
             </Button>
-            <Button type="submit" variant="default" size="md" className="flex-1">
-              Create Staff
+            <Button type="submit" variant="default" size="md" className="flex-1" disabled={submitting}>
+              {submitting ? "Creating…" : "Create Staff"}
             </Button>
           </div>
         </form>

@@ -4,7 +4,8 @@ import { Suspense, useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import { MapPin, ShoppingBag, ClipboardList, Star, Clock } from "lucide-react";
 import { ButtonLink } from "@/components/ui/button";
-import { earnPoints } from "@/store/loyalty";
+import { earnPoints, POINTS_PER_PESO } from "@/store/loyalty";
+import { useCartStore } from "@/store/cart";
 
 // ─── animated checkmark ────────────────────────────────────────────────────
 const CheckmarkSVG = () => (
@@ -92,6 +93,7 @@ const CONFETTI = [
 // ─── main inner component (uses useSearchParams) ────────────────────────────
 function SuccessContent() {
   const params = useSearchParams();
+  const clearCart = useCartStore((s) => s.clearCart);
 
   // Order ID: prefer explicit orderId param, fall back to auto-generated
   const rawId = params.get("orderId");
@@ -123,15 +125,33 @@ function SuccessContent() {
     return () => clearTimeout(t);
   }, []);
 
+  // Clear the cart on first mount of the success page.
+  // For online payments (GCash/Maya) the cart is NOT cleared in checkout/page.tsx
+  // (in case redirect fails); this is the safe place to clear it after confirmed payment.
   useEffect(() => {
-    if (!awardedRef.current) {
+    clearCart();
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  useEffect(() => {
+    // Guard against duplicate awards across page reloads:
+    // persist the awarded orderId in localStorage so re-mounting this component
+    // (e.g. user refreshes /checkout/success) does not award points a second time.
+    const storageKey = `kss-pts-awarded-${orderId}`;
+    const alreadyAwarded = typeof window !== "undefined" && localStorage.getItem(storageKey);
+
+    if (!awardedRef.current && !alreadyAwarded) {
       awardedRef.current = true;
-      // Specification: Math.floor(total * 0.02)
-      const pts = Math.floor(orderTotal * 0.02);
-      // Also sync to the loyalty store (uses its own rate internally, but
-      // we surface the spec-mandated pts figure to the UI)
+      // Use the same rate as the loyalty store so UI and store stay in sync
+      const pts = Math.floor(orderTotal * POINTS_PER_PESO);
       earnPoints(orderTotal, orderId);
+      if (typeof window !== "undefined") {
+        localStorage.setItem(storageKey, "1");
+      }
       setPtsEarned(pts);
+    } else if (alreadyAwarded) {
+      // Page was reloaded — show the pts that were already awarded without re-awarding
+      setPtsEarned(Math.floor(orderTotal * POINTS_PER_PESO));
     }
   }, [orderId, orderTotal]);
 

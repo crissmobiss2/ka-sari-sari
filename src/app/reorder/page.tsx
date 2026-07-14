@@ -1,5 +1,5 @@
 "use client";
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import {
@@ -408,9 +408,50 @@ export default function ReorderPage() {
 
   const [selectionMode, setSelectionMode] = useState(false);
   const [selectedItems, setSelectedItems] = useState<Set<string>>(new Set());
+  // null = still loading; [] = loaded (may be empty)
+  const [apiOrders, setApiOrders] = useState<PastOrder[] | null>(null);
 
-  // Build the list of delivered orders from the store + supplement
+  // Fetch delivered orders from API on mount
+  useEffect(() => {
+    fetch("/api/orders?status=delivered")
+      .then((r) => { if (!r.ok) return null; return r.json(); })
+      .then((data) => {
+        if (Array.isArray(data?.orders) && data.orders.length > 0) {
+          const mapped: PastOrder[] = data.orders
+            .map((o: { id: string; orderNumber: string; total: number; createdAt: string; items?: { productId: string; name: string; quantity: number }[] }) => ({
+              id: o.id,
+              orderNumber: o.orderNumber,
+              total: o.total,
+              createdAt: o.createdAt,
+              items: (o.items ?? []).map((i) => ({
+                productId: i.productId,
+                name: i.name,
+                qty: i.quantity,
+              })),
+            }))
+            .filter((o: PastOrder) => o.items.length > 0);
+          setApiOrders(mapped.length > 0 ? mapped : []);
+        } else {
+          // API returned empty or failed — fall back to mock data
+          setApiOrders(null);
+        }
+      })
+      .catch(() => {
+        // Network error — keep null so mock fallback is used
+      });
+  }, []);
+
+  // Build the list of delivered orders:
+  // API data is the primary source if available; otherwise fall back to store + supplemental mock
   const pastOrders = useMemo<PastOrder[]>(() => {
+    if (apiOrders !== null) {
+      // Use real API orders, sorted newest-first
+      return [...apiOrders].sort(
+        (a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
+      );
+    }
+
+    // Fallback: derive from local store + supplemental mock data
     const fromStore: PastOrder[] = storeOrders
       .filter((o) => o.status === "delivered")
       .map((o) => ({
@@ -439,7 +480,7 @@ export default function ReorderPage() {
         return true;
       })
       .sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
-  }, [storeOrders]);
+  }, [apiOrders, storeOrders]);
 
   // Group into "last 7 days" and "older"
   const recentOrders = pastOrders.filter((o) => isWithinDays(o.createdAt, 7));

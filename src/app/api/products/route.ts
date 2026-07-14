@@ -73,6 +73,20 @@ export async function POST(req: NextRequest) {
 
   try {
     const body = await req.json();
+
+    if (!body.name?.trim()) {
+      return NextResponse.json({ error: "name is required" }, { status: 400 });
+    }
+    if (!body.categoryId) {
+      return NextResponse.json({ error: "categoryId is required" }, { status: 400 });
+    }
+    if (typeof body.price !== "number" || body.price <= 0) {
+      return NextResponse.json({ error: "price must be a positive number" }, { status: 400 });
+    }
+    if (!body.unit?.trim()) {
+      return NextResponse.json({ error: "unit is required" }, { status: 400 });
+    }
+
     const product = await upsertProduct({
       id: body.id ?? `p-${Date.now()}`,
       categoryId: body.categoryId,

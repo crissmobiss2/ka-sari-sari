@@ -30,6 +30,7 @@ type PORecord = {
   supplier: string;
   status: string;
   items: number;
+  lineItems?: POItem[];
   total: number;
   expectedDate: string | null;
   createdAt: string;
@@ -641,12 +642,14 @@ export default function AdminPurchaseOrdersPage() {
     const day = today.getDate();
     const year = today.getFullYear();
     const dateStr = `${month} ${day}, ${year}`;
+    const validItems = items.filter((item) => item.name.trim() !== "");
     const newPO: PORecord = {
       id: `po-new-${paddedNum}`,
       poNumber: `PO-2025-${paddedNum}`,
       supplier,
       status: "draft",
-      items: items.filter((item) => item.name.trim() !== "").length,
+      items: validItems.length,
+      lineItems: validItems,
       total,
       expectedDate: null,
       createdAt: dateStr,
@@ -669,13 +672,15 @@ export default function AdminPurchaseOrdersPage() {
 
   const handleEditSubmit = (supplier: string, items: POItem[], total: number) => {
     if (!editingPO) return;
+    const validItems = items.filter((item) => item.name.trim() !== "");
     setPoList((prev) =>
       prev.map((po) =>
         po.id === editingPO.id
           ? {
               ...po,
               supplier,
-              items: items.filter((item) => item.name.trim() !== "").length,
+              items: validItems.length,
+              lineItems: validItems,
               total,
             }
           : po
@@ -710,6 +715,7 @@ export default function AdminPurchaseOrdersPage() {
           onClose={() => setEditingPO(null)}
           onSubmit={handleEditSubmit}
           initialSupplier={editingPO.supplier}
+          initialItems={editingPO.lineItems ?? [{ name: "", sku: "", qty: "", unitCost: "" }]}
           title="Edit Purchase Order"
           submitLabel="Save Changes"
         />

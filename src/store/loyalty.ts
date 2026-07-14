@@ -1,4 +1,5 @@
 import { create } from "zustand";
+import { persist } from "zustand/middleware";
 
 // Point rate: 1 point per ₱10 spent
 export const POINTS_PER_PESO = 0.1; // 0.1 pts per ₱1 = 1pt per ₱10
@@ -15,15 +16,19 @@ export interface LoyaltyTransaction {
 interface LoyaltyStore {
   balance: number;
   transactions: LoyaltyTransaction[];
+  _hydrated: boolean;
   hydrate: (balance: number, transactions: LoyaltyTransaction[]) => void;
   addEarnTransaction: (orderTotal: number, orderNumber: string) => number;
   addRedeemTransaction: (points: number, label: string) => boolean;
 }
 
-export const useLoyaltyStore = create<LoyaltyStore>((set, get) => ({
+export const useLoyaltyStore = create<LoyaltyStore>()(
+  persist(
+    (set, get) => ({
   balance: 0,
   transactions: [],
-  hydrate: (balance, transactions) => set({ balance, transactions }),
+  _hydrated: false,
+  hydrate: (balance, transactions) => set({ balance, transactions, _hydrated: true }),
 
   addEarnTransaction: (orderTotal: number, orderNumber: string): number => {
     const pts = Math.floor(orderTotal * POINTS_PER_PESO);
@@ -62,7 +67,15 @@ export const useLoyaltyStore = create<LoyaltyStore>((set, get) => ({
     }));
     return true;
   },
-}));
+    }),
+    {
+      name: "kss-loyalty",
+      onRehydrateStorage: () => (state) => {
+        if (state) state._hydrated = true;
+      },
+    }
+  )
+);
 
 export const earnPoints = (orderTotal: number, orderNumber: string): number =>
   useLoyaltyStore.getState().addEarnTransaction(orderTotal, orderNumber);

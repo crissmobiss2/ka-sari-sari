@@ -399,6 +399,9 @@ export default function AdminRoutesPage() {
   // GPS / Edit / Summary modals — hold the routeId
   const [gpsModal, setGpsModal] = useState<string | null>(null);
   const [editModal, setEditModal] = useState<string | null>(null);
+  // Controlled values for the Edit Route modal
+  const [editName, setEditName] = useState("");
+  const [editDriver, setEditDriver] = useState("");
   const [summaryModal, setSummaryModal] = useState<string | null>(null);
 
   // Auto-advance step 1 → 2 with staggered progress lines
@@ -687,7 +690,11 @@ export default function AdminRoutesPage() {
                         variant="outline"
                         size="sm"
                         className="text-xs"
-                        onClick={() => setEditModal(route.id)}
+                        onClick={() => {
+                          setEditModal(route.id);
+                          setEditName(route.name);
+                          setEditDriver(route.driver ?? "");
+                        }}
                       >
                         Edit Route
                       </Button>
@@ -849,13 +856,19 @@ export default function AdminRoutesPage() {
               <div className="space-y-3">
                 <div>
                   <label className="text-xs font-semibold text-muted-foreground uppercase tracking-wide">Route Name</label>
-                  <input defaultValue={r.name} id={`edit-name-${r.id}`}
-                    className="mt-1 w-full rounded-xl border border-border bg-background px-3 py-2.5 text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-brand-500" />
+                  <input
+                    value={editName}
+                    onChange={e => setEditName(e.target.value)}
+                    className="mt-1 w-full rounded-xl border border-border bg-background px-3 py-2.5 text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-brand-500"
+                  />
                 </div>
                 <div>
                   <label className="text-xs font-semibold text-muted-foreground uppercase tracking-wide">Assigned Driver</label>
-                  <select id={`edit-driver-${r.id}`} defaultValue={r.driver ?? ""}
-                    className="mt-1 w-full rounded-xl border border-border bg-background px-3 py-2.5 text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-brand-500">
+                  <select
+                    value={editDriver}
+                    onChange={e => setEditDriver(e.target.value)}
+                    className="mt-1 w-full rounded-xl border border-border bg-background px-3 py-2.5 text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-brand-500"
+                  >
                     <option value="">Unassigned</option>
                     {AVAILABLE_DRIVERS.map(d => <option key={d.id} value={d.name}>{d.name}</option>)}
                   </select>
@@ -864,9 +877,10 @@ export default function AdminRoutesPage() {
               <div className="flex gap-3 pt-1">
                 <Button variant="outline" className="flex-1" onClick={() => setEditModal(null)}>Cancel</Button>
                 <Button className="flex-1" onClick={() => {
-                  const nameEl = document.getElementById(`edit-name-${r.id}`) as HTMLInputElement;
-                  const driverEl = document.getElementById(`edit-driver-${r.id}`) as HTMLSelectElement;
-                  setRoutes(prev => prev.map(x => x.id === r.id ? { ...x, name: nameEl.value || x.name, driver: driverEl.value || null } : x));
+                  setRoutes(prev => prev.map(x => x.id === r.id
+                    ? { ...x, name: editName.trim() || x.name, driver: editDriver || null }
+                    : x
+                  ));
                   showToast("Route updated");
                   setEditModal(null);
                 }}>Save Changes</Button>

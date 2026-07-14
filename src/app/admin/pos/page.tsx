@@ -102,7 +102,8 @@ export default function POSPage() {
   const [orderRef, setOrderRef] = useState("");
   const [receiptMode, setReceiptMode] = useState<"print" | "sms" | "email" | null>(null);
 
-  const subtotal = cart.reduce((s, i) => s + (i.product.srp ?? i.product.price ?? 0) * i.quantity, 0);
+  // Admin/warehouse POS sells at wholesale price (product.price), not SRP
+  const subtotal = cart.reduce((s, i) => s + (i.product.price ?? 0) * i.quantity, 0);
   const total = Math.max(0, subtotal - discount);
   const cash = parseFloat(cashTendered) || 0;
   const change = payMethod === "cash" && cash > total ? cash - total : 0;
@@ -126,11 +127,10 @@ export default function POSPage() {
   }
 
   function qty(productId: string, delta: number) {
-    setCart(prev => prev.flatMap(i => {
-      if (i.product.id !== productId) return [i];
-      const n = i.quantity + delta;
-      return n <= 0 ? [] : [{ ...i, quantity: n }];
-    }));
+    // Clamp at 1 — use the X button to remove an item entirely
+    setCart(prev => prev.map(i =>
+      i.product.id !== productId ? i : { ...i, quantity: Math.max(1, i.quantity + delta) }
+    ));
   }
 
   function handleScan(code: string) {
@@ -186,7 +186,7 @@ export default function POSPage() {
   if (done) {
     return (
       <div className="flex items-center justify-center min-h-screen bg-success-50 p-6">
-        <div className="bg-white rounded-3xl shadow-card-md p-8 w-full max-w-md space-y-6">
+        <div className="bg-card rounded-3xl shadow-card-md p-8 w-full max-w-md space-y-6">
           <div className="text-center space-y-3">
             <div className="h-20 w-20 rounded-full bg-success-100 flex items-center justify-center mx-auto">
               <CheckCircle2 className="h-10 w-10 text-success-500" />
@@ -340,7 +340,9 @@ export default function POSPage() {
                       <p className="text-[11px] font-semibold text-foreground line-clamp-2 leading-tight min-h-[28px]">{product.name}</p>
                       <div className="flex items-baseline gap-1 mt-1">
                         <p className="text-xs font-black text-brand-500">{formatPHP(product.price)}</p>
-                        {product.srp && product.srp > product.price && <p className="text-[10px] text-muted-foreground line-through">{formatPHP(product.srp)}</p>}
+                        {product.srp && product.srp > product.price && (
+                          <p className="text-[10px] text-muted-foreground">SRP {formatPHP(product.srp)}</p>
+                        )}
                       </div>
                       <p className="text-[10px] text-muted-foreground">Min {product.minOrderQty} {product.unit}</p>
                     </div>
@@ -380,7 +382,7 @@ export default function POSPage() {
                   <div key={product.id} className="flex items-center gap-2 px-4 py-2.5">
                     <div className="flex-1 min-w-0">
                       <p className="text-xs font-semibold text-foreground line-clamp-1">{product.name}</p>
-                      <p className="text-[10px] text-muted-foreground">{formatPHP(product.srp ?? product.price)} / {product.unit}</p>
+                      <p className="text-[10px] text-muted-foreground">{formatPHP(product.price)} / {product.unit}</p>
                     </div>
                     <div className="flex items-center gap-1 shrink-0">
                       <button onClick={() => qty(product.id, -1)} className="h-6 w-6 rounded-lg border border-border flex items-center justify-center text-muted-foreground hover:bg-muted active:scale-90 transition-all">
@@ -394,7 +396,7 @@ export default function POSPage() {
                         <X className="h-3 w-3" />
                       </button>
                     </div>
-                    <span className="text-xs font-bold text-foreground w-14 text-right shrink-0">{formatPHP((product.srp ?? product.price) * quantity)}</span>
+                    <span className="text-xs font-bold text-foreground w-14 text-right shrink-0">{formatPHP(product.price * quantity)}</span>
                   </div>
                 ))}
               </div>

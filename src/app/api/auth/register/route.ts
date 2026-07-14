@@ -10,7 +10,7 @@ const useSupabase = !!process.env.NEXT_PUBLIC_SUPABASE_URL;
 
 export async function POST(req: NextRequest) {
   const ip = getClientIp(req);
-  const { allowed, retryAfterSecs } = checkRateLimit(`register:${ip}`, 5, 3_600_000);
+  const { allowed, retryAfterSecs } = await checkRateLimit(`register:${ip}`, 5, 3_600_000);
   if (!allowed) {
     return NextResponse.json(
       { error: `Too many registration attempts. Try again in ${Math.ceil(retryAfterSecs / 60)} minutes.` },

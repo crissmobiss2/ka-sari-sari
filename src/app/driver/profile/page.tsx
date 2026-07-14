@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { useRouter } from "next/navigation";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { DRIVERS } from "@/lib/mock-data";
@@ -26,6 +27,7 @@ function EditIcon() {
 }
 
 export default function ProfilePage() {
+  const router = useRouter();
   const fullStars = Math.floor(driver.rating);
 
   const [phone, setPhone] = useState(driver.phone);
@@ -191,7 +193,12 @@ export default function ProfilePage() {
 
       {/* Sign Out */}
       <button
-        onClick={() => { window.location.href = "/api/auth/logout"; }}
+        onClick={() => {
+          // The logout route only exports POST — a GET (window.location) returns 405
+          // and leaves the session cookie intact.
+          fetch("/api/auth/logout", { method: "POST" })
+            .finally(() => router.push("/login"));
+        }}
         className="w-full py-3 rounded-lg border-2 border-danger-500 text-danger-600 font-semibold text-sm hover:bg-danger-50 active:bg-danger-100 transition-colors"
       >
         Sign Out

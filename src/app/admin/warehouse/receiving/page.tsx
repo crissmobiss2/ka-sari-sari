@@ -86,6 +86,7 @@ export default function GoodsReceivingPage() {
   const [receivedQty, setReceivedQty] = useState<Record<string, Record<string, number>>>({});
   const [submitting, setSubmitting] = useState<string | null>(null);
   const [submitted, setSubmitted] = useState<Set<string>>(new Set());
+  const [receiveErrors, setReceiveErrors] = useState<Record<string, string>>({});
   const [expandedCompleted, setExpandedCompleted] = useState<Set<string>>(new Set());
 
   function handleQtyChange(grId: string, sku: string, value: string) {
@@ -96,15 +97,25 @@ export default function GoodsReceivingPage() {
     }));
   }
 
-  function handleReceive(grId: string) {
+  async function handleReceive(grId: string) {
     setSubmitting(grId);
-    setTimeout(() => {
-      setSubmitting(null);
+    try {
+      const quantities = receivedQty[grId] ?? {};
+      const res = await fetch("/api/admin/warehouse/receiving", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ grId, receivedQty: quantities }),
+      });
+      if (!res.ok) throw new Error(`HTTP ${res.status}`);
       setSubmitted((prev) => new Set([...prev, grId]));
       setReceipts((prev) =>
         prev.map((r) => (r.id === grId ? { ...r, status: "completed" as const } : r))
       );
-    }, 1200);
+    } catch {
+      setReceiveErrors((prev) => ({ ...prev, [grId]: "Failed to record receipt. Please retry." }));
+    } finally {
+      setSubmitting(null);
+    }
   }
 
   function toggleCompleted(id: string) {
@@ -290,6 +301,14 @@ export default function GoodsReceivingPage() {
                   <div className="mx-5 mb-5 flex items-center gap-2 rounded-xl bg-success-50 border border-success-200 px-4 py-3 text-sm text-success-700">
                     <CheckCircle2 className="h-4 w-4 shrink-0" />
                     Goods receipt recorded. Stock updated successfully.
+                  </div>
+                )}
+
+                {/* Error banner */}
+                {receiveErrors[receipt.id] && (
+                  <div className="mx-5 mb-5 flex items-center gap-2 rounded-xl bg-danger-50 border border-danger-200 px-4 py-3 text-sm text-danger-700">
+                    <Package className="h-4 w-4 shrink-0" />
+                    {receiveErrors[receipt.id]}
                   </div>
                 )}
               </Card>

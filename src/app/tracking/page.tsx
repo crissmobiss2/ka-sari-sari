@@ -628,10 +628,32 @@ export default function TrackingPage() {
     return () => clearInterval(interval);
   }, [driverId]);
 
+  // If no orderId was provided via URL, show an empty/redirect state instead of fake data
+  if (typeof window !== "undefined" && !orderId && !new URLSearchParams(window.location.search).get("orderId")) {
+    // This block intentionally left — the useEffect below sets orderId from URL
+  }
+
   return (
     <div className="min-h-screen bg-background pb-28">
       <RetailerTopBar title="Live Tracking" />
 
+      {/* When no orderId is present, show a prompt to navigate to an order */}
+      {!orderId ? (
+        <div className="flex flex-col items-center justify-center min-h-[60vh] px-4 text-center gap-4">
+          <Truck className="h-12 w-12 text-muted-foreground/40" />
+          <h2 className="font-display text-lg font-bold text-foreground">No order selected</h2>
+          <p className="text-sm text-muted-foreground max-w-xs">
+            Open a specific order to track its live delivery status.
+          </p>
+          <Link
+            href="/orders"
+            className="inline-flex items-center gap-2 rounded-xl bg-brand-500 px-5 py-3 text-sm font-bold text-white hover:bg-brand-600 transition-colors"
+          >
+            <ArrowLeft className="h-4 w-4" />
+            View My Orders
+          </Link>
+        </div>
+      ) : (
       <div className="py-4 space-y-4">
         <div className="px-4">
           <Link href="/orders" className="inline-flex items-center gap-1.5 text-sm text-muted-foreground hover:text-foreground transition-colors">
@@ -694,6 +716,7 @@ export default function TrackingPage() {
           </span>
         </Link>
       </div>
+      )}
 
       <NexoflowFooter className="mx-4 my-2" />
       <RetailerBottomNav />

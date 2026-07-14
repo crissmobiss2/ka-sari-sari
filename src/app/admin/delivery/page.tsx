@@ -223,16 +223,40 @@ export default function AdminDeliveryPage() {
     setAssigned((prev) => ({ ...prev, [id]: driver }));
   }
 
-  function handleDispatch(id: string) {
+  async function handleDispatch(id: string) {
     const driver = assigned[id] ?? storeOrders.find((o) => o.id === id)?.driverName ?? "";
     if (!driver) return;
-    storeDispatch(id, driver, "5:00 PM");
-    showToast(`Order dispatched to ${driver}`);
+    // Compute a real ETA: 2 hours from now rounded to the next half-hour
+    const eta = new Date(Date.now() + 2 * 60 * 60 * 1000);
+    eta.setMinutes(eta.getMinutes() >= 30 ? 60 : 30, 0, 0);
+    const etaStr = eta.toLocaleTimeString("en-PH", { hour: "numeric", minute: "2-digit" });
+    try {
+      const res = await fetch(`/api/admin/orders/${id}`, {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ status: "out_for_delivery", driverName: driver, eta: etaStr }),
+      });
+      if (!res.ok) throw new Error(`HTTP ${res.status}`);
+      storeDispatch(id, driver, etaStr);
+      showToast(`Order dispatched to ${driver}`);
+    } catch {
+      showToast("Failed to dispatch order. Please try again.");
+    }
   }
 
-  function handleDelivered(id: string) {
-    markDelivered(id);
-    showToast("Order marked as delivered");
+  async function handleDelivered(id: string) {
+    try {
+      const res = await fetch(`/api/admin/orders/${id}`, {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ status: "delivered" }),
+      });
+      if (!res.ok) throw new Error(`HTTP ${res.status}`);
+      markDelivered(id);
+      showToast("Order marked as delivered");
+    } catch {
+      showToast("Failed to mark as delivered. Please try again.");
+    }
   }
 
   function handleFailed(id: string) {
@@ -240,11 +264,21 @@ export default function AdminDeliveryPage() {
     setFailReason("No one home");
   }
 
-  function handleConfirmFailed() {
+  async function handleConfirmFailed() {
     if (!failTarget) return;
-    markFailed(failTarget, failReason);
-    showToast(`Order marked as failed: ${failReason}`);
-    setFailTarget(null);
+    try {
+      const res = await fetch(`/api/admin/orders/${failTarget}`, {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ status: "failed_delivery", reason: failReason }),
+      });
+      if (!res.ok) throw new Error(`HTTP ${res.status}`);
+      markFailed(failTarget, failReason);
+      showToast(`Order marked as failed: ${failReason}`);
+      setFailTarget(null);
+    } catch {
+      showToast("Failed to update order status. Please try again.");
+    }
   }
 
   function handleRetry(id: string) {
@@ -254,9 +288,15 @@ export default function AdminDeliveryPage() {
 
   function handleContact(id: string) {
     const order = storeOrders.find((o) => o.id === id);
-    const phone = (order as unknown as { phone?: string })?.phone;
-    showToast("Opening driver contact");
-    window.location.href = phone ? `tel:${phone}` : "tel:+639171234567";
+    // Try reading the driver phone from the order (populated by the drivers API response)
+    const driverPhone = (order as unknown as { driverPhone?: string })?.driverPhone
+      ?? (order as unknown as { phone?: string })?.phone;
+    if (driverPhone) {
+      showToast("Opening driver contact");
+      window.location.href = `tel:${driverPhone}`;
+    } else {
+      showToast("Driver phone not available");
+    }
   }
 
   const counts = {

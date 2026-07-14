@@ -27,7 +27,7 @@ export async function POST(req: NextRequest) {
 
   const ip = getClientIp(req as unknown as Request);
   const rateKey = `ai:${session.userId}:${ip}`;
-  const { allowed, retryAfterSecs } = checkRateLimit(rateKey, 20, 60_000);
+  const { allowed, retryAfterSecs } = await checkRateLimit(rateKey, 20, 60_000);
   if (!allowed) {
     return NextResponse.json(
       { error: "Too many requests. Please wait before sending another message." },

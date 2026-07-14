@@ -40,7 +40,8 @@ export type PMPaymentIntent = {
 export async function createPaymentIntent(
   amountCentavos: number,
   currency = "PHP",
-  description?: string
+  description?: string,
+  metadata?: Record<string, string>
 ): Promise<PMPaymentIntent> {
   return pmRequest<PMPaymentIntent>("POST", "/payment_intents", {
     data: {
@@ -50,6 +51,7 @@ export async function createPaymentIntent(
         payment_method_allowed: ["gcash", "paymaya", "card", "dob", "billease", "qrph"],
         capture_type: "automatic",
         description,
+        ...(metadata ? { metadata } : {}),
       },
     },
   });

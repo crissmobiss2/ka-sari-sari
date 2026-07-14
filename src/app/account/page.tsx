@@ -1,6 +1,7 @@
 "use client";
 import { useState, useEffect } from "react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import {
   User, Store, CreditCard, Bell, HelpCircle, LogOut,
   ChevronRight, Shield, ShieldCheck, Check, Clock, Heart, Wallet, Tag,
@@ -79,16 +80,18 @@ interface CreditApplication {
 // ── Page ──────────────────────────────────────────────────────────────────────
 
 export default function AccountPage() {
+  const router = useRouter();
   const walletBalance = useWalletStore((s) => s.balance);
   const favCount = useFavoritesStore((s) => s.items.length);
 
-  const [creditData] = useState({
+  const [creditData, setCreditData] = useState({
     score: CREDIT_SCORE,
     limit: CREDIT_LIMIT,
     used: CREDIT_USED,
     available: CREDIT_AVAILABLE,
     utilization: CREDIT_UTILIZATION,
   });
+  const [subDaysLeft, setSubDaysLeft] = useState<number | null>(null);
 
   const [userInfo, setUserInfo] = useState({
     displayName: "Maria Santos",
@@ -137,6 +140,16 @@ export default function AccountPage() {
       .catch(() => {});
   }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
+  // Fetch subscription info to show dynamic days-left
+  useEffect(() => {
+    fetch("/api/user/subscription")
+      .then((r) => { if (!r.ok) return null; return r.json(); })
+      .then((data) => {
+        if (data?.daysLeft !== undefined) setSubDaysLeft(data.daysLeft);
+      })
+      .catch(() => {});
+  }, []);
+
   // Check push support and fetch VAPID key
   useEffect(() => {
     const supported = "Notification" in window && "serviceWorker" in navigator;
@@ -159,12 +172,26 @@ export default function AccountPage() {
       .catch(() => {});
   }, []);
 
-  // Fetch existing credit applications
+  // Fetch existing credit applications and live credit standing
   useEffect(() => {
     fetch("/api/user/credit")
       .then((r) => { if (!r.ok) return null; return r.json(); })
       .then((data) => {
         if (data?.applications) setCreditApplications(data.applications);
+        // Update credit score widget with real values if provided
+        if (data?.score !== undefined) {
+          const score = data.score ?? CREDIT_SCORE;
+          const limit = data.limit ?? CREDIT_LIMIT;
+          const used = data.used ?? CREDIT_USED;
+          const available = limit - used;
+          setCreditData({
+            score,
+            limit,
+            used,
+            available,
+            utilization: limit > 0 ? (used / limit) * 100 : 0,
+          });
+        }
       })
       .catch(() => {});
   }, [creditSubmitted]); // re-fetch after submission
@@ -578,7 +605,7 @@ export default function AccountPage() {
                 <span className="text-xs text-success-600">Unlimited orders</span>
                 <span className="text-success-300">·</span>
                 <Clock className="h-3 w-3 text-success-500" />
-                <span className="text-xs text-success-600">211 days left</span>
+                <span className="text-xs text-success-600">{subDaysLeft !== null ? subDaysLeft : '—'} days left</span>
               </div>
             </div>
           </div>
@@ -697,13 +724,21 @@ export default function AccountPage() {
         </div>
 
         {/* Sign out */}
-        <Link
-          href="/login"
-          className="flex items-center gap-3 rounded-2xl border border-danger-500/20 bg-danger-50 px-5 py-4 text-danger-600 hover:bg-danger-100 transition-colors"
+        <button
+          type="button"
+          onClick={async () => {
+            try {
+              await fetch("/api/auth/logout", { method: "POST" });
+            } catch {
+              // proceed to login regardless
+            }
+            router.push("/login");
+          }}
+          className="flex w-full items-center gap-3 rounded-2xl border border-danger-500/20 bg-danger-50 px-5 py-4 text-danger-600 hover:bg-danger-100 transition-colors"
         >
           <LogOut className="h-4 w-4" />
           <span className="text-sm font-semibold">Sign out</span>
-        </Link>
+        </button>
 
         <p className="text-center text-xs text-muted-foreground pb-2">Ka Sari-Sari v1.0.0 · Made with love in the Philippines</p>
       </div>

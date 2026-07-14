@@ -284,9 +284,14 @@ export default function OrdersPage() {
   const [orders, setOrders] = useState<DisplayOrder[]>([]);
   const [loading, setLoading] = useState(true);
 
+  const [fetchError, setFetchError] = useState<string | null>(null);
+
   useEffect(() => {
     fetch("/api/orders")
-      .then((r) => r.json())
+      .then((r) => {
+        if (!r.ok) throw new Error(r.statusText || `HTTP ${r.status}`);
+        return r.json();
+      })
       .then((d) => {
         const apiOrders = (d.orders ?? []) as typeof MOCK_ORDERS;
         setOrders(
@@ -295,7 +300,9 @@ export default function OrdersPage() {
             .sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime())
         );
       })
-      .catch(() => {})
+      .catch((err) => {
+        setFetchError(err instanceof Error ? err.message : "Failed to load orders");
+      })
       .finally(() => setLoading(false));
   }, []);
 
@@ -355,6 +362,18 @@ export default function OrdersPage() {
         {loading ? (
           <div className="flex justify-center py-8">
             <div className="h-8 w-8 animate-spin rounded-full border-2 border-brand-500 border-t-transparent" />
+          </div>
+        ) : fetchError ? (
+          <div className="flex flex-col items-center py-12 gap-3 text-center">
+            <AlertCircle className="h-8 w-8 text-danger-400" />
+            <p className="text-sm font-semibold text-foreground">Could not load orders</p>
+            <p className="text-xs text-muted-foreground">{fetchError}</p>
+            <button
+              onClick={() => { setFetchError(null); setLoading(true); fetch("/api/orders").then((r) => { if (!r.ok) throw new Error(r.statusText); return r.json(); }).then((d) => { setOrders((d.orders ?? []).map(buildDisplayOrder).sort((a: DisplayOrder, b: DisplayOrder) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime())); }).catch((e) => setFetchError(e.message)).finally(() => setLoading(false)); }}
+              className="rounded-xl bg-brand-500 px-4 py-2 text-sm font-semibold text-white hover:bg-brand-600 transition-colors"
+            >
+              Retry
+            </button>
           </div>
         ) : filtered.length === 0 ? (
           <EmptyState

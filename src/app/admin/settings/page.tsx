@@ -177,11 +177,40 @@ function AiFeatureRow({ feature }: { feature: AiFeature }) {
 }
 
 export default function AdminSettingsPage() {
+  // Controlled field values: { [sectionTitle]: { [fieldLabel]: value } }
+  const [fieldValues, setFieldValues] = useState<Record<string, Record<string, string>>>(
+    () =>
+      Object.fromEntries(
+        SECTIONS.map((s) => [s.title, Object.fromEntries(s.fields.map((f) => [f.label, f.value]))])
+      )
+  );
   const [savedSections, setSavedSections] = useState<Record<string, boolean>>({});
+  const [saveErrors, setSaveErrors] = useState<Record<string, string>>({});
 
-  function handleSaveSection(title: string) {
-    setSavedSections((prev) => ({ ...prev, [title]: true }));
-    setTimeout(() => setSavedSections((prev) => ({ ...prev, [title]: false })), 2000);
+  function updateField(section: string, label: string, value: string) {
+    setFieldValues((prev) => ({
+      ...prev,
+      [section]: { ...prev[section], [label]: value },
+    }));
+  }
+
+  async function handleSaveSection(title: string) {
+    setSaveErrors((prev) => ({ ...prev, [title]: "" }));
+    try {
+      const res = await fetch("/api/admin/settings", {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ section: title, fields: fieldValues[title] }),
+      });
+      if (!res.ok) throw new Error(`HTTP ${res.status}`);
+      setSavedSections((prev) => ({ ...prev, [title]: true }));
+      setTimeout(() => setSavedSections((prev) => ({ ...prev, [title]: false })), 2000);
+    } catch (err) {
+      setSaveErrors((prev) => ({
+        ...prev,
+        [title]: err instanceof Error ? err.message : "Failed to save",
+      }));
+    }
   }
 
   return (
@@ -201,8 +230,16 @@ export default function AdminSettingsPage() {
           </CardHeader>
           <CardContent className="space-y-4">
             {section.fields.map((f) => (
-              <Input key={f.label} label={f.label} defaultValue={f.value} />
+              <Input
+                key={f.label}
+                label={f.label}
+                value={fieldValues[section.title]?.[f.label] ?? f.value}
+                onChange={(e) => updateField(section.title, f.label, e.target.value)}
+              />
             ))}
+            {saveErrors[section.title] && (
+              <p className="text-sm text-danger-600">{saveErrors[section.title]}</p>
+            )}
             <Button size="md" onClick={() => handleSaveSection(section.title)} className="flex items-center gap-1.5">
               {savedSections[section.title] ? <><Check className="h-4 w-4" /> Saved!</> : `Save ${section.title}`}
             </Button>

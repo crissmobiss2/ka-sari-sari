@@ -1,13 +1,13 @@
 "use client";
 import { useParams } from "next/navigation";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Link from "next/link";
 import { ArrowLeft, Package, MapPin, CreditCard, CheckCircle2, Clock, Truck, XCircle } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { StatusBadge } from "@/components/ui/status-badge";
 import { Button } from "@/components/ui/button";
 import { formatPHP, formatDateTime, type OrderStatus, ORDER_STATUS_LABELS } from "@/lib/utils";
-import { ADMIN_RECENT_ORDERS, MOCK_ORDERS, PRODUCTS } from "@/lib/mock-data";
+import { PRODUCTS } from "@/lib/mock-data";
 import { useOrdersStore } from "@/store/orders";
 import { toastSuccess, toastError } from "@/store/toast";
 
@@ -28,6 +28,12 @@ export default function AdminOrderDetailPage() {
   const params = useParams();
   const id = Array.isArray(params.id) ? params.id[0] : params.id;
 
+  // API-fetched order data
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const [apiOrder, setApiOrder] = useState<any | null>(null);
+  const [fetchLoading, setFetchLoading] = useState(true);
+  const [fetchError, setFetchError] = useState<string | null>(null);
+
   // Driver assignment state
   const [driverId, setDriverId] = useState("");
   const [assigning, setAssigning] = useState(false);
@@ -44,17 +50,83 @@ export default function AdminOrderDetailPage() {
   const advance = useOrdersStore((s) => s.advance);
   const storeDispatch = useOrdersStore((s) => s.dispatch);
 
-  // Look up order: store first (live status), then ADMIN_RECENT_ORDERS, then MOCK_ORDERS, then first available
-  const storeOrder = storeOrders.find((o) => o.id === id);
-  const adminOrder = ADMIN_RECENT_ORDERS.find((o) => o.id === id);
-  const mockOrder = MOCK_ORDERS.find((o) => o.id === id);
+  // Fetch order from API on mount
+  useEffect(() => {
+    if (!id) return;
+    setFetchLoading(true);
+    setFetchError(null);
+    fetch(`/api/admin/orders/${id}`)
+      .then((r) => {
+        if (!r.ok) throw new Error(`HTTP ${r.status}`);
+        return r.json();
+      })
+      .then((data) => {
+        setApiOrder(data.order ?? data);
+      })
+      .catch((err) => {
+        setFetchError(err.message ?? "Failed to load order");
+      })
+      .finally(() => setFetchLoading(false));
+  }, [id]);
 
-  const baseOrder = storeOrder ?? adminOrder ?? mockOrder ?? storeOrders[0] ?? ADMIN_RECENT_ORDERS[0];
+  // Look up order: API response first, then Zustand store as live fallback
+  const storeOrder = storeOrders.find((o) => o.id === id);
+  const baseOrder = apiOrder ?? storeOrder;
+
+  if (fetchLoading) {
+    return (
+      <div className="p-6 space-y-5 max-w-4xl mx-auto animate-pulse">
+        <div className="h-5 w-32 rounded-xl bg-muted" />
+        <div className="h-8 w-64 rounded-xl bg-muted" />
+        <div className="grid md:grid-cols-3 gap-4">
+          <div className="md:col-span-2 h-64 rounded-2xl bg-muted" />
+          <div className="space-y-4">
+            <div className="h-32 rounded-2xl bg-muted" />
+            <div className="h-24 rounded-2xl bg-muted" />
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  if (fetchError || !baseOrder) {
+    return (
+      <div className="p-6 max-w-4xl mx-auto">
+        <Link href="/admin/orders" className="inline-flex items-center gap-1.5 text-sm text-muted-foreground hover:text-foreground mb-6">
+          <ArrowLeft className="h-4 w-4" /> Orders
+        </Link>
+        <div className="rounded-2xl border border-danger-200 bg-danger-50 p-8 text-center">
+          <XCircle className="h-10 w-10 text-danger-400 mx-auto mb-3" />
+          <p className="font-semibold text-danger-700">Failed to load order</p>
+          <p className="text-sm text-danger-600 mt-1">{fetchError ?? "Order not found"}</p>
+          <Button size="sm" variant="outline" className="mt-4" onClick={() => window.location.reload()}>
+            Retry
+          </Button>
+        </div>
+      </div>
+    );
+  }
 
   // Overlay live status from store if the store knows this order
-  const liveStatus = storeOrder?.status ?? baseOrder.status;
+  const liveStatus: OrderStatus = (storeOrder?.status ?? baseOrder.status) as OrderStatus;
   const effectiveStatus: OrderStatus = localStatus ?? liveStatus;
-  const order = { ...baseOrder, status: effectiveStatus };
+  // Cast to a known shape so downstream access is typed
+  const order = { ...baseOrder, status: effectiveStatus } as {
+    id: string;
+    orderNumber: string;
+    status: OrderStatus;
+    deliveryAddress: string;
+    notes?: string;
+    paymentMethod: string;
+    paymentStatus: string;
+    subtotal: number;
+    deliveryFee: number;
+    total: number;
+    createdAt: string;
+    updatedAt: string;
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    items: any[];
+  };
 
   const nextStatus = NEXT_STATUS[order.status];
   const isTerminal = TERMINAL_STATUSES.includes(order.status);

@@ -21,6 +21,8 @@ interface Stop {
   city: string;
   address: string;
   orderNumber: string;
+  /** orderId from the API (maps to orderNumber field; kept separately for PATCH calls) */
+  orderId?: string;
   total: number;
   paymentMethod: "gcash" | "maya" | "cod" | "bank_transfer" | "credit";
   status: StopStatus;
@@ -116,6 +118,7 @@ function mapApiStop(s: ApiStop, isNext: boolean): Stop {
     city: s.address.split(",").slice(-1)[0]?.trim() ?? "",
     address: s.address,
     orderNumber: s.orderId,
+    orderId: s.orderId,
     total: s.codAmount,
     paymentMethod: s.paymentMethod as Stop["paymentMethod"],
     status: isNext ? "next" : baseStatus,
@@ -174,6 +177,7 @@ export default function RouteMapPage() {
   const progress     = Math.round((doneStops / totalStops) * 100);
 
   function markDone(num: number) {
+    const stop = stops.find((s) => s.stopNumber === num);
     setStops((prev) =>
       prev.map((s, i, arr) => {
         if (s.stopNumber === num) {
@@ -195,6 +199,15 @@ export default function RouteMapPage() {
       })
     );
     setExpanded(null);
+    // Persist to API — best-effort, local state is source of truth while driver is on route
+    if (stop) {
+      const orderId = stop.orderId ?? stop.orderNumber;
+      fetch(`/api/driver/deliveries/${orderId}`, {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ action: "delivered", orderId }),
+      }).catch(() => {});
+    }
   }
 
   function markFailed(stop: Stop) {
@@ -208,6 +221,13 @@ export default function RouteMapPage() {
       })
     );
     setExpanded(null);
+    // Persist to API — best-effort
+    const orderId = stop.orderId ?? stop.orderNumber;
+    fetch(`/api/driver/deliveries/${orderId}`, {
+      method: "PATCH",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ action: "failed_attempt", orderId }),
+    }).catch(() => {});
   }
 
   async function handleSubmitReport() {

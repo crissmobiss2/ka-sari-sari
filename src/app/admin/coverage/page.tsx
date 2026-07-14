@@ -72,9 +72,8 @@ export default function CoveragePage() {
             Powered by <span className="font-semibold text-foreground">Pacific Nexus Global</span> — 137 partner cities across the Philippines
           </p>
         </div>
-        <div className="flex items-center gap-2 rounded-xl border border-success-200 bg-success-50 px-3 py-2 text-xs font-semibold text-success-700">
-          <CheckCircle2 className="h-3.5 w-3.5" />
-          Live Network
+        <div className="flex items-center gap-2 rounded-xl border border-surface-200 bg-surface-50 px-3 py-2 text-xs font-semibold text-muted-foreground">
+          Static Coverage
         </div>
       </div>
 

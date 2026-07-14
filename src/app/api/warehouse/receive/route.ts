@@ -35,10 +35,17 @@ export async function POST(req: NextRequest) {
     // items = [{ purchaseOrderItemId, productId, qtyReceived, batchNumber, expiryDate }]
 
     for (const item of items) {
-      // Update PO item qty received
+      // Increment PO item qty received (read-then-write to avoid overwriting existing partial receipts)
+      const { data: existingItem } = await supabaseAdmin
+        .from("purchase_order_items")
+        .select("qty_received")
+        .eq("id", item.purchaseOrderItemId)
+        .single();
+
+      const currentQtyReceived = existingItem?.qty_received ?? 0;
       await supabaseAdmin
         .from("purchase_order_items")
-        .update({ qty_received: item.qtyReceived })
+        .update({ qty_received: currentQtyReceived + item.qtyReceived })
         .eq("id", item.purchaseOrderItemId);
 
       // Adjust warehouse stock

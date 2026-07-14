@@ -32,7 +32,7 @@ function timeAgo(date: Date): string {
 
 export default function ScanPage() {
   const [barcode, setBarcode] = useState("");
-  const [loading] = useState(false);
+  const [loading, setLoading] = useState(false);
   const [searchedValue, setSearchedValue] = useState("");
   const [quantity, setQuantity] = useState(1);
   const [logged, setLogged] = useState(false);
@@ -56,6 +56,7 @@ export default function ScanPage() {
     setLogged(false);
     setQuantity(1);
     setSearchedValue(value.trim());
+    setLoading(false);
   }
 
   function handleSearch() {
@@ -67,6 +68,7 @@ export default function ScanPage() {
     setBarcode(value);
     if (debounceRef.current) clearTimeout(debounceRef.current);
     if (value.trim().length >= 3) {
+      setLoading(true);
       debounceRef.current = setTimeout(() => {
         runSearch(value);
       }, 400);

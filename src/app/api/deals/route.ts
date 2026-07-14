@@ -80,6 +80,9 @@ export async function GET(_req: NextRequest) {
     });
   }
 
-  // Deals/promotions table not yet implemented — return empty for now
-  return NextResponse.json({ deals: [] });
+  // Deals/promotions table not yet implemented in production
+  return NextResponse.json(
+    { error: "Deals/promotions not yet implemented", deals: [] },
+    { status: 501 }
+  );
 }

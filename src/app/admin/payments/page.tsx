@@ -151,6 +151,27 @@ function countWhere(txs: Transaction[], pred: (t: Transaction) => boolean) {
   return txs.filter(pred).length;
 }
 
+// ─── Static color maps (replacing dynamic `bg-${accent}-*` interpolation) ─────
+// Tailwind purges dynamic class names; these must be fully spelled out.
+
+const METHOD_CARD_ACTIVE: Record<string, string> = {
+  amber:  "ring-2 ring-amber-400 bg-amber-50 border-amber-200",
+  green:  "ring-2 ring-green-400 bg-green-50 border-green-200",
+  purple: "ring-2 ring-purple-400 bg-purple-50 border-purple-200",
+};
+
+const METHOD_CARD_ICON: Record<string, string> = {
+  amber:  "bg-amber-100 text-amber-700",
+  green:  "bg-green-100 text-green-700",
+  purple: "bg-purple-100 text-purple-700",
+};
+
+const METHOD_CARD_PROGRESS: Record<string, string> = {
+  amber:  "bg-amber-400",
+  green:  "bg-green-400",
+  purple: "bg-purple-400",
+};
+
 // ─── Method breakdown (COD, GCash, Maya) ─────────────────────────────────────
 
 interface MethodStat {
@@ -366,14 +387,14 @@ export default function PaymentsPage() {
             className={cn(
               "rounded-2xl border p-4 text-left transition-all hover:shadow-sm active:scale-[0.99]",
               methodTab === tab
-                ? `ring-2 ring-${accent}-400 bg-${accent}-50 border-${accent}-200`
+                ? METHOD_CARD_ACTIVE[accent]
                 : "bg-card border-border"
             )}
           >
             <div className="flex items-center justify-between mb-3">
               <div className={cn(
                 "h-9 w-9 rounded-xl flex items-center justify-center",
-                `bg-${accent}-100 text-${accent}-700`
+                METHOD_CARD_ICON[accent]
               )}>
                 {icon}
               </div>
@@ -399,7 +420,7 @@ export default function PaymentsPage() {
             {stats.pending > 0 && (
               <div className="mt-2 h-1.5 rounded-full bg-muted overflow-hidden">
                 <div
-                  className={`h-full bg-${accent}-400 rounded-full`}
+                  className={cn("h-full rounded-full", METHOD_CARD_PROGRESS[accent])}
                   style={{ width: `${Math.round((stats.completed / (stats.total || 1)) * 100)}%` }}
                 />
               </div>

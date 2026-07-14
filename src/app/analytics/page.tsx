@@ -1,6 +1,7 @@
 "use client";
 import Link from "next/link";
-import { BarChart3, TrendingUp, Package, ShoppingBasket, Zap, RotateCcw, Calendar } from "lucide-react";
+import { useState, useEffect } from "react";
+import { BarChart3, TrendingUp, Package, ShoppingBasket, Zap, RotateCcw, Calendar, Loader2 } from "lucide-react";
 import { RetailerTopBar, RetailerBottomNav } from "@/components/layout/retailer-nav";
 import { formatPHP } from "@/lib/utils";
 import { cn } from "@/lib/utils";
@@ -245,6 +246,61 @@ function StatCard({
 // ── Main page ────────────────────────────────────────────────────────────────
 
 export default function AnalyticsPage() {
+  // Analytics data — loaded from API, falling back to mock-derived values while loading
+  const [analyticsLoading, setAnalyticsLoading] = useState(true);
+  const [apiStats, setApiStats] = useState<{
+    totalSpent: number;
+    orderCount: number;
+    avgOrder: number;
+    savings: number;
+    savingsPct: number;
+    srpTotal: number;
+    lastOrderLabel: string;
+    avgDaysBetween: number;
+    ordersThisMonth: number;
+    topCategories: typeof TOP_CATEGORIES;
+    topProducts: typeof TOP_PRODUCTS;
+    monthlyData: typeof MONTHLY_DATA;
+    restockSuggestions: typeof RESTOCK_SUGGESTIONS;
+  } | null>(null);
+
+  useEffect(() => {
+    fetch("/api/analytics/summary")
+      .then((r) => { if (!r.ok) throw new Error(r.statusText); return r.json(); })
+      .then((data) => {
+        setApiStats({
+          totalSpent: data.totalSpent ?? totalSpent,
+          orderCount: data.orderCount ?? orderCount,
+          avgOrder: data.avgOrder ?? avgOrder,
+          savings: data.savings ?? savings,
+          savingsPct: data.savingsPct ?? savingsPct,
+          srpTotal: data.srpTotal ?? srpTotal,
+          lastOrderLabel: data.lastOrderLabel ?? lastOrderLabel,
+          avgDaysBetween: data.avgDaysBetween ?? avgDaysBetween,
+          ordersThisMonth: data.ordersThisMonth ?? ordersThisMonth,
+          topCategories: data.topCategories ?? TOP_CATEGORIES,
+          topProducts: data.topProducts ?? TOP_PRODUCTS,
+          monthlyData: data.monthlyData ?? MONTHLY_DATA,
+          restockSuggestions: data.restockSuggestions ?? RESTOCK_SUGGESTIONS,
+        });
+      })
+      .catch(() => {
+        // Fall back to mock-derived data on error — page stays functional
+        setApiStats(null);
+      })
+      .finally(() => setAnalyticsLoading(false));
+  }, []);
+
+  // Use API data if available, otherwise use mock-derived constants
+  const stats = apiStats ?? {
+    totalSpent, orderCount, avgOrder, savings, savingsPct, srpTotal,
+    lastOrderLabel, avgDaysBetween, ordersThisMonth,
+    topCategories: TOP_CATEGORIES, topProducts: TOP_PRODUCTS,
+    monthlyData: MONTHLY_DATA, restockSuggestions: RESTOCK_SUGGESTIONS,
+  };
+  const maxMonthlyValue = Math.max(...stats.monthlyData.map((d) => d.value));
+  const displaySavingsForecast = Math.round(stats.totalSpent * (srpPremium - 1));
+
   return (
     <div className="min-h-screen bg-background pb-24">
       <RetailerTopBar title="Analytics" />
@@ -259,25 +315,31 @@ export default function AnalyticsPage() {
           <p className="text-sm text-muted-foreground mt-0.5">Track your spending and savings</p>
         </div>
 
-        {/* Key stats — computed from MOCK_ORDERS */}
+        {/* Key stats */}
+        {analyticsLoading ? (
+          <div className="flex justify-center py-6">
+            <Loader2 className="h-6 w-6 animate-spin text-brand-500" />
+          </div>
+        ) : (
         <div className="grid grid-cols-2 gap-3">
-          <StatCard label="Total Spent" value={formatPHP(totalSpent)} sub="All orders" />
-          <StatCard label="Orders" value={orderCount.toString()} sub="Total placed" />
-          <StatCard label="Avg. Order" value={formatPHP(avgOrder)} sub="Per order" />
+          <StatCard label="Total Spent" value={formatPHP(stats.totalSpent)} sub="All orders" />
+          <StatCard label="Orders" value={stats.orderCount.toString()} sub="Total placed" />
+          <StatCard label="Avg. Order" value={formatPHP(stats.avgOrder)} sub="Per order" />
           <StatCard
             label="Savings vs SRP"
-            value={formatPHP(savings)}
-            sub={`${savingsPct}% saved`}
+            value={formatPHP(stats.savings)}
+            sub={`${stats.savingsPct}% saved`}
             accent
           />
         </div>
+        )}
 
         {/* Monthly spending bar chart */}
         <div className="rounded-2xl border border-border bg-card shadow-card p-5">
           <h2 className="font-display text-sm font-bold text-foreground mb-4">Monthly Spending</h2>
           <div className="flex items-end gap-2 h-24">
-            {MONTHLY_DATA.map((d) => {
-              const heightPct = (d.value / MAX_VALUE) * 100;
+            {stats.monthlyData.map((d) => {
+              const heightPct = (d.value / maxMonthlyValue) * 100;
               return (
                 <div key={d.month} className="flex flex-col items-center gap-1.5 flex-1">
                   <div
@@ -293,7 +355,7 @@ export default function AnalyticsPage() {
             })}
           </div>
           <div className="flex items-start gap-2 mt-1.5">
-            {MONTHLY_DATA.map((d) => (
+            {stats.monthlyData.map((d) => (
               <div key={d.month} className="flex-1 text-center">
                 <span className={cn("text-[10px] font-medium", d.current ? "text-brand-600 font-bold" : "text-muted-foreground")}>
                   {d.month}
@@ -317,14 +379,14 @@ export default function AnalyticsPage() {
         </div>
 
         {/* Category breakdown */}
-        {TOP_CATEGORIES.length > 0 && (
+        {stats.topCategories.length > 0 && (
           <div className="rounded-2xl border border-border bg-card shadow-card p-5">
             <h2 className="font-display text-sm font-bold text-foreground mb-4 flex items-center gap-2">
               <BarChart3 className="h-4 w-4 text-brand-500" />
               Category Breakdown
             </h2>
             <div className="space-y-3">
-              {TOP_CATEGORIES.map((cat, i) => (
+              {stats.topCategories.map((cat, i) => (
                 <div key={cat.name}>
                   <div className="flex items-center justify-between mb-1">
                     <span className="text-xs font-semibold text-foreground">{cat.name}</span>
@@ -345,7 +407,7 @@ export default function AnalyticsPage() {
               ))}
             </div>
             <p className="text-[10px] text-muted-foreground mt-3 pt-3 border-t border-border">
-              Based on itemized orders · Top {TOP_CATEGORIES.length} categories shown
+              Based on itemized orders · Top {stats.topCategories.length} categories shown
             </p>
           </div>
         )}
@@ -356,9 +418,9 @@ export default function AnalyticsPage() {
             <Package className="h-4 w-4 text-brand-500" />
             Your Top Products
           </h2>
-          {TOP_PRODUCTS.length > 0 ? (
+          {stats.topProducts.length > 0 ? (
             <div className="rounded-2xl border border-border bg-card shadow-card overflow-hidden divide-y divide-border">
-              {TOP_PRODUCTS.map((p) => (
+              {stats.topProducts.map((p) => (
                 <div key={p.rank} className="flex items-center gap-0 overflow-hidden">
                   {/* Rank bar */}
                   <div className={cn("w-1.5 self-stretch shrink-0", RANK_COLORS[p.rank - 1])} />
@@ -397,17 +459,17 @@ export default function AnalyticsPage() {
             <div className="flex items-center justify-between px-5 py-3.5">
               <span className="text-sm text-muted-foreground">Avg. days between orders</span>
               <span className="text-sm font-bold text-foreground tabular-nums">
-                {avgDaysBetween > 0 ? `${avgDaysBetween} days` : "—"}
+                {stats.avgDaysBetween > 0 ? `${stats.avgDaysBetween} days` : "—"}
               </span>
             </div>
             <div className="flex items-center justify-between px-5 py-3.5">
               <span className="text-sm text-muted-foreground">Last order placed</span>
-              <span className="text-sm font-bold text-foreground">{lastOrderLabel}</span>
+              <span className="text-sm font-bold text-foreground">{stats.lastOrderLabel}</span>
             </div>
             <div className="flex items-center justify-between px-5 py-3.5">
               <span className="text-sm text-muted-foreground">Orders this month</span>
               <span className="text-sm font-bold text-foreground tabular-nums">
-                {ordersThisMonth} order{ordersThisMonth !== 1 ? "s" : ""}
+                {stats.ordersThisMonth} order{stats.ordersThisMonth !== 1 ? "s" : ""}
               </span>
             </div>
           </div>
@@ -420,7 +482,7 @@ export default function AnalyticsPage() {
             Restock Suggestions
           </h2>
           <div className="space-y-3">
-            {RESTOCK_SUGGESTIONS.map((s) => (
+            {stats.restockSuggestions.map((s) => (
               <div key={s.productId} className="rounded-2xl border border-border bg-card shadow-card px-4 py-4">
                 <div className="flex items-start justify-between gap-3">
                   <div className="flex-1 min-w-0">
@@ -469,21 +531,21 @@ export default function AnalyticsPage() {
             <div className="space-y-2">
               <div className="flex items-center gap-3">
                 <div className="w-20 shrink-0 text-right text-xs font-bold text-brand-500">
-                  {formatPHP(totalSpent)}
+                  {formatPHP(stats.totalSpent)}
                 </div>
                 <div className="flex-1 h-3 rounded-full bg-surface-100 overflow-hidden">
                   <div
                     className="h-full bg-brand-500 rounded-full"
-                    style={{ width: `${Math.round((totalSpent / srpTotal) * 100)}%` }}
+                    style={{ width: `${stats.srpTotal > 0 ? Math.round((stats.totalSpent / stats.srpTotal) * 100) : 0}%` }}
                   />
                 </div>
                 <div className="w-8 shrink-0 text-[9px] text-muted-foreground">
-                  {Math.round((totalSpent / srpTotal) * 100)}%
+                  {stats.srpTotal > 0 ? Math.round((stats.totalSpent / stats.srpTotal) * 100) : 0}%
                 </div>
               </div>
               <div className="flex items-center gap-3">
                 <div className="w-20 shrink-0 text-right text-xs font-medium text-muted-foreground">
-                  {formatPHP(srpTotal)}
+                  {formatPHP(stats.srpTotal)}
                 </div>
                 <div className="flex-1 h-3 rounded-full bg-surface-100 overflow-hidden">
                   <div className="h-full bg-surface-200 rounded-full" style={{ width: "100%" }} />
@@ -498,8 +560,8 @@ export default function AnalyticsPage() {
                 <p className="text-[11px] text-success-600 mt-0.5">Buying through Ka Sari-Sari</p>
               </div>
               <div className="text-right">
-                <p className="font-display text-lg font-black text-success-700">{formatPHP(savings)}</p>
-                <p className="text-xs text-success-600 font-semibold">{savingsPct}% saved</p>
+                <p className="font-display text-lg font-black text-success-700">{formatPHP(stats.savings)}</p>
+                <p className="text-xs text-success-600 font-semibold">{stats.savingsPct}% saved</p>
               </div>
             </div>
           </div>
@@ -514,7 +576,7 @@ export default function AnalyticsPage() {
             <div>
               <p className="text-sm font-semibold text-foreground">Keep saving more</p>
               <p className="text-xs text-muted-foreground mt-0.5">
-                You&apos;re on track to save <span className="text-brand-600 font-semibold">{formatPHP(savingsForecast)}</span> this year if you keep ordering through Ka Sari-Sari.
+                You&apos;re on track to save <span className="text-brand-600 font-semibold">{formatPHP(displaySavingsForecast)}</span> this year if you keep ordering through Ka Sari-Sari.
               </p>
               <Link href="/catalog" className="mt-2.5 inline-flex items-center gap-1 rounded-xl bg-brand-500 px-3 py-1.5 text-xs font-bold text-white hover:bg-brand-600 transition-colors active:scale-95">
                 Browse catalog

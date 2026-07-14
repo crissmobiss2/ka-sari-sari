@@ -247,25 +247,19 @@ export default function WhatsAppSettingsPage() {
   // Opt-out re-enabled set
   const [reEnabled, setReEnabled] = useState<Set<string>>(new Set());
 
+  // Load saved phone number (non-secret) from server on mount
   useEffect(() => {
-    try {
-      const stored = localStorage.getItem("wa_settings");
-      if (stored) {
-        const parsed = JSON.parse(stored) as {
-          phoneNumber?: string;
-          apiKey?: string;
-          connectionStatus?: "connected" | "disconnected";
-        };
-        if (parsed.phoneNumber) setPhoneNumber(parsed.phoneNumber);
-        if (parsed.apiKey) setApiKey(parsed.apiKey);
-        if (parsed.connectionStatus) setConnectionStatus(parsed.connectionStatus);
-      }
-    } catch {
-      // ignore malformed storage
-    }
+    fetch("/api/admin/settings/whatsapp")
+      .then((r) => r.ok ? r.json() : null)
+      .then((data) => {
+        if (data?.phoneNumber) setPhoneNumber(data.phoneNumber);
+        if (data?.connectionStatus) setConnectionStatus(data.connectionStatus);
+      })
+      .catch(() => {});
+    // Note: API key is never loaded back to the client after saving — treat it as write-only.
   }, []);
 
-  function handleSaveChanges() {
+  async function handleSaveChanges() {
     if (!phoneNumber.trim() || !apiKey.trim()) {
       setSaveMessage("Please fill in the phone number and API key before saving.");
       setTimeout(() => setSaveMessage(""), 3000);
@@ -273,36 +267,62 @@ export default function WhatsAppSettingsPage() {
     }
     setIsSaving(true);
     setSaveMessage("");
-    setTimeout(() => {
-      localStorage.setItem(
-        "wa_settings",
-        JSON.stringify({ phoneNumber, apiKey, connectionStatus })
-      );
-      setIsSaving(false);
+    try {
+      const res = await fetch("/api/admin/settings/whatsapp", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        // API key is sent over HTTPS to the server; never stored in localStorage.
+        body: JSON.stringify({ phoneNumber, apiKey }),
+      });
+      if (!res.ok) throw new Error(`HTTP ${res.status}`);
       setSaveMessage("Settings saved");
+      setApiKey(""); // clear the field after saving — treat as write-once
       setTimeout(() => setSaveMessage(""), 3000);
-    }, 800);
+    } catch (err) {
+      setSaveMessage(err instanceof Error ? err.message : "Failed to save settings");
+      setTimeout(() => setSaveMessage(""), 5000);
+    } finally {
+      setIsSaving(false);
+    }
   }
 
-  function handleConnect() {
+  async function handleConnect() {
     setIsConnecting(true);
     setConnectMessage("");
-    setTimeout(() => {
+    try {
+      const res = await fetch("/api/admin/settings/whatsapp/connect", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+      });
+      if (!res.ok) throw new Error(`HTTP ${res.status}`);
       setConnectionStatus("connected");
-      setIsConnecting(false);
       setConnectMessage("Connected successfully");
       setTimeout(() => setConnectMessage(""), 3000);
-    }, 1200);
+    } catch (err) {
+      setConnectMessage(err instanceof Error ? err.message : "Connection failed");
+      setTimeout(() => setConnectMessage(""), 5000);
+    } finally {
+      setIsConnecting(false);
+    }
   }
 
-  function handleTestConnection() {
+  async function handleTestConnection() {
     setIsTesting(true);
     setTestMessage("");
-    setTimeout(() => {
-      setIsTesting(false);
+    try {
+      const res = await fetch("/api/admin/settings/whatsapp/test", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+      });
+      if (!res.ok) throw new Error(`HTTP ${res.status}`);
       setTestMessage("Connection test passed");
       setTimeout(() => setTestMessage(""), 3000);
-    }, 1800);
+    } catch (err) {
+      setTestMessage(err instanceof Error ? err.message : "Test failed");
+      setTimeout(() => setTestMessage(""), 5000);
+    } finally {
+      setIsTesting(false);
+    }
   }
 
   function toggleTemplate(id: string, val: boolean) {

@@ -505,8 +505,6 @@ function EditPromoModal({ promo, onClose, onSave }: EditPromoModalProps) {
   );
 }
 
-let promoCounter = INITIAL_PROMOS.length + 1;
-
 export default function AdminPromotionsPage() {
   const [promos, setPromos] = useState<Promo[]>(INITIAL_PROMOS);
   const [activeTab, setActiveTab] = useState("all");
@@ -541,7 +539,7 @@ export default function AdminPromotionsPage() {
   function handleCreate(data: Omit<Promo, "id" | "status" | "usageCount">) {
     const newPromo: Promo = {
       ...data,
-      id: `promo-${promoCounter++}`,
+      id: `promo-${typeof crypto !== "undefined" ? crypto.randomUUID() : Date.now().toString(36)}`,
       status: "active",
       usageCount: 0,
     };
@@ -570,7 +568,7 @@ export default function AdminPromotionsPage() {
     if (!original) return;
     const copy: Promo = {
       ...original,
-      id: `promo-${promoCounter++}`,
+      id: `promo-${typeof crypto !== "undefined" ? crypto.randomUUID() : Date.now().toString(36)}`,
       title: `${original.title} (Copy)`,
       usageCount: 0,
       status: "scheduled",

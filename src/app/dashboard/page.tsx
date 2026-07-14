@@ -10,10 +10,9 @@ import { RetailerTopBar, RetailerBottomNav } from "@/components/layout/retailer-
 import { ProductCard } from "@/components/products/product-card";
 import { StatusBadge } from "@/components/ui/status-badge";
 import { formatPHP, formatDate, cn, type OrderStatus } from "@/lib/utils";
-import { PRODUCTS, MOCK_ORDERS, CATEGORIES } from "@/lib/mock-data";
+import { PRODUCTS, CATEGORIES } from "@/lib/mock-data";
 import { useWalletStore } from "@/store/wallet";
 import { useCartStore } from "@/store/cart";
-import { useOrdersStore } from "@/store/orders";
 import { Suspense, useState, useEffect } from "react";
 
 const PROMO_BANNERS = [
@@ -64,9 +63,20 @@ function getGreeting() {
   return "Magandang gabi";
 }
 
+interface RecentOrder {
+  id: string;
+  orderNumber: string;
+  status: OrderStatus;
+  total: number;
+  createdAt: string;
+  eta?: string;
+}
+
 export default function DashboardPage() {
   const [greeting, setGreeting] = useState("Magandang araw");
   const [storeName, setStoreName] = useState("Your Store");
+  const [recentOrders, setRecentOrders] = useState<RecentOrder[]>([]);
+  const [activeOrder, setActiveOrder] = useState<RecentOrder | null>(null);
 
   useEffect(() => {
     setGreeting(getGreeting());
@@ -84,13 +94,43 @@ export default function DashboardPage() {
       .catch(() => {});
   }, []);
 
-  const recentOrders = MOCK_ORDERS.slice(0, 2);
+  // Fetch wallet balance and recent orders from the API
+  useEffect(() => {
+    // Hydrate wallet
+    fetch("/api/user/wallet")
+      .then((r) => { if (!r.ok) return null; return r.json(); })
+      .then((data) => {
+        if (data?.balance !== undefined) {
+          useWalletStore.getState().hydrate(data.balance, data.transactions ?? []);
+        }
+      })
+      .catch(() => {});
+
+    // Fetch real recent orders
+    fetch("/api/orders?limit=5")
+      .then((r) => { if (!r.ok) throw new Error(r.statusText); return r.json(); })
+      .then((d) => {
+        const orders: RecentOrder[] = (d.orders ?? []).map((o: RecentOrder) => ({
+          id: o.id,
+          orderNumber: o.orderNumber,
+          status: o.status,
+          total: o.total,
+          createdAt: o.createdAt,
+          eta: o.eta,
+        }));
+        setRecentOrders(orders.slice(0, 2));
+        const active = orders.find(
+          (o) => o.status === "out_for_delivery" || o.status === "picking" || o.status === "packed"
+        );
+        setActiveOrder(active ?? null);
+      })
+      .catch(() => {});
+  }, []);
+
   const popularProducts = PRODUCTS.filter((p) => p.isFeatured).slice(0, 4);
   const newArrivals = PRODUCTS.slice(0, 4);
   const walletBalance = useWalletStore((s) => s.balance);
   const { addItem, items: cartItems } = useCartStore();
-  const storeOrders = useOrdersStore((s) => s.orders);
-  const activeOrder = storeOrders.find((o) => o.status === "out_for_delivery" || o.status === "picking" || o.status === "packed");
 
   const lowStockProducts = PRODUCTS
     .filter((p) => p.isActive && p.stock < p.lowStockThreshold)

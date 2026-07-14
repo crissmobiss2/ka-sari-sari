@@ -39,19 +39,7 @@ export async function POST(req: NextRequest) {
   }
 
   if (!process.env.NEXT_PUBLIC_SUPABASE_URL) {
-    const id = `drv-${Date.now()}`;
-    return NextResponse.json({
-      driver: {
-        id,
-        name,
-        phone,
-        vehicle_plate: vehiclePlate.toUpperCase(),
-        vehicle_type: vehicleType ?? "Van",
-        status: "active",
-        area: area ?? "",
-        created_at: new Date().toISOString(),
-      },
-    }, { status: 201 });
+    return NextResponse.json({ error: "Database not configured" }, { status: 503 });
   }
 
   const tempPassword = Math.random().toString(36).slice(-8);

@@ -173,69 +173,108 @@ export default function AdminCreditPage() {
 
   const selectedAccount = selected ? accounts.find((a) => a.id === selected) : null;
 
-  function handleRecordPayment() {
+  async function handleRecordPayment() {
     if (!paymentModal) return;
     const amount = Number(paymentAmount);
     if (!amount || amount <= 0) return;
     const account = accounts.find((a) => a.id === paymentModal);
     if (!account) return;
-    setAccounts((prev) =>
-      prev.map((a) =>
-        a.id === paymentModal
-          ? {
-              ...a,
-              outstanding: Math.max(0, a.outstanding - amount),
-              status: a.outstanding - amount <= 0 ? "good" : a.status,
-            }
-          : a
-      )
-    );
-    toastSuccess(`Payment of ₱${amount.toLocaleString()} recorded for ${account.retailer}`);
-    setPaymentModal(null);
-    setPaymentAmount("");
+    try {
+      const res = await fetch(`/api/admin/credit/payments`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ accountId: paymentModal, amount }),
+      });
+      if (!res.ok) throw new Error(`HTTP ${res.status}`);
+      setAccounts((prev) =>
+        prev.map((a) =>
+          a.id === paymentModal
+            ? {
+                ...a,
+                outstanding: Math.max(0, a.outstanding - amount),
+                status: a.outstanding - amount <= 0 ? "good" : a.status,
+              }
+            : a
+        )
+      );
+      toastSuccess(`Payment of ₱${amount.toLocaleString()} recorded for ${account.retailer}`);
+      setPaymentModal(null);
+      setPaymentAmount("");
+    } catch {
+      toastError("Failed to record payment. Please try again.");
+    }
   }
 
-  function handleSuspend(account: CreditAccount) {
-    if (window.confirm(`Suspend ${account.retailer}? They will lose ordering access.`)) {
+  async function handleSuspend(account: CreditAccount) {
+    if (!window.confirm(`Suspend ${account.retailer}? They will lose ordering access.`)) return;
+    try {
+      const res = await fetch(`/api/admin/credit/${account.id}/status`, {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ status: "suspended" }),
+      });
+      if (!res.ok) throw new Error(`HTTP ${res.status}`);
       setAccounts((prev) =>
         prev.map((a) => (a.id === account.id ? { ...a, status: "suspended" } : a))
       );
       toastError("Account suspended");
+    } catch {
+      toastError("Failed to suspend account. Please try again.");
     }
   }
 
-  function handleReactivate(account: CreditAccount) {
-    setAccounts((prev) =>
-      prev.map((a) => (a.id === account.id ? { ...a, status: "good" } : a))
-    );
-    toastSuccess("Account reactivated");
+  async function handleReactivate(account: CreditAccount) {
+    try {
+      const res = await fetch(`/api/admin/credit/${account.id}/status`, {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ status: "good" }),
+      });
+      if (!res.ok) throw new Error(`HTTP ${res.status}`);
+      setAccounts((prev) =>
+        prev.map((a) => (a.id === account.id ? { ...a, status: "good" } : a))
+      );
+      toastSuccess("Account reactivated");
+    } catch {
+      toastError("Failed to reactivate account. Please try again.");
+    }
   }
 
-  function handleCreateCreditLine() {
+  async function handleCreateCreditLine() {
     const retailerName = newRetailer.trim();
     const limitAmount = Number(newLimit);
     if (!retailerName) return;
     if (!limitAmount || limitAmount <= 0) return;
-    const newId = `ca-${String(accounts.length + 1).padStart(2, "0")}`;
-    const newAccount: CreditAccount = {
-      id: newId,
-      retailer: retailerName,
-      store: `${retailerName} Store`,
-      city: "—",
-      creditLimit: limitAmount,
-      outstanding: 0,
-      oldestInvoiceDays: 0,
-      terms: newTerms,
-      status: "good",
-      lastPayment: "2026-07-06",
-      nextDue: undefined,
-    };
-    setAccounts((prev) => [...prev, newAccount]);
-    toastSuccess(`Credit line created for ${retailerName}`);
-    setCreateModal(false);
-    setNewRetailer("");
-    setNewLimit("");
-    setNewTerms(30);
+    try {
+      const res = await fetch(`/api/admin/credit`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ retailer: retailerName, creditLimit: limitAmount, terms: newTerms }),
+      });
+      if (!res.ok) throw new Error(`HTTP ${res.status}`);
+      const data = await res.json();
+      const newAccount: CreditAccount = data.account ?? {
+        id: `ca-${String(accounts.length + 1).padStart(2, "0")}`,
+        retailer: retailerName,
+        store: `${retailerName} Store`,
+        city: "—",
+        creditLimit: limitAmount,
+        outstanding: 0,
+        oldestInvoiceDays: 0,
+        terms: newTerms,
+        status: "good",
+        lastPayment: new Date().toISOString().split("T")[0],
+        nextDue: undefined,
+      };
+      setAccounts((prev) => [...prev, newAccount]);
+      toastSuccess(`Credit line created for ${retailerName}`);
+      setCreateModal(false);
+      setNewRetailer("");
+      setNewLimit("");
+      setNewTerms(30);
+    } catch {
+      toastError("Failed to create credit line. Please try again.");
+    }
   }
 
   function handleCloseCreateModal() {

@@ -96,7 +96,7 @@ export async function POST(req: NextRequest) {
         const secretKey = process.env.PAYMONGO_SECRET_KEY;
         if (secretKey && sourceId) {
           const encoded = Buffer.from(`${secretKey}:`).toString("base64");
-          await fetch("https://api.paymongo.com/v1/payments", {
+          const chargeRes = await fetch("https://api.paymongo.com/v1/payments", {
             method: "POST",
             headers: { Authorization: `Basic ${encoded}`, "Content-Type": "application/json" },
             body: JSON.stringify({
@@ -112,6 +112,11 @@ export async function POST(req: NextRequest) {
               },
             }),
           });
+          if (!chargeRes.ok) {
+            const errBody = await chargeRes.text();
+            console.error("[webhook] source.chargeable charge failed", chargeRes.status, errBody);
+            return NextResponse.json({ error: "charge failed" }, { status: 500 });
+          }
         }
         break;
       }

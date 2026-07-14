@@ -198,15 +198,25 @@ export default function AdminDriversPage() {
   async function handleAssignRoute() {
     if (!routeDriver || !selectedRoute) return;
     setAssignLoading(true);
-    await new Promise((r) => setTimeout(r, 1000));
-    setRoutes((prev) => prev.map((r) =>
-      r.id === selectedRoute ? { ...r, assignedTo: routeDriver.id } : r.assignedTo === routeDriver.id ? { ...r, assignedTo: undefined } : r
-    ));
     const routeName = routes.find((r) => r.id === selectedRoute)?.name ?? "route";
-    setAssignLoading(false);
-    setRouteDriver(null);
-    setSelectedRoute("");
-    showToast(`${routeDriver.name} assigned to ${routeName}.`);
+    try {
+      const res = await fetch(`/api/admin/drivers/${routeDriver.id}/assign`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ routeId: selectedRoute }),
+      });
+      if (!res.ok) throw new Error(`HTTP ${res.status}`);
+      setRoutes((prev) => prev.map((r) =>
+        r.id === selectedRoute ? { ...r, assignedTo: routeDriver.id } : r.assignedTo === routeDriver.id ? { ...r, assignedTo: undefined } : r
+      ));
+      setRouteDriver(null);
+      setSelectedRoute("");
+      showToast(`${routeDriver.name} assigned to ${routeName}.`);
+    } catch {
+      showToast(`Failed to assign ${routeDriver.name} to ${routeName}. Please try again.`);
+    } finally {
+      setAssignLoading(false);
+    }
   }
 
   const onRoute = drivers.filter((d) => d.status === "on_route").length;

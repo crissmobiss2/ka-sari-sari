@@ -20,7 +20,7 @@ export async function GET(
 
   const { id } = await params;
   if (!process.env.NEXT_PUBLIC_SUPABASE_URL) {
-    return NextResponse.json({ order: null });
+    return NextResponse.json({ error: "Database not configured" }, { status: 503 });
   }
 
   const { data } = await supabaseAdmin
@@ -51,7 +51,7 @@ export async function PATCH(
   const { action, driverId, reason } = body;
 
   if (!process.env.NEXT_PUBLIC_SUPABASE_URL) {
-    return NextResponse.json({ ok: true });
+    return NextResponse.json({ error: "Database not configured" }, { status: 503 });
   }
 
   try {

@@ -13,6 +13,7 @@ export default function StoreProfilePage() {
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [saved, setSaved] = useState(false);
+  const [saveError, setSaveError] = useState("");
   const [citySearch, setCitySearch] = useState("");
   const [cityOpen, setCityOpen] = useState(false);
   const [form, setForm] = useState({
@@ -68,18 +69,24 @@ export default function StoreProfilePage() {
 
   async function handleSave() {
     setSaving(true);
+    setSaveError("");
     try {
-      await fetch("/api/auth/me", {
+      const res = await fetch("/api/auth/me", {
         method: "PATCH",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(form),
       });
+      if (!res.ok) {
+        const body = await res.json().catch(() => ({}));
+        setSaveError(body?.error ?? `Failed to save (${res.status}). Please try again.`);
+      } else {
+        setSaved(true);
+        setTimeout(() => setSaved(false), 3000);
+      }
     } catch {
-      // treat as locally saved
+      setSaveError("Network error. Changes were not saved — please try again.");
     } finally {
       setSaving(false);
-      setSaved(true);
-      setTimeout(() => setSaved(false), 3000);
     }
   }
 
@@ -99,6 +106,13 @@ export default function StoreProfilePage() {
           <div className="flex items-center gap-2 rounded-xl bg-success-50 border border-success-500/25 px-4 py-3 text-sm text-success-700">
             <CheckCircle2 className="h-4 w-4 shrink-0" />
             Store profile updated successfully.
+          </div>
+        )}
+
+        {saveError && (
+          <div className="flex items-center gap-2 rounded-xl bg-danger-50 border border-danger-500/25 px-4 py-3 text-sm text-danger-700">
+            <AlertCircle className="h-4 w-4 shrink-0" />
+            {saveError}
           </div>
         )}
 

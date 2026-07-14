@@ -88,6 +88,18 @@ export default function LoyaltyPage() {
 
   const { balance, transactions } = useLoyaltyStore();
 
+  // Hydrate loyalty balance and transaction history from the server on mount
+  useEffect(() => {
+    fetch("/api/user/loyalty")
+      .then((r) => { if (!r.ok) return null; return r.json(); })
+      .then((data) => {
+        if (data?.balance !== undefined) {
+          useLoyaltyStore.getState().hydrate(data.balance, data.transactions ?? []);
+        }
+      })
+      .catch(() => {});
+  }, []);
+
   useEffect(() => {
     fetch("/api/auth/me")
       .then((r) => r.ok ? r.json() : null)

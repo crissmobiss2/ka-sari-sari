@@ -9,6 +9,7 @@ import { Badge } from "@/components/ui/badge";
 import { cn, formatPHP } from "@/lib/utils";
 import { MOCK_ORDERS } from "@/lib/mock-data";
 import { useOrdersStore } from "@/store/orders";
+import { toastError } from "@/store/toast";
 import type { OrderStatus } from "@/types";
 
 // ─── Icons ────────────────────────────────────────────────────────────────────
@@ -242,34 +243,42 @@ export default function DeliveryDetailPage() {
 
   const photoTaken = photoUrl !== null;
 
-  // ─── Fetch delivery record ID on mount ───────────────────────────────────────
+  // ─── Fetch delivery record ID and order data on mount ────────────────────────
+  // NOTE: GET /api/driver/deliveries/[id] does not exist (only PATCH is exported).
+  // We pull both the delivery ID and any extra retailer details from the list
+  // endpoint in a single request instead.
 
   useEffect(() => {
+    interface DeliveryListItem {
+      id: string;
+      orderId: string;
+      retailerName?: string;
+      customerPhone?: string;
+      retailerPhone?: string;
+    }
     async function fetchDeliveryId() {
       try {
         const res = await fetch("/api/driver/deliveries");
         if (!res.ok) return;
         const data = await res.json();
-        const deliveries: Array<{ id: string; orderId: string }> = data.deliveries ?? [];
+        const deliveries: DeliveryListItem[] = data.deliveries ?? [];
         const found = deliveries.find((d) => d.orderId === id || d.id === id);
-        if (found) setDeliveryId(found.id);
+        if (found) {
+          setDeliveryId(found.id);
+          // Populate order data from list response if the API includes retailer fields
+          if (found.retailerName || found.customerPhone || found.retailerPhone) {
+            setOrderData({
+              retailerName: found.retailerName,
+              customerPhone: found.customerPhone,
+              retailerPhone: found.retailerPhone,
+            });
+          }
+        }
       } catch {
         // deliveryId remains null — API calls will be skipped (local-only fallback)
       }
     }
     fetchDeliveryId();
-  }, [id]);
-
-  // ─── Fetch real order data for name/phone fallback ───────────────────────
-
-  useEffect(() => {
-    if (!id) return;
-    fetch(`/api/driver/deliveries/${id}`)
-      .then(r => r.json())
-      .then(d => {
-        setOrderData(d.delivery ?? d.order ?? null);
-      })
-      .catch(() => {});
   }, [id]);
 
   // ─── Event handlers ───────────────────────────────────────────────────────
@@ -403,8 +412,8 @@ export default function DeliveryDetailPage() {
       }
     }
 
-    // 3. Call API (best-effort; falls back to local-only if unavailable)
-    if (process.env.NEXT_PUBLIC_SUPABASE_URL || deliveryId) {
+    // 3. Call API only when a valid delivery ID was resolved; skip with warning otherwise
+    if (deliveryId) {
       try {
         await fetch(`/api/driver/deliveries/${deliveryId}`, {
           method: "PATCH",
@@ -423,6 +432,9 @@ export default function DeliveryDetailPage() {
       } catch (err) {
         console.warn("Deliver API call failed:", err);
       }
+    } else {
+      // deliveryId could not be resolved — delivery recorded locally only
+      toastError("Could not sync delivery to server — record saved locally.");
     }
 
     // 4. Update local state regardless of API outcome
@@ -444,8 +456,8 @@ export default function DeliveryDetailPage() {
   async function handleConfirmFailed() {
     setIsSubmitting(true);
 
-    // Call API (best-effort)
-    if (process.env.NEXT_PUBLIC_SUPABASE_URL || deliveryId) {
+    // Call API only when a valid delivery ID was resolved
+    if (deliveryId) {
       try {
         await fetch(`/api/driver/deliveries/${deliveryId}`, {
           method: "PATCH",
@@ -459,6 +471,8 @@ export default function DeliveryDetailPage() {
       } catch (err) {
         console.warn("Failed delivery API call failed:", err);
       }
+    } else {
+      toastError("Could not sync failed delivery to server — record saved locally.");
     }
 
     // Update local state regardless of API outcome
@@ -469,9 +483,9 @@ export default function DeliveryDetailPage() {
   }
 
   function handleOpenMaps() {
+    // Use Google Maps universally — works on both Android and iOS.
+    // The geo: scheme was removed because it unconditionally opened two map apps simultaneously.
     if (customer?.lat && customer?.lng) {
-      window.open(`geo:${customer.lat},${customer.lng}`, "_blank");
-      // Fallback: also open Google Maps in case geo: scheme is not supported
       window.open(
         `https://www.google.com/maps/dir/?api=1&destination=${customer.lat},${customer.lng}`,
         "_blank"

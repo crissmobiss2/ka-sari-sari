@@ -15,11 +15,14 @@ export function DevRoleSwitcher() {
   const [loading, setLoading] = useState<string | null>(null);
 
   useEffect(() => {
+    if (process.env.NODE_ENV === "production") return;
     fetch("/api/auth/me")
       .then(r => r.json())
       .then(d => setCurrentRole(d.user?.role ?? null))
       .catch(() => {});
   }, []);
+
+  if (process.env.NODE_ENV === "production") return null;
 
   function switchRole(role: string) {
     setLoading(role);

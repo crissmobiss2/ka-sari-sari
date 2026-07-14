@@ -3,10 +3,20 @@
 import { NextRequest, NextResponse } from "next/server";
 import { getSessionFromRequest } from "@/lib/auth";
 import { pesosToCentavos } from "@/lib/paymongo";
+import { checkRateLimit, getClientIp } from "@/lib/rate-limit";
 
 export async function POST(req: NextRequest) {
   const session = await getSessionFromRequest(req);
   if (!session) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+
+  const rlKey = `payment:topup:${session.userId ?? getClientIp(req)}`;
+  const { allowed, retryAfterSecs } = await checkRateLimit(rlKey, 10, 60_000);
+  if (!allowed) {
+    return NextResponse.json(
+      { error: "Too many requests. Please try again later." },
+      { status: 429, headers: { "Retry-After": String(retryAfterSecs) } }
+    );
+  }
 
   try {
     const { amount } = await req.json();

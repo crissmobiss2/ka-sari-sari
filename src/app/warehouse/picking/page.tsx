@@ -369,10 +369,13 @@ export default function PickingPage() {
       })
     );
     setActivePicking(id);
-    fetch(`/api/warehouse/pick-lists/${id}`, {
+    // Use the collection-level PATCH which handles status updates.
+    // The [id] PATCH handler only branches on action==='complete' or body.itemId;
+    // sending action='start' there is silently ignored.
+    fetch(`/api/warehouse/pick-lists`, {
       method: "PATCH",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ action: "start", status: "in_progress" }),
+      body: JSON.stringify({ id, status: "in_progress" }),
     }).catch(() => {});
   }
 

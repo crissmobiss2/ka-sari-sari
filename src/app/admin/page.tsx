@@ -6,7 +6,7 @@ import Link from "next/link";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { StatusBadge } from "@/components/ui/status-badge";
 import { formatPHP, formatDateTime, type OrderStatus } from "@/lib/utils";
-import { ADMIN_STATS } from "@/lib/mock-data";
+import { ADMIN_STATS, ADMIN_RECENT_ORDERS } from "@/lib/mock-data";
 import type { AdminStats } from "@/types";
 
 // ── Normalized order shape for the dashboard table ────────────────────────────
@@ -89,7 +89,10 @@ export default function AdminDashboardPage() {
   const [timeStr, setTimeStr] = useState<string>("");
   const [dateStr, setDateStr] = useState<string>("");
   const [stats, setStats] = useState<AdminStats>(ADMIN_STATS);
-  const [recentOrders, setRecentOrders] = useState<DisplayOrder[]>([]);
+  const [recentOrders, setRecentOrders] = useState<DisplayOrder[]>(
+    ADMIN_RECENT_ORDERS.map(normalizeOrder)
+  );
+  const [usingFallback, setUsingFallback] = useState(false);
   const [loading, setLoading] = useState(true);
 
   // Clock
@@ -112,9 +115,12 @@ export default function AdminDashboardPage() {
       if (data.stats) setStats(data.stats as AdminStats);
       if (Array.isArray(data.recentOrders) && data.recentOrders.length > 0) {
         setRecentOrders(data.recentOrders.map(normalizeOrder));
+        setUsingFallback(false);
       }
     } catch {
-      // Keep fallback data already in state
+      // Fall back to mock data for recentOrders; stats already has ADMIN_STATS as default
+      setRecentOrders(ADMIN_RECENT_ORDERS.map(normalizeOrder));
+      setUsingFallback(true);
     } finally {
       setLoading(false);
     }
@@ -258,6 +264,14 @@ export default function AdminDashboardPage() {
           </CardContent>
         </Card>
       </div>
+
+      {/* Fallback banner */}
+      {usingFallback && !loading && (
+        <div className="rounded-xl border border-warning-200 bg-warning-50 px-4 py-2.5 text-sm text-warning-700 flex items-center gap-2">
+          <AlertTriangle className="h-4 w-4 shrink-0" />
+          Unable to load live data — showing cached orders. Check your connection or API status.
+        </div>
+      )}
 
       {/* Recent orders */}
       <Card>

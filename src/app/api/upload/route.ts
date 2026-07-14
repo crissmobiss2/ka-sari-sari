@@ -2,10 +2,21 @@
 import { NextRequest, NextResponse } from "next/server";
 import { getSessionFromRequest } from "@/lib/auth";
 import { put } from "@vercel/blob";
+import { checkRateLimit, getClientIp } from "@/lib/rate-limit";
 
 export async function POST(req: NextRequest) {
   const session = await getSessionFromRequest(req);
   if (!session) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+
+  // 20 uploads per hour per user
+  const rlKey = `upload:${session.userId ?? getClientIp(req)}`;
+  const { allowed, retryAfterSecs } = await checkRateLimit(rlKey, 20, 60 * 60_000);
+  if (!allowed) {
+    return NextResponse.json(
+      { error: "Upload limit exceeded. Please try again later." },
+      { status: 429, headers: { "Retry-After": String(retryAfterSecs) } }
+    );
+  }
 
   if (!process.env.BLOB_READ_WRITE_TOKEN) {
     // Return a placeholder URL in dev mode

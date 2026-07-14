@@ -18,21 +18,33 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: "subject and message are required" }, { status: 400 });
     }
 
-    const ticketId = `TKT-${Date.now()}`;
-
     if (useSupabase) {
-      const { error } = await supabaseAdmin.from("support_tickets").insert({
-        user_id: session.userId,
-        category: category ?? "general",
-        subject: subject.trim().slice(0, 255),
-        message: message.trim().slice(0, 5000),
-        status: "open",
-      });
+      const { data: ticket, error } = await supabaseAdmin
+        .from("support_tickets")
+        .insert({
+          user_id: session.userId,
+          category: category ?? "general",
+          subject: subject.trim().slice(0, 255),
+          message: message.trim().slice(0, 5000),
+          status: "open",
+        })
+        .select("id")
+        .single();
+
       if (error) {
         console.error("[support/ticket] DB write error:", error.code, error.message);
+        return NextResponse.json({ error: "Failed to create ticket" }, { status: 500 });
       }
+
+      return NextResponse.json({
+        success: true,
+        ticketId: ticket.id,
+        estimatedResponse: "Within 24 hours",
+      });
     }
 
+    // Dev/offline fallback
+    const ticketId = `TKT-${Date.now()}`;
     return NextResponse.json({
       success: true,
       ticketId,

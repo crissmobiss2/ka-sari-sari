@@ -9,7 +9,7 @@ const useSupabase = !!process.env.NEXT_PUBLIC_SUPABASE_URL;
 
 export async function POST(req: NextRequest) {
   const ip = getClientIp(req);
-  const { allowed, retryAfterSecs } = checkRateLimit(`login:${ip}`, 10, 60_000);
+  const { allowed, retryAfterSecs } = await checkRateLimit(`login:${ip}`, 10, 60_000);
   if (!allowed) {
     return NextResponse.json(
       { error: `Too many login attempts. Try again in ${retryAfterSecs}s.` },

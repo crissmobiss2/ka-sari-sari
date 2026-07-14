@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { getSessionFromRequest } from "@/lib/auth";
+import { checkRateLimit, getClientIp } from "@/lib/rate-limit";
 
 export async function POST(req: NextRequest) {
   try {
@@ -7,6 +8,16 @@ export async function POST(req: NextRequest) {
     if (!session) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
+
+    const rlKey = `payment:maya:${session.userId ?? getClientIp(req)}`;
+    const { allowed, retryAfterSecs } = await checkRateLimit(rlKey, 10, 60_000);
+    if (!allowed) {
+      return NextResponse.json(
+        { error: "Too many requests. Please try again later." },
+        { status: 429, headers: { "Retry-After": String(retryAfterSecs) } }
+      );
+    }
+
     const { amount, orderId, description, email, name, phone } = await req.json();
 
     if (!amount || amount <= 0) {
@@ -39,6 +50,7 @@ export async function POST(req: NextRequest) {
               failed: `${baseUrl}/checkout/failed?orderId=${orderId}&method=maya`,
             },
             description: description || `Ka Sari-Sari Order ${orderId}`,
+            metadata: { order_id: orderId },
             billing: {
               name: name || "Ka Sari-Sari Customer",
               email: email || "customer@kasarisari.ph",
