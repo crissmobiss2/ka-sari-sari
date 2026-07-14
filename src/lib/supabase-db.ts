@@ -460,17 +460,18 @@ export async function createOrder(order: {
   if (error) throw new Error(error.message);
 
   if (order.items.length > 0) {
-    await supabaseAdmin.from("order_items").insert(
+    const { error: itemsError } = await supabaseAdmin.from("order_items").insert(
       order.items.map((i) => ({
         order_id: order.id,
-        product_id: i.productId,
+        product_id: i.productId || null,
         product_name: i.productName,
-        product_image: i.productImage,
+        product_image: i.productImage ?? null,
         qty: i.qty,
         unit_price: i.unitPrice,
         subtotal: i.subtotal,
       }))
     );
+    if (itemsError) throw new Error(`Failed to insert order items: ${itemsError.message}`);
   }
 
   return rowToOrder(data);
