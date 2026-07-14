@@ -1,12 +1,13 @@
 "use client";
 
-import { useState, useEffect } from "react";
-import { ScanLine, ChevronRight, CheckCircle2, Clock, Package, ChevronDown } from "lucide-react";
+import { useState, useEffect, useRef } from "react";
+import { ScanLine, ChevronRight, CheckCircle2, Clock, Package, ChevronDown, Camera } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { cn } from "@/lib/utils";
-import { PICK_LISTS } from "@/lib/mock-data";
+import { PICK_LISTS, PRODUCTS } from "@/lib/mock-data";
+import { BarcodeScanner } from "@/components/pos/barcode-scanner";
 import type { PickList } from "@/types";
 
 type FilterTab = "all" | "open" | "in_progress" | "completed";
@@ -101,6 +102,8 @@ function PickListCard({
   onAction,
   onToggleItem,
   onComplete,
+  onOpenScanner,
+  scanFeedback,
 }: {
   pl: PickList;
   isExpanded: boolean;
@@ -108,6 +111,8 @@ function PickListCard({
   onAction: (id: string) => void;
   onToggleItem: (itemId: string, checked: boolean) => void;
   onComplete: (id: string) => void;
+  onOpenScanner?: () => void;
+  scanFeedback?: { ok: boolean; text: string } | null;
 }) {
   const picked = getPickedCount(pl);
   const total = getTotalCount(pl);
@@ -162,10 +167,31 @@ function PickListCard({
         {/* Expanded picking view — shown when active */}
         {isExpanded ? (
           <div className="space-y-3 pt-1">
-            <div className="flex items-center gap-2 text-sm font-semibold text-foreground border-b border-border pb-2">
-              <ChevronDown className="h-4 w-4 text-blue-500" />
-              Pick items in order
+            <div className="flex items-center justify-between border-b border-border pb-2">
+              <div className="flex items-center gap-2 text-sm font-semibold text-foreground">
+                <ChevronDown className="h-4 w-4 text-blue-500" />
+                Pick items in order
+              </div>
+              {onOpenScanner && (
+                <button
+                  onClick={onOpenScanner}
+                  className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-brand-500 text-white text-sm font-semibold hover:bg-brand-600 transition-colors"
+                >
+                  <Camera className="h-4 w-4" />
+                  Scan
+                </button>
+              )}
             </div>
+            {scanFeedback && (
+              <div className={cn(
+                "rounded-xl px-3 py-2.5 text-sm font-semibold",
+                scanFeedback.ok
+                  ? "bg-success-50 text-success-700 border border-success-200"
+                  : "bg-danger-50 text-danger-700 border border-danger-200"
+              )}>
+                {scanFeedback.text}
+              </div>
+            )}
             {pl.items.map((item) => {
               const isAlreadyPicked = item.status === "picked";
               const isChecked = isAlreadyPicked || !!checkedItems[item.id];
@@ -323,6 +349,9 @@ export default function PickingPage() {
   const [loading, setLoading] = useState(true);
   const [activePicking, setActivePicking] = useState<string | null>(null);
   const [checkedItems, setCheckedItems] = useState<Record<string, boolean>>({});
+  const [showScanner, setShowScanner] = useState(false);
+  const [scanFeedback, setScanFeedback] = useState<{ ok: boolean; text: string } | null>(null);
+  const feedbackTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   useEffect(() => {
     async function fetchPickLists() {
@@ -398,6 +427,41 @@ export default function PickingPage() {
         // Fire-and-forget — optimistic UI update already applied
       });
     }
+  }
+
+  function handleScan(code: string) {
+    if (!activePicking) return;
+    const pl = lists.find((l) => l.id === activePicking);
+    if (!pl) return;
+
+    // Look up product in catalog by SKU/id
+    const product = PRODUCTS.find(
+      (p) =>
+        p.sku.toLowerCase() === code.toLowerCase() ||
+        p.id.toLowerCase() === code.toLowerCase()
+    );
+
+    // Find unfinished item matching this product
+    const item = pl.items.find((i) => {
+      if (i.status === "picked" || checkedItems[i.id]) return false;
+      if (product) {
+        const pName = product.name.toLowerCase();
+        const iName = i.productName.toLowerCase();
+        return pName.includes(iName.split(" ")[0]) || iName.includes(pName.split(" ")[0]);
+      }
+      return i.productName.toLowerCase().includes(code.toLowerCase());
+    });
+
+    if (feedbackTimerRef.current) clearTimeout(feedbackTimerRef.current);
+
+    if (item) {
+      handleToggleItem(item.id, true);
+      setScanFeedback({ ok: true, text: `✓ Picked: ${item.productName}` });
+    } else {
+      setScanFeedback({ ok: false, text: `No unpicked match for: ${code}` });
+    }
+
+    feedbackTimerRef.current = setTimeout(() => setScanFeedback(null), 2500);
   }
 
   async function handleComplete(id: string) {
@@ -488,10 +552,22 @@ export default function PickingPage() {
               onAction={handleAction}
               onToggleItem={handleToggleItem}
               onComplete={handleComplete}
+              onOpenScanner={activePicking === pl.id ? () => setShowScanner(true) : undefined}
+              scanFeedback={activePicking === pl.id ? scanFeedback : null}
             />
           ))
         )}
       </div>
+
+      {showScanner && (
+        <BarcodeScanner
+          onScan={(code) => {
+            handleScan(code);
+            setShowScanner(false);
+          }}
+          onClose={() => setShowScanner(false)}
+        />
+      )}
     </div>
   );
 }

@@ -8,8 +8,10 @@ import {
   ChevronUp,
   CheckCircle2,
   Keyboard,
+  Camera,
   X,
 } from "lucide-react";
+import { BarcodeScanner } from "@/components/pos/barcode-scanner";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -123,6 +125,7 @@ export default function ReceivingPage() {
   // Fix #4: allow multiple cards expanded at once via a Set
   const [expandedIds, setExpandedIds] = useState<Set<string>>(new Set());
   const [form, setForm] = useState<ReceiveFormState | null>(null);
+  const [showScanner, setShowScanner] = useState(false);
 
   async function fetchPOs() {
     try {
@@ -349,6 +352,7 @@ export default function ReceivingPage() {
                   onToggleManual={() =>
                     setForm((f) => f && { ...f, manualMode: !f.manualMode, barcode: "" })
                   }
+                  onOpenScanner={() => setShowScanner(true)}
                 />
               ))}
             </div>
@@ -364,6 +368,16 @@ export default function ReceivingPage() {
             <p className="text-muted-foreground mt-1">No purchase orders are awaiting receipt.</p>
           </CardContent>
         </Card>
+      )}
+
+      {showScanner && (
+        <BarcodeScanner
+          onScan={(code) => {
+            handleBarcodeChange(code);
+            setShowScanner(false);
+          }}
+          onClose={() => setShowScanner(false)}
+        />
       )}
     </div>
   );
@@ -383,6 +397,7 @@ function ReceiptCard({
   onConfirm,
   onReject,
   onToggleManual,
+  onOpenScanner,
 }: {
   gr: ReceivingPO;
   isExpanded: boolean;
@@ -395,6 +410,7 @@ function ReceiptCard({
   onConfirm: () => void;
   onReject: (id: string) => void;
   onToggleManual: () => void;
+  onOpenScanner: () => void;
 }) {
   const totalExpected = gr.items.reduce((s, i) => s + i.expectedQty, 0);
   const totalReceived = gr.items.reduce((s, i) => s + i.receivedQty, 0);
@@ -541,15 +557,25 @@ function ReceiptCard({
                           <label className="text-sm font-medium text-muted-foreground">
                             Barcode / SKU
                           </label>
-                          <input
-                            type="text"
-                            inputMode="text"
-                            autoFocus
-                            placeholder={`Scan or type SKU — expected: ${item.sku}`}
-                            value={form.barcode}
-                            onChange={(e) => onBarcodeChange(e.target.value)}
-                            className="w-full bg-background border border-border rounded-xl px-4 py-4 text-lg font-mono focus:outline-none focus:ring-2 focus:ring-brand-500 placeholder:text-muted-foreground/50"
-                          />
+                          <div className="relative">
+                            <input
+                              type="text"
+                              inputMode="text"
+                              autoFocus
+                              placeholder={`Scan or type SKU — expected: ${item.sku}`}
+                              value={form.barcode}
+                              onChange={(e) => onBarcodeChange(e.target.value)}
+                              className="w-full bg-background border border-border rounded-xl px-4 py-4 pr-14 text-lg font-mono focus:outline-none focus:ring-2 focus:ring-brand-500 placeholder:text-muted-foreground/50"
+                            />
+                            <button
+                              type="button"
+                              onClick={onOpenScanner}
+                              title="Scan with camera"
+                              className="absolute right-3 top-1/2 -translate-y-1/2 flex h-9 w-9 items-center justify-center rounded-xl bg-brand-500 text-white hover:bg-brand-600 transition-colors"
+                            >
+                              <Camera className="h-4 w-4" />
+                            </button>
+                          </div>
                           {form.barcode && form.barcode !== item.sku && (
                             <p className="text-xs text-warning-600 font-medium">
                               SKU mismatch — expected {item.sku}
