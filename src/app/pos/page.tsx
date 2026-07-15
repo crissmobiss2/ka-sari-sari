@@ -438,14 +438,14 @@ export default function RetailerPOSPage() {
                   <div className="space-y-3">
                     <div className="rounded-xl bg-surface-100 p-3 text-center">
                       <p className="text-xs text-muted-foreground mb-1">Cash received</p>
-                      <p className="font-display text-2xl font-black text-foreground">{formatPHP(parseInt(tendered) || 0)}</p>
+                      <p className="font-display text-2xl font-black text-surface-900">{formatPHP(parseInt(tendered) || 0)}</p>
                     </div>
                     <div className="grid grid-cols-4 gap-1">
                       {[100, 200, 500, 1000].map((amt) => (
                         <button
                           key={amt}
                           onClick={() => setTendered(String(amt))}
-                          className="rounded-lg bg-surface-100 hover:bg-surface-200 text-xs font-semibold py-1.5 transition-colors"
+                          className="rounded-lg bg-surface-100 hover:bg-surface-200 text-xs font-semibold py-1.5 transition-colors text-surface-900"
                         >
                           ₱{amt}
                         </button>
