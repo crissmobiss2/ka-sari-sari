@@ -891,12 +891,16 @@ export async function reviewCreditApplication(
 // ── Admin Stats ───────────────────────────────────────────────────────────────
 
 export async function getAdminStats(): Promise<AdminStats> {
-  const today = new Date();
-  today.setHours(0, 0, 0, 0);
+  // Use PHT (UTC+8) midnight as "start of today" so orders placed in the
+  // Philippine morning aren't counted as yesterday due to UTC offset.
+  const PHT_OFFSET_MS = 8 * 60 * 60 * 1000;
+  const nowPHT = new Date(Date.now() + PHT_OFFSET_MS);
+  nowPHT.setUTCHours(0, 0, 0, 0);
+  const todayStart = new Date(nowPHT.getTime() - PHT_OFFSET_MS);
 
   const [allOrders, todayOrders, retailers] = await Promise.all([
     supabaseAdmin.from("orders").select("id, total, status"),
-    supabaseAdmin.from("orders").select("id, total").gte("created_at", today.toISOString()),
+    supabaseAdmin.from("orders").select("id, total").gte("created_at", todayStart.toISOString()),
     supabaseAdmin.from("users").select("id").eq("role", "retailer").eq("status", "active"),
   ]);
 
