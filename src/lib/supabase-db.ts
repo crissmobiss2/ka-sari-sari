@@ -376,7 +376,23 @@ export async function getOrdersByUser(retailerId: string): Promise<DBOrder[]> {
     .select("*, items:order_items(*)")
     .eq("retailer_id", retailerId)
     .order("created_at", { ascending: false });
-  return (data ?? []).map(rowToOrder);
+  return (data ?? []).map((row) => {
+    const order = rowToOrder(row);
+    const r = row as Record<string, unknown>;
+    if (r.items) {
+      order.items = (r.items as Record<string, unknown>[]).map((i) => ({
+        id: i.id as string,
+        orderId: i.order_id as string,
+        productId: i.product_id as string,
+        productName: i.product_name as string,
+        productImage: i.product_image as string | undefined,
+        qty: Number(i.qty),
+        unitPrice: Number(i.unit_price),
+        subtotal: Number(i.subtotal),
+      }));
+    }
+    return order;
+  });
 }
 
 export async function getAllOrders(opts: {
