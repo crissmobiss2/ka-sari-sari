@@ -45,8 +45,8 @@ function Numpad({ value, onChange }: { value: string; onChange: (v: string) => v
           className={cn(
             "rounded-xl h-12 text-base font-semibold transition-colors active:scale-95",
             k === "C" ? "bg-danger-100 text-danger-700 hover:bg-danger-200"
-            : k === "⌫" ? "bg-surface-200 text-foreground hover:bg-surface-300"
-            : "bg-surface-100 text-foreground hover:bg-surface-200"
+            : k === "⌫" ? "bg-surface-200 text-surface-900 hover:bg-surface-300"
+            : "bg-surface-100 text-surface-900 hover:bg-surface-200"
           )}
         >
           {k}
