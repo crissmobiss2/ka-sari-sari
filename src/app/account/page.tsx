@@ -92,6 +92,7 @@ export default function AccountPage() {
     utilization: CREDIT_UTILIZATION,
   });
   const [subDaysLeft, setSubDaysLeft] = useState<number | null>(null);
+  const [subIsActive, setSubIsActive] = useState<boolean | null>(null); // null = not yet loaded
 
   const [userInfo, setUserInfo] = useState({
     displayName: "Maria Santos",
@@ -141,14 +142,16 @@ export default function AccountPage() {
       .catch(() => {});
   }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
-  // Fetch subscription info to show dynamic days-left
+  // Fetch subscription info
   useEffect(() => {
     fetch("/api/user/subscription")
       .then((r) => { if (!r.ok) return null; return r.json(); })
       .then((data) => {
-        if (data?.daysLeft !== undefined) setSubDaysLeft(data.daysLeft);
+        const sub = data?.subscription;
+        setSubIsActive(sub?.status === "active");
+        if (sub?.daysLeft !== undefined) setSubDaysLeft(sub.daysLeft);
       })
-      .catch(() => {});
+      .catch(() => { setSubIsActive(false); });
   }, []);
 
   // Check push support and fetch VAPID key
@@ -596,24 +599,38 @@ export default function AccountPage() {
         </div>
 
         {/* Subscription status */}
-        <div className="rounded-2xl border border-success-500/25 bg-success-50 p-5">
-          <div className="flex items-start gap-3">
-            <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-success-100 text-success-600">
-              <Shield className="h-4 w-4" />
-            </div>
-            <div className="flex-1">
-              <p className="text-sm font-semibold text-success-700">Active Subscription</p>
-              <p className="text-xs text-success-600 mt-0.5">Platform access · Free Trial · Year 1</p>
-              <div className="flex items-center gap-2 mt-2">
-                <Check className="h-3.5 w-3.5 text-success-500" />
-                <span className="text-xs text-success-600">Unlimited orders</span>
-                <span className="text-success-300">·</span>
-                <Clock className="h-3 w-3 text-success-500" />
-                <span className="text-xs text-success-600">{subDaysLeft !== null ? subDaysLeft : '—'} days left</span>
+        {subIsActive ? (
+          <div className="rounded-2xl border border-success-500/25 bg-success-50 p-5">
+            <div className="flex items-start gap-3">
+              <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-success-100 text-success-600">
+                <Shield className="h-4 w-4" />
+              </div>
+              <div className="flex-1">
+                <p className="text-sm font-semibold text-success-700">Active Subscription</p>
+                <p className="text-xs text-success-600 mt-0.5">Platform access · Free Trial · Year 1</p>
+                <div className="flex items-center gap-2 mt-2">
+                  <Check className="h-3.5 w-3.5 text-success-500" />
+                  <span className="text-xs text-success-600">Unlimited orders</span>
+                  <span className="text-success-300">·</span>
+                  <Clock className="h-3 w-3 text-success-500" />
+                  <span className="text-xs text-success-600">{subDaysLeft !== null ? subDaysLeft : '—'} days left</span>
+                </div>
               </div>
             </div>
           </div>
-        </div>
+        ) : subIsActive === false ? (
+          <div className="rounded-2xl border border-border bg-card p-5">
+            <div className="flex items-start gap-3">
+              <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-surface-100">
+                <Shield className="h-4 w-4 text-muted-foreground" />
+              </div>
+              <div className="flex-1">
+                <p className="text-sm font-semibold text-foreground">No Subscription</p>
+                <p className="text-xs text-muted-foreground mt-0.5">Ka Sari-Sari Platform Access</p>
+              </div>
+            </div>
+          </div>
+        ) : null}
 
         {/* ── Push Notifications Section ──────────────────────────────────────── */}
         <div className="rounded-2xl border border-border bg-card shadow-card p-5 space-y-4">
