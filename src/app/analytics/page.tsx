@@ -341,7 +341,7 @@ export default function AnalyticsPage() {
             {stats.monthlyData.map((d) => {
               const heightPct = (d.value / maxMonthlyValue) * 100;
               return (
-                <div key={d.month} className="flex flex-col items-center gap-1.5 flex-1">
+                <div key={d.month} className="flex flex-col justify-end flex-1 self-stretch">
                   <div
                     className={cn(
                       "w-full rounded-t-lg transition-all",
