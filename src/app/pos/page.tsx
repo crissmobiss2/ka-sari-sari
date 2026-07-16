@@ -525,7 +525,7 @@ export default function RetailerPOSPage() {
                       <div className="flex items-center gap-1 shrink-0">
                         <button
                           onClick={() => updateQty(item.product.id, -1)}
-                          className="flex h-6 w-6 items-center justify-center rounded-lg bg-surface-100 hover:bg-surface-200 transition-colors"
+                          className="flex h-6 w-6 items-center justify-center rounded-lg bg-surface-100 hover:bg-surface-200 text-surface-900 transition-colors"
                         >
                           <Minus className="h-3 w-3" />
                         </button>
