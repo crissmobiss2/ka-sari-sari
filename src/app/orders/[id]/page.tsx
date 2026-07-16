@@ -168,7 +168,7 @@ function StatusHero({ status, createdAt }: { status: OrderStatus; createdAt: str
         </p>
         <p className={cn(
           "text-sm mt-1 font-medium",
-          isOutForDelivery ? "text-white/80" : isDelivered ? "text-white/80" : "text-warning-600"
+          isOutForDelivery ? "text-white/80" : isDelivered ? "text-white/80" : isCancelled ? "text-danger-700" : "text-warning-700"
         )}>{subtext}</p>
       </div>
     </div>
