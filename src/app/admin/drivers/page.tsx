@@ -318,11 +318,11 @@ export default function AdminDriversPage() {
               {/* Delivery stats */}
               <div className="grid grid-cols-2 gap-3">
                 <div className="rounded-xl bg-surface-50 p-2.5 text-center">
-                  <p className="text-lg font-bold text-foreground tabular-nums">{driver.deliveriesToday}</p>
+                  <p className="text-lg font-bold text-surface-900 tabular-nums">{driver.deliveriesToday}</p>
                   <p className="text-[11px] text-muted-foreground">Today</p>
                 </div>
                 <div className="rounded-xl bg-surface-50 p-2.5 text-center">
-                  <p className="text-lg font-bold text-foreground tabular-nums">{driver.deliveriesTotal.toLocaleString("en-PH")}</p>
+                  <p className="text-lg font-bold text-surface-900 tabular-nums">{driver.deliveriesTotal.toLocaleString("en-PH")}</p>
                   <p className="text-[11px] text-muted-foreground">All Time</p>
                 </div>
               </div>
@@ -498,7 +498,7 @@ export default function AdminDriversPage() {
               ].map(({ label, value }) => (
                 <div key={label} className="rounded-xl bg-surface-50 px-3 py-3">
                   <p className="text-[10px] text-muted-foreground uppercase tracking-wide font-medium">{label}</p>
-                  <p className="text-sm font-semibold text-foreground mt-0.5">{value}</p>
+                  <p className="text-sm font-semibold text-surface-900 mt-0.5">{value}</p>
                 </div>
               ))}
             </div>
@@ -513,7 +513,7 @@ export default function AdminDriversPage() {
                   { label: "All Time", value: viewDriver.deliveriesTotal.toLocaleString("en-PH") },
                 ].map(({ label, value }) => (
                   <div key={label} className="rounded-xl bg-surface-50 py-3 text-center">
-                    <p className="text-xl font-black text-foreground tabular-nums">{value}</p>
+                    <p className="text-xl font-black text-surface-900 tabular-nums">{value}</p>
                     <p className="text-[10px] text-muted-foreground">{label}</p>
                   </div>
                 ))}

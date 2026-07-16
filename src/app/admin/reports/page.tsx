@@ -306,7 +306,7 @@ function GenerateReportSection() {
             {/* Date range selector */}
             <div className="relative">
               <select
-                className="appearance-none rounded-lg border border-border bg-surface-50 pl-3 pr-8 py-2 text-sm font-medium text-foreground focus:outline-none focus:ring-2 focus:ring-brand-500 cursor-pointer"
+                className="appearance-none rounded-lg border border-border bg-surface-50 pl-3 pr-8 py-2 text-sm font-medium text-surface-900 focus:outline-none focus:ring-2 focus:ring-brand-500 cursor-pointer"
                 value={dateRange}
                 onChange={(e) => setDateRange(e.target.value as DateRange)}
               >
@@ -339,7 +339,7 @@ function GenerateReportSection() {
                 className={`flex items-center gap-2 rounded-xl border px-4 py-3 text-sm font-medium transition-all text-left
                   ${selected
                     ? "border-brand-500 bg-brand-50 text-brand-700 shadow-sm"
-                    : "border-border bg-surface-50 text-foreground hover:border-brand-300 hover:bg-brand-50/50"
+                    : "border-border bg-surface-50 text-surface-900 hover:border-brand-300 hover:bg-brand-50/50"
                   }`}
               >
                 <Icon className={`h-4 w-4 shrink-0 ${selected ? "text-brand-600" : "text-muted-foreground"}`} />
@@ -360,7 +360,7 @@ function GenerateReportSection() {
               ].map((kpi) => (
                 <div key={kpi.label} className="rounded-xl border border-border bg-surface-50 px-4 py-3">
                   <p className="text-xs text-muted-foreground">{kpi.label}</p>
-                  <p className="font-display text-xl font-bold text-foreground mt-0.5">{kpi.value}</p>
+                  <p className="font-display text-xl font-bold text-surface-900 mt-0.5">{kpi.value}</p>
                 </div>
               ))}
             </div>
@@ -413,7 +413,7 @@ function GenerateReportSection() {
               ].map((kpi) => (
                 <div key={kpi.label} className="rounded-xl border border-border bg-surface-50 px-4 py-3">
                   <p className="text-xs text-muted-foreground">{kpi.label}</p>
-                  <p className="font-display text-xl font-bold text-foreground mt-0.5">{kpi.value}</p>
+                  <p className="font-display text-xl font-bold text-surface-900 mt-0.5">{kpi.value}</p>
                 </div>
               ))}
             </div>
@@ -460,7 +460,7 @@ function GenerateReportSection() {
               ].map((kpi) => (
                 <div key={kpi.label} className="rounded-xl border border-border bg-surface-50 px-4 py-3">
                   <p className="text-xs text-muted-foreground">{kpi.label}</p>
-                  <p className="font-display text-xl font-bold text-foreground mt-0.5">{kpi.value}</p>
+                  <p className="font-display text-xl font-bold text-surface-900 mt-0.5">{kpi.value}</p>
                 </div>
               ))}
             </div>
@@ -509,7 +509,7 @@ function GenerateReportSection() {
               ].map((kpi) => (
                 <div key={kpi.label} className="rounded-xl border border-border bg-surface-50 px-4 py-3">
                   <p className="text-xs text-muted-foreground">{kpi.label}</p>
-                  <p className="font-display text-xl font-bold text-foreground mt-0.5">{kpi.value}</p>
+                  <p className="font-display text-xl font-bold text-surface-900 mt-0.5">{kpi.value}</p>
                 </div>
               ))}
             </div>

@@ -83,21 +83,21 @@ export default function SubscriptionPage() {
               <div className="grid grid-cols-2 gap-3">
                 <div className={`rounded-xl p-3 ${isActive ? "bg-white/60" : "bg-surface-50"}`}>
                   <p className={`text-xs mb-0.5 ${isActive ? "text-success-600" : "text-muted-foreground"}`}>Plan</p>
-                  <p className={`text-sm font-bold ${isActive ? "text-success-700" : "text-foreground"}`}>
+                  <p className={`text-sm font-bold ${isActive ? "text-success-700" : "text-surface-900"}`}>
                     {sub.plan === "free_trial" ? "Free Trial (Year 1)" : sub.plan.charAt(0).toUpperCase() + sub.plan.slice(1)}
                   </p>
                 </div>
                 <div className={`rounded-xl p-3 ${isActive ? "bg-white/60" : "bg-surface-50"}`}>
                   <p className={`text-xs mb-0.5 ${isActive ? "text-success-600" : "text-muted-foreground"}`}>Amount paid</p>
-                  <p className={`text-sm font-bold ${isActive ? "text-success-700" : "text-foreground"}`}>{sub.amount === 0 ? "Free" : formatPHP(sub.amount)}</p>
+                  <p className={`text-sm font-bold ${isActive ? "text-success-700" : "text-surface-900"}`}>{sub.amount === 0 ? "Free" : formatPHP(sub.amount)}</p>
                 </div>
                 <div className={`rounded-xl p-3 ${isActive ? "bg-white/60" : "bg-surface-50"}`}>
                   <p className={`text-xs mb-0.5 ${isActive ? "text-success-600" : "text-muted-foreground"}`}>Renews on</p>
-                  <p className={`text-sm font-bold ${isActive ? "text-success-700" : "text-foreground"}`}>{sub.renewalDate}</p>
+                  <p className={`text-sm font-bold ${isActive ? "text-success-700" : "text-surface-900"}`}>{sub.renewalDate}</p>
                 </div>
                 <div className={`rounded-xl p-3 ${isActive ? "bg-white/60" : "bg-surface-50"}`}>
                   <p className={`text-xs mb-0.5 ${isActive ? "text-success-600" : "text-muted-foreground"}`}>Days remaining</p>
-                  <p className={`text-sm font-bold ${isActive ? "text-success-700" : "text-foreground"}`}>{sub.daysLeft} days</p>
+                  <p className={`text-sm font-bold ${isActive ? "text-success-700" : "text-surface-900"}`}>{sub.daysLeft} days</p>
                 </div>
               </div>
             )}

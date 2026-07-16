@@ -587,7 +587,7 @@ export default function WhatsAppSettingsPage() {
                   <button
                     type="button"
                     onClick={() => handleReEnable(retailer.id)}
-                    className="inline-flex items-center gap-1.5 rounded-lg border border-border bg-surface-50 px-3 py-1.5 text-xs font-medium text-foreground hover:bg-surface-100 transition-colors"
+                    className="inline-flex items-center gap-1.5 rounded-lg border border-border bg-surface-50 px-3 py-1.5 text-xs font-medium text-surface-900 hover:bg-surface-100 transition-colors"
                   >
                     <RotateCcw className="h-3 w-3" />
                     Re-enable

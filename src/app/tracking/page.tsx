@@ -107,7 +107,7 @@ function LiveLocationSection({ location }: { location: DriverLocation | null }) 
           <div className="flex items-start gap-3 rounded-xl bg-surface-50 border border-border px-4 py-3">
             <MapPin className="h-4 w-4 text-brand-500 shrink-0 mt-0.5" />
             <div className="min-w-0">
-              <p className="text-xs font-semibold text-foreground">Current GPS Coordinates</p>
+              <p className="text-xs font-semibold text-surface-900">Current GPS Coordinates</p>
               <p className="text-xs text-muted-foreground font-mono mt-0.5">
                 {location.lat.toFixed(6)}°N, {location.lng.toFixed(6)}°E
               </p>

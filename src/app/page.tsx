@@ -175,7 +175,7 @@ export default function HomePage() {
       <section id="pricing" className="py-20 px-4 bg-surface-50">
         <div className="mx-auto max-w-xl text-center">
           <p className="text-xs font-semibold uppercase tracking-widest text-brand-500 mb-2">Simple pricing</p>
-          <h2 className="font-display text-3xl font-bold text-foreground mb-4">Simple pricing. No surprises.</h2>
+          <h2 className="font-display text-3xl font-bold text-surface-900 mb-4">Simple pricing. No surprises.</h2>
           <div className="rounded-2xl border border-border bg-card shadow-card-md p-8 text-left mt-8">
             <div className="flex items-start justify-between mb-2">
               <div>

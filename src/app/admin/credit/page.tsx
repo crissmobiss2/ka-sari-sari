@@ -658,7 +658,7 @@ export default function AdminCreditPage() {
                   >
                     <div className="flex items-start justify-between gap-3">
                       <div className="flex items-center gap-3 flex-1 min-w-0">
-                        <div className={cn("flex h-9 w-9 shrink-0 items-center justify-center rounded-full text-sm font-bold", a.status === "good" ? "bg-brand-100 text-brand-600" : "bg-surface-200 text-foreground")}>
+                        <div className={cn("flex h-9 w-9 shrink-0 items-center justify-center rounded-full text-sm font-bold", a.status === "good" ? "bg-brand-100 text-brand-600" : "bg-surface-200 text-surface-900")}>
                           {a.retailer.charAt(0)}
                         </div>
                         <div className="min-w-0">

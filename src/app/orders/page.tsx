@@ -248,7 +248,7 @@ function OrderCard({ order }: { order: DisplayOrder }) {
         "flex items-center justify-between border-t border-border px-4 py-3",
         isCancelled ? "bg-surface-50/50" : ""
       )}>
-        <p className="text-base font-bold text-foreground">{formatPHP(order.total)}</p>
+        <p className="text-base font-bold text-surface-900">{formatPHP(order.total)}</p>
         <div className="flex items-center gap-2">
           {isActive && (
             <Link
@@ -265,7 +265,7 @@ function OrderCard({ order }: { order: DisplayOrder }) {
             <button
               type="button"
               onClick={handleReorder}
-              className="rounded-lg bg-surface-100 px-3 py-1.5 text-xs font-semibold text-foreground flex items-center gap-1.5 hover:bg-surface-200 transition-colors"
+              className="rounded-lg bg-surface-100 px-3 py-1.5 text-xs font-semibold text-surface-900 flex items-center gap-1.5 hover:bg-surface-200 transition-colors"
             >
               <RotateCcw className="h-3 w-3" />
               Reorder

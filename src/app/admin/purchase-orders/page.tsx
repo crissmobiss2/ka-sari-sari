@@ -252,7 +252,7 @@ function AutoPOModal({ onClose, onViewDrafts }: AutoPOModalProps) {
 
             <div className="flex items-center justify-between rounded-xl bg-surface-50 border border-border px-4 py-3 text-sm">
               <span className="text-muted-foreground">
-                <span className="font-semibold text-foreground">{selectedCount} PO{selectedCount !== 1 ? "s" : ""}</span> selected
+                <span className="font-semibold text-surface-900">{selectedCount} PO{selectedCount !== 1 ? "s" : ""}</span> selected
               </span>
               <span className="text-muted-foreground">
                 Total value:{" "}

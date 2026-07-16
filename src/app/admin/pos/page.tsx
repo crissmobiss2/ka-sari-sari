@@ -198,7 +198,7 @@ export default function POSPage() {
           <div className="rounded-2xl border border-border bg-surface-50 p-4 space-y-2">
             <div className="flex justify-between text-sm">
               <span className="text-muted-foreground">Customer</span>
-              <span className="font-medium text-foreground truncate ml-4 text-right">{customer}</span>
+              <span className="font-medium text-surface-900 truncate ml-4 text-right">{customer}</span>
             </div>
             <div className="flex justify-between text-sm">
               <span className="text-muted-foreground">Items</span>
@@ -456,7 +456,7 @@ export default function POSPage() {
                           payMethod === pm.id ? "border-brand-500 bg-brand-50 shadow-sm" : "border-border bg-surface-50 hover:bg-muted"
                         )}>
                         <div className="text-sm">{pm.icon}</div>
-                        <p className="text-[9px] font-semibold text-foreground mt-0.5 leading-tight">{pm.label}</p>
+                        <p className="text-[9px] font-semibold text-surface-900 mt-0.5 leading-tight">{pm.label}</p>
                       </button>
                     ))}
                   </div>
@@ -474,7 +474,7 @@ export default function POSPage() {
                   <div className="grid grid-cols-4 gap-1">
                     {[100, 200, 500, 1000].map(a => (
                       <button key={a} onClick={() => setCashTendered(String(a))}
-                        className="rounded-xl border border-border bg-surface-50 py-2 text-xs font-bold text-foreground hover:bg-muted active:scale-95 transition-all">
+                        className="rounded-xl border border-border bg-surface-50 py-2 text-xs font-bold text-surface-900 hover:bg-muted active:scale-95 transition-all">
                         ₱{a >= 1000 ? "1k" : a}
                       </button>
                     ))}
@@ -539,7 +539,7 @@ export default function POSPage() {
               {payMethod === "card" && (
                 <div className="rounded-xl bg-surface-50 border border-border p-4 text-center">
                   <p className="text-2xl mb-2">💳</p>
-                  <p className="text-sm font-semibold text-foreground">Swipe or Tap Card</p>
+                  <p className="text-sm font-semibold text-surface-900">Swipe or Tap Card</p>
                   <p className="text-xs text-muted-foreground mt-1">Visa · Mastercard · JCB · UnionPay</p>
                   <p className="text-xs text-muted-foreground mt-0.5">Amount: {formatPHP(total)}</p>
                 </div>

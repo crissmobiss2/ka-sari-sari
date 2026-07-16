@@ -258,7 +258,7 @@ export default function WalletPage() {
             onClick={openWithdraw}
             className="flex items-center gap-3 rounded-2xl border border-border bg-card shadow-card px-4 py-4 hover:border-brand-300 transition-colors active:scale-95"
           >
-            <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-surface-100 text-foreground">
+            <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-surface-100 text-surface-900">
               <CreditCard className="h-5 w-5" />
             </div>
             <div className="text-left">
@@ -461,7 +461,7 @@ export default function WalletPage() {
                 <div className="rounded-xl bg-surface-100 px-4 py-3 flex items-center gap-3">
                   <span className="text-lg">{selectedWithdrawMethod.icon}</span>
                   <div>
-                    <p className="text-sm font-semibold text-foreground">{selectedWithdrawMethod.label}</p>
+                    <p className="text-sm font-semibold text-surface-900">{selectedWithdrawMethod.label}</p>
                     <p className="text-xs text-muted-foreground">Withdrawing {formatPHP(withdrawAmount)}</p>
                   </div>
                 </div>

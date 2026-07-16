@@ -142,7 +142,7 @@ export default function ProfilePage() {
                 type="tel"
                 value={phoneTemp}
                 onChange={(e) => setPhoneTemp(e.target.value)}
-                className="text-sm font-medium text-foreground bg-surface-50 border border-border rounded-md px-2 py-1 w-36 focus:outline-none focus:ring-2 focus:ring-brand-500"
+                className="text-sm font-medium text-surface-900 bg-surface-50 border border-border rounded-md px-2 py-1 w-36 focus:outline-none focus:ring-2 focus:ring-brand-500"
                 autoFocus
               />
               <button
@@ -181,7 +181,7 @@ export default function ProfilePage() {
                 type="tel"
                 value={gcashTemp}
                 onChange={(e) => setGcashTemp(e.target.value)}
-                className="text-sm font-medium text-foreground bg-surface-50 border border-border rounded-md px-2 py-1 w-36 focus:outline-none focus:ring-2 focus:ring-brand-500"
+                className="text-sm font-medium text-surface-900 bg-surface-50 border border-border rounded-md px-2 py-1 w-36 focus:outline-none focus:ring-2 focus:ring-brand-500"
                 autoFocus
               />
               <button

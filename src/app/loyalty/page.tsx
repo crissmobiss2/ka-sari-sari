@@ -240,7 +240,7 @@ export default function LoyaltyPage() {
                     <span className="text-xl">{tier.icon}</span>
                     <span className={cn(
                       "font-display text-sm font-bold",
-                      tier.current ? "text-brand-700" : "text-foreground"
+                      tier.current ? "text-brand-700" : "text-surface-900"
                     )}>
                       {tier.name}
                     </span>

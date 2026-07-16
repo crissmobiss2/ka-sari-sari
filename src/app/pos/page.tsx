@@ -223,7 +223,7 @@ export default function RetailerPOSPage() {
               <RefreshCcw className="h-4 w-4" />
               New Sale
             </button>
-            <button className="w-full rounded-xl bg-surface-100 hover:bg-surface-200 text-foreground text-sm font-medium h-9 transition-colors flex items-center justify-center gap-2">
+            <button className="w-full rounded-xl bg-surface-100 hover:bg-surface-200 text-surface-900 text-sm font-medium h-9 transition-colors flex items-center justify-center gap-2">
               <Printer className="h-4 w-4" />
               Print Receipt
             </button>

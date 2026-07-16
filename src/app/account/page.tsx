@@ -408,7 +408,7 @@ export default function AccountPage() {
           <div className="rounded-xl bg-surface-50 border border-border px-4 py-3 flex justify-between items-center">
             <div>
               <p className="text-xs text-muted-foreground">Credit Limit</p>
-              <p className="text-lg font-black text-foreground">₱{creditData.limit.toLocaleString()}</p>
+              <p className="text-lg font-black text-surface-900">₱{creditData.limit.toLocaleString()}</p>
             </div>
             <div className="text-right">
               <p className="text-xs text-muted-foreground">Used</p>
@@ -454,7 +454,7 @@ export default function AccountPage() {
               {creditApplications.map((app) => (
                 <div key={app.id} className="rounded-xl border border-border bg-surface-50 px-4 py-3">
                   <div className="flex items-center justify-between mb-1">
-                    <p className="text-sm font-semibold text-foreground">
+                    <p className="text-sm font-semibold text-surface-900">
                       ₱{app.requested_limit.toLocaleString()} requested
                     </p>
                     {statusBadge(app.status)}
@@ -639,7 +639,7 @@ export default function AccountPage() {
               {/* Permission status */}
               <div className="flex items-center justify-between rounded-xl bg-surface-50 border border-border px-4 py-3">
                 <div>
-                  <p className="text-sm font-medium text-foreground">
+                  <p className="text-sm font-medium text-surface-900">
                     {isPushEnabled ? "Notifications enabled" : "Notifications disabled"}
                   </p>
                   <p className="text-xs text-muted-foreground mt-0.5">

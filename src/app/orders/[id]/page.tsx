@@ -574,7 +574,7 @@ function DriverCard({ onAction, driver }: { onAction: (msg: string) => void; dri
         {phone ? (
           <a
             href={`tel:${phone}`}
-            className="flex items-center justify-center gap-2 rounded-xl border border-border bg-surface-50 py-2.5 text-sm font-medium text-foreground hover:bg-surface-100 active:scale-95 transition-all"
+            className="flex items-center justify-center gap-2 rounded-xl border border-border bg-surface-50 py-2.5 text-sm font-medium text-surface-900 hover:bg-surface-100 active:scale-95 transition-all"
           >
             <Phone className="h-4 w-4 text-brand-500" />
             Call Driver
@@ -892,7 +892,7 @@ export default function OrderDetailPage() {
             href={`/api/orders/${id}/receipt`}
             target="_blank"
             rel="noopener noreferrer"
-            className="w-full flex items-center justify-center gap-2 rounded-2xl border border-border bg-surface-50 py-3.5 text-sm font-semibold text-foreground hover:bg-surface-100 active:scale-[0.98] transition-all"
+            className="w-full flex items-center justify-center gap-2 rounded-2xl border border-border bg-surface-50 py-3.5 text-sm font-semibold text-surface-900 hover:bg-surface-100 active:scale-[0.98] transition-all"
           >
             <Download className="h-4 w-4" />
             Download Receipt (OR)

@@ -509,7 +509,7 @@ export default function AdminAnalyticsPage() {
             {/* Today */}
             <div className="rounded-xl bg-surface-50 border border-border p-4">
               <p className="text-xs text-muted-foreground font-medium mb-1">Today</p>
-              <p className="font-display text-3xl font-bold text-foreground leading-none">
+              <p className="font-display text-3xl font-bold text-surface-900 leading-none">
                 {ADMIN_STATS.ordersToday}
               </p>
               <p className="text-[11px] text-muted-foreground mt-1">orders placed today</p>
@@ -517,7 +517,7 @@ export default function AdminAnalyticsPage() {
             {/* Sample avg from MOCK_ORDERS */}
             <div className="rounded-xl bg-surface-50 border border-border p-4">
               <p className="text-xs text-muted-foreground font-medium mb-1">Recent Sample Avg</p>
-              <p className="font-display text-3xl font-bold text-foreground leading-none">
+              <p className="font-display text-3xl font-bold text-surface-900 leading-none">
                 {salesVelocity.ordersPerDay}
               </p>
               <p className="text-[11px] text-muted-foreground mt-1">orders / day (last {salesVelocity.dayBreakdown.length} active days)</p>
@@ -535,7 +535,7 @@ export default function AdminAnalyticsPage() {
                     className="flex flex-col items-center gap-1 rounded-lg border border-border bg-surface-50 px-4 py-2.5 min-w-[80px]"
                   >
                     <span className="text-[10px] text-muted-foreground">{d.label}</span>
-                    <span className="font-display text-xl font-bold text-foreground">{d.count}</span>
+                    <span className="font-display text-xl font-bold text-surface-900">{d.count}</span>
                     <span className="text-[10px] text-muted-foreground">
                       {d.count === 1 ? "order" : "orders"}
                     </span>
@@ -632,7 +632,7 @@ export default function AdminAnalyticsPage() {
 
             <div className="mt-2 rounded-xl bg-surface-50 border border-border p-3 flex items-center justify-between">
               <span className="text-xs text-muted-foreground">Total Transactions</span>
-              <span className="text-sm font-bold text-foreground">{totalTxns.toLocaleString()}</span>
+              <span className="text-sm font-bold text-surface-900">{totalTxns.toLocaleString()}</span>
             </div>
           </CardContent>
         </Card>
