@@ -311,7 +311,7 @@ export default function ProductDetailPage() {
             <button
               onClick={handleQtyDecrease}
               disabled={qty <= product.minOrderQty}
-              className="flex h-11 w-11 items-center justify-center rounded-xl border border-border bg-muted text-lg font-bold hover:bg-surface-200 disabled:opacity-30 transition-colors"
+              className="flex h-11 w-11 items-center justify-center rounded-xl border border-border bg-muted text-lg font-bold hover:bg-surface-200 disabled:opacity-50 transition-colors"
             >
               −
             </button>
@@ -319,7 +319,7 @@ export default function ProductDetailPage() {
             <button
               onClick={handleQtyIncrease}
               disabled={product.stock !== undefined && qty >= product.stock}
-              className="flex h-11 w-11 items-center justify-center rounded-xl bg-brand-500 text-white text-lg font-bold hover:bg-brand-600 disabled:opacity-30 transition-colors"
+              className="flex h-11 w-11 items-center justify-center rounded-xl bg-brand-500 text-white text-lg font-bold hover:bg-brand-600 disabled:opacity-50 transition-colors"
             >
               +
             </button>
