@@ -251,8 +251,8 @@ export default function StoreProfilePage() {
             <div className="rounded-xl border border-brand-100 bg-brand-50 p-4 flex items-start gap-3">
               <MapPin className="h-4 w-4 text-brand-500 shrink-0 mt-0.5" />
               <div>
-                <p className="text-xs font-semibold text-foreground">Nexoflow Delivery Network</p>
-                <p className="text-xs text-muted-foreground mt-0.5 leading-relaxed">
+                <p className="text-xs font-semibold text-brand-900">Nexoflow Delivery Network</p>
+                <p className="text-xs text-brand-700 mt-0.5 leading-relaxed">
                   Ka Sari-Sari uses Nexoflow's network to deliver to 137 cities across the Philippines.
                   Select your city to confirm delivery coverage and estimated lead times.
                 </p>
