@@ -215,7 +215,7 @@ export default function WarehouseDashboard() {
               <div key={label} className="rounded-xl bg-white/50 border border-border/50 p-2.5 flex items-center gap-2">
                 <span className="text-xl">{icon}</span>
                 <div>
-                  <p className="text-lg font-black text-foreground">{value}</p>
+                  <p className="text-lg font-black text-surface-900">{value}</p>
                   <p className="text-[10px] text-muted-foreground">{label}</p>
                 </div>
               </div>

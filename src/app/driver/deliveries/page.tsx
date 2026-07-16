@@ -187,7 +187,7 @@ export default function DriverDeliveriesPage() {
                 "px-3 py-1.5 rounded-lg text-xs font-semibold transition-colors",
                 activeTab === id
                   ? "bg-brand-500 text-white"
-                  : "bg-surface-100 text-muted-foreground hover:text-foreground"
+                  : "bg-surface-100 text-muted-foreground hover:text-surface-900"
               )}
             >
               {label}

@@ -163,7 +163,7 @@ export default function InventoryPage() {
           <h1 className="font-display text-2xl font-bold text-foreground">Inventory</h1>
           <button
             onClick={() => downloadInventoryCSV(filtered, currentStock)}
-            className="flex items-center gap-1.5 rounded-xl border border-border bg-card px-3 py-2 text-sm font-medium text-foreground hover:bg-surface-100 transition-colors"
+            className="flex items-center gap-1.5 rounded-xl border border-border bg-card px-3 py-2 text-sm font-medium text-foreground hover:bg-surface-100 hover:text-surface-900 transition-colors"
           >
             <Download className="h-4 w-4" />
             Export CSV
