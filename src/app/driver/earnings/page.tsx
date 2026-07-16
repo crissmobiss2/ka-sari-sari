@@ -207,7 +207,7 @@ export default function EarningsPage() {
             </div>
             <div className="grid grid-cols-3 gap-2">
               {[
-                { label: "Expected",  value: COD_THIS_WEEK.expected,  color: "text-foreground" },
+                { label: "Expected",  value: COD_THIS_WEEK.expected,  color: "text-surface-900" },
                 { label: "Collected", value: COD_THIS_WEEK.collected, color: "text-success-600" },
                 { label: "Pending",   value: COD_THIS_WEEK.pending,   color: "text-warning-600" },
               ].map(({ label, value, color }) => (
@@ -241,7 +241,7 @@ export default function EarningsPage() {
               <div key={i} className={cn("rounded-xl border p-3.5", b.earned ? "border-success-200 bg-success-50" : "border-border bg-card")}>
                 <div className="flex items-center justify-between">
                   <div className="flex-1 min-w-0">
-                    <p className="text-xs font-semibold text-foreground">{b.label}</p>
+                    <p className={cn("text-xs font-semibold", b.earned ? "text-surface-900" : "text-foreground")}>{b.label}</p>
                     {!b.earned && b.progress !== undefined && (
                       <div className="mt-1.5">
                         <div className="flex justify-between text-[10px] mb-1">
@@ -368,7 +368,7 @@ export default function EarningsPage() {
           <div className="rounded-xl border border-brand-100 bg-brand-50 p-4">
             <div className="flex items-center gap-2 mb-1">
               <Star className="h-4 w-4 text-brand-500" />
-              <p className="text-xs font-semibold text-foreground">Top Area: Caloocan</p>
+              <p className="text-xs font-semibold text-surface-900">Top Area: Caloocan</p>
             </div>
             <p className="text-xs text-muted-foreground leading-relaxed">
               42 deliveries this month — your strongest city. Focus on Caloocan routes to maximize earnings.

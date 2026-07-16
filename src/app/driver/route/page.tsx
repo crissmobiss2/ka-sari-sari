@@ -175,7 +175,7 @@ export default function RouteMapPage() {
   const totalCOD     = codStops.reduce((sum, s) => sum + s.total, 0);
   const collectedCOD = codStops.reduce((sum, s) => sum + (s.collectedCOD ?? 0), 0);
   const pendingCOD   = totalCOD - collectedCOD;
-  const progress     = Math.round((doneStops / totalStops) * 100);
+  const progress     = totalStops === 0 ? 0 : Math.round((doneStops / totalStops) * 100);
 
   function markDone(num: number) {
     const stop = stops.find((s) => s.stopNumber === num);
@@ -439,14 +439,14 @@ export default function RouteMapPage() {
                         href={`https://maps.google.com/?q=${encodeURIComponent(stop.address)}`}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="flex flex-col items-center gap-1 rounded-xl bg-surface-100 hover:bg-surface-200 px-2 py-2.5 text-xs font-semibold transition-colors"
+                        className="flex flex-col items-center gap-1 rounded-xl bg-surface-100 hover:bg-surface-200 px-2 py-2.5 text-xs font-semibold text-surface-900 transition-colors"
                       >
                         <Navigation className="h-4 w-4 text-brand-500" />
                         Navigate
                       </a>
                       <a
                         href={`tel:${stop.phone}`}
-                        className="flex flex-col items-center gap-1 rounded-xl bg-surface-100 hover:bg-surface-200 px-2 py-2.5 text-xs font-semibold transition-colors"
+                        className="flex flex-col items-center gap-1 rounded-xl bg-surface-100 hover:bg-surface-200 px-2 py-2.5 text-xs font-semibold text-surface-900 transition-colors"
                       >
                         <Phone className="h-4 w-4 text-brand-500" />
                         Call
