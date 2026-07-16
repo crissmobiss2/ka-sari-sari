@@ -298,7 +298,7 @@ export default function AnalyticsPage() {
     topCategories: TOP_CATEGORIES, topProducts: TOP_PRODUCTS,
     monthlyData: MONTHLY_DATA, restockSuggestions: RESTOCK_SUGGESTIONS,
   };
-  const maxMonthlyValue = Math.max(...stats.monthlyData.map((d) => d.value));
+  const maxMonthlyValue = Math.max(...stats.monthlyData.map((d) => d.value), 1);
   const displaySavingsForecast = Math.round(stats.totalSpent * (srpPremium - 1));
 
   return (
