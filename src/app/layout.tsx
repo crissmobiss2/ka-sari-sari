@@ -34,7 +34,7 @@ export const metadata: Metadata = {
     "Order directly from our warehouse. Fair prices, reliable stock, fast delivery for your sari-sari store.",
   keywords: ["sari-sari store", "wholesale", "ordering platform", "Philippines", "MSME", "warehouse"],
   authors: [{ name: "Ka Sari-Sari" }],
-  manifest: "/manifest.json",
+  manifest: "/manifest.webmanifest",
   appleWebApp: {
     capable: true,
     statusBarStyle: "default",
@@ -75,7 +75,6 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html lang="fil" className={`${inter.variable} ${plusJakarta.variable}`} suppressHydrationWarning>
       <head>
-        <link rel="manifest" href="/manifest.json" />
         <meta name="theme-color" content="#f47028" />
         {/* Favicon — SVG scales perfectly at any size */}
         <link rel="icon" href="/icon-192.png" type="image/png" sizes="192x192" />
