@@ -393,7 +393,7 @@ function StopsBreakdown() {
                 stop.status === "done"    ? "bg-success-500 text-white" :
                 stop.status === "current" ? "bg-brand-500 text-white" :
                 stop.status === "yours"   ? "border-2 border-brand-500 bg-white text-brand-500" :
-                "bg-surface-200 text-muted-foreground"
+                "bg-surface-200 dark:bg-surface-800 text-muted-foreground"
               )}>
                 {stop.status === "done" ? "✓" : stop.status === "current" ? "●" : stop.status === "yours" ? "★" : "○"}
               </div>

@@ -350,7 +350,7 @@ export default function OrdersPage() {
               {t.label}
               <span className={cn(
                 "rounded-full px-1.5 py-0.5 text-[11px] font-bold leading-none",
-                tab === t.id ? "bg-white/25 text-white" : "bg-surface-200 text-muted-foreground"
+                tab === t.id ? "bg-white/25 text-white" : "bg-surface-200 dark:bg-surface-800 text-muted-foreground"
               )}>
                 {count}
               </span>

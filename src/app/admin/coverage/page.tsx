@@ -144,7 +144,7 @@ export default function CoveragePage() {
             )}
           >
             {label}
-            <span className={cn("text-xs rounded-full px-1.5 py-0.5", selectedIsland === id ? "bg-white/20 text-white" : "bg-surface-200 text-muted-foreground")}>
+            <span className={cn("text-xs rounded-full px-1.5 py-0.5", selectedIsland === id ? "bg-white/20 text-white" : "bg-surface-200 dark:bg-surface-800 text-muted-foreground")}>
               {count}
             </span>
           </button>

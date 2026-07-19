@@ -437,7 +437,7 @@ export default function ChatPage() {
                       ? "bg-success-100 text-success-700"
                       : item.confidence === "medium"
                         ? "bg-warning-100 text-warning-700"
-                        : "bg-surface-200 text-muted-foreground"
+                        : "bg-surface-200 dark:bg-surface-800 text-muted-foreground"
                   )}>
                     {item.confidence}
                   </span>

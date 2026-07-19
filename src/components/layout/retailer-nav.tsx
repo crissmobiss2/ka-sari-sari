@@ -42,7 +42,7 @@ export function RetailerBottomNav() {
               <div className="relative">
                 <Icon className="h-5 w-5" strokeWidth={active ? 2.2 : 1.8} />
                 {isCart && totalItems > 0 && (
-                  <span className="absolute -top-1.5 -right-1.5 flex h-4 w-4 items-center justify-center rounded-full bg-brand-500 text-[10px] font-bold text-white">
+                  <span className="absolute -top-1.5 -right-1.5 flex h-4 w-4 items-center justify-center rounded-full bg-brand-700 text-[10px] font-bold text-white">
                     {totalItems > 9 ? "9+" : totalItems}
                   </span>
                 )}
@@ -137,7 +137,7 @@ export function RetailerTopBar({ title }: { title?: string }) {
           <Link href="/cart" className="relative flex h-9 w-9 items-center justify-center rounded-xl hover:bg-muted transition-colors">
             <ShoppingCart className="h-5 w-5 text-muted-foreground" />
             {totalItems > 0 && (
-              <span className="absolute top-1 right-1 flex h-4 w-4 items-center justify-center rounded-full bg-brand-500 text-[10px] font-bold text-white">
+              <span className="absolute top-1 right-1 flex h-4 w-4 items-center justify-center rounded-full bg-brand-700 text-[10px] font-bold text-white">
                 {totalItems > 9 ? "9+" : totalItems}
               </span>
             )}
