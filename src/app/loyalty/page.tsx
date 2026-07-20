@@ -361,7 +361,7 @@ export default function LoyaltyPage() {
           {/* Share button */}
           <button
             onClick={handleShareMessenger}
-            className="flex w-full items-center justify-center gap-2 rounded-xl border border-[#0084FF] bg-[#EFF8FF] py-3 text-sm font-bold text-[#0084FF] hover:bg-[#DBEEFF] active:scale-[0.98] transition-all"
+            className="flex w-full items-center justify-center gap-2 rounded-xl border border-[#0084FF] bg-[#EFF8FF] py-3 text-sm font-bold text-[#0055BB] hover:bg-[#DBEEFF] active:scale-[0.98] transition-all"
           >
             {/* Messenger icon inline SVG */}
             <svg width="16" height="16" viewBox="0 0 24 24" fill="#0084FF" aria-hidden="true">
