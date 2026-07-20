@@ -1,4 +1,4 @@
-﻿"use client";
+"use client";
 
 import { useMemo, useState, useEffect, useCallback } from "react";
 import {
@@ -132,9 +132,9 @@ function urgencyBadgeClass(urgency: AiReorder["urgency"]): string {
 }
 
 function confidenceBarColor(pct: number): string {
-  if (pct >= 90) return "bg-success-700 dark:bg-success-500";
+  if (pct >= 90) return "bg-success-700 ";
   if (pct >= 80) return "bg-amber-700 dark:bg-amber-500";
-  return "bg-danger-700 dark:bg-danger-500";
+  return "bg-danger-700 ";
 }
 
 function exportCSV() {
@@ -333,7 +333,7 @@ export default function AdminForecastPage() {
           </Button>
           <Button
             size="sm"
-            className="bg-brand-700 dark:bg-brand-500 hover:bg-brand-800 text-white"
+            className="bg-brand-700  hover:bg-brand-800 text-white"
             onClick={() => { fetchForecast(); toastSuccess("Refreshing AI forecast�"); }}
             disabled={aiLoading}
           >
@@ -607,10 +607,10 @@ export default function AdminForecastPage() {
             </div>
             <div className="flex items-center gap-3 text-[11px] text-muted-foreground">
               <span className="flex items-center gap-1">
-                <span className="inline-block h-2 w-2 rounded-full bg-danger-700 dark:bg-danger-500" />URGENT
+                <span className="inline-block h-2 w-2 rounded-full bg-danger-700 " />URGENT
               </span>
               <span className="flex items-center gap-1">
-                <span className="inline-block h-2 w-2 rounded-full bg-brand-700 dark:bg-brand-500" />Reorder
+                <span className="inline-block h-2 w-2 rounded-full bg-brand-700 " />Reorder
               </span>
               <span className="flex items-center gap-1">
                 <span className="inline-block h-2 w-2 rounded-full bg-amber-600" />Watch
@@ -756,11 +756,11 @@ export default function AdminForecastPage() {
             {/* Legend */}
             <div className="flex items-center gap-4 pt-2 border-t border-border mt-2">
               <div className="flex items-center gap-1.5">
-                <span className="h-3 w-3 rounded-sm bg-brand-700 dark:bg-brand-500" />
+                <span className="h-3 w-3 rounded-sm bg-brand-700 " />
                 <span className="text-xs text-muted-foreground">Demand increase</span>
               </div>
               <div className="flex items-center gap-1.5">
-                <span className="h-3 w-3 rounded-sm bg-danger-700 dark:bg-danger-500" />
+                <span className="h-3 w-3 rounded-sm bg-danger-700 " />
                 <span className="text-xs text-muted-foreground">Demand decrease</span>
               </div>
             </div>

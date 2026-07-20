@@ -1,4 +1,4 @@
-﻿"use client";
+"use client";
 
 import { useState } from "react";
 import Link from "next/link";
@@ -231,7 +231,7 @@ export default function WarehouseDashboardPage() {
                       <div
                         className={cn(
                           "h-full rounded-full transition-all",
-                          isCompleted ? "bg-success-700 dark:bg-success-500" : pct > 0 ? "bg-brand-500" : "bg-border"
+                          isCompleted ? "bg-success-700 " : pct > 0 ? "bg-brand-500" : "bg-border"
                         )}
                         style={{ width: `${pct}%` }}
                       />
@@ -394,7 +394,7 @@ export default function WarehouseDashboardPage() {
                   <div
                     className={cn(
                       "h-full rounded-full",
-                      info.pct >= 80 ? "bg-danger-700 dark:bg-danger-500" : info.pct >= 60 ? "bg-warning-700 dark:bg-warning-500" : "bg-brand-600 dark:bg-brand-400"
+                      info.pct >= 80 ? "bg-danger-700 " : info.pct >= 60 ? "bg-warning-700 " : "bg-brand-600 dark:bg-brand-400"
                     )}
                     style={{ width: `${info.pct}%` }}
                   />

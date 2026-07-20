@@ -1,4 +1,4 @@
-﻿"use client";
+"use client";
 import { useState, useEffect } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
@@ -430,7 +430,7 @@ export default function AccountPage() {
               <p className="text-[11px] font-semibold text-muted-foreground">{creditData.utilization.toFixed(1)}% used</p>
             </div>
             <div className="h-1.5 rounded-full bg-success-100 dark:bg-success-500/20 overflow-hidden">
-              <div className="h-full rounded-full bg-brand-600 dark:bg-brand-500 transition-all" style={{ width: `${creditData.utilization}%` }} />
+              <div className="h-full rounded-full bg-brand-600  transition-all" style={{ width: `${creditData.utilization}%` }} />
             </div>
           </div>
 
@@ -672,7 +672,7 @@ export default function AccountPage() {
                   disabled={pushLoading || pushPermission === "denied"}
                   className={cn(
                     "relative inline-flex h-6 w-11 shrink-0 items-center rounded-full transition-colors focus:outline-none disabled:opacity-50 disabled:cursor-not-allowed",
-                    isPushEnabled ? "bg-brand-700 dark:bg-brand-500" : "bg-surface-500"
+                    isPushEnabled ? "bg-brand-700 " : "bg-surface-500"
                   )}
                   aria-label={isPushEnabled ? "Disable push notifications" : "Enable push notifications"}
                 >
@@ -715,7 +715,7 @@ export default function AccountPage() {
                   "Credit application updates",
                 ].map((item) => (
                   <div key={item} className="flex items-center gap-2">
-                    <div className={cn("h-1.5 w-1.5 rounded-full shrink-0", isPushEnabled ? "bg-success-700 dark:bg-success-500" : "bg-surface-300")} />
+                    <div className={cn("h-1.5 w-1.5 rounded-full shrink-0", isPushEnabled ? "bg-success-700 " : "bg-surface-300")} />
                     <span className="text-xs text-muted-foreground">{item}</span>
                   </div>
                 ))}

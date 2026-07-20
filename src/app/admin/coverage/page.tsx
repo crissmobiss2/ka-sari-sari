@@ -1,4 +1,4 @@
-﻿"use client";
+"use client";
 import { useState } from "react";
 import { MapPin, Search, Globe, Truck, Users, TrendingUp, CheckCircle2, Circle } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -24,7 +24,7 @@ function CityRow({ city }: { city: NexoflowCity }) {
   const isActive = count > 0;
   return (
     <div className="flex items-center gap-3 px-4 py-2.5 hover:bg-muted/40 transition-colors rounded-lg">
-      <div className={cn("h-2 w-2 rounded-full shrink-0", isActive ? "bg-success-700 dark:bg-success-500" : "bg-surface-500")} />
+      <div className={cn("h-2 w-2 rounded-full shrink-0", isActive ? "bg-success-700 " : "bg-surface-500")} />
       <div className="flex-1 min-w-0">
         <span className="text-sm font-medium text-foreground">{city.city}</span>
         <span className="text-xs text-muted-foreground ml-2">{city.province}</span>
@@ -63,7 +63,7 @@ export default function CoveragePage() {
       <div className="flex items-start justify-between gap-4">
         <div>
           <div className="flex items-center gap-2 mb-1">
-            <div className="flex h-8 w-8 items-center justify-center rounded-xl bg-brand-700 dark:bg-brand-500">
+            <div className="flex h-8 w-8 items-center justify-center rounded-xl bg-brand-700 ">
               <Globe className="h-4 w-4 text-white" />
             </div>
             <h1 className="font-display text-2xl font-bold text-foreground">Network Coverage</h1>
@@ -170,7 +170,7 @@ export default function CoveragePage() {
         <CardContent className="p-0">
           {/* Legend */}
           <div className="flex items-center gap-4 px-4 pb-2 text-xs text-muted-foreground">
-            <div className="flex items-center gap-1.5"><div className="h-2 w-2 rounded-full bg-success-700 dark:bg-success-500" />Active (has retailers)</div>
+            <div className="flex items-center gap-1.5"><div className="h-2 w-2 rounded-full bg-success-700 " />Active (has retailers)</div>
             <div className="flex items-center gap-1.5"><div className="h-2 w-2 rounded-full bg-surface-500" />Available (no retailers yet)</div>
           </div>
 
@@ -209,7 +209,7 @@ export default function CoveragePage() {
       <Card className="border-brand-200 bg-gradient-to-r from-brand-50 to-transparent">
         <CardContent className="p-5">
           <div className="flex items-start gap-4">
-            <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-brand-700 dark:bg-brand-500">
+            <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-brand-700 ">
               <TrendingUp className="h-5 w-5 text-white" />
             </div>
             <div>

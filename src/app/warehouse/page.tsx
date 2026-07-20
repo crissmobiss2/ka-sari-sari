@@ -1,4 +1,4 @@
-﻿"use client";
+"use client";
 
 import { useState, useEffect } from "react";
 import Link from "next/link";
@@ -200,7 +200,7 @@ export default function WarehouseDashboard() {
             </div>
             <div className="h-2 bg-surface-100 dark:bg-surface-800 rounded-full overflow-hidden">
               <div
-                className={cn("h-full rounded-full transition-all", capacityPct > 80 ? "bg-danger-500" : capacityPct > 60 ? "bg-warning-700 dark:bg-warning-500" : "bg-success-500")}
+                className={cn("h-full rounded-full transition-all", capacityPct > 80 ? "bg-danger-500" : capacityPct > 60 ? "bg-warning-700 " : "bg-success-500")}
                 style={{ width: `${capacityPct}%` }}
               />
             </div>

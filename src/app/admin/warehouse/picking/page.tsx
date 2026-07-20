@@ -1,4 +1,4 @@
-﻿"use client";
+"use client";
 
 import { useState, useEffect, useRef } from "react";
 import {
@@ -396,7 +396,7 @@ export default function PickingPage() {
                     <div
                       className={cn(
                         "h-full rounded-full transition-all duration-300",
-                        isCompleted ? "bg-success-700 dark:bg-success-500" : "bg-brand-500"
+                        isCompleted ? "bg-success-700 " : "bg-brand-500"
                       )}
                       style={{ width: `${pct}%` }}
                     />

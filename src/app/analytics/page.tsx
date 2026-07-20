@@ -1,4 +1,4 @@
-﻿"use client";
+"use client";
 import Link from "next/link";
 import { useState, useEffect } from "react";
 import { BarChart3, TrendingUp, Package, ShoppingBasket, Zap, RotateCcw, Calendar, Loader2 } from "lucide-react";
@@ -199,7 +199,7 @@ const RESTOCK_SUGGESTIONS: Array<{ name: string; brand: string; productId: strin
 const savingsForecast = Math.round(totalSpent * (srpPremium - 1));
 
 const RANK_COLORS = [
-  "bg-brand-700 dark:bg-brand-500",
+  "bg-brand-700 ",
   "bg-brand-600 dark:bg-brand-400",
   "bg-surface-600 dark:bg-surface-400",
   "bg-surface-500 dark:bg-surface-500",
@@ -207,10 +207,10 @@ const RANK_COLORS = [
 ];
 
 const CATEGORY_BAR_CLASSES = [
-  "bg-brand-700 dark:bg-brand-500",
-  "bg-brand-700 dark:bg-brand-500",
-  "bg-brand-700 dark:bg-brand-500",
-  "bg-brand-700 dark:bg-brand-500",
+  "bg-brand-700 ",
+  "bg-brand-700 ",
+  "bg-brand-700 ",
+  "bg-brand-700 ",
 ];
 
 // ── Stat card ────────────────────────────────────────────────────────────────
@@ -344,7 +344,7 @@ export default function AnalyticsPage() {
                   <div
                     className={cn(
                       "w-full rounded-t-lg transition-all",
-                      d.current ? "bg-brand-700 dark:bg-brand-500" : "bg-brand-200"
+                      d.current ? "bg-brand-700 " : "bg-brand-200"
                     )}
                     style={{ height: `${heightPct}%` }}
                     title={`${d.month}: ${formatPHP(d.value)}`}
@@ -364,7 +364,7 @@ export default function AnalyticsPage() {
           </div>
           <div className="flex items-center gap-3 mt-3 pt-3 border-t border-border">
             <div className="flex items-center gap-1.5">
-              <div className="h-2.5 w-2.5 rounded-sm bg-brand-700 dark:bg-brand-500" />
+              <div className="h-2.5 w-2.5 rounded-sm bg-brand-700 " />
               <span className="text-[10px] text-muted-foreground">Current month</span>
             </div>
             <div className="flex items-center gap-1.5">
@@ -426,7 +426,7 @@ export default function AnalyticsPage() {
                   <div className="flex items-center gap-3 px-4 py-3.5 flex-1 min-w-0">
                     <span className={cn(
                       "flex h-7 w-7 shrink-0 items-center justify-center rounded-lg text-xs font-black",
-                      p.rank === 1 ? "bg-brand-700 dark:bg-brand-500 text-white" : "bg-surface-100 dark:bg-surface-800 text-muted-foreground"
+                      p.rank === 1 ? "bg-brand-700  text-white" : "bg-surface-100 dark:bg-surface-800 text-muted-foreground"
                     )}>
                       {p.rank}
                     </span>
@@ -503,7 +503,7 @@ export default function AnalyticsPage() {
                   </div>
                   <Link
                     href="/catalog"
-                    className="shrink-0 rounded-xl bg-brand-700 dark:bg-brand-500 px-3 py-2 text-xs font-bold text-white active:scale-95 transition-transform hover:bg-brand-800"
+                    className="shrink-0 rounded-xl bg-brand-700  px-3 py-2 text-xs font-bold text-white active:scale-95 transition-transform hover:bg-brand-800"
                   >
                     Add to cart
                   </Link>
@@ -534,7 +534,7 @@ export default function AnalyticsPage() {
                 </div>
                 <div className="flex-1 h-3 rounded-full bg-surface-100 dark:bg-surface-800 overflow-hidden">
                   <div
-                    className="h-full bg-brand-700 dark:bg-brand-500 rounded-full"
+                    className="h-full bg-brand-700  rounded-full"
                     style={{ width: `${stats.srpTotal > 0 ? Math.round((stats.totalSpent / stats.srpTotal) * 100) : 0}%` }}
                   />
                 </div>
@@ -577,7 +577,7 @@ export default function AnalyticsPage() {
               <p className="text-xs text-muted-foreground mt-0.5">
                 You&apos;re on track to save <span className="text-brand-700 font-semibold">{formatPHP(displaySavingsForecast)}</span> this year if you keep ordering through Ka Sari-Sari.
               </p>
-              <Link href="/catalog" className="mt-2.5 inline-flex items-center gap-1 rounded-xl bg-brand-700 dark:bg-brand-500 px-3 py-1.5 text-xs font-bold text-white hover:bg-brand-800 transition-colors active:scale-95">
+              <Link href="/catalog" className="mt-2.5 inline-flex items-center gap-1 rounded-xl bg-brand-700  px-3 py-1.5 text-xs font-bold text-white hover:bg-brand-800 transition-colors active:scale-95">
                 Browse catalog
               </Link>
             </div>

@@ -1,4 +1,4 @@
-﻿"use client";
+"use client";
 
 import { useState, useEffect, useCallback } from "react";
 import Link from "next/link";
@@ -309,7 +309,7 @@ export default function DriverDeliveriesPage() {
               {FAIL_REASONS.map(reason => (
                 <button key={reason} onClick={() => setFailReason(reason)}
                   className={`w-full flex items-center gap-3 rounded-xl border px-4 py-3 text-sm font-medium text-left transition-colors ${failReason === reason ? "border-danger-400 bg-danger-50 dark:bg-danger-500/10 text-danger-700 dark:text-foreground" : "border-border bg-background text-foreground"}`}>
-                  <div className={`w-4 h-4 rounded-full border-2 flex items-center justify-center flex-shrink-0 ${failReason === reason ? "border-danger-500 bg-danger-700 dark:bg-danger-500" : "border-surface-500"}`}>
+                  <div className={`w-4 h-4 rounded-full border-2 flex items-center justify-center flex-shrink-0 ${failReason === reason ? "border-danger-500 bg-danger-700 " : "border-surface-500"}`}>
                     {failReason === reason && <div className="w-2 h-2 rounded-full bg-white" />}
                   </div>
                   {reason}

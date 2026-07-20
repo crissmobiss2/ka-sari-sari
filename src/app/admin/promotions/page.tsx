@@ -1,4 +1,4 @@
-﻿"use client";
+"use client";
 import { useState, useEffect } from "react";
 import {
   Plus, X, Calendar, Tag, Pause, Pencil, Copy, Archive, Ban,
@@ -43,8 +43,8 @@ const STATUS_STYLE: Record<PromoStatus, string> = {
 };
 
 const STATUS_BAR: Record<PromoStatus, string> = {
-  active:    "bg-brand-700 dark:bg-brand-500",
-  scheduled: "bg-warning-700 dark:bg-warning-500",
+  active:    "bg-brand-700 ",
+  scheduled: "bg-warning-700 ",
   ended:     "bg-surface-300",
   paused:    "bg-surface-300",
   expired:   "bg-surface-300",
@@ -77,7 +77,7 @@ function PromoCard({ promo, onPause, onEdit, onDuplicate, onArchiveOrCancel }: P
             {status === "active" && (
               <span className="relative flex h-2.5 w-2.5 shrink-0" aria-label="Live">
                 <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-success-400 opacity-75" />
-                <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-success-700 dark:bg-success-500" />
+                <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-success-700 " />
               </span>
             )}
             <p className="font-semibold text-foreground">{promo.title}</p>
@@ -117,7 +117,7 @@ function PromoCard({ promo, onPause, onEdit, onDuplicate, onArchiveOrCancel }: P
           {promo.maxUsage && (
             <div className="h-1.5 w-full rounded-full bg-surface-100 dark:bg-surface-800 overflow-hidden">
               <div
-                className={cn("h-full rounded-full transition-all", status === "active" ? "bg-brand-700 dark:bg-brand-500" : "bg-surface-300")}
+                className={cn("h-full rounded-full transition-all", status === "active" ? "bg-brand-700 " : "bg-surface-300")}
                 style={{ width: `${usagePct}%` }}
               />
             </div>
@@ -276,7 +276,7 @@ function CreatePromoModal({ onClose, onSave }: CreatePromoModalProps) {
                   className={cn(
                     "flex-1 py-2.5 text-sm font-medium transition-colors",
                     form.discountType === t
-                      ? "bg-brand-700 dark:bg-brand-500 text-white"
+                      ? "bg-brand-700  text-white"
                       : "text-muted-foreground hover:bg-muted/50"
                   )}
                 >
@@ -334,7 +334,7 @@ function CreatePromoModal({ onClose, onSave }: CreatePromoModalProps) {
           </button>
           <button
             onClick={handleSubmit}
-            className="flex-1 rounded-xl bg-brand-700 dark:bg-brand-500 py-2.5 text-sm font-medium text-white hover:bg-brand-800 transition-colors"
+            className="flex-1 rounded-xl bg-brand-700  py-2.5 text-sm font-medium text-white hover:bg-brand-800 transition-colors"
           >
             Create Promotion
           </button>
@@ -437,7 +437,7 @@ function EditPromoModal({ promo, onClose, onSave }: EditPromoModalProps) {
                   className={cn(
                     "flex-1 py-2.5 text-sm font-medium transition-colors",
                     form.discountType === t
-                      ? "bg-brand-700 dark:bg-brand-500 text-white"
+                      ? "bg-brand-700  text-white"
                       : "text-muted-foreground hover:bg-muted/50"
                   )}
                 >
@@ -495,7 +495,7 @@ function EditPromoModal({ promo, onClose, onSave }: EditPromoModalProps) {
           </button>
           <button
             onClick={handleSave}
-            className="flex-1 rounded-xl bg-brand-700 dark:bg-brand-500 py-2.5 text-sm font-medium text-white hover:bg-brand-800 transition-colors"
+            className="flex-1 rounded-xl bg-brand-700  py-2.5 text-sm font-medium text-white hover:bg-brand-800 transition-colors"
           >
             Save Changes
           </button>
@@ -646,7 +646,7 @@ export default function AdminPromotionsPage() {
         <h1 className="font-display text-2xl font-bold text-foreground">Promotions &amp; Deals</h1>
         <button
           onClick={() => setShowCreate(true)}
-          className="flex items-center gap-2 rounded-xl bg-brand-700 dark:bg-brand-500 px-4 py-2.5 text-sm font-medium text-white hover:bg-brand-800 transition-colors"
+          className="flex items-center gap-2 rounded-xl bg-brand-700  px-4 py-2.5 text-sm font-medium text-white hover:bg-brand-800 transition-colors"
         >
           <Plus className="h-4 w-4" /> Create Promotion
         </button>

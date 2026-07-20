@@ -1,4 +1,4 @@
-﻿"use client";
+"use client";
 
 import { useState, useEffect } from "react";
 import {
@@ -359,7 +359,7 @@ export default function RouteMapPage() {
                   "flex h-8 w-8 shrink-0 items-center justify-center rounded-full font-bold text-sm",
                   isDone ? "bg-success-100 dark:bg-success-500/20 text-success-700 dark:text-success-500"
                   : isFailed ? "bg-danger-100 dark:bg-danger-500/20 text-danger-600 dark:text-danger-500"
-                  : isNext ? "bg-brand-700 dark:bg-brand-500 text-white"
+                  : isNext ? "bg-brand-700  text-white"
                   : "bg-surface-100 dark:bg-surface-800 text-muted-foreground"
                 )}>
                   {isDone ? <CheckCircle2 className="h-4 w-4" /> : isFailed ? <XCircle className="h-4 w-4" /> : stop.stopNumber}

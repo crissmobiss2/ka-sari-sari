@@ -1,4 +1,4 @@
-﻿"use client";
+"use client";
 import { useState, useEffect, useRef } from "react";
 import Link from "next/link";
 import {
@@ -501,7 +501,7 @@ function StatusTracker({ liveStatus }: { liveStatus?: string }) {
                               <div className="h-2.5 w-2.5 rounded-full bg-border" />}
               </div>
               {i < STAGES.length - 1 && (
-                <div className={cn("w-0.5 flex-1 my-0.5 min-h-[18px]", isDone ? "bg-success-700 dark:bg-success-500" : "bg-border")} />
+                <div className={cn("w-0.5 flex-1 my-0.5 min-h-[18px]", isDone ? "bg-success-700 " : "bg-border")} />
               )}
             </div>
             <div className={cn("pb-5 flex-1", i === STAGES.length - 1 && "pb-0")}>
