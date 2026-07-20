@@ -1021,7 +1021,7 @@ export default function DeliveryDetailPage() {
               <button
                 onClick={handleDeliver}
                 disabled={isSubmitting}
-                className="w-full h-12 rounded-xl bg-success-600 hover:bg-success-700 text-white font-bold text-sm transition-colors disabled:opacity-60 disabled:cursor-not-allowed"
+                className="w-full h-12 rounded-xl bg-success-700 hover:bg-success-800 text-white font-bold text-sm transition-colors disabled:opacity-60 disabled:cursor-not-allowed"
               >
                 {isSubmitting ? "Submitting..." : "Yes, Mark as Delivered"}
               </button>

@@ -139,7 +139,7 @@ function PickListCard({
             <p className="text-sm text-muted-foreground mt-0.5">
               {pl.items.length} line item{pl.items.length !== 1 ? "s" : ""}
               {pl.assignedTo && (
-                <span className="ml-2 text-foreground/60">· {pl.assignedTo}</span>
+                <span className="ml-2 text-foreground/60">ï¿½ {pl.assignedTo}</span>
               )}
             </p>
           </div>
@@ -164,7 +164,7 @@ function PickListCard({
         {/* Progress bar */}
         <ProgressBar picked={picked} total={total} />
 
-        {/* Expanded picking view — shown when active */}
+        {/* Expanded picking view ï¿½ shown when active */}
         {isExpanded ? (
           <div className="space-y-3 pt-1">
             <div className="flex items-center justify-between border-b border-border pb-2">
@@ -237,10 +237,10 @@ function PickListCard({
               );
             })}
 
-            {/* Complete button — only shown when all items are checked */}
+            {/* Complete button ï¿½ only shown when all items are checked */}
             {allItemsDone ? (
               <Button
-                className="w-full py-4 text-lg bg-success-600 hover:bg-success-700 text-white"
+                className="w-full py-4 text-lg bg-success-700 hover:bg-success-800 text-white"
                 size="lg"
                 onClick={() => onComplete(pl.id)}
               >
@@ -291,7 +291,7 @@ function PickListCard({
           </div>
         )}
 
-        {/* Action button — open or in_progress and not expanded */}
+        {/* Action button ï¿½ open or in_progress and not expanded */}
         {pl.status !== "completed" && !isExpanded && (
           <Button
             className={cn(
@@ -424,7 +424,7 @@ export default function PickingPage() {
           status: checked ? "picked" : "pending",
         }),
       }).catch(() => {
-        // Fire-and-forget — optimistic UI update already applied
+        // Fire-and-forget ï¿½ optimistic UI update already applied
       });
     }
   }
@@ -472,7 +472,7 @@ export default function PickingPage() {
         body: JSON.stringify({ action: "complete" }),
       });
     } catch {
-      // Continue even if API call fails — remove from list optimistically
+      // Continue even if API call fails ï¿½ remove from list optimistically
     }
 
     setLists((prev) =>
@@ -496,7 +496,7 @@ export default function PickingPage() {
       <div className="px-4 py-6 max-w-2xl mx-auto flex items-center justify-center min-h-[40vh]">
         <div className="flex flex-col items-center gap-3 text-muted-foreground">
           <div className="h-8 w-8 rounded-full border-4 border-brand-700 border-t-transparent animate-spin" />
-          <p className="text-sm">Loading pick lists…</p>
+          <p className="text-sm">Loading pick listsï¿½</p>
         </div>
       </div>
     );
@@ -508,7 +508,7 @@ export default function PickingPage() {
       <div>
         <h1 className="font-display text-2xl font-bold text-foreground">Pick Lists</h1>
         <p className="text-base text-muted-foreground mt-0.5">
-          {counts.open} open · {counts.in_progress} in progress
+          {counts.open} open ï¿½ {counts.in_progress} in progress
         </p>
       </div>
 
