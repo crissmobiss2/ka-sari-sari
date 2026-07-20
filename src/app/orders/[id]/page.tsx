@@ -254,14 +254,14 @@ function DeliveryTimeline({
                 {/* Circle indicator */}
                 <div className="relative z-10 shrink-0">
                   {stepStatus === "done" ? (
-                    <div className="h-8 w-8 rounded-full bg-brand-500 flex items-center justify-center">
+                    <div className="h-8 w-8 rounded-full bg-brand-700 flex items-center justify-center">
                       <CheckCircle2 className="h-4 w-4 text-white" />
                     </div>
                   ) : stepStatus === "current" ? (
                     <div className="relative h-8 w-8">
                       <div className="absolute inset-0 rounded-full bg-brand-500/20 animate-ping" />
-                      <div className="relative h-8 w-8 rounded-full border-2 border-brand-500 bg-white flex items-center justify-center">
-                        <div className="h-2.5 w-2.5 rounded-full bg-brand-500" />
+                      <div className="relative h-8 w-8 rounded-full border-2 border-brand-700 bg-white flex items-center justify-center">
+                        <div className="h-2.5 w-2.5 rounded-full bg-brand-700" />
                       </div>
                     </div>
                   ) : (
@@ -646,7 +646,7 @@ function MapPlaceholder() {
         <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 flex flex-col items-center">
           <div className="relative">
             <div className="absolute -inset-2 rounded-full bg-brand-500/30 animate-ping" />
-            <div className="relative h-6 w-6 rounded-full bg-brand-500 border-2 border-white shadow-lg flex items-center justify-center">
+            <div className="relative h-6 w-6 rounded-full bg-brand-700 border-2 border-white shadow-lg flex items-center justify-center">
               <Truck className="h-3 w-3 text-white" />
             </div>
           </div>

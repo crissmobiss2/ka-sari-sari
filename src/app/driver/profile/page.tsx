@@ -97,7 +97,7 @@ export default function ProfilePage() {
     <div className="px-4 py-5 flex flex-col gap-4">
       {/* Avatar + name */}
       <div className="flex flex-col items-center gap-3 py-4">
-        <div className="w-20 h-20 rounded-full bg-brand-500 flex items-center justify-center">
+        <div className="w-20 h-20 rounded-full bg-brand-700 flex items-center justify-center">
           <span className="font-display text-2xl font-bold text-white">{driver.avatarInitials}</span>
         </div>
         <div className="text-center">

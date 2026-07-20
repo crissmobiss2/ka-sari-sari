@@ -242,7 +242,7 @@ export default function DriverHomePage() {
           </div>
           <div className="h-2.5 bg-brand-100 dark:bg-brand-500/20 rounded-full overflow-hidden">
             <div
-              className="h-full bg-brand-500 rounded-full transition-all"
+              className="h-full bg-brand-700 rounded-full transition-all"
               style={{ width: `${progressPct}%` }}
             />
           </div>

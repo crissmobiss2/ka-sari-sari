@@ -132,7 +132,7 @@ export function RetailerTopBar({ title }: { title?: string }) {
           </Link>
           <Link href="/notifications" className="relative flex h-9 w-9 items-center justify-center rounded-xl hover:bg-muted transition-colors">
             <Bell className="h-5 w-5 text-muted-foreground" />
-            <span className="absolute top-1.5 right-1.5 h-2 w-2 rounded-full bg-brand-500" />
+            <span className="absolute top-1.5 right-1.5 h-2 w-2 rounded-full bg-brand-700" />
           </Link>
           <Link href="/cart" className="relative flex h-9 w-9 items-center justify-center rounded-xl hover:bg-muted transition-colors">
             <ShoppingCart className="h-5 w-5 text-muted-foreground" />

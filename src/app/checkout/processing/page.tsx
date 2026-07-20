@@ -98,7 +98,7 @@ function ProcessingContent() {
             <div className={cn(
               "h-2.5 w-2.5 rounded-full transition-all duration-500",
               i < step ? "bg-success-500 scale-100" :
-              i === step ? "bg-brand-500 scale-125" :
+              i === step ? "bg-brand-700 scale-125" :
               "bg-muted-foreground/30 scale-100"
             )} />
             {i < STEPS.length - 1 && (

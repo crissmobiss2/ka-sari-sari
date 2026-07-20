@@ -175,9 +175,9 @@ function MapPlaceholder({ routeId, status }: { routeId: string; status: RouteSta
         let bg = "bg-surface-300";
         let size = "h-2.5 w-2.5";
         let zIndex = "z-10";
-        if (dot.type === "warehouse") { bg = "bg-brand-500"; size = "h-3.5 w-3.5"; zIndex = "z-20"; }
+        if (dot.type === "warehouse") { bg = "bg-brand-700"; size = "h-3.5 w-3.5"; zIndex = "z-20"; }
         if (dot.type === "delivered") { bg = "bg-success-500"; }
-        if (dot.type === "current") { bg = "bg-brand-500 ring-2 ring-brand-300 ring-offset-1"; zIndex = "z-20"; }
+        if (dot.type === "current") { bg = "bg-brand-700 ring-2 ring-brand-300 ring-offset-1"; zIndex = "z-20"; }
         return (
           <span
             key={i}
@@ -189,7 +189,7 @@ function MapPlaceholder({ routeId, status }: { routeId: string; status: RouteSta
 
       {/* Legend */}
       <div className="absolute bottom-2 right-2 flex items-center gap-2 text-[10px] text-muted-foreground bg-white/70 backdrop-blur-sm rounded-lg px-2 py-1">
-        <span className="h-2 w-2 rounded-full bg-brand-500 shrink-0" />
+        <span className="h-2 w-2 rounded-full bg-brand-700 shrink-0" />
         <span>Warehouse</span>
         {status !== "planned" && (
           <>
@@ -674,7 +674,7 @@ export default function AdminRoutesPage() {
                       className={cn(
                         "h-full rounded-full transition-all",
                         route.status === "completed" ? "bg-success-500" :
-                        route.status === "active" ? "bg-brand-500" : "bg-surface-300"
+                        route.status === "active" ? "bg-brand-700" : "bg-surface-300"
                       )}
                       style={{ width: `${pct}%` }}
                     />
@@ -844,7 +844,7 @@ export default function AdminRoutesPage() {
               </div>
               <div>
                 <div className="flex justify-between text-xs text-muted-foreground mb-1"><span>Route progress</span><span>{pct}%</span></div>
-                <div className="h-2 bg-muted rounded-full overflow-hidden"><div className="h-full bg-brand-500 rounded-full transition-all" style={{ width: `${pct}%` }} /></div>
+                <div className="h-2 bg-muted rounded-full overflow-hidden"><div className="h-full bg-brand-700 rounded-full transition-all" style={{ width: `${pct}%` }} /></div>
               </div>
               <p className="text-xs text-muted-foreground text-center">Driver: {r.driver ?? "Unassigned"} · {r.duration} estimated</p>
             </Card>

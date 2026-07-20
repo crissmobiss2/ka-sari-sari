@@ -315,7 +315,7 @@ function CartStickyFooter() {
     <div className="fixed bottom-16 left-0 right-0 z-40 px-4 pb-2">
       <Link
         href="/cart"
-        className="flex items-center justify-between rounded-2xl bg-brand-500 px-5 py-3.5 shadow-brand active:scale-[0.99] transition-all"
+        className="flex items-center justify-between rounded-2xl bg-brand-700 px-5 py-3.5 shadow-brand active:scale-[0.99] transition-all"
       >
         <div className="flex items-center gap-2.5">
           <div className="relative">

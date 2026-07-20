@@ -52,7 +52,7 @@ function WelcomeBanner() {
   return (
     <div className="mx-4 mb-4 rounded-2xl bg-brand-700 p-5 text-white animate-fade-in">
       <p className="font-display text-lg font-bold mb-1">Welcome to Ka Sari-Sari! 🎉</p>
-      <p className="text-sm text-brand-100">Your account is active. Start ordering from our warehouse now.</p>
+      <p className="text-sm text-brand-50">Your account is active. Start ordering from our warehouse now.</p>
     </div>
   );
 }
@@ -203,8 +203,8 @@ export default function DashboardPage() {
                 <div className="flex items-center justify-between mb-2">
                   <div className="flex items-center gap-2">
                     <span className="relative flex h-2.5 w-2.5">
-                      <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-brand-500 opacity-75" />
-                      <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-brand-500" />
+                      <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-brand-700 opacity-75" />
+                      <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-brand-700" />
                     </span>
                     <p className="text-sm font-semibold text-brand-700 dark:text-brand-400">Order on the way!</p>
                   </div>
@@ -216,7 +216,7 @@ export default function DashboardPage() {
                     const steps = ["confirmed", "picking", "packed", "out_for_delivery"];
                     const currentIdx = steps.indexOf(activeOrder.status);
                     return (
-                      <div key={s} className={`h-1.5 flex-1 rounded-full transition-colors ${i <= currentIdx ? "bg-brand-500" : "bg-brand-200"}`} />
+                      <div key={s} className={`h-1.5 flex-1 rounded-full transition-colors ${i <= currentIdx ? "bg-brand-700" : "bg-brand-200"}`} />
                     );
                   })}
                 </div>

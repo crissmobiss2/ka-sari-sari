@@ -852,7 +852,7 @@ export default function DeliveryDetailPage() {
                     <div className={cn(
                       "w-3 h-3 rounded-full border-2 flex-shrink-0 mt-0.5",
                       ev.done
-                        ? "border-brand-500 bg-brand-500"
+                        ? "border-brand-700 bg-brand-700"
                         : "border-surface-300 bg-background"
                     )} />
                     {idx < timelineEvents.length - 1 && (

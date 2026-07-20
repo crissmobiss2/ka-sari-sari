@@ -240,8 +240,8 @@ function RouteMap() {
       <div className="px-4 pb-3 flex items-center gap-4 flex-wrap">
         {[
           { dot: "bg-success-500", label: "Done" },
-          { dot: "bg-brand-500 animate-pulse", label: "Current" },
-          { dot: "bg-white border-2 border-brand-500", label: "Your Store" },
+          { dot: "bg-brand-700 animate-pulse", label: "Current" },
+          { dot: "bg-white border-2 border-brand-700", label: "Your Store" },
           { dot: "bg-surface-300", label: "Upcoming" },
         ].map((l) => (
           <div key={l.label} className="flex items-center gap-1.5">
@@ -275,7 +275,7 @@ function EtaCard({ estimatedDelivery = ORDER.estimatedDelivery }: { estimatedDel
             <p className="font-display text-5xl font-black leading-none">{mins}</p>
             <p className="text-xl font-medium mb-1">min</p>
           </div>
-          <p className="text-sm text-brand-100 mt-1">{estimatedDelivery}</p>
+          <p className="text-sm text-brand-50 mt-1">{estimatedDelivery}</p>
         </div>
         <div className="text-right shrink-0">
           <div className="rounded-xl bg-black/25 px-3 py-2.5 text-center min-w-[56px]">
@@ -493,7 +493,7 @@ function StatusTracker({ liveStatus }: { liveStatus?: string }) {
               <div className={cn(
                 "flex h-8 w-8 shrink-0 items-center justify-center rounded-full border-2 z-10",
                 isDone    ? "bg-success-500 border-success-500" :
-                isCurrent ? "bg-brand-500 border-brand-500" :
+                isCurrent ? "bg-brand-700 border-brand-700" :
                              "bg-card border-border"
               )}>
                 {isDone    ? <CheckCircle2 className="h-4 w-4 text-white" /> :

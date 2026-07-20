@@ -145,7 +145,7 @@ export default function RegisterPage() {
                   {label}
                 </span>
                 {i < STEPS.length - 1 && (
-                  <div className={cn("h-px flex-1", i < step ? "bg-brand-500" : "bg-border")} />
+                  <div className={cn("h-px flex-1", i < step ? "bg-brand-700" : "bg-border")} />
                 )}
               </div>
             ))}

@@ -48,7 +48,7 @@ export default function DriverLayout({ children }: { children: ReactNode }) {
             >
               <Bell className="w-4 h-4" />
             </Link>
-            <div className="w-8 h-8 rounded-full bg-brand-500 flex items-center justify-center">
+            <div className="w-8 h-8 rounded-full bg-brand-700 flex items-center justify-center">
               <span className="text-white text-xs font-bold tracking-wide">{initials}</span>
             </div>
             <LogoutButton />

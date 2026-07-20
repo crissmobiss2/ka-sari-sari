@@ -243,12 +243,12 @@ export default function HomePage() {
       </section>
 
       {/* CTA */}
-      <section className="py-20 px-4 bg-brand-500">
+      <section className="py-20 px-4 bg-brand-700">
         <div className="mx-auto max-w-2xl text-center">
           <h2 className="font-display text-3xl font-bold text-white mb-4">
             Ready to stock your store the smarter way?
           </h2>
-          <p className="text-brand-100 text-base mb-8">
+          <p className="text-brand-50 text-base mb-8">
             Join hundreds of sari-sari store owners already ordering directly from our warehouse.
           </p>
           <ButtonLink size="lg" variant="secondary" href="/register">
@@ -262,7 +262,7 @@ export default function HomePage() {
       <footer className="border-t border-border bg-card px-4 py-10">
         <div className="mx-auto max-w-6xl flex flex-col sm:flex-row items-center justify-between gap-4">
           <div className="flex items-center gap-2">
-            <div className="flex h-6 w-6 items-center justify-center rounded-lg bg-brand-500">
+            <div className="flex h-6 w-6 items-center justify-center rounded-lg bg-brand-700">
               <ShoppingBasket className="h-3.5 w-3.5 text-white" />
             </div>
             <span className="font-display text-sm font-bold text-foreground">Ka Sari-Sari</span>

@@ -318,7 +318,7 @@ export default function AdminOrderDetailPage() {
                   { label: ORDER_STATUS_LABELS[order.status], time: order.updatedAt },
                 ].map((ev) => (
                   <div key={ev.label} className="flex items-start gap-2.5 text-sm">
-                    <div className="mt-0.5 h-2 w-2 rounded-full bg-brand-500 shrink-0" />
+                    <div className="mt-0.5 h-2 w-2 rounded-full bg-brand-700 shrink-0" />
                     <div>
                       <p className="font-medium text-foreground">{ev.label}</p>
                       <p className="text-xs text-muted-foreground">{formatDateTime(ev.time)}</p>
