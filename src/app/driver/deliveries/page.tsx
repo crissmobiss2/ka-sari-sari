@@ -172,7 +172,7 @@ export default function DriverDeliveriesPage() {
           ].map(({ label, count, color }) => (
             <div key={label} className={cn("flex items-center gap-1 rounded-full px-2.5 py-1 text-xs font-semibold", color)}>
               <span>{count}</span>
-              <span className="opacity-70">{label}</span>
+              <span>{label}</span>
             </div>
           ))}
         </div>

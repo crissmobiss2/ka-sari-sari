@@ -335,7 +335,7 @@ export default function AdminDeliveryPage() {
             <Icon className="h-5 w-5 shrink-0" />
             <div>
               <p className="text-xl font-bold tabular-nums leading-tight">{value}</p>
-              <p className="text-[11px] opacity-80">{label}</p>
+              <p className="text-[11px]">{label}</p>
             </div>
           </div>
         ))}

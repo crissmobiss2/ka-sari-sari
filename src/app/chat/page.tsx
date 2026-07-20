@@ -108,7 +108,7 @@ function ChatBubble({ message }: { message: Message }) {
             : "rounded-bl-sm bg-muted text-foreground border border-border"
         )}>
           {message.isVoice && (
-            <div className="flex items-center gap-1 mb-1 opacity-70">
+            <div className="flex items-center gap-1 mb-1">
               <Mic className="h-3 w-3" />
               <span className="text-[10px]">Boses</span>
             </div>

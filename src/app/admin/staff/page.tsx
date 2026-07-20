@@ -515,7 +515,7 @@ export default function AdminStaffPage() {
               }`}
             >
               {tab.label}{" "}
-              <span className={`ml-1 text-xs ${activeTab === tab.key ? "opacity-80" : "opacity-60"}`}>
+              <span className="ml-1 text-xs">
                 ({tabCount(tab.key)})
               </span>
             </button>

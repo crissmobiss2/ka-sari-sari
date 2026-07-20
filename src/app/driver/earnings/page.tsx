@@ -131,10 +131,10 @@ export default function EarningsPage() {
 
       {/* Hero card */}
       <div className="mx-4 rounded-2xl bg-brand-700 text-white p-5">
-        <p className="text-xs opacity-80 uppercase tracking-wider font-medium mb-1">This Week</p>
+        <p className="text-xs uppercase tracking-wider font-medium mb-1">This Week</p>
         <p className="font-display text-4xl font-black leading-none mb-1">{formatPHP(displayWeeklyTotal)}</p>
         <p className="text-sm opacity-90 mb-3">{displayDeliveryCount} deliveries</p>
-        <div className="flex items-center gap-1.5 opacity-80">
+        <div className="flex items-center gap-1.5 text-white/90">
           <TrendingUp className="w-3.5 h-3.5" />
           <span className="text-xs">+₱320 vs last week</span>
         </div>
