@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 // v2
 import { useState } from "react";
 import {
@@ -48,11 +48,11 @@ const DRIVERS_DATA: Driver[] = [
 ];
 
 const ROUTES: Route[] = [
-  { id: "rt-1", name: "Route A – North Valenzuela", area: "Valenzuela City", stops: 12, estimatedHours: 4, assignedTo: "drv-1" },
-  { id: "rt-2", name: "Route B – Caloocan Central", area: "Caloocan City", stops: 9, estimatedHours: 3, assignedTo: "drv-2" },
-  { id: "rt-3", name: "Route C – Malabon / Navotas", area: "Malabon & Navotas", stops: 7, estimatedHours: 2.5 },
-  { id: "rt-4", name: "Route D – QC East", area: "Quezon City", stops: 15, estimatedHours: 5 },
-  { id: "rt-5", name: "Route E – Bagumbayan Loop", area: "Valenzuela City", stops: 8, estimatedHours: 3 },
+  { id: "rt-1", name: "Route A â€“ North Valenzuela", area: "Valenzuela City", stops: 12, estimatedHours: 4, assignedTo: "drv-1" },
+  { id: "rt-2", name: "Route B â€“ Caloocan Central", area: "Caloocan City", stops: 9, estimatedHours: 3, assignedTo: "drv-2" },
+  { id: "rt-3", name: "Route C â€“ Malabon / Navotas", area: "Malabon & Navotas", stops: 7, estimatedHours: 2.5 },
+  { id: "rt-4", name: "Route D â€“ QC East", area: "Quezon City", stops: 15, estimatedHours: 5 },
+  { id: "rt-5", name: "Route E â€“ Bagumbayan Loop", area: "Valenzuela City", stops: 8, estimatedHours: 3 },
 ];
 
 const STATUS_CONFIG: Record<DriverStatus, { label: string; badgeClass: string; avatarClass: string }> = {
@@ -68,8 +68,8 @@ const STATUS_CONFIG: Record<DriverStatus, { label: string; badgeClass: string; a
   },
   off_duty: {
     label: "Off Duty",
-    badgeClass: "bg-surface-100 text-muted-foreground border border-border",
-    avatarClass: "bg-surface-100 text-muted-foreground",
+    badgeClass: "bg-surface-100 dark:bg-surface-800 text-muted-foreground border border-border",
+    avatarClass: "bg-surface-100 dark:bg-surface-800 text-muted-foreground",
   },
 };
 
@@ -250,7 +250,7 @@ export default function AdminDriversPage() {
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
         <StatCard icon={Truck} value={onRoute} label="On Route" color="bg-brand-50 text-brand-500" />
         <StatCard icon={CheckCircle2} value={available} label="Available" color="bg-success-50 text-success-500" />
-        <StatCard icon={Clock} value={offDuty} label="Off Duty" color="bg-surface-100 text-muted-foreground" />
+        <StatCard icon={Clock} value={offDuty} label="Off Duty" color="bg-surface-100 dark:bg-surface-800 text-muted-foreground" />
         <StatCard icon={TrendingUp} value={deliveriesToday} label="Deliveries Today" color="bg-info-50 text-info-500" />
       </div>
 
@@ -289,11 +289,11 @@ export default function AdminDriversPage() {
               <div className="flex items-center gap-1.5 text-xs text-muted-foreground">
                 <Truck className="h-3.5 w-3.5 shrink-0" />
                 <span>{driver.vehicleType}</span>
-                <span className="text-border">·</span>
+                <span className="text-border">Â·</span>
                 <span className="font-mono font-medium text-foreground">{driver.vehiclePlate}</span>
                 {driver.area && (
                   <>
-                    <span className="text-border">·</span>
+                    <span className="text-border">Â·</span>
                     <MapPin className="h-3 w-3 shrink-0" />
                     <span>{driver.area}</span>
                   </>
@@ -412,7 +412,7 @@ export default function AdminDriversPage() {
         </div>
       </Card>
 
-      {/* ── Add Driver Modal ── */}
+      {/* â”€â”€ Add Driver Modal â”€â”€ */}
       {showAdd && (
         <ModalBackdrop onClose={() => setShowAdd(false)}>
           <div className="p-6 space-y-5">
@@ -463,7 +463,7 @@ export default function AdminDriversPage() {
         </ModalBackdrop>
       )}
 
-      {/* ── View Driver Modal ── */}
+      {/* â”€â”€ View Driver Modal â”€â”€ */}
       {viewDriver && (
         <ModalBackdrop onClose={() => setViewDriver(null)}>
           <div className="p-6 space-y-5">
@@ -492,9 +492,9 @@ export default function AdminDriversPage() {
             <div className="grid grid-cols-2 gap-3">
               {[
                 { label: "Phone", value: viewDriver.phone },
-                { label: "Vehicle", value: `${viewDriver.vehicleType} · ${viewDriver.vehiclePlate}` },
-                { label: "Service Area", value: viewDriver.area ?? "—" },
-                { label: "Member Since", value: viewDriver.joined ?? "—" },
+                { label: "Vehicle", value: `${viewDriver.vehicleType} Â· ${viewDriver.vehiclePlate}` },
+                { label: "Service Area", value: viewDriver.area ?? "â€”" },
+                { label: "Member Since", value: viewDriver.joined ?? "â€”" },
               ].map(({ label, value }) => (
                 <div key={label} className="rounded-xl bg-surface-50 px-3 py-3">
                   <p className="text-[10px] text-muted-foreground uppercase tracking-wide font-medium">{label}</p>
@@ -528,7 +528,7 @@ export default function AdminDriversPage() {
                   <Navigation className="h-4 w-4 text-brand-500 shrink-0" />
                   <div>
                     <p className="text-sm font-semibold text-brand-700">{assignedRoute.name}</p>
-                    <p className="text-xs text-brand-500">{assignedRoute.stops} stops · ~{assignedRoute.estimatedHours}h</p>
+                    <p className="text-xs text-brand-500">{assignedRoute.stops} stops Â· ~{assignedRoute.estimatedHours}h</p>
                   </div>
                 </div>
               ) : (
@@ -554,7 +554,7 @@ export default function AdminDriversPage() {
         </ModalBackdrop>
       )}
 
-      {/* ── Route Assignment Modal ── */}
+      {/* â”€â”€ Route Assignment Modal â”€â”€ */}
       {routeDriver && (
         <ModalBackdrop onClose={() => setRouteDriver(null)}>
           <div className="p-6 space-y-5">
@@ -569,7 +569,7 @@ export default function AdminDriversPage() {
               </div>
               <div>
                 <p className="text-sm font-semibold text-foreground">{routeDriver.name}</p>
-                <p className="text-xs text-muted-foreground">{routeDriver.vehicleType} · {routeDriver.vehiclePlate}</p>
+                <p className="text-xs text-muted-foreground">{routeDriver.vehicleType} Â· {routeDriver.vehiclePlate}</p>
               </div>
             </div>
 
@@ -601,7 +601,7 @@ export default function AdminDriversPage() {
                           )}
                         </div>
                         <p className="text-xs text-muted-foreground mt-0.5">
-                          <MapPin className="h-3 w-3 inline mr-0.5" />{route.area} · {route.stops} stops · ~{route.estimatedHours}h
+                          <MapPin className="h-3 w-3 inline mr-0.5" />{route.area} Â· {route.stops} stops Â· ~{route.estimatedHours}h
                         </p>
                       </div>
                     </button>

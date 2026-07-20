@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 import { useState, useEffect } from "react";
 import {
   Plus, X, Calendar, Tag, Pause, Pencil, Copy, Archive, Ban,
@@ -37,9 +37,9 @@ const AVG_ORDER_VALUE = 800;
 const STATUS_STYLE: Record<PromoStatus, string> = {
   active:    "bg-success-50 text-success-700 border-success-500/25",
   scheduled: "bg-warning-50 text-warning-600 border-warning-500/25",
-  ended:     "bg-surface-100 text-muted-foreground border-surface-200",
-  paused:    "bg-surface-100 text-muted-foreground border-surface-200",
-  expired:   "bg-surface-100 text-muted-foreground border-surface-200",
+  ended:     "bg-surface-100 dark:bg-surface-800 text-muted-foreground border-surface-200",
+  paused:    "bg-surface-100 dark:bg-surface-800 text-muted-foreground border-surface-200",
+  expired:   "bg-surface-100 dark:bg-surface-800 text-muted-foreground border-surface-200",
 };
 
 const STATUS_BAR: Record<PromoStatus, string> = {
@@ -104,7 +104,7 @@ function PromoCard({ promo, onPause, onEdit, onDuplicate, onArchiveOrCancel }: P
 
         <div className="mt-3 flex items-center gap-1.5 text-xs text-muted-foreground">
           <Calendar className="h-3.5 w-3.5" />
-          <span>{promo.startDate} — {promo.endDate}</span>
+          <span>{promo.startDate} â€” {promo.endDate}</span>
         </div>
 
         <div className="mt-4 space-y-1.5">
@@ -227,8 +227,8 @@ function CreatePromoModal({ onClose, onSave }: CreatePromoModalProps) {
       value: Number(form.value),
       minOrder: form.minOrder ? Number(form.minOrder) : 0,
       category: form.category,
-      startDate: form.startDate || "—",
-      endDate: form.endDate || "—",
+      startDate: form.startDate || "â€”",
+      endDate: form.endDate || "â€”",
       maxUsage: form.maxUsage ? Number(form.maxUsage) : undefined,
     });
     setSaved(true);
@@ -685,7 +685,7 @@ export default function AdminPromotionsPage() {
             {tab.label}
             <span className={cn(
               "rounded-full px-1.5 py-0.5 text-xs font-semibold tabular-nums",
-              activeTab === tab.id ? "bg-brand-100 text-brand-600" : "bg-surface-100 text-muted-foreground"
+              activeTab === tab.id ? "bg-brand-100 text-brand-600" : "bg-surface-100 dark:bg-surface-800 text-muted-foreground"
             )}>
               {tab.count}
             </span>

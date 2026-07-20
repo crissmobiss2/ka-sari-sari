@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import { useState, useEffect } from "react";
 import {
@@ -125,7 +125,7 @@ function mapApiStop(s: ApiStop, isNext: boolean): Stop {
     collectedCOD: baseStatus === "done" && s.paymentMethod === "cod" ? s.codAmount : 0,
     phone: s.phone,
     items: Array.isArray(s.items) ? s.items.length : (typeof s.items === "number" ? s.items : 0),
-    weight: "—",
+    weight: "â€”",
   };
 }
 
@@ -133,7 +133,7 @@ function payIcon(method: Stop["paymentMethod"]) {
   if (method === "cod") return <Banknote className="h-3 w-3" />;
   if (method === "gcash") return <span className="text-[10px] font-bold">G</span>;
   if (method === "maya") return <span className="text-[10px] font-bold">M</span>;
-  return <span className="text-[10px]">♟</span>;
+  return <span className="text-[10px]">â™Ÿ</span>;
 }
 
 function payLabel(method: Stop["paymentMethod"]) {
@@ -200,7 +200,7 @@ export default function RouteMapPage() {
       })
     );
     setExpanded(null);
-    // Persist to API — best-effort, local state is source of truth while driver is on route
+    // Persist to API â€” best-effort, local state is source of truth while driver is on route
     if (stop) {
       const orderId = stop.orderId ?? stop.orderNumber;
       fetch(`/api/driver/deliveries/${orderId}`, {
@@ -222,7 +222,7 @@ export default function RouteMapPage() {
       })
     );
     setExpanded(null);
-    // Persist to API — best-effort
+    // Persist to API â€” best-effort
     const orderId = stop.orderId ?? stop.orderNumber;
     fetch(`/api/driver/deliveries/${orderId}`, {
       method: "PATCH",
@@ -246,7 +246,7 @@ export default function RouteMapPage() {
           notes: reportNotes,
         }),
       });
-      toastSuccess(`EOD report submitted — ${formatPHP(collectedCOD)} COD collected`);
+      toastSuccess(`EOD report submitted â€” ${formatPHP(collectedCOD)} COD collected`);
       setReportSubmitted(true);
       setShowReconcile(false);
     } catch {
@@ -282,7 +282,7 @@ export default function RouteMapPage() {
             <p className="text-xs font-medium opacity-80 uppercase tracking-wider">Today's Route</p>
             <h1 className="font-display text-xl font-bold mt-0.5">Caloocan North</h1>
             <p className="text-sm opacity-80 mt-0.5">
-              {doneStops}/{totalStops} stops · {formatPHP(stops.filter(s=>s.status==="done").reduce((s,x)=>s+x.total,0))} delivered
+              {doneStops}/{totalStops} stops Â· {formatPHP(stops.filter(s=>s.status==="done").reduce((s,x)=>s+x.total,0))} delivered
             </p>
           </div>
           <div className="text-right">
@@ -324,7 +324,7 @@ export default function RouteMapPage() {
           </div>
           <button
             onClick={() => setShowReconcile(true)}
-            className="shrink-0 rounded-xl bg-success-500 text-white text-xs font-bold px-3 py-2"
+            className="shrink-0 rounded-xl bg-success-700 text-white text-xs font-bold px-3 py-2"
           >
             Submit Report
           </button>
@@ -360,7 +360,7 @@ export default function RouteMapPage() {
                   isDone ? "bg-success-100 text-success-600"
                   : isFailed ? "bg-danger-100 text-danger-600"
                   : isNext ? "bg-brand-500 text-white"
-                  : "bg-surface-100 text-muted-foreground"
+                  : "bg-surface-100 dark:bg-surface-800 text-muted-foreground"
                 )}>
                   {isDone ? <CheckCircle2 className="h-4 w-4" /> : isFailed ? <XCircle className="h-4 w-4" /> : stop.stopNumber}
                 </div>
@@ -406,12 +406,12 @@ export default function RouteMapPage() {
                     </div>
                     <div>
                       <p className="text-xs text-muted-foreground uppercase tracking-wide font-medium">Items</p>
-                      <p className="font-semibold mt-0.5">{stop.items} items · {stop.weight}</p>
+                      <p className="font-semibold mt-0.5">{stop.items} items Â· {stop.weight}</p>
                     </div>
                     <div>
                       <p className="text-xs text-muted-foreground uppercase tracking-wide font-medium">Payment</p>
                       <p className={cn("font-bold mt-0.5", stop.paymentMethod === "cod" ? "text-warning-600" : "text-info-600")}>
-                        {payLabel(stop.paymentMethod)} · {formatPHP(stop.total)}
+                        {payLabel(stop.paymentMethod)} Â· {formatPHP(stop.total)}
                       </p>
                     </div>
                   </div>
@@ -467,7 +467,7 @@ export default function RouteMapPage() {
                       className="w-full rounded-2xl bg-success-500 hover:bg-success-600 text-white text-sm font-bold h-11 flex items-center justify-center gap-2 transition-colors"
                     >
                       <CheckCircle2 className="h-5 w-5" />
-                      {stop.paymentMethod === "cod" ? `Mark Delivered · Collect ${formatPHP(stop.total)}` : "Mark Delivered"}
+                      {stop.paymentMethod === "cod" ? `Mark Delivered Â· Collect ${formatPHP(stop.total)}` : "Mark Delivered"}
                     </button>
                   )}
 
@@ -481,7 +481,7 @@ export default function RouteMapPage() {
                   {isFailed && (
                     <div className="flex items-center gap-2 text-sm text-danger-600 font-medium">
                       <AlertTriangle className="h-4 w-4" />
-                      Delivery failed — reported to dispatch
+                      Delivery failed â€” reported to dispatch
                     </div>
                   )}
                 </div>
@@ -505,7 +505,7 @@ export default function RouteMapPage() {
                   <p className="text-xs text-muted-foreground">{s.orderNumber}</p>
                 </div>
                 <div className={cn("text-right font-bold", s.status === "done" ? "text-success-600" : "text-muted-foreground")}>
-                  {s.status === "done" ? formatPHP(s.total) : "—"}
+                  {s.status === "done" ? formatPHP(s.total) : "â€”"}
                 </div>
               </div>
             ))}
@@ -520,7 +520,7 @@ export default function RouteMapPage() {
               disabled={isSubmitting}
               className="w-full rounded-2xl bg-brand-500 hover:bg-brand-600 text-white font-bold h-12 transition-colors disabled:opacity-60"
             >
-              {isSubmitting ? "Submitting…" : "Confirm & Submit Report"}
+              {isSubmitting ? "Submittingâ€¦" : "Confirm & Submit Report"}
             </button>
             <button onClick={() => setShowReconcile(false)} className="w-full text-sm text-muted-foreground py-2">
               Cancel

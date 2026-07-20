@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
@@ -66,7 +66,7 @@ export default function SubscriptionPage() {
         ) : (
           <div className={`rounded-2xl border p-6 space-y-4 ${isActive ? "border-success-500/25 bg-success-50" : "border-border bg-card"}`}>
             <div className="flex items-center gap-3">
-              <div className={`flex h-12 w-12 items-center justify-center rounded-2xl ${isActive ? "bg-success-100 text-success-600" : "bg-surface-100 text-muted-foreground"}`}>
+              <div className={`flex h-12 w-12 items-center justify-center rounded-2xl ${isActive ? "bg-success-100 text-success-600" : "bg-surface-100 dark:bg-surface-800 text-muted-foreground"}`}>
                 <Shield className="h-6 w-6" />
               </div>
               <div>
@@ -130,7 +130,7 @@ export default function SubscriptionPage() {
                     </div>
                     <div>
                       <p className="text-sm font-medium text-foreground">Monthly subscription</p>
-                      <p className="text-xs text-muted-foreground">{h.date} · {h.method}</p>
+                      <p className="text-xs text-muted-foreground">{h.date} Â· {h.method}</p>
                     </div>
                   </div>
                   <span className="text-sm font-bold text-foreground">{formatPHP(h.amount)}</span>
@@ -140,7 +140,7 @@ export default function SubscriptionPage() {
           </div>
         )}
 
-        {/* Renew CTA — shown only after free trial (monthly subscribers) */}
+        {/* Renew CTA â€” shown only after free trial (monthly subscribers) */}
         {!loading && sub && sub.plan !== "free_trial" && (
           <div className="rounded-2xl border border-brand-200 bg-brand-50 p-5 space-y-3">
             <div className="flex items-start gap-2">
@@ -151,7 +151,7 @@ export default function SubscriptionPage() {
               </p>
             </div>
             <ButtonLink size="md" href="/checkout" className="w-full">
-              Renew now — {formatPHP(sub.amount)} <ArrowRight className="h-4 w-4" />
+              Renew now â€” {formatPHP(sub.amount)} <ArrowRight className="h-4 w-4" />
             </ButtonLink>
           </div>
         )}
@@ -163,7 +163,7 @@ export default function SubscriptionPage() {
               <Clock className="h-4 w-4 text-brand-500 mt-0.5 shrink-0" />
               <p className="text-sm text-brand-700">
                 Your free trial runs until <span className="font-semibold">{sub.renewalDate}</span>.
-                After that, ₱200/month keeps your store active.
+                After that, â‚±200/month keeps your store active.
               </p>
             </div>
           </div>

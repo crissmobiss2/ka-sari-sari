@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 import { useState, useEffect } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
@@ -13,7 +13,7 @@ import { useWalletStore } from "@/store/wallet";
 import { useFavoritesStore } from "@/store/favorites";
 import { formatPHP, cn } from "@/lib/utils";
 
-// ── Credit score constants ─────────────────────────────────────────────────────
+// â”€â”€ Credit score constants â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
 const CREDIT_SCORE = 724;
 const CREDIT_SCORE_MAX = 850;
@@ -23,7 +23,7 @@ const CREDIT_USED = 3200;
 const CREDIT_AVAILABLE = CREDIT_LIMIT - CREDIT_USED;
 const CREDIT_UTILIZATION = (CREDIT_USED / CREDIT_LIMIT) * 100;
 
-// ── Gauge arc helpers ─────────────────────────────────────────────────────────
+// â”€â”€ Gauge arc helpers â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
 function polarToCartesian(cx: number, cy: number, r: number, angleDeg: number) {
   const rad = (angleDeg * Math.PI) / 180;
@@ -52,7 +52,7 @@ const DEFAULT_SCORE_FACTORS: { label: string; pct: number; grade: string; color:
   { label: "Account Age", pct: 62, grade: "Building", color: "#f59e0b" },
 ];
 
-// ── Push subscription utilities ───────────────────────────────────────────────
+// â”€â”€ Push subscription utilities â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
 function urlBase64ToUint8Array(base64String: string): Uint8Array<ArrayBuffer> {
   const padding = "=".repeat((4 - (base64String.length % 4)) % 4);
@@ -65,7 +65,7 @@ function urlBase64ToUint8Array(base64String: string): Uint8Array<ArrayBuffer> {
   return output;
 }
 
-// ── Credit application type ────────────────────────────────────────────────────
+// â”€â”€ Credit application type â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
 interface CreditApplication {
   id: string;
@@ -77,7 +77,7 @@ interface CreditApplication {
   rejection_reason?: string;
 }
 
-// ── Page ──────────────────────────────────────────────────────────────────────
+// â”€â”€ Page â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
 export default function AccountPage() {
   const router = useRouter();
@@ -97,11 +97,11 @@ export default function AccountPage() {
   const [userInfo, setUserInfo] = useState({
     displayName: "Maria Santos",
     phone: "+63 917 123 4567",
-    storeName: "Santos Sari-Sari Store · Caloocan City",
+    storeName: "Santos Sari-Sari Store Â· Caloocan City",
     initial: "M",
   });
 
-  // ── Push notification state ───────────────────────────────────────────────
+  // â”€â”€ Push notification state â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
   const [pushSupported, setPushSupported]   = useState(false);
   const [pushPermission, setPushPermission] = useState<NotificationPermission>("default");
@@ -111,7 +111,7 @@ export default function AccountPage() {
   const [pushError, setPushError]           = useState("");
   const [pushSuccess, setPushSuccess]       = useState("");
 
-  // ── Credit application state ──────────────────────────────────────────────
+  // â”€â”€ Credit application state â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
   const [scoreFactors, setScoreFactors] = useState(DEFAULT_SCORE_FACTORS);
   const [creditApplications, setCreditApplications] = useState<CreditApplication[]>([]);
@@ -125,7 +125,7 @@ export default function AccountPage() {
     yearsInBusiness: "",
   });
 
-  // ── Effects ───────────────────────────────────────────────────────────────
+  // â”€â”€ Effects â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
   useEffect(() => {
     fetch("/api/auth/me")
@@ -203,7 +203,7 @@ export default function AccountPage() {
       .catch(() => {});
   }, [creditSubmitted]); // re-fetch after submission
 
-  // ── Push notification handlers ────────────────────────────────────────────
+  // â”€â”€ Push notification handlers â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
   async function handleEnablePush() {
     if (!pushSupported || !vapidKey) {
@@ -266,13 +266,13 @@ export default function AccountPage() {
     }
   }
 
-  // ── Credit application handler ────────────────────────────────────────────
+  // â”€â”€ Credit application handler â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
   async function handleCreditSubmit(e: React.FormEvent) {
     e.preventDefault();
     const requestedLimit = parseInt(creditForm.requestedLimit.replace(/[^0-9]/g, ""), 10);
     if (!requestedLimit || requestedLimit < 500) {
-      setCreditError("Minimum credit request is ₱500");
+      setCreditError("Minimum credit request is â‚±500");
       return;
     }
     setCreditLoading(true);
@@ -301,7 +301,7 @@ export default function AccountPage() {
     }
   }
 
-  // ── Status badge helper ───────────────────────────────────────────────────
+  // â”€â”€ Status badge helper â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
   function statusBadge(status: CreditApplication["status"]) {
     const styles = {
@@ -316,11 +316,11 @@ export default function AccountPage() {
     );
   }
 
-  // ── Menu items ────────────────────────────────────────────────────────────
+  // â”€â”€ Menu items â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
   const menuItems = [
     { label: "Store Profile", description: "Manage your store details", href: "/account/store", icon: Store },
-    { label: "Subscription", description: "Active · Renews Jul 6, 2027", href: "/account/subscription", icon: CreditCard },
+    { label: "Subscription", description: "Active Â· Renews Jul 6, 2027", href: "/account/subscription", icon: CreditCard },
     { label: "My Wallet", description: `Balance: ${formatPHP(walletBalance)}`, href: "/wallet", icon: Wallet },
     { label: "Saved Items", description: `${favCount} saved ${favCount === 1 ? "product" : "products"}`, href: "/favorites", icon: Heart },
     { label: "Today's Deals", description: "Exclusive discounts for you", href: "/deals", icon: Tag },
@@ -411,15 +411,15 @@ export default function AccountPage() {
           <div className="rounded-xl bg-surface-50 border border-border px-4 py-3 flex justify-between items-center">
             <div>
               <p className="text-xs text-muted-foreground">Credit Limit</p>
-              <p className="text-lg font-black text-surface-900">₱{creditData.limit.toLocaleString()}</p>
+              <p className="text-lg font-black text-surface-900">â‚±{creditData.limit.toLocaleString()}</p>
             </div>
             <div className="text-right">
               <p className="text-xs text-muted-foreground">Used</p>
-              <p className="text-base font-bold text-brand-500">₱{creditData.used.toLocaleString()}</p>
+              <p className="text-base font-bold text-brand-500">â‚±{creditData.used.toLocaleString()}</p>
             </div>
             <div className="text-right">
               <p className="text-xs text-muted-foreground">Available</p>
-              <p className="text-base font-bold text-success-600">₱{creditData.available.toLocaleString()}</p>
+              <p className="text-base font-bold text-success-600">â‚±{creditData.available.toLocaleString()}</p>
             </div>
           </div>
 
@@ -439,7 +439,7 @@ export default function AccountPage() {
           </p>
         </div>
 
-        {/* ── Credit Application Section ─────────────────────────────────────── */}
+        {/* â”€â”€ Credit Application Section â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */}
         <div className="rounded-2xl border border-border bg-card shadow-card p-5 space-y-4">
           <div className="flex items-center gap-2">
             <div className="flex h-8 w-8 items-center justify-center rounded-xl bg-brand-50">
@@ -458,7 +458,7 @@ export default function AccountPage() {
                 <div key={app.id} className="rounded-xl border border-border bg-surface-50 px-4 py-3">
                   <div className="flex items-center justify-between mb-1">
                     <p className="text-sm font-semibold text-surface-900">
-                      ₱{app.requested_limit.toLocaleString()} requested
+                      â‚±{app.requested_limit.toLocaleString()} requested
                     </p>
                     {statusBadge(app.status)}
                   </div>
@@ -467,7 +467,7 @@ export default function AccountPage() {
                   </p>
                   {app.status === "approved" && app.approved_limit && (
                     <p className="text-xs text-success-600 font-medium mt-0.5">
-                      Approved: ₱{app.approved_limit.toLocaleString()} · {app.requested_terms ?? 7}-day terms
+                      Approved: â‚±{app.approved_limit.toLocaleString()} Â· {app.requested_terms ?? 7}-day terms
                     </p>
                   )}
                   {app.status === "rejected" && app.rejection_reason && (
@@ -517,10 +517,10 @@ export default function AccountPage() {
               <div className="space-y-3">
                 <div>
                   <label className="text-xs font-medium text-muted-foreground block mb-1">
-                    Requested Credit Limit (₱) <span className="text-danger-500">*</span>
+                    Requested Credit Limit (â‚±) <span className="text-danger-500">*</span>
                   </label>
                   <div className="relative">
-                    <span className="absolute left-3 top-1/2 -translate-y-1/2 text-sm font-bold text-muted-foreground">₱</span>
+                    <span className="absolute left-3 top-1/2 -translate-y-1/2 text-sm font-bold text-muted-foreground">â‚±</span>
                     <input
                       type="number"
                       required
@@ -531,15 +531,15 @@ export default function AccountPage() {
                       className="h-11 w-full rounded-xl border border-input bg-background pl-7 pr-3 text-sm focus:outline-none focus:ring-2 focus:ring-brand-500"
                     />
                   </div>
-                  <p className="text-[11px] text-muted-foreground mt-1">Minimum ₱500 · 7-day payment terms</p>
+                  <p className="text-[11px] text-muted-foreground mt-1">Minimum â‚±500 Â· 7-day payment terms</p>
                 </div>
 
                 <div>
                   <label className="text-xs font-medium text-muted-foreground block mb-1">
-                    Monthly Revenue (₱)
+                    Monthly Revenue (â‚±)
                   </label>
                   <div className="relative">
-                    <span className="absolute left-3 top-1/2 -translate-y-1/2 text-sm font-bold text-muted-foreground">₱</span>
+                    <span className="absolute left-3 top-1/2 -translate-y-1/2 text-sm font-bold text-muted-foreground">â‚±</span>
                     <input
                       type="number"
                       min={0}
@@ -588,7 +588,7 @@ export default function AccountPage() {
                   className="flex-1 rounded-xl bg-brand-500 py-3 text-sm font-bold text-white hover:bg-brand-600 transition-colors disabled:opacity-60 disabled:cursor-not-allowed flex items-center justify-center gap-2"
                 >
                   {creditLoading ? (
-                    <><Loader2 className="h-4 w-4 animate-spin" /> Submitting…</>
+                    <><Loader2 className="h-4 w-4 animate-spin" /> Submittingâ€¦</>
                   ) : (
                     "Submit Application"
                   )}
@@ -607,13 +607,13 @@ export default function AccountPage() {
               </div>
               <div className="flex-1">
                 <p className="text-sm font-semibold text-success-700">Active Subscription</p>
-                <p className="text-xs text-success-600 mt-0.5">Platform access · Free Trial · Year 1</p>
+                <p className="text-xs text-success-600 mt-0.5">Platform access Â· Free Trial Â· Year 1</p>
                 <div className="flex items-center gap-2 mt-2">
                   <Check className="h-3.5 w-3.5 text-success-500" />
                   <span className="text-xs text-success-600">Unlimited orders</span>
-                  <span className="text-success-300">·</span>
+                  <span className="text-success-300">Â·</span>
                   <Clock className="h-3 w-3 text-success-500" />
-                  <span className="text-xs text-success-600">{subDaysLeft !== null ? subDaysLeft : '—'} days left</span>
+                  <span className="text-xs text-success-600">{subDaysLeft !== null ? subDaysLeft : 'â€”'} days left</span>
                 </div>
               </div>
             </div>
@@ -632,7 +632,7 @@ export default function AccountPage() {
           </div>
         ) : null}
 
-        {/* ── Push Notifications Section ──────────────────────────────────────── */}
+        {/* â”€â”€ Push Notifications Section â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */}
         <div className="rounded-2xl border border-border bg-card shadow-card p-5 space-y-4">
           <div className="flex items-center gap-2">
             <div className="flex h-8 w-8 items-center justify-center rounded-xl bg-brand-50">
@@ -732,7 +732,7 @@ export default function AccountPage() {
               href={href}
               className="flex items-center gap-4 px-5 py-4 hover:bg-muted transition-colors active:bg-muted"
             >
-              <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-surface-100 text-muted-foreground">
+              <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-surface-100 dark:bg-surface-800 text-muted-foreground">
                 <Icon className="h-4 w-4" />
               </div>
               <div className="flex-1 min-w-0">
@@ -761,7 +761,7 @@ export default function AccountPage() {
           <span className="text-sm font-semibold">Sign out</span>
         </button>
 
-        <p className="text-center text-xs text-muted-foreground pb-2">Ka Sari-Sari v1.0.0 · Made with love in the Philippines</p>
+        <p className="text-center text-xs text-muted-foreground pb-2">Ka Sari-Sari v1.0.0 Â· Made with love in the Philippines</p>
       </div>
 
       <RetailerBottomNav />

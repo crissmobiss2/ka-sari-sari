@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 import Link from "next/link";
 import { useState, useEffect } from "react";
 import { BarChart3, TrendingUp, Package, ShoppingBasket, Zap, RotateCcw, Calendar, Loader2 } from "lucide-react";
@@ -7,7 +7,7 @@ import { formatPHP } from "@/lib/utils";
 import { cn } from "@/lib/utils";
 import { MOCK_ORDERS, PRODUCTS, CATEGORIES } from "@/lib/mock-data";
 
-// ── Computed stats from MOCK_ORDERS ──────────────────────────────────────────
+// â”€â”€ Computed stats from MOCK_ORDERS â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
 const totalSpent = MOCK_ORDERS.reduce((sum, o) => sum + o.total, 0);
 const orderCount = MOCK_ORDERS.length;
@@ -17,7 +17,7 @@ const savings = Math.round(totalSpent * (srpPremium - 1) / srpPremium);
 const srpTotal = Math.round(totalSpent * srpPremium);
 const savingsPct = Math.round((savings / srpTotal) * 100);
 
-// ── Order frequency stats ─────────────────────────────────────────────────────
+// â”€â”€ Order frequency stats â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
 const sortedOrders = [...MOCK_ORDERS].sort(
   (a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
@@ -29,7 +29,7 @@ const lastOrderDate = sortedOrders[0]?.createdAt
 
 const lastOrderLabel = lastOrderDate
   ? lastOrderDate.toLocaleDateString("en-PH", { month: "long", day: "numeric", year: "numeric" })
-  : "—";
+  : "â€”";
 
 // Average days between orders
 let avgDaysBetween = 0;
@@ -42,7 +42,7 @@ if (sortedOrders.length >= 2) {
   avgDaysBetween = Math.round(totalDays / (sortedOrders.length - 1));
 }
 
-// Orders this month (Jul 2026 is current per app context — match the year/month of most recent order)
+// Orders this month (Jul 2026 is current per app context â€” match the year/month of most recent order)
 const mostRecentMonth = lastOrderDate ? lastOrderDate.getMonth() : -1;
 const mostRecentYear = lastOrderDate ? lastOrderDate.getFullYear() : -1;
 const ordersThisMonth = MOCK_ORDERS.filter((o) => {
@@ -50,14 +50,14 @@ const ordersThisMonth = MOCK_ORDERS.filter((o) => {
   return d.getMonth() === mostRecentMonth && d.getFullYear() === mostRecentYear;
 }).length;
 
-// ── Category breakdown from order items ───────────────────────────────────────
+// â”€â”€ Category breakdown from order items â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
-// Build productId → categoryId map
+// Build productId â†’ categoryId map
 const productCategoryMap = new Map<string, string>(
   PRODUCTS.map((p) => [p.id, p.categoryId])
 );
 
-// Build categoryId → name map
+// Build categoryId â†’ name map
 const categoryNameMap = new Map<string, string>(
   CATEGORIES.map((c) => [c.id, c.name])
 );
@@ -84,7 +84,7 @@ const TOP_CATEGORIES = Array.from(categoryTotals.entries())
     pct: itemsTotal > 0 ? Math.round((total / itemsTotal) * 100) : 0,
   }));
 
-// ── Static chart & display data ───────────────────────────────────────────────
+// â”€â”€ Static chart & display data â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
 const MONTHLY_DATA = [
   { month: "Feb", value: 3200 },
@@ -97,9 +97,9 @@ const MONTHLY_DATA = [
 
 const MAX_VALUE = Math.max(...MONTHLY_DATA.map((d) => d.value));
 
-// ── Computed top products from MOCK_ORDERS ────────────────────────────────────
+// â”€â”€ Computed top products from MOCK_ORDERS â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
-// Build productId → total quantity ordered
+// Build productId â†’ total quantity ordered
 const productQtyMap = new Map<string, number>();
 for (const order of MOCK_ORDERS) {
   for (const item of order.items) {
@@ -107,7 +107,7 @@ for (const order of MOCK_ORDERS) {
   }
 }
 
-// Build productId → number of orders it appears in
+// Build productId â†’ number of orders it appears in
 const productOrderCountMap = new Map<string, number>();
 for (const order of MOCK_ORDERS) {
   const seen = new Set<string>();
@@ -119,7 +119,7 @@ for (const order of MOCK_ORDERS) {
   }
 }
 
-// Build productId → Product lookup
+// Build productId â†’ Product lookup
 const productMap = new Map(PRODUCTS.map((p) => [p.id, p]));
 
 // Sort by total quantity descending, take top 5
@@ -143,7 +143,7 @@ const TOP_PRODUCTS = Array.from(productQtyMap.entries())
     };
   });
 
-// ── Computed restock suggestions ──────────────────────────────────────────────
+// â”€â”€ Computed restock suggestions â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
 // Find the most-ordered product categories from MOCK_ORDERS items
 const categoryOrderQtyMap = new Map<string, number>();
@@ -194,7 +194,7 @@ const RESTOCK_SUGGESTIONS: Array<{ name: string; brand: string; productId: strin
           };
         });
 
-// ── Savings forecast for CTA ──────────────────────────────────────────────────
+// â”€â”€ Savings forecast for CTA â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
 const savingsForecast = Math.round(totalSpent * (srpPremium - 1));
 
@@ -206,7 +206,7 @@ const RANK_COLORS = [
   "bg-brand-100",
 ];
 
-// Category bar opacity classes — brand-500 at decreasing opacity
+// Category bar opacity classes â€” brand-500 at decreasing opacity
 const CATEGORY_BAR_CLASSES = [
   "bg-brand-500",
   "bg-brand-500/70",
@@ -214,7 +214,7 @@ const CATEGORY_BAR_CLASSES = [
   "bg-brand-500/30",
 ];
 
-// ── Stat card ────────────────────────────────────────────────────────────────
+// â”€â”€ Stat card â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
 function StatCard({
   label,
@@ -243,10 +243,10 @@ function StatCard({
   );
 }
 
-// ── Main page ────────────────────────────────────────────────────────────────
+// â”€â”€ Main page â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
 export default function AnalyticsPage() {
-  // Analytics data — loaded from API, falling back to mock-derived values while loading
+  // Analytics data â€” loaded from API, falling back to mock-derived values while loading
   const [analyticsLoading, setAnalyticsLoading] = useState(true);
   const [apiStats, setApiStats] = useState<{
     totalSpent: number;
@@ -285,7 +285,7 @@ export default function AnalyticsPage() {
         });
       })
       .catch(() => {
-        // Fall back to mock-derived data on error — page stays functional
+        // Fall back to mock-derived data on error â€” page stays functional
         setApiStats(null);
       })
       .finally(() => setAnalyticsLoading(false));
@@ -374,7 +374,7 @@ export default function AnalyticsPage() {
             </div>
           </div>
           <p className="text-[10px] text-muted-foreground mt-2">
-            Based on order history · Updated monthly
+            Based on order history Â· Updated monthly
           </p>
         </div>
 
@@ -407,7 +407,7 @@ export default function AnalyticsPage() {
               ))}
             </div>
             <p className="text-[10px] text-muted-foreground mt-3 pt-3 border-t border-border">
-              Based on itemized orders · Top {stats.topCategories.length} categories shown
+              Based on itemized orders Â· Top {stats.topCategories.length} categories shown
             </p>
           </div>
         )}
@@ -427,15 +427,15 @@ export default function AnalyticsPage() {
                   <div className="flex items-center gap-3 px-4 py-3.5 flex-1 min-w-0">
                     <span className={cn(
                       "flex h-7 w-7 shrink-0 items-center justify-center rounded-lg text-xs font-black",
-                      p.rank === 1 ? "bg-brand-500 text-white" : "bg-surface-100 text-muted-foreground"
+                      p.rank === 1 ? "bg-brand-500 text-white" : "bg-surface-100 dark:bg-surface-800 text-muted-foreground"
                     )}>
                       {p.rank}
                     </span>
                     <div className="flex-1 min-w-0">
                       <p className="text-sm font-semibold text-foreground truncate">{p.name}</p>
                       <p className="text-xs text-muted-foreground mt-0.5">
-                        {p.brand && <span className="mr-1">{p.brand} ·</span>}
-                        {p.totalQty} units ordered · {p.pctOfOrders}% of orders
+                        {p.brand && <span className="mr-1">{p.brand} Â·</span>}
+                        {p.totalQty} units ordered Â· {p.pctOfOrders}% of orders
                       </p>
                     </div>
                   </div>
@@ -459,7 +459,7 @@ export default function AnalyticsPage() {
             <div className="flex items-center justify-between px-5 py-3.5">
               <span className="text-sm text-muted-foreground">Avg. days between orders</span>
               <span className="text-sm font-bold text-foreground tabular-nums">
-                {stats.avgDaysBetween > 0 ? `${stats.avgDaysBetween} days` : "—"}
+                {stats.avgDaysBetween > 0 ? `${stats.avgDaysBetween} days` : "â€”"}
               </span>
             </div>
             <div className="flex items-center justify-between px-5 py-3.5">
@@ -488,15 +488,15 @@ export default function AnalyticsPage() {
                   <div className="flex-1 min-w-0">
                     <p className="text-sm font-semibold text-foreground truncate">{s.name}</p>
                     <p className="text-xs text-muted-foreground mt-0.5">
-                      {s.brand && <span>{s.brand} · </span>}
-                      {s.isLowStock ? "Low on stock — time to reorder" : "Consider stocking more"}
+                      {s.brand && <span>{s.brand} Â· </span>}
+                      {s.isLowStock ? "Low on stock â€” time to reorder" : "Consider stocking more"}
                     </p>
                     <div className="flex items-center gap-1.5 mt-2">
                       <span className={cn(
                         "rounded-full px-2 py-0.5 text-[10px] font-semibold",
                         s.isLowStock
                           ? "bg-warning-50 text-warning-600 border border-warning-200"
-                          : "bg-surface-100 text-muted-foreground border border-border"
+                          : "bg-surface-100 dark:bg-surface-800 text-muted-foreground border border-border"
                       )}>
                         {s.isLowStock ? "Low stock" : "Frequently ordered"}
                       </span>

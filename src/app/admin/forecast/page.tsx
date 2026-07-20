@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import { useMemo, useState, useEffect, useCallback } from "react";
 import {
@@ -24,7 +24,7 @@ import { cn } from "@/lib/utils";
 import { toastSuccess, toastInfo, toastError } from "@/store/toast";
 import { MOCK_ORDERS, PRODUCTS, CATEGORIES } from "@/lib/mock-data";
 
-// ── Types ─────────────────────────────────────────────────────────────────────
+// â”€â”€ Types â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
 // Claude AI forecast shape
 interface AiReorder {
@@ -86,14 +86,14 @@ interface ReorderEntry extends VelocityEntry {
   suggestedQty: number;
 }
 
-// ── Static forecast data ───────────────────────────────────────────────────────
+// â”€â”€ Static forecast data â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
 const FORECAST_ROWS: ForecastRow[] = [
   { name: "Coca-Cola Regular 330ml",    category: "Beverages",      currentStock: 142, forecastUnits: 168, trendPct:  18, confidence: 96, action: "Reorder" },
   { name: "Lucky Me! Pancit Canton",    category: "Instant Noodles", currentStock:  89, forecastUnits: 112, trendPct:  26, confidence: 91, action: "Reorder" },
   { name: "Piattos Cheese 85g",         category: "Snacks",         currentStock: 203, forecastUnits: 195, trendPct:  -4, confidence: 88, action: "Watch"   },
   { name: "555 Sardines Tomato 155g",   category: "Canned Goods",   currentStock:  56, forecastUnits:  94, trendPct:  68, confidence: 85, action: "URGENT"  },
-  { name: "Nescafé 3-in-1 Original",   category: "Coffee",         currentStock:  78, forecastUnits:  89, trendPct:  14, confidence: 93, action: "Reorder" },
+  { name: "NescafÃ© 3-in-1 Original",   category: "Coffee",         currentStock:  78, forecastUnits:  89, trendPct:  14, confidence: 93, action: "Reorder" },
   { name: "Safeguard Classic Bar",      category: "Personal Care",  currentStock:  34, forecastUnits:  67, trendPct:  97, confidence: 79, action: "URGENT"  },
   { name: "Silver Swan Soy Sauce 1L",  category: "Condiments",     currentStock: 112, forecastUnits:  98, trendPct: -12, confidence: 87, action: "OK"      },
   { name: "Surf Powder Detergent",      category: "Household",      currentStock: 167, forecastUnits: 145, trendPct: -13, confidence: 84, action: "OK"      },
@@ -112,14 +112,14 @@ const CATEGORY_FORECASTS: CategoryForecast[] = [
 
 const MAX_ABS_PCT = Math.max(...CATEGORY_FORECASTS.map((c) => Math.abs(c.changePct)));
 
-// ── Helpers ────────────────────────────────────────────────────────────────────
+// â”€â”€ Helpers â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
 function actionStyles(action: ActionType): string {
   switch (action) {
     case "URGENT":  return "bg-danger-50 text-danger-600 border border-danger-200";
     case "Reorder": return "bg-brand-50 text-brand-600 border border-brand-200";
     case "Watch":   return "bg-warning-50 text-warning-600 border border-warning-200";
-    case "OK":      return "bg-surface-100 text-muted-foreground";
+    case "OK":      return "bg-surface-100 dark:bg-surface-800 text-muted-foreground";
   }
 }
 
@@ -159,7 +159,7 @@ function exportCSV() {
   toastSuccess("Forecast report exported as CSV");
 }
 
-// ── Sub-components ─────────────────────────────────────────────────────────────
+// â”€â”€ Sub-components â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
 function SummaryCard({
   label,
@@ -204,11 +204,11 @@ function ConfidenceBar({ pct }: { pct: number }) {
   );
 }
 
-// ── Page ──────────────────────────────────────────────────────────────────────
+// â”€â”€ Page â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
 export default function AdminForecastPage() {
 
-  // ── Claude AI forecast state ──────────────────────────────────────────────
+  // â”€â”€ Claude AI forecast state â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
   const [aiData, setAiData] = useState<AiForecast | null>(null);
   const [aiLoading, setAiLoading] = useState(true);
   const [isMockData, setIsMockData] = useState(false);
@@ -230,7 +230,7 @@ export default function AdminForecastPage() {
 
   useEffect(() => { fetchForecast(); }, [fetchForecast]);
 
-  // ── Velocity computation from MOCK_ORDERS ────────────────────────────────
+  // â”€â”€ Velocity computation from MOCK_ORDERS â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
   const velocityData = useMemo<VelocityEntry[]>(() => {
     // Build a map: productId -> { appearances (order-line count), totalQty }
     const velocityMap = new Map<string, { velocity: number; totalQty: number }>();
@@ -295,7 +295,7 @@ export default function AdminForecastPage() {
   const insights: AiInsight[] = [
     {
       icon: <Flame className="h-4 w-4 text-danger-500 shrink-0 mt-0.5" />,
-      text: "Surge detected: Canned Goods demand up 44% — holiday season correlation identified across order history.",
+      text: "Surge detected: Canned Goods demand up 44% â€” holiday season correlation identified across order history.",
       borderColor: "border-danger-400",
       bgColor: "bg-danger-50/60",
     },
@@ -307,7 +307,7 @@ export default function AdminForecastPage() {
     },
     {
       icon: <Lightbulb className="h-4 w-4 text-brand-500 shrink-0 mt-0.5" />,
-      text: "Opportunity: Personal Care up 31% — consider stocking Dove and Palmolive variants to capture demand upside.",
+      text: "Opportunity: Personal Care up 31% â€” consider stocking Dove and Palmolive variants to capture demand upside.",
       borderColor: "border-brand-400",
       bgColor: "bg-brand-50/60",
     },
@@ -316,7 +316,7 @@ export default function AdminForecastPage() {
   return (
     <div className="p-6 space-y-6 max-w-7xl mx-auto">
 
-      {/* ── Header ──────────────────────────────────────────────────────────── */}
+      {/* â”€â”€ Header â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */}
       <div className="flex items-start justify-between gap-4 flex-wrap">
         <div>
           <div className="flex items-center gap-2.5">
@@ -327,23 +327,23 @@ export default function AdminForecastPage() {
           <p className="text-xs text-muted-foreground/60 mt-0.5">Last updated: Jan 21, 2026 at 10:32 AM</p>
         </div>
         <div className="flex items-center gap-2 shrink-0">
-          <Button variant="outline" size="sm" onClick={() => { toastInfo("Generating PDF report…"); window.print(); }}>
+          <Button variant="outline" size="sm" onClick={() => { toastInfo("Generating PDF reportâ€¦"); window.print(); }}>
             <Download className="h-4 w-4" />
             Export Report
           </Button>
           <Button
             size="sm"
             className="bg-brand-500 hover:bg-brand-600 text-white"
-            onClick={() => { fetchForecast(); toastSuccess("Refreshing AI forecast…"); }}
+            onClick={() => { fetchForecast(); toastSuccess("Refreshing AI forecastâ€¦"); }}
             disabled={aiLoading}
           >
             <RefreshCw className={cn("h-4 w-4", aiLoading && "animate-spin")} />
-            {aiLoading ? "Generating…" : "Refresh Forecast"}
+            {aiLoading ? "Generatingâ€¦" : "Refresh Forecast"}
           </Button>
         </div>
       </div>
 
-      {/* ── Summary cards ───────────────────────────────────────────────────── */}
+      {/* â”€â”€ Summary cards â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */}
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
         <SummaryCard
           label="Stockout Risk"
@@ -372,14 +372,14 @@ export default function AdminForecastPage() {
         <SummaryCard
           label="Forecast Period"
           value="Next 14 days"
-          sub="Jan 22 – Feb 4, 2026"
+          sub="Jan 22 â€“ Feb 4, 2026"
           icon={<Calendar className="h-5 w-5" />}
           iconBg="bg-surface-100"
           iconColor="text-muted-foreground"
         />
       </div>
 
-      {/* ── AI Forecast section ───────────────────────────────────────────────── */}
+      {/* â”€â”€ AI Forecast section â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */}
       <Card>
         <CardHeader className="pb-3">
           <div className="flex items-center justify-between gap-3 flex-wrap">
@@ -394,7 +394,7 @@ export default function AdminForecastPage() {
             </div>
             {isMockData && (
               <span className="text-[11px] text-muted-foreground bg-muted rounded-lg px-2.5 py-1">
-                Using demo data — connect AI API for live forecasting
+                Using demo data â€” connect AI API for live forecasting
               </span>
             )}
           </div>
@@ -403,7 +403,7 @@ export default function AdminForecastPage() {
           {aiLoading ? (
             <div className="flex items-center gap-3 py-6 justify-center">
               <Sparkles className="h-4 w-4 text-brand-400 animate-pulse" />
-              <span className="text-sm text-muted-foreground">Analyzing demand data…</span>
+              <span className="text-sm text-muted-foreground">Analyzing demand dataâ€¦</span>
             </div>
           ) : aiData ? (
             <div className="space-y-5">
@@ -471,7 +471,7 @@ export default function AdminForecastPage() {
         </CardContent>
       </Card>
 
-      {/* ── Velocity-driven intelligence cards ──────────────────────────────── */}
+      {/* â”€â”€ Velocity-driven intelligence cards â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
 
         {/* High Velocity Items */}
@@ -502,7 +502,7 @@ export default function AdminForecastPage() {
                   </div>
                   <div className="shrink-0 text-right">
                     <Badge variant="neutral" className="text-xs tabular-nums font-semibold">
-                      {item.velocity}× ordered
+                      {item.velocity}Ã— ordered
                     </Badge>
                     <p className="text-[11px] text-muted-foreground mt-0.5 text-right">{item.totalQty} units</p>
                   </div>
@@ -551,7 +551,7 @@ export default function AdminForecastPage() {
                       </Badge>
                     </div>
                     <p className="text-[11px] text-muted-foreground mt-1">
-                      {item.stock} units in stock · velocity {item.velocity}×
+                      {item.stock} units in stock Â· velocity {item.velocity}Ã—
                     </p>
                   </div>
                 );
@@ -597,7 +597,7 @@ export default function AdminForecastPage() {
         </Card>
       </div>
 
-      {/* ── Demand forecast table ────────────────────────────────────────────── */}
+      {/* â”€â”€ Demand forecast table â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */}
       <Card>
         <CardHeader className="pb-2">
           <div className="flex items-center justify-between flex-wrap gap-2">
@@ -678,7 +678,7 @@ export default function AdminForecastPage() {
                             isUp ? "text-success-600" : "text-danger-600"
                           )}
                         >
-                          {isUp ? "▲" : "▼"} {isUp ? "+" : ""}{row.trendPct}%
+                          {isUp ? "â–²" : "â–¼"} {isUp ? "+" : ""}{row.trendPct}%
                         </span>
                       </td>
 
@@ -709,10 +709,10 @@ export default function AdminForecastPage() {
         </CardContent>
       </Card>
 
-      {/* ── Category chart + AI Insights ─────────────────────────────────────── */}
+      {/* â”€â”€ Category chart + AI Insights â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */}
       <div className="grid grid-cols-1 lg:grid-cols-5 gap-4">
 
-        {/* Category bar chart — 3/5 width */}
+        {/* Category bar chart â€” 3/5 width */}
         <Card className="lg:col-span-3">
           <CardHeader className="pb-2">
             <CardTitle>Category Demand Forecast</CardTitle>
@@ -767,7 +767,7 @@ export default function AdminForecastPage() {
           </CardContent>
         </Card>
 
-        {/* AI Insights — 2/5 width */}
+        {/* AI Insights â€” 2/5 width */}
         <Card className="lg:col-span-2">
           <CardHeader className="pb-2">
             <CardTitle>AI Insights</CardTitle>

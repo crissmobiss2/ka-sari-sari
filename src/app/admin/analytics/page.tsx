@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import { useMemo } from "react";
 import { TrendingUp, Users, ShoppingCart, Package, Download, FileDown, ArrowUpRight, ArrowDownRight, Zap, Star } from "lucide-react";
@@ -14,17 +14,17 @@ import {
   ADMIN_STATS,
 } from "@/lib/mock-data";
 
-// ── Constants ─────────────────────────────────────────────────────────────────
+// â”€â”€ Constants â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
 const BRAND_COLOR = "#f47028";
 
-// ── Static chart data (monthly revenue trend — platform-level) ───────────────
+// â”€â”€ Static chart data (monthly revenue trend â€” platform-level) â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
 const MONTHLY_REVENUE = [890_000, 1_020_000, 1_150_000, 1_340_000, 1_480_000, 1_250_000];
 const MONTHS = ["Aug '25", "Sep '25", "Oct '25", "Nov '25", "Dec '25", "Jan '26"];
 const maxRevenue = Math.max(...MONTHLY_REVENUE);
 
-// ── Retailer names (synthetic — keyed to storeId from ADMIN_RECENT_ORDERS) ───
+// â”€â”€ Retailer names (synthetic â€” keyed to storeId from ADMIN_RECENT_ORDERS) â”€â”€â”€
 
 const RETAILER_NAMES: Record<string, string> = {
   "s1": "Aling Nena's Store",
@@ -35,7 +35,7 @@ const RETAILER_NAMES: Record<string, string> = {
   "store-1": "Aling Nena's Store",
 };
 
-// ── Payment methods static split (from ADMIN_STATS scale) ────────────────────
+// â”€â”€ Payment methods static split (from ADMIN_STATS scale) â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
 const PAYMENT_METHODS = [
   { name: "GCash",  pct: 58, barColor: "bg-blue-500" },
@@ -43,7 +43,7 @@ const PAYMENT_METHODS = [
   { name: "Maya",   pct: 15, barColor: "bg-emerald-500" },
 ];
 
-// ── CSV / PDF export ─────────────────────────────────────────────────────────
+// â”€â”€ CSV / PDF export â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
 function downloadCSV(monthlyRevenue: number[], months: string[]) {
   const rows = [
@@ -71,15 +71,15 @@ function downloadPDF() {
   window.print();
 }
 
-// ── Helpers ───────────────────────────────────────────────────────────────────
+// â”€â”€ Helpers â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
 function formatMillions(n: number) {
-  if (n >= 1_000_000) return `₱${(n / 1_000_000).toFixed(2)}M`;
-  if (n >= 1_000)     return `₱${(n / 1_000).toFixed(0)}k`;
-  return `₱${n}`;
+  if (n >= 1_000_000) return `â‚±${(n / 1_000_000).toFixed(2)}M`;
+  if (n >= 1_000)     return `â‚±${(n / 1_000).toFixed(0)}k`;
+  return `â‚±${n}`;
 }
 
-// ── SVG Bar Chart ─────────────────────────────────────────────────────────────
+// â”€â”€ SVG Bar Chart â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
 const CHART_W = 600;
 const CHART_H = 200;
@@ -166,23 +166,23 @@ function RevenueSvgChart() {
   );
 }
 
-// ── Page ──────────────────────────────────────────────────────────────────────
+// â”€â”€ Page â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
 export default function AdminAnalyticsPage() {
 
-  // ── Build product lookup map ───────────────────────────────────────────────
+  // â”€â”€ Build product lookup map â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
   const productMap = useMemo(
     () => new Map(PRODUCTS.map((p) => [p.id, p])),
     []
   );
 
-  // ── Build category lookup map ──────────────────────────────────────────────
+  // â”€â”€ Build category lookup map â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
   const categoryMap = useMemo(
     () => new Map(PRODUCT_CATEGORIES.map((c) => [c.id, c])),
     []
   );
 
-  // ── Top products by revenue (from MOCK_ORDERS items × product prices) ─────
+  // â”€â”€ Top products by revenue (from MOCK_ORDERS items Ã— product prices) â”€â”€â”€â”€â”€
   const topProducts = useMemo(() => {
     const revenueByProduct = new Map<string, { name: string; revenue: number; qty: number; categoryId: string }>();
 
@@ -211,7 +211,7 @@ export default function AdminAnalyticsPage() {
       .slice(0, 5);
   }, [productMap]);
 
-  // ── Revenue by Category (MOCK_ORDERS items × product prices) ──────────────
+  // â”€â”€ Revenue by Category (MOCK_ORDERS items Ã— product prices) â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
   // Supplement with ADMIN_STATS scale so the chart reflects realistic proportions.
   // We compute real percentages from order items, then scale to ADMIN_STATS revenue.
   const categoryRevenue = useMemo(() => {
@@ -261,7 +261,7 @@ export default function AdminAnalyticsPage() {
     return entries;
   }, [productMap, categoryMap]);
 
-  // ── Sales Velocity — orders per day from order dates ──────────────────────
+  // â”€â”€ Sales Velocity â€” orders per day from order dates â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
   const salesVelocity = useMemo(() => {
     if (MOCK_ORDERS.length === 0) return { ordersPerDay: 0, busiestDay: "N/A", dayBreakdown: [], platformOrdersPerDay: 0 };
 
@@ -297,7 +297,7 @@ export default function AdminAnalyticsPage() {
     return { ordersPerDay, busiestDay, dayBreakdown, platformOrdersPerDay };
   }, []);
 
-  // ── Top Retailers from MOCK_ORDERS (grouped by storeId) ───────────────────
+  // â”€â”€ Top Retailers from MOCK_ORDERS (grouped by storeId) â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
   const topRetailers = useMemo(() => {
     const byStore = new Map<string, { orders: number; revenue: number }>();
 
@@ -341,7 +341,7 @@ export default function AdminAnalyticsPage() {
     return merged.slice(0, 5);
   }, []);
 
-  // ── KPI numbers — use ADMIN_STATS for platform-level realism ───────────────
+  // â”€â”€ KPI numbers â€” use ADMIN_STATS for platform-level realism â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
   const kpi = useMemo(() => {
     return {
       totalRevenue: ADMIN_STATS.revenueMonth,
@@ -351,7 +351,7 @@ export default function AdminAnalyticsPage() {
     };
   }, []);
 
-  // ── Order status distribution computed from MOCK_ORDERS ───────────────────
+  // â”€â”€ Order status distribution computed from MOCK_ORDERS â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
   const orderStatusDist = useMemo(() => {
     const counts: Record<string, number> = {};
     for (const o of MOCK_ORDERS) {
@@ -376,7 +376,7 @@ export default function AdminAnalyticsPage() {
   return (
     <div className="p-6 space-y-6 max-w-7xl mx-auto">
 
-      {/* ── Header ─────────────────────────────────────────────────────────── */}
+      {/* â”€â”€ Header â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */}
       <div className="flex items-start justify-between gap-4 flex-wrap">
         <div>
           <h1 className="font-display text-2xl font-bold text-foreground">Analytics</h1>
@@ -384,7 +384,7 @@ export default function AdminAnalyticsPage() {
         </div>
         <div className="flex items-center gap-2">
           <Button variant="outline" size="sm">
-            This Month ▼
+            This Month â–¼
           </Button>
           <Button size="sm" onClick={() => downloadCSV(MONTHLY_REVENUE, MONTHS)}>
             <Download className="h-4 w-4" />
@@ -397,7 +397,7 @@ export default function AdminAnalyticsPage() {
         </div>
       </div>
 
-      {/* ── KPI Row ────────────────────────────────────────────────────────── */}
+      {/* â”€â”€ KPI Row â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */}
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
         {/* Total Revenue */}
         <Card className="p-5">
@@ -468,13 +468,13 @@ export default function AdminAnalyticsPage() {
         </Card>
       </div>
 
-      {/* ── Revenue Trend SVG Chart ─────────────────────────────────────────── */}
+      {/* â”€â”€ Revenue Trend SVG Chart â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */}
       <Card>
         <CardHeader className="pb-2">
           <div className="flex items-center justify-between">
             <div>
               <CardTitle>Revenue Trend</CardTitle>
-              <p className="text-xs text-muted-foreground mt-0.5">Aug 2025 – Jan 2026</p>
+              <p className="text-xs text-muted-foreground mt-0.5">Aug 2025 â€“ Jan 2026</p>
             </div>
             <div className="flex items-center gap-2">
               <span className="inline-block h-3 w-3 rounded-sm" style={{ background: BRAND_COLOR }} />
@@ -487,14 +487,14 @@ export default function AdminAnalyticsPage() {
         </CardContent>
       </Card>
 
-      {/* ── Sales Velocity ──────────────────────────────────────────────────── */}
+      {/* â”€â”€ Sales Velocity â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */}
       <Card>
         <CardHeader className="pb-2">
           <div className="flex items-center gap-2">
             <Zap className="h-4 w-4 text-brand-500" />
             <CardTitle>Sales Velocity</CardTitle>
           </div>
-          <p className="text-xs text-muted-foreground mt-0.5">Orders per day · computed from order dates</p>
+          <p className="text-xs text-muted-foreground mt-0.5">Orders per day Â· computed from order dates</p>
         </CardHeader>
         <CardContent className="pt-2">
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-5">
@@ -527,7 +527,7 @@ export default function AdminAnalyticsPage() {
           {/* Day-by-day breakdown from MOCK_ORDERS */}
           {salesVelocity.dayBreakdown.length > 0 && (
             <div>
-              <p className="text-xs font-semibold text-muted-foreground mb-3 uppercase tracking-wide">Order Activity — Sample Window</p>
+              <p className="text-xs font-semibold text-muted-foreground mb-3 uppercase tracking-wide">Order Activity â€” Sample Window</p>
               <div className="flex flex-wrap gap-2">
                 {salesVelocity.dayBreakdown.map((d) => (
                   <div
@@ -547,17 +547,17 @@ export default function AdminAnalyticsPage() {
         </CardContent>
       </Card>
 
-      {/* ── Order Status + Payment Methods ─────────────────────────────────── */}
+      {/* â”€â”€ Order Status + Payment Methods â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
 
         {/* Order Status Donut */}
         <Card>
           <CardHeader className="pb-2">
             <CardTitle>Order Status</CardTitle>
-            <p className="text-xs text-muted-foreground">Distribution · MOCK_ORDERS sample</p>
+            <p className="text-xs text-muted-foreground">Distribution Â· MOCK_ORDERS sample</p>
           </CardHeader>
           <CardContent className="pt-2 flex flex-col items-center gap-5">
-            {/* Donut via conic-gradient — built from computed orderStatusDist */}
+            {/* Donut via conic-gradient â€” built from computed orderStatusDist */}
             <div className="relative flex-shrink-0">
               {(() => {
                 // Build conic stops from real data
@@ -609,7 +609,7 @@ export default function AdminAnalyticsPage() {
         <Card>
           <CardHeader className="pb-2">
             <CardTitle>Payment Methods</CardTitle>
-            <p className="text-xs text-muted-foreground">Transaction split · Jan 2026</p>
+            <p className="text-xs text-muted-foreground">Transaction split Â· Jan 2026</p>
           </CardHeader>
           <CardContent className="pt-2 space-y-5">
             {paymentMethods.map((pm) => (
@@ -638,7 +638,7 @@ export default function AdminAnalyticsPage() {
         </Card>
       </div>
 
-      {/* ── Top Retailers Table ─────────────────────────────────────────────── */}
+      {/* â”€â”€ Top Retailers Table â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */}
       <Card>
         <CardHeader className="pb-2">
           <div className="flex items-center gap-2">
@@ -646,7 +646,7 @@ export default function AdminAnalyticsPage() {
             <CardTitle>Top Retailers by Revenue</CardTitle>
           </div>
           <p className="text-xs text-muted-foreground mt-0.5">
-            Computed from order history · Sorted by total revenue
+            Computed from order history Â· Sorted by total revenue
           </p>
         </CardHeader>
         <CardContent className="pt-0">
@@ -699,18 +699,18 @@ export default function AdminAnalyticsPage() {
           </div>
           <div className="mt-4 pt-3 border-t border-border">
             <button className="text-xs font-medium text-brand-600 hover:text-brand-700 transition-colors">
-              View All Retailers →
+              View All Retailers â†’
             </button>
           </div>
         </CardContent>
       </Card>
 
-      {/* ── Top Products by Revenue ─────────────────────────────────────────── */}
+      {/* â”€â”€ Top Products by Revenue â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */}
       {topProducts.length > 0 && (
         <Card>
           <CardHeader className="pb-2">
             <CardTitle>Top Products by Revenue</CardTitle>
-            <p className="text-xs text-muted-foreground mt-0.5">Computed from MOCK_ORDERS line items × unit prices</p>
+            <p className="text-xs text-muted-foreground mt-0.5">Computed from MOCK_ORDERS line items Ã— unit prices</p>
           </CardHeader>
           <CardContent className="pt-2 space-y-3">
             {topProducts.map((p, i) => {
@@ -726,7 +726,7 @@ export default function AdminAnalyticsPage() {
                       i === 0 ? "bg-amber-100 text-amber-700" :
                       i === 1 ? "bg-slate-100 text-slate-600" :
                       i === 2 ? "bg-orange-100 text-orange-700" :
-                      "bg-surface-100 text-muted-foreground"
+                      "bg-surface-100 dark:bg-surface-800 text-muted-foreground"
                     )}
                   >
                     {i + 1}
@@ -758,12 +758,12 @@ export default function AdminAnalyticsPage() {
         </Card>
       )}
 
-      {/* ── Category Performance ────────────────────────────────────────────── */}
+      {/* â”€â”€ Category Performance â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */}
       <Card>
         <CardHeader className="pb-2">
           <CardTitle>Revenue by Category</CardTitle>
           <p className="text-xs text-muted-foreground mt-0.5">
-            Computed from order items · scaled to platform revenue
+            Computed from order items Â· scaled to platform revenue
           </p>
         </CardHeader>
         <CardContent className="pt-2 space-y-4">

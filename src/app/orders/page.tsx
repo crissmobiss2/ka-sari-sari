@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 import { useState, useEffect } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
@@ -14,7 +14,7 @@ import { MOCK_ORDERS } from "@/lib/mock-data";
 import { cn } from "@/lib/utils";
 import { toastSuccess } from "@/store/toast";
 
-// ─── Types ────────────────────────────────────────────────────────────────────
+// â”€â”€â”€ Types â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
 interface DisplayOrder {
   id: string;
@@ -31,7 +31,7 @@ interface DisplayOrder {
   updatedAt: string;
 }
 
-// ─── Extra hardcoded orders for display richness ───────────────────────────────
+// â”€â”€â”€ Extra hardcoded orders for display richness â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
 const EXTRA_ORDERS: DisplayOrder[] = [
   {
@@ -106,7 +106,7 @@ const EXTRA_ORDERS: DisplayOrder[] = [
   },
 ];
 
-// ─── Merge MOCK_ORDERS + EXTRA_ORDERS ────────────────────────────────────────
+// â”€â”€â”€ Merge MOCK_ORDERS + EXTRA_ORDERS â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
 function buildDisplayOrder(o: typeof MOCK_ORDERS[number]): DisplayOrder {
   return {
@@ -127,7 +127,7 @@ function buildDisplayOrder(o: typeof MOCK_ORDERS[number]): DisplayOrder {
 
 const FALLBACK_ORDERS: DisplayOrder[] = [];
 
-// ─── Constants ────────────────────────────────────────────────────────────────
+// â”€â”€â”€ Constants â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
 const TABS = [
   { id: "all",    label: "All" },
@@ -140,7 +140,7 @@ const DONE_STATUSES: OrderStatus[] = ["delivered", "failed_delivery", "cancelled
 
 const PROGRESS_STEPS: OrderStatus[] = ["confirmed", "picking", "packed", "out_for_delivery"];
 
-// ─── StatusIcon ───────────────────────────────────────────────────────────────
+// â”€â”€â”€ StatusIcon â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
 function StatusIcon({ status }: { status: OrderStatus }) {
   if (status === "out_for_delivery") return <Truck className="h-5 w-5 text-brand-500" />;
@@ -163,7 +163,7 @@ function StatusIconBg({ status }: { status: OrderStatus }) {
   );
 }
 
-// ─── ProgressBar ─────────────────────────────────────────────────────────────
+// â”€â”€â”€ ProgressBar â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
 function ActiveProgressBar({ status }: { status: OrderStatus }) {
   const current = PROGRESS_STEPS.indexOf(status);
@@ -191,7 +191,7 @@ function ActiveProgressBar({ status }: { status: OrderStatus }) {
   );
 }
 
-// ─── OrderCard ────────────────────────────────────────────────────────────────
+// â”€â”€â”€ OrderCard â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
 function OrderCard({ order }: { order: DisplayOrder }) {
   const router = useRouter();
@@ -203,8 +203,8 @@ function OrderCard({ order }: { order: DisplayOrder }) {
   function handleReorder(e: React.MouseEvent) {
     e.preventDefault();
     e.stopPropagation();
-    // DisplayOrder doesn't carry full product objects — redirect to catalog
-    toastSuccess("Redirecting to catalog — pick your items!");
+    // DisplayOrder doesn't carry full product objects â€” redirect to catalog
+    toastSuccess("Redirecting to catalog â€” pick your items!");
     router.push("/catalog");
   }
 
@@ -278,7 +278,7 @@ function OrderCard({ order }: { order: DisplayOrder }) {
   );
 }
 
-// ─── Page ─────────────────────────────────────────────────────────────────────
+// â”€â”€â”€ Page â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
 export default function OrdersPage() {
   const router = useRouter();
@@ -344,7 +344,7 @@ export default function OrdersPage() {
                 "flex-1 flex items-center justify-center gap-1.5 rounded-xl py-2.5 text-sm font-semibold transition-all",
                 tab === t.id
                   ? "bg-brand-500 text-white shadow-brand"
-                  : "bg-surface-100 text-muted-foreground hover:text-foreground hover:bg-surface-200"
+                  : "bg-surface-100 dark:bg-surface-800 text-muted-foreground hover:text-foreground hover:bg-surface-200"
               )}
             >
               {t.label}

@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 import { useState } from "react";
 import { MapPin, Search, Globe, Truck, Users, TrendingUp, CheckCircle2, Circle } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -9,10 +9,10 @@ import { NEXOFLOW_CITIES, getCitiesByHub, HUB_STATS, type NexoflowCity } from "@
 const RETAILER_COUNTS: Record<string, number> = {
   "Caloocan": 34, "Quezon City": 28, "Marikina": 19, "Pasig": 15, "Manila": 22,
   "Makati": 11, "Taguig": 9, "Valenzuela": 18, "Malabon": 12, "Navotas": 8,
-  "Mandaluyong": 7, "Las Piñas": 6, "Parañaque": 5, "Muntinlupa": 4, "Pasay": 3,
+  "Mandaluyong": 7, "Las PiÃ±as": 6, "ParaÃ±aque": 5, "Muntinlupa": 4, "Pasay": 3,
   "San Juan": 4, "Antipolo": 8, "Bacoor": 6, "Cavite City": 3, "San Jose del Monte": 5,
-  "Malolos": 4, "Meycauayan": 3, "Biñan": 2, "Santa Rosa": 4, "Calamba": 3,
-  "Dasmariñas": 2, "Cebu City": 12, "Mandaue": 8, "Lapu-Lapu": 5, "Bacolod": 7,
+  "Malolos": 4, "Meycauayan": 3, "BiÃ±an": 2, "Santa Rosa": 4, "Calamba": 3,
+  "DasmariÃ±as": 2, "Cebu City": 12, "Mandaue": 8, "Lapu-Lapu": 5, "Bacolod": 7,
   "Iloilo City": 6, "Tacloban": 3, "Davao City": 9, "Cagayan de Oro": 5,
   "General Santos": 3, "Butuan": 2,
 };
@@ -69,7 +69,7 @@ export default function CoveragePage() {
             <h1 className="font-display text-2xl font-bold text-foreground">Network Coverage</h1>
           </div>
           <p className="text-sm text-muted-foreground">
-            Powered by <span className="font-semibold text-foreground">Pacific Nexus Global</span> — 137 partner cities across the Philippines
+            Powered by <span className="font-semibold text-foreground">Pacific Nexus Global</span> â€” 137 partner cities across the Philippines
           </p>
         </div>
         <div className="flex items-center gap-2 rounded-xl border border-surface-200 bg-surface-50 px-3 py-2 text-xs font-semibold text-muted-foreground">
@@ -80,10 +80,10 @@ export default function CoveragePage() {
       {/* Top KPIs */}
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
         {[
-          { label: "Partner Cities", value: "137", sub: "Luzon · Visayas · Mindanao", icon: MapPin, color: "text-brand-600 bg-brand-50" },
+          { label: "Partner Cities", value: "137", sub: "Luzon Â· Visayas Â· Mindanao", icon: MapPin, color: "text-brand-600 bg-brand-50" },
           { label: "Active Cities", value: activeCities.toString(), sub: `${NEXOFLOW_CITIES.length - activeCities} not yet activated`, icon: CheckCircle2, color: "text-success-600 bg-success-50" },
           { label: "Total Retailers", value: totalRetailers.toString(), sub: "Registered store owners", icon: Users, color: "text-info-600 bg-info-50" },
-          { label: "Delivery Hubs", value: "5", sub: "NCR · N. Luzon · S. Luzon · Visayas · Mindanao", icon: Truck, color: "text-warning-600 bg-warning-50" },
+          { label: "Delivery Hubs", value: "5", sub: "NCR Â· N. Luzon Â· S. Luzon Â· Visayas Â· Mindanao", icon: Truck, color: "text-warning-600 bg-warning-50" },
         ].map((s) => (
           <Card key={s.label}>
             <CardContent className="p-5">
@@ -140,7 +140,7 @@ export default function CoveragePage() {
               "flex items-center gap-1.5 rounded-xl px-3 py-1.5 text-sm font-semibold transition-colors",
               selectedIsland === id
                 ? "bg-brand-500 text-white"
-                : "bg-surface-100 text-muted-foreground hover:text-foreground"
+                : "bg-surface-100 dark:bg-surface-800 text-muted-foreground hover:text-foreground"
             )}
           >
             {label}
@@ -160,7 +160,7 @@ export default function CoveragePage() {
               <input
                 value={search}
                 onChange={(e) => setSearch(e.target.value)}
-                placeholder="Search city or province…"
+                placeholder="Search city or provinceâ€¦"
                 className="h-10 w-full rounded-xl border border-input bg-card pl-10 pr-4 text-sm focus:outline-none focus:ring-2 focus:ring-brand-500"
               />
             </div>
@@ -217,7 +217,7 @@ export default function CoveragePage() {
               <p className="text-sm text-muted-foreground mt-1 leading-relaxed">
                 {NEXOFLOW_CITIES.length - activeCities} of your 137 Pacific Nexus Global partner cities have no retailers yet.
                 With Pacific Nexus Global's logistics network already in place, each new city is a zero-infrastructure expansion.
-                Target <strong>Cebu City</strong>, <strong>Davao City</strong>, and <strong>Iloilo City</strong> next —
+                Target <strong>Cebu City</strong>, <strong>Davao City</strong>, and <strong>Iloilo City</strong> next â€”
                 all have strong sari-sari store density and Pacific Nexus Global coverage.
               </p>
             </div>

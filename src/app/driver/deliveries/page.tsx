@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import { useState, useEffect, useCallback } from "react";
 import Link from "next/link";
@@ -29,7 +29,7 @@ const STATUS_BADGE: Record<string, { label: string; className: string }> = {
   failed:    { label: "Failed",    className: "bg-danger-100 text-danger-700 border-danger-200" },
 };
 
-// ── Types ────────────────────────────────────────────────────────────────────
+// â”€â”€ Types â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
 interface ApiDelivery {
   id: string;        // delivery record id (used in PATCH URL)
@@ -53,11 +53,11 @@ interface MappedDelivery extends ApiDelivery {
 function mapApiStatus(status: string): "pending" | "delivered" | "failed" {
   if (status === "delivered") return "delivered";
   if (status === "failed" || status === "failed_delivery" || status === "failed_attempt") return "failed";
-  // "assigned", "pending", "out_for_delivery", etc. → pending tab
+  // "assigned", "pending", "out_for_delivery", etc. â†’ pending tab
   return "pending";
 }
 
-// ── Component ────────────────────────────────────────────────────────────────
+// â”€â”€ Component â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
 export default function DriverDeliveriesPage() {
   const [deliveries, setDeliveries] = useState<MappedDelivery[]>([]);
@@ -75,7 +75,7 @@ export default function DriverDeliveriesPage() {
     setTimeout(() => setToast(null), 2500);
   }
 
-  // ── Data fetch ──────────────────────────────────────────────────────────────
+  // â”€â”€ Data fetch â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
   const fetchDeliveries = useCallback(async () => {
     try {
@@ -93,7 +93,7 @@ export default function DriverDeliveriesPage() {
       }));
       setDeliveries(mapped);
     } catch {
-      setDeliveries([]); // fall back to empty — don't crash the UI
+      setDeliveries([]); // fall back to empty â€” don't crash the UI
     } finally {
       setLoading(false);
     }
@@ -103,7 +103,7 @@ export default function DriverDeliveriesPage() {
     fetchDeliveries();
   }, [fetchDeliveries]);
 
-  // ── Derived counts ──────────────────────────────────────────────────────────
+  // â”€â”€ Derived counts â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
   const filtered = deliveries.filter((d) => {
     if (activeTab === "all") return true;
@@ -114,7 +114,7 @@ export default function DriverDeliveriesPage() {
   const deliveredCount = deliveries.filter((d) => d.deliveryStatus === "delivered").length;
   const failedCount    = deliveries.filter((d) => d.deliveryStatus === "failed").length;
 
-  // ── Action handlers ─────────────────────────────────────────────────────────
+  // â”€â”€ Action handlers â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
   async function handleMarkDelivered(deliveryId: string, orderId: string) {
     try {
@@ -127,7 +127,7 @@ export default function DriverDeliveriesPage() {
       showToast("Marked as delivered!");
       await fetchDeliveries();
     } catch {
-      showToast("Could not sync — please retry");
+      showToast("Could not sync â€” please retry");
     }
   }
 
@@ -149,18 +149,18 @@ export default function DriverDeliveriesPage() {
       await fetchDeliveries();
     } catch {
       setFailTarget(null);
-      showToast("Could not sync — please retry");
+      showToast("Could not sync â€” please retry");
     }
   }
 
-  // ── Render ──────────────────────────────────────────────────────────────────
+  // â”€â”€ Render â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
   return (
     <div className="min-h-screen bg-background pb-24">
       <div className="sticky top-0 z-20 bg-card border-b border-border">
         <div className="px-4 pt-4 pb-3">
           <h1 className="font-display text-xl font-bold text-foreground">My Deliveries</h1>
-          <p className="text-xs text-muted-foreground mt-0.5">Today · {deliveries.length} stops</p>
+          <p className="text-xs text-muted-foreground mt-0.5">Today Â· {deliveries.length} stops</p>
         </div>
 
         {/* Summary pills */}
@@ -187,7 +187,7 @@ export default function DriverDeliveriesPage() {
                 "px-3 py-1.5 rounded-lg text-xs font-semibold transition-colors",
                 activeTab === id
                   ? "bg-brand-500 text-white"
-                  : "bg-surface-100 text-muted-foreground hover:text-surface-900"
+                  : "bg-surface-100 dark:bg-surface-800 text-muted-foreground hover:text-surface-900"
               )}
             >
               {label}
@@ -244,7 +244,7 @@ export default function DriverDeliveriesPage() {
                 <div className="flex items-center gap-2">
                   {delivery.deliveryStatus === "pending" && (
                     <>
-                      {/* Navigation uses orderId — File 3 reads the URL param as order ID */}
+                      {/* Navigation uses orderId â€” File 3 reads the URL param as order ID */}
                       <Link
                         href={`/driver/deliveries/${delivery.orderId}`}
                         className="flex-1 flex items-center justify-center gap-1.5 rounded-xl bg-brand-500 hover:bg-brand-600 text-white text-xs font-semibold h-9 transition-colors"

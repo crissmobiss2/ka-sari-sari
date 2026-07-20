@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 import { useState, useMemo, useRef, useCallback, useEffect } from "react";
 import {
   Search, Plus, Minus, X, CheckCircle2, Printer,
@@ -10,32 +10,32 @@ import { PRODUCTS, CATEGORIES } from "@/lib/mock-data";
 import type { Product } from "@/types";
 import { BarcodeScanner } from "@/components/pos/barcode-scanner";
 
-// ─── Types ──────────────────────────────────────────────────────────────────
+// â”€â”€â”€ Types â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
 interface SaleItem { product: Product; quantity: number; }
 
 type PayStep = "idle" | "pay" | "done";
 
 const PH_METHODS = [
-  { id: "cash",      label: "Cash",     icon: "💵" },
-  { id: "gcash",     label: "GCash",    icon: "💚" },
-  { id: "maya",      label: "Maya",     icon: "💜" },
-  { id: "shopeepay", label: "ShopeePay",icon: "🛍️" },
-  { id: "qrph",      label: "QR Ph",    icon: "📱" },
-  { id: "card",      label: "Card",     icon: "💳" },
+  { id: "cash",      label: "Cash",     icon: "ðŸ’µ" },
+  { id: "gcash",     label: "GCash",    icon: "ðŸ’š" },
+  { id: "maya",      label: "Maya",     icon: "ðŸ’œ" },
+  { id: "shopeepay", label: "ShopeePay",icon: "ðŸ›ï¸" },
+  { id: "qrph",      label: "QR Ph",    icon: "ðŸ“±" },
+  { id: "card",      label: "Card",     icon: "ðŸ’³" },
 ];
 
-// ─── Numpad for cash tender ──────────────────────────────────────────────────
+// â”€â”€â”€ Numpad for cash tender â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
 function Numpad({ value, onChange }: { value: string; onChange: (v: string) => void }) {
   function press(key: string) {
-    if (key === "⌫") { onChange(value.slice(0, -1) || "0"); return; }
+    if (key === "âŒ«") { onChange(value.slice(0, -1) || "0"); return; }
     if (key === "C") { onChange("0"); return; }
     if (value === "0") { onChange(key); return; }
     if (value.length >= 8) return;
     onChange(value + key);
   }
-  const keys = ["7","8","9","4","5","6","1","2","3","C","0","⌫"];
+  const keys = ["7","8","9","4","5","6","1","2","3","C","0","âŒ«"];
   return (
     <div className="grid grid-cols-3 gap-1.5">
       {keys.map((k) => (
@@ -45,7 +45,7 @@ function Numpad({ value, onChange }: { value: string; onChange: (v: string) => v
           className={cn(
             "rounded-xl h-12 text-base font-semibold transition-colors active:scale-95",
             k === "C" ? "bg-danger-100 text-danger-700 hover:bg-danger-200"
-            : k === "⌫" ? "bg-surface-200 text-surface-900 hover:bg-surface-300"
+            : k === "âŒ«" ? "bg-surface-200 text-surface-900 hover:bg-surface-300"
             : "bg-surface-100 text-surface-900 hover:bg-surface-200"
           )}
         >
@@ -56,7 +56,7 @@ function Numpad({ value, onChange }: { value: string; onChange: (v: string) => v
   );
 }
 
-// ─── Main component ──────────────────────────────────────────────────────────
+// â”€â”€â”€ Main component â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
 export default function RetailerPOSPage() {
   const [search, setSearch] = useState("");
@@ -168,14 +168,14 @@ export default function RetailerPOSPage() {
     if (feedbackTimerRef.current) clearTimeout(feedbackTimerRef.current);
     if (product) {
       addToCart(product);
-      setScanFeedback({ ok: true, text: `✓ Added: ${product.name}` });
+      setScanFeedback({ ok: true, text: `âœ“ Added: ${product.name}` });
     } else {
       setScanFeedback({ ok: false, text: `Not found: ${code}` });
     }
     feedbackTimerRef.current = setTimeout(() => setScanFeedback(null), 2500);
   }, [allProducts]);
 
-  // ── Receipt screen ──────────────────────────────────────────────────────────
+  // â”€â”€ Receipt screen â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
   if (step === "done") {
     return (
       <div className="fixed inset-0 bg-background flex flex-col overflow-hidden">
@@ -233,7 +233,7 @@ export default function RetailerPOSPage() {
     );
   }
 
-  // ── Main POS layout ─────────────────────────────────────────────────────────
+  // â”€â”€ Main POS layout â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
   return (
     <div className="fixed inset-0 bg-background flex flex-col overflow-hidden">
 
@@ -262,7 +262,7 @@ export default function RetailerPOSPage() {
         </div>
       </header>
 
-      {/* Mobile tab bar — products / cart */}
+      {/* Mobile tab bar â€” products / cart */}
       <div className="flex md:hidden border-b border-border bg-card shrink-0">
         <button
           onClick={() => setMobileView("products")}
@@ -295,7 +295,7 @@ export default function RetailerPOSPage() {
 
       <div className="flex flex-1 overflow-hidden">
 
-        {/* ── Left / Products panel ── */}
+        {/* â”€â”€ Left / Products panel â”€â”€ */}
         <div className={cn(
           "flex-col overflow-hidden border-r border-border",
           mobileView === "products" ? "flex flex-1" : "hidden",
@@ -309,7 +309,7 @@ export default function RetailerPOSPage() {
                 ref={searchRef}
                 value={search}
                 onChange={(e) => setSearch(e.target.value)}
-                placeholder="Search product or scan barcode…"
+                placeholder="Search product or scan barcodeâ€¦"
                 className="w-full rounded-xl border border-border bg-surface-50 pl-8 pr-10 py-2 text-xs placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-brand-500"
               />
               <button
@@ -332,7 +332,7 @@ export default function RetailerPOSPage() {
                   "shrink-0 rounded-full px-3 py-1 text-xs font-semibold transition-colors whitespace-nowrap",
                   categoryId === cat.id
                     ? "bg-brand-500 text-white"
-                    : "bg-surface-100 text-muted-foreground hover:text-foreground"
+                    : "bg-surface-100 dark:bg-surface-800 text-muted-foreground hover:text-foreground"
                 )}
               >
                 {cat.name}
@@ -392,7 +392,7 @@ export default function RetailerPOSPage() {
           </div>
         </div>
 
-        {/* ── Right / Cart & Payment panel ── */}
+        {/* â”€â”€ Right / Cart & Payment panel â”€â”€ */}
         <div className={cn(
           "flex-col bg-card",
           mobileView === "cart" ? "flex flex-1" : "hidden",
@@ -406,7 +406,7 @@ export default function RetailerPOSPage() {
                 <div className="flex items-center justify-between">
                   <p className="text-sm font-semibold text-foreground">Payment</p>
                   <button onClick={() => setStep("idle")} className="text-xs text-muted-foreground hover:text-foreground">
-                    ← Back
+                    â† Back
                   </button>
                 </div>
                 <p className="font-display text-2xl font-black text-foreground mt-1">{formatPHP(total)}</p>
@@ -447,7 +447,7 @@ export default function RetailerPOSPage() {
                           onClick={() => setTendered(String(amt))}
                           className="rounded-lg bg-surface-100 hover:bg-surface-200 text-xs font-semibold py-1.5 transition-colors text-surface-900"
                         >
-                          ₱{amt}
+                          â‚±{amt}
                         </button>
                       ))}
                     </div>
@@ -475,7 +475,7 @@ export default function RetailerPOSPage() {
                   {txnLoading ? (
                     <>
                       <span className="h-5 w-5 rounded-full border-2 border-white border-t-transparent animate-spin" />
-                      Processing…
+                      Processingâ€¦
                     </>
                   ) : (
                     <>

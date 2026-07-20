@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 // v2
 import { useState } from "react";
 import { Settings, Database, Zap, Brain, TrendingUp, Users, Tag, ChevronDown, ChevronUp, Check } from "lucide-react";
@@ -121,7 +121,7 @@ function AiFeatureRow({ feature }: { feature: AiFeature }) {
       <div className="flex items-start gap-3 px-4 py-4">
         <div className={cn(
           "flex h-9 w-9 shrink-0 items-center justify-center rounded-xl mt-0.5",
-          enabled ? "bg-brand-100 text-brand-600" : "bg-surface-100 text-muted-foreground"
+          enabled ? "bg-brand-100 text-brand-600" : "bg-surface-100 dark:bg-surface-800 text-muted-foreground"
         )}>
           <feature.icon className="h-4 w-4" />
         </div>
