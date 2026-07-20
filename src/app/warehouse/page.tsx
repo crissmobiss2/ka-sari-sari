@@ -43,7 +43,7 @@ const HUBS: Record<HubKey, HubConfig> = {
     label: "North Luzon Hub",
     location: "San Fernando, Pampanga",
     color: "bg-purple-500",
-    accent: "text-purple-600 bg-purple-50 border-purple-200",
+    accent: "text-purple-600 dark:text-foreground bg-purple-50 dark:bg-purple-500/20 border-purple-200",
     cities: getCitiesByHub("North Luzon").length,
     capacity: 600, used: 320, pickers: 4, driversActive: 6,
   },
@@ -167,7 +167,7 @@ export default function WarehouseDashboard() {
                 )}
               >
                 <p className="text-xs font-bold">{h.label}</p>
-                <p className="text-[10px] opacity-70 mt-0.5">{h.cities} cities</p>
+                <p className="text-[10px] mt-0.5">{h.cities} cities</p>
               </button>
             );
           })}
