@@ -613,10 +613,10 @@ export default function AdminForecastPage() {
                 <span className="inline-block h-2 w-2 rounded-full bg-brand-700 dark:bg-brand-500" />Reorder
               </span>
               <span className="flex items-center gap-1">
-                <span className="inline-block h-2 w-2 rounded-full bg-amber-400" />Watch
+                <span className="inline-block h-2 w-2 rounded-full bg-amber-600" />Watch
               </span>
               <span className="flex items-center gap-1">
-                <span className="inline-block h-2 w-2 rounded-full bg-surface-300" />OK
+                <span className="inline-block h-2 w-2 rounded-full bg-surface-500" />OK
               </span>
             </div>
           </div>
