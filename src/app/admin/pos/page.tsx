@@ -1,4 +1,4 @@
-﻿"use client";
+"use client";
 import { useState, useMemo } from "react";
 import {
   Search, Plus, Minus, X, CheckCircle2, Printer,
@@ -14,24 +14,24 @@ import type { Product } from "@/types";
 interface POSCartItem { product: Product; quantity: number; }
 
 const PH_PAYMENT_METHODS = [
-  { id: "cash",       label: "Cash",        icon: "ðŸ’µ", group: "cash" },
-  { id: "gcash",      label: "GCash",       icon: "ðŸ’š", group: "ewallet" },
-  { id: "maya",       label: "Maya",        icon: "ðŸ’œ", group: "ewallet" },
-  { id: "shopeepay",  label: "ShopeePay",   icon: "ðŸ›ï¸", group: "ewallet" },
-  { id: "qrph",       label: "QR Ph",       icon: "ðŸ“±", group: "ewallet" },
-  { id: "card",       label: "Card",        icon: "ðŸ’³", group: "card" },
-  { id: "bdo",        label: "BDO",         icon: "ðŸ¦", group: "bank" },
-  { id: "bpi",        label: "BPI",         icon: "ðŸ¦", group: "bank" },
-  { id: "metrobank",  label: "Metrobank",   icon: "ðŸ¦", group: "bank" },
-  { id: "landbank",   label: "LANDBANK",    icon: "ðŸŒ¾", group: "bank" },
-  { id: "unionbank",  label: "UnionBank",   icon: "ðŸ¦", group: "bank" },
-  { id: "instapay",   label: "InstaPay",    icon: "âš¡", group: "bank" },
-  { id: "palawan",    label: "Palawan",     icon: "ðŸŒ´", group: "otc" },
-  { id: "cebuana",    label: "Cebuana",     icon: "ðŸ’›", group: "otc" },
-  { id: "mlhuillier", label: "M Lhuillier", icon: "ðŸ”µ", group: "otc" },
-  { id: "cod",        label: "COD",         icon: "ðŸ“¦", group: "other" },
-  { id: "terms",      label: "Credit Terms",icon: "ðŸ“‹", group: "other" },
-  { id: "check",      label: "Check (PDC)", icon: "ðŸ“", group: "other" },
+  { id: "cash",       label: "Cash",        icon: "💵", group: "cash" },
+  { id: "gcash",      label: "GCash",       icon: "💚", group: "ewallet" },
+  { id: "maya",       label: "Maya",        icon: "💜", group: "ewallet" },
+  { id: "shopeepay",  label: "ShopeePay",   icon: "🛍️", group: "ewallet" },
+  { id: "qrph",       label: "QR Ph",       icon: "📱", group: "ewallet" },
+  { id: "card",       label: "Card",        icon: "💳", group: "card" },
+  { id: "bdo",        label: "BDO",         icon: "🏦", group: "bank" },
+  { id: "bpi",        label: "BPI",         icon: "🏦", group: "bank" },
+  { id: "metrobank",  label: "Metrobank",   icon: "🏦", group: "bank" },
+  { id: "landbank",   label: "LANDBANK",    icon: "🌾", group: "bank" },
+  { id: "unionbank",  label: "UnionBank",   icon: "🏦", group: "bank" },
+  { id: "instapay",   label: "InstaPay",    icon: "⚡", group: "bank" },
+  { id: "palawan",    label: "Palawan",     icon: "🌴", group: "otc" },
+  { id: "cebuana",    label: "Cebuana",     icon: "💛", group: "otc" },
+  { id: "mlhuillier", label: "M Lhuillier", icon: "🔵", group: "otc" },
+  { id: "cod",        label: "COD",         icon: "📦", group: "other" },
+  { id: "terms",      label: "Credit Terms",icon: "📋", group: "other" },
+  { id: "check",      label: "Check (PDC)", icon: "📝", group: "other" },
 ];
 
 const BANK_ACCOUNTS: Record<string, { account: string; name: string }> = {
@@ -50,32 +50,32 @@ const EWALLET_INFO: Record<string, { number: string; name: string }> = {
 };
 
 const CAT_DISPLAY: Record<string, { gradient: string; emoji: string }> = {
-  "cat-01": { gradient: "from-amber-500 to-yellow-600",   emoji: "â˜•" },
-  "cat-02": { gradient: "from-yellow-400 to-orange-500",  emoji: "ðŸœ" },
-  "cat-03": { gradient: "from-orange-400 to-red-500",     emoji: "ðŸ¿" },
-  "cat-04": { gradient: "from-pink-400 to-rose-500",      emoji: "ðŸ«" },
-  "cat-05": { gradient: "from-red-400 to-orange-500",     emoji: "ðŸ¥«" },
-  "cat-06": { gradient: "from-blue-400 to-cyan-500",      emoji: "ðŸ¥¤" },
-  "cat-07": { gradient: "from-green-400 to-teal-500",     emoji: "ðŸ§ƒ" },
-  "cat-08": { gradient: "from-sky-300 to-blue-400",       emoji: "ðŸ¥›" },
-  "cat-09": { gradient: "from-amber-400 to-orange-500",   emoji: "ðŸ§‚" },
-  "cat-10": { gradient: "from-yellow-300 to-amber-400",   emoji: "ðŸ³" },
-  "cat-11": { gradient: "from-yellow-400 to-amber-500",   emoji: "ðŸ§ˆ" },
-  "cat-12": { gradient: "from-amber-300 to-orange-400",   emoji: "ðŸž" },
-  "cat-13": { gradient: "from-yellow-200 to-amber-300",   emoji: "ðŸ¥š" },
-  "cat-14": { gradient: "from-lime-300 to-green-400",     emoji: "ðŸš" },
-  "cat-15": { gradient: "from-cyan-400 to-blue-500",      emoji: "ðŸ§Š" },
-  "cat-16": { gradient: "from-purple-400 to-violet-500",  emoji: "ðŸ§´" },
-  "cat-17": { gradient: "from-pink-300 to-rose-400",      emoji: "ðŸŒ¸" },
-  "cat-18": { gradient: "from-teal-400 to-green-500",     emoji: "ðŸ§º" },
-  "cat-19": { gradient: "from-emerald-400 to-green-600",  emoji: "ðŸ§¹" },
-  "cat-20": { gradient: "from-red-500 to-rose-600",       emoji: "ðŸ¦Ÿ" },
-  "cat-21": { gradient: "from-pink-300 to-pink-500",      emoji: "ðŸ‘¶" },
-  "cat-22": { gradient: "from-indigo-400 to-blue-500",    emoji: "ðŸ“š" },
-  "cat-23": { gradient: "from-red-300 to-rose-400",       emoji: "ðŸ’Š" },
-  "cat-24": { gradient: "from-gray-400 to-slate-500",     emoji: "ðŸ”‹" },
-  "cat-25": { gradient: "from-blue-300 to-cyan-400",      emoji: "ðŸ’§" },
-  "cat-26": { gradient: "from-violet-400 to-purple-500",  emoji: "ðŸ“±" },
+  "cat-01": { gradient: "from-amber-500 to-yellow-600",   emoji: "☕" },
+  "cat-02": { gradient: "from-yellow-400 to-orange-500",  emoji: "🍜" },
+  "cat-03": { gradient: "from-orange-400 to-red-500",     emoji: "🍿" },
+  "cat-04": { gradient: "from-pink-400 to-rose-500",      emoji: "🍫" },
+  "cat-05": { gradient: "from-red-400 to-orange-500",     emoji: "🥫" },
+  "cat-06": { gradient: "from-blue-400 to-cyan-500",      emoji: "🥤" },
+  "cat-07": { gradient: "from-green-400 to-teal-500",     emoji: "🧃" },
+  "cat-08": { gradient: "from-sky-300 to-blue-400",       emoji: "🥛" },
+  "cat-09": { gradient: "from-amber-400 to-orange-500",   emoji: "🧂" },
+  "cat-10": { gradient: "from-yellow-300 to-amber-400",   emoji: "🍳" },
+  "cat-11": { gradient: "from-yellow-400 to-amber-500",   emoji: "🧈" },
+  "cat-12": { gradient: "from-amber-300 to-orange-400",   emoji: "🍞" },
+  "cat-13": { gradient: "from-yellow-200 to-amber-300",   emoji: "🥚" },
+  "cat-14": { gradient: "from-lime-300 to-green-400",     emoji: "🍚" },
+  "cat-15": { gradient: "from-cyan-400 to-blue-500",      emoji: "🧊" },
+  "cat-16": { gradient: "from-purple-400 to-violet-500",  emoji: "🧴" },
+  "cat-17": { gradient: "from-pink-300 to-rose-400",      emoji: "🌸" },
+  "cat-18": { gradient: "from-teal-400 to-green-500",     emoji: "🧺" },
+  "cat-19": { gradient: "from-emerald-400 to-green-600",  emoji: "🧹" },
+  "cat-20": { gradient: "from-red-500 to-rose-600",       emoji: "🦟" },
+  "cat-21": { gradient: "from-pink-300 to-pink-500",      emoji: "👶" },
+  "cat-22": { gradient: "from-indigo-400 to-blue-500",    emoji: "📚" },
+  "cat-23": { gradient: "from-red-300 to-rose-400",       emoji: "💊" },
+  "cat-24": { gradient: "from-gray-400 to-slate-500",     emoji: "🔋" },
+  "cat-25": { gradient: "from-blue-300 to-cyan-400",      emoji: "💧" },
+  "cat-26": { gradient: "from-violet-400 to-purple-500",  emoji: "📱" },
 };
 
 function generateRef() {
@@ -127,7 +127,7 @@ export default function POSPage() {
   }
 
   function qty(productId: string, delta: number) {
-    // Clamp at 1 â€” use the X button to remove an item entirely
+    // Clamp at 1 — use the X button to remove an item entirely
     setCart(prev => prev.map(i =>
       i.product.id !== productId ? i : { ...i, quantity: Math.max(1, i.quantity + delta) }
     ));
@@ -219,7 +219,7 @@ export default function POSPage() {
               <span className="text-brand-500">{formatPHP(total)}</span>
             </div>
             {payMethod === "cash" && change > 0 && (
-              <div className="flex justify-between text-sm font-semibold text-success-700 dark:text-foreground">
+              <div className="flex justify-between text-sm font-semibold text-success-600">
                 <span>Change</span>
                 <span>{formatPHP(change)}</span>
               </div>
@@ -231,8 +231,8 @@ export default function POSPage() {
             <div className="grid grid-cols-3 gap-2">
               {[
                 { mode: "print" as const, label: "Print", icon: <Printer className="h-4 w-4" /> },
-                { mode: "sms" as const, label: "SMS", icon: <span className="text-base">ðŸ’¬</span> },
-                { mode: "email" as const, label: "Email", icon: <span className="text-base">âœ‰ï¸</span> },
+                { mode: "sms" as const, label: "SMS", icon: <span className="text-base">💬</span> },
+                { mode: "email" as const, label: "Email", icon: <span className="text-base">✉️</span> },
               ].map(({ mode, label, icon }) => (
                 <button
                   key={mode}
@@ -246,7 +246,7 @@ export default function POSPage() {
                   }}
                   className={cn(
                     "flex flex-col items-center gap-1 rounded-xl border py-3 text-xs font-medium transition-colors",
-                    receiptMode === mode ? "border-brand-500 bg-brand-50 dark:bg-brand-500/10 text-brand-600" : "border-border bg-card text-muted-foreground hover:bg-muted"
+                    receiptMode === mode ? "border-brand-500 bg-brand-50 dark:bg-brand-500/10 text-brand-600 dark:text-foreground" : "border-border bg-card text-muted-foreground hover:bg-muted"
                   )}
                 >
                   {icon}
@@ -258,7 +258,7 @@ export default function POSPage() {
 
           <button
             onClick={reset}
-            className="w-full h-12 rounded-2xl bg-brand-700 text-white font-bold text-base hover:bg-brand-600 active:scale-[0.98] transition-all flex items-center justify-center gap-2"
+            className="w-full h-12 rounded-2xl bg-brand-50 dark:bg-brand-500/100 text-white font-bold text-base hover:bg-brand-600 active:scale-[0.98] transition-all flex items-center justify-center gap-2"
           >
             <RefreshCcw className="h-4 w-4" /> New Transaction
           </button>
@@ -274,33 +274,33 @@ export default function POSPage() {
       <header className="flex items-center justify-between px-4 py-2.5 border-b border-border bg-card shrink-0">
         <div>
           <h1 className="font-display text-sm font-bold text-foreground">Ka Sari-Sari POS</h1>
-          <p className="text-[10px] text-muted-foreground">Warehouse Counter Â· Walk-in Sales</p>
+          <p className="text-[10px] text-muted-foreground">Warehouse Counter · Walk-in Sales</p>
         </div>
         <div className="flex md:hidden items-center border border-border rounded-xl overflow-hidden text-[11px]">
           {(["products", "cart", "pay"] as const).map(t => (
             <button
               key={t}
               onClick={() => setMobileTab(t)}
-              className={cn("relative px-3 py-2 font-medium capitalize transition-colors", mobileTab === t ? "bg-brand-700 text-white" : "text-muted-foreground")}
+              className={cn("relative px-3 py-2 font-medium capitalize transition-colors", mobileTab === t ? "bg-brand-50 dark:bg-brand-500/100 text-white" : "text-muted-foreground")}
             >
-              {t === "cart" && cartCount > 0 && <span className="absolute top-0.5 right-0.5 h-3.5 w-3.5 rounded-full bg-danger-500 text-white text-[8px] flex items-center justify-center">{cartCount > 9 ? "9+" : cartCount}</span>}
+              {t === "cart" && cartCount > 0 && <span className="absolute top-0.5 right-0.5 h-3.5 w-3.5 rounded-full bg-danger-50 dark:bg-danger-500/100 text-white text-[8px] flex items-center justify-center">{cartCount > 9 ? "9+" : cartCount}</span>}
               {t === "cart" ? `Cart${cartCount > 0 ? ` (${cartCount})` : ""}` : t === "pay" ? "Pay" : "Items"}
             </button>
           ))}
         </div>
         <div className="hidden md:flex items-center gap-3 text-xs text-muted-foreground">
           <span>{new Date().toLocaleDateString("en-PH", { weekday: "short", month: "short", day: "numeric", year: "numeric" })}</span>
-          {cartCount > 0 && <span className="font-semibold text-brand-500">{cartCount} items Â· {formatPHP(total)}</span>}
+          {cartCount > 0 && <span className="font-semibold text-brand-500">{cartCount} items · {formatPHP(total)}</span>}
         </div>
       </header>
 
       <div className="flex flex-1 min-h-0">
-        {/* â”€â”€â”€ Product panel â”€â”€â”€ */}
+        {/* ─── Product panel ─── */}
         <div className={cn("flex flex-col flex-1 min-w-0 overflow-hidden print-hide", mobileTab !== "products" && "hidden md:flex")}>
           <div className="px-3 pt-3 pb-2 border-b border-border space-y-2 shrink-0">
             <div className="relative">
               <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-              <input type="search" placeholder="Search product, SKU, brandâ€¦" value={search} onChange={e => setSearch(e.target.value)}
+              <input type="search" placeholder="Search product, SKU, brand…" value={search} onChange={e => setSearch(e.target.value)}
                 className="h-10 w-full rounded-xl border border-input bg-card pl-9 pr-12 text-sm focus:outline-none focus:ring-2 focus:ring-brand-500" />
               <button
                 onClick={() => setShowScanner(true)}
@@ -311,9 +311,9 @@ export default function POSPage() {
               </button>
             </div>
             <div className="flex gap-1.5 overflow-x-auto scrollbar-hide">
-              <button onClick={() => setCategory("all")} className={cn("shrink-0 rounded-lg px-3 py-1.5 text-[11px] font-semibold border transition-colors", category === "all" ? "bg-brand-700 text-white border-brand-500" : "bg-card border-border text-muted-foreground")}>All</button>
+              <button onClick={() => setCategory("all")} className={cn("shrink-0 rounded-lg px-3 py-1.5 text-[11px] font-semibold border transition-colors", category === "all" ? "bg-brand-50 dark:bg-brand-500/100 text-white border-brand-500" : "bg-card border-border text-muted-foreground")}>All</button>
               {CATEGORIES.map(c => (
-                <button key={c.id} onClick={() => setCategory(c.id)} className={cn("shrink-0 rounded-lg px-3 py-1.5 text-[11px] font-semibold border transition-colors", category === c.id ? "bg-brand-700 text-white border-brand-500" : "bg-card border-border text-muted-foreground")}>{c.name}</button>
+                <button key={c.id} onClick={() => setCategory(c.id)} className={cn("shrink-0 rounded-lg px-3 py-1.5 text-[11px] font-semibold border transition-colors", category === c.id ? "bg-brand-50 dark:bg-brand-500/100 text-white border-brand-500" : "bg-card border-border text-muted-foreground")}>{c.name}</button>
               ))}
             </div>
           </div>
@@ -321,7 +321,7 @@ export default function POSPage() {
           <div className="flex-1 overflow-y-auto p-3">
             <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-2">
               {products.map(product => {
-                const d = CAT_DISPLAY[product.categoryId] || { gradient: "from-gray-400 to-slate-400", emoji: "ðŸ“¦" };
+                const d = CAT_DISPLAY[product.categoryId] || { gradient: "from-gray-400 to-slate-400", emoji: "📦" };
                 const inCart = cart.find(i => i.product.id === product.id);
                 const outOfStock = product.stock === 0;
                 return (
@@ -333,8 +333,8 @@ export default function POSPage() {
                     )}>
                     <div className={cn("h-20 flex items-center justify-center relative bg-gradient-to-br", d.gradient)}>
                       <span className="text-4xl">{d.emoji}</span>
-                      {inCart && <span className="absolute top-1.5 right-1.5 h-6 w-6 rounded-full bg-brand-700 text-white text-[11px] font-bold flex items-center justify-center shadow">{inCart.quantity}</span>}
-                      {outOfStock && <div className="absolute inset-0 bg-white/70 flex items-center justify-center"><span className="text-[10px] font-black text-danger-700 dark:text-foreground tracking-wide">OUT</span></div>}
+                      {inCart && <span className="absolute top-1.5 right-1.5 h-6 w-6 rounded-full bg-brand-50 dark:bg-brand-500/100 text-white text-[11px] font-bold flex items-center justify-center shadow">{inCart.quantity}</span>}
+                      {outOfStock && <div className="absolute inset-0 bg-white/70 flex items-center justify-center"><span className="text-[10px] font-black text-danger-600 tracking-wide">OUT</span></div>}
                     </div>
                     <div className="p-2.5">
                       <p className="text-[11px] font-semibold text-foreground line-clamp-2 leading-tight min-h-[28px]">{product.name}</p>
@@ -359,7 +359,7 @@ export default function POSPage() {
           </div>
         </div>
 
-        {/* â”€â”€â”€ Cart + Payment panel â”€â”€â”€ */}
+        {/* ─── Cart + Payment panel ─── */}
         <div className={cn("flex flex-col w-full md:w-80 lg:w-96 shrink-0 border-l border-border bg-card overflow-hidden", mobileTab === "products" && "hidden md:flex")}>
           {/* Customer */}
           <div className="px-4 py-2.5 border-b border-border shrink-0 flex items-center gap-2">
@@ -417,7 +417,7 @@ export default function POSPage() {
                 </div>
               ) : (
                 <div className="flex items-center justify-between text-xs">
-                  <span className="text-success-700 dark:text-foreground font-medium">âœ“ Promo applied: {promoInput}</span>
+                  <span className="text-success-600 font-medium">✓ Promo applied: {promoInput}</span>
                   <button onClick={() => { setPromoApplied(false); setPromoInput(""); setDiscount(0); }} className="text-muted-foreground hover:text-foreground">Remove</button>
                 </div>
               )}
@@ -425,7 +425,7 @@ export default function POSPage() {
                 <div className="flex justify-between text-xs text-muted-foreground">
                   <span>Subtotal ({cartCount})</span><span>{formatPHP(subtotal)}</span>
                 </div>
-                {discount > 0 && <div className="flex justify-between text-xs text-success-700 dark:text-foreground"><span>Discount</span><span>-{formatPHP(discount)}</span></div>}
+                {discount > 0 && <div className="flex justify-between text-xs text-success-600"><span>Discount</span><span>-{formatPHP(discount)}</span></div>}
                 <div className="flex justify-between text-sm font-bold text-foreground border-t border-border pt-1.5">
                   <span>Total</span><span className="text-brand-500 text-base">{formatPHP(total)}</span>
                 </div>
@@ -467,7 +467,7 @@ export default function POSPage() {
               {payMethod === "cash" && (
                 <div className="space-y-2 pt-1">
                   <div className="relative">
-                    <span className="absolute left-3 top-1/2 -translate-y-1/2 text-sm font-bold text-muted-foreground">â‚±</span>
+                    <span className="absolute left-3 top-1/2 -translate-y-1/2 text-sm font-bold text-muted-foreground">₱</span>
                     <input type="number" min={0} step={1} placeholder="0.00" value={cashTendered} onChange={e => setCashTendered(e.target.value)}
                       className="h-12 w-full rounded-xl border border-input bg-background pl-7 pr-4 text-lg font-bold text-foreground focus:outline-none focus:ring-2 focus:ring-brand-500" />
                   </div>
@@ -475,20 +475,20 @@ export default function POSPage() {
                     {[100, 200, 500, 1000].map(a => (
                       <button key={a} onClick={() => setCashTendered(String(a))}
                         className="rounded-xl border border-border bg-surface-50 dark:bg-surface-900 py-2 text-xs font-bold text-surface-900 hover:bg-muted active:scale-95 transition-all">
-                        â‚±{a >= 1000 ? "1k" : a}
+                        ₱{a >= 1000 ? "1k" : a}
                       </button>
                     ))}
                   </div>
                   {cash >= total && total > 0 && (
                     <div className="flex justify-between rounded-xl bg-success-50 dark:bg-success-500/10 border border-success-200 px-3 py-2">
-                      <span className="text-sm text-success-700 dark:text-foreground font-medium">Change</span>
-                      <span className="text-sm font-bold text-success-700 dark:text-foreground">{formatPHP(change)}</span>
+                      <span className="text-sm text-success-700 font-medium">Change</span>
+                      <span className="text-sm font-bold text-success-700">{formatPHP(change)}</span>
                     </div>
                   )}
                   {cashTendered && cash < total && (
                     <div className="flex items-center gap-2 rounded-xl bg-danger-50 dark:bg-danger-500/10 border border-danger-200 px-3 py-2">
                       <AlertCircle className="h-4 w-4 text-danger-500 shrink-0" />
-                      <span className="text-xs text-danger-700 dark:text-foreground font-medium">Short by {formatPHP(total - cash)}</span>
+                      <span className="text-xs text-danger-600 font-medium">Short by {formatPHP(total - cash)}</span>
                     </div>
                   )}
                 </div>
@@ -538,9 +538,9 @@ export default function POSPage() {
 
               {payMethod === "card" && (
                 <div className="rounded-xl bg-surface-50 dark:bg-surface-900 border border-border p-4 text-center">
-                  <p className="text-2xl mb-2">ðŸ’³</p>
+                  <p className="text-2xl mb-2">💳</p>
                   <p className="text-sm font-semibold text-surface-900">Swipe or Tap Card</p>
-                  <p className="text-xs text-muted-foreground mt-1">Visa Â· Mastercard Â· JCB Â· UnionPay</p>
+                  <p className="text-xs text-muted-foreground mt-1">Visa · Mastercard · JCB · UnionPay</p>
                   <p className="text-xs text-muted-foreground mt-0.5">Amount: {formatPHP(total)}</p>
                 </div>
               )}
@@ -575,7 +575,7 @@ export default function POSPage() {
                 className={cn(
                   "w-full h-14 rounded-2xl font-black text-lg tracking-wide transition-all",
                   canCharge && !loading
-                    ? "bg-brand-700 text-white hover:bg-brand-800 active:scale-[0.98] shadow-lg"
+                    ? "bg-brand-50 dark:bg-brand-500/100 text-white hover:bg-brand-600 active:scale-[0.98] shadow-lg"
                     : "bg-muted text-muted-foreground cursor-not-allowed"
                 )}
               >
@@ -591,7 +591,7 @@ export default function POSPage() {
               </button>
 
               <p className="text-center text-[10px] text-muted-foreground">
-                {pm?.icon} {pm?.label} Â· Secure transaction
+                {pm?.icon} {pm?.label} · Secure transaction
               </p>
             </div>
           </div>
@@ -602,7 +602,7 @@ export default function POSPage() {
       {scanFeedback && (
         <div className={cn(
           "fixed bottom-6 left-1/2 -translate-x-1/2 z-[150] rounded-2xl px-5 py-3 text-sm font-semibold text-white shadow-lg pointer-events-none",
-          scanFeedback.ok ? "bg-success-500" : "bg-danger-500"
+          scanFeedback.ok ? "bg-success-50 dark:bg-success-500/100" : "bg-danger-50 dark:bg-danger-500/100"
         )}>
           {scanFeedback.text}
         </div>

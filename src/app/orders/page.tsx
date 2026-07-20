@@ -1,4 +1,4 @@
-﻿"use client";
+"use client";
 import { useState, useEffect } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
@@ -14,7 +14,7 @@ import { MOCK_ORDERS } from "@/lib/mock-data";
 import { cn } from "@/lib/utils";
 import { toastSuccess } from "@/store/toast";
 
-// â”€â”€â”€ Types â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// ─── Types ────────────────────────────────────────────────────────────────────
 
 interface DisplayOrder {
   id: string;
@@ -31,7 +31,7 @@ interface DisplayOrder {
   updatedAt: string;
 }
 
-// â”€â”€â”€ Extra hardcoded orders for display richness â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// ─── Extra hardcoded orders for display richness ───────────────────────────────
 
 const EXTRA_ORDERS: DisplayOrder[] = [
   {
@@ -106,7 +106,7 @@ const EXTRA_ORDERS: DisplayOrder[] = [
   },
 ];
 
-// â”€â”€â”€ Merge MOCK_ORDERS + EXTRA_ORDERS â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// ─── Merge MOCK_ORDERS + EXTRA_ORDERS ────────────────────────────────────────
 
 function buildDisplayOrder(o: typeof MOCK_ORDERS[number]): DisplayOrder {
   return {
@@ -127,7 +127,7 @@ function buildDisplayOrder(o: typeof MOCK_ORDERS[number]): DisplayOrder {
 
 const FALLBACK_ORDERS: DisplayOrder[] = [];
 
-// â”€â”€â”€ Constants â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// ─── Constants ────────────────────────────────────────────────────────────────
 
 const TABS = [
   { id: "all",    label: "All" },
@@ -140,7 +140,7 @@ const DONE_STATUSES: OrderStatus[] = ["delivered", "failed_delivery", "cancelled
 
 const PROGRESS_STEPS: OrderStatus[] = ["confirmed", "picking", "packed", "out_for_delivery"];
 
-// â”€â”€â”€ StatusIcon â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// ─── StatusIcon ───────────────────────────────────────────────────────────────
 
 function StatusIcon({ status }: { status: OrderStatus }) {
   if (status === "out_for_delivery") return <Truck className="h-5 w-5 text-brand-500" />;
@@ -163,7 +163,7 @@ function StatusIconBg({ status }: { status: OrderStatus }) {
   );
 }
 
-// â”€â”€â”€ ProgressBar â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// ─── ProgressBar ─────────────────────────────────────────────────────────────
 
 function ActiveProgressBar({ status }: { status: OrderStatus }) {
   const current = PROGRESS_STEPS.indexOf(status);
@@ -178,7 +178,7 @@ function ActiveProgressBar({ status }: { status: OrderStatus }) {
             key={s}
             className={cn(
               "h-1 flex-1 rounded-full transition-all",
-              i <= current ? "bg-brand-500" : "bg-surface-200"
+              i <= current ? "bg-brand-50 dark:bg-brand-500/100" : "bg-surface-200"
             )}
           />
         ))}
@@ -191,7 +191,7 @@ function ActiveProgressBar({ status }: { status: OrderStatus }) {
   );
 }
 
-// â”€â”€â”€ OrderCard â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// ─── OrderCard ────────────────────────────────────────────────────────────────
 
 function OrderCard({ order }: { order: DisplayOrder }) {
   const router = useRouter();
@@ -203,8 +203,8 @@ function OrderCard({ order }: { order: DisplayOrder }) {
   function handleReorder(e: React.MouseEvent) {
     e.preventDefault();
     e.stopPropagation();
-    // DisplayOrder doesn't carry full product objects â€” redirect to catalog
-    toastSuccess("Redirecting to catalog â€” pick your items!");
+    // DisplayOrder doesn't carry full product objects — redirect to catalog
+    toastSuccess("Redirecting to catalog — pick your items!");
     router.push("/catalog");
   }
 
@@ -248,14 +248,14 @@ function OrderCard({ order }: { order: DisplayOrder }) {
         "flex items-center justify-between border-t border-border px-4 py-3",
         isCancelled ? "bg-surface-50/50 dark:bg-surface-900/50" : ""
       )}>
-        <p className="text-base font-bold text-foreground">{formatPHP(order.total)}</p>
+        <p className="text-base font-bold text-surface-900">{formatPHP(order.total)}</p>
         <div className="flex items-center gap-2">
           {isActive && (
             <Link
               href={`/tracking?orderId=${order.id}`}
               aria-label="Track order"
               onClick={(e) => e.stopPropagation()}
-              className="rounded-lg bg-brand-700 px-3 py-1.5 text-xs font-semibold text-white flex items-center gap-1.5 hover:bg-brand-800 transition-colors"
+              className="rounded-lg bg-brand-50 dark:bg-brand-500/100 px-3 py-1.5 text-xs font-semibold text-white flex items-center gap-1.5 hover:bg-brand-600 transition-colors"
             >
               <Truck className="h-3 w-3" />
               Track
@@ -278,7 +278,7 @@ function OrderCard({ order }: { order: DisplayOrder }) {
   );
 }
 
-// â”€â”€â”€ Page â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// ─── Page ─────────────────────────────────────────────────────────────────────
 
 export default function OrdersPage() {
   const router = useRouter();
@@ -343,14 +343,14 @@ export default function OrdersPage() {
               className={cn(
                 "flex-1 flex items-center justify-center gap-1.5 rounded-xl py-2.5 text-sm font-semibold transition-all",
                 tab === t.id
-                  ? "bg-brand-700 text-white shadow-brand"
+                  ? "bg-brand-50 dark:bg-brand-500/100 text-white shadow-brand"
                   : "bg-surface-100 dark:bg-surface-800 text-muted-foreground hover:text-foreground hover:bg-surface-200"
               )}
             >
               {t.label}
               <span className={cn(
                 "rounded-full px-1.5 py-0.5 text-[11px] font-bold leading-none",
-                tab === t.id ? "bg-white/25 text-white" : "bg-surface-200 dark:bg-surface-800 text-muted-foreground"
+                tab === t.id ? "bg-white/25 text-white" : "bg-surface-200 text-muted-foreground"
               )}>
                 {count}
               </span>
@@ -372,7 +372,7 @@ export default function OrdersPage() {
             <p className="text-xs text-muted-foreground">{fetchError}</p>
             <button
               onClick={() => { setFetchError(null); setLoading(true); fetch("/api/orders").then((r) => { if (!r.ok) throw new Error(r.statusText); return r.json(); }).then((d) => { setOrders((d.orders ?? []).map(buildDisplayOrder).sort((a: DisplayOrder, b: DisplayOrder) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime())); }).catch((e) => setFetchError(e.message)).finally(() => setLoading(false)); }}
-              className="rounded-xl bg-brand-700 px-4 py-2 text-sm font-semibold text-white hover:bg-brand-800 transition-colors"
+              className="rounded-xl bg-brand-50 dark:bg-brand-500/100 px-4 py-2 text-sm font-semibold text-white hover:bg-brand-600 transition-colors"
             >
               Retry
             </button>

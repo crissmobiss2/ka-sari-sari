@@ -1,4 +1,4 @@
-﻿"use client";
+"use client";
 
 import { useMemo, useState, useEffect, useCallback } from "react";
 import {
@@ -24,7 +24,7 @@ import { cn } from "@/lib/utils";
 import { toastSuccess, toastInfo, toastError } from "@/store/toast";
 import { MOCK_ORDERS, PRODUCTS, CATEGORIES } from "@/lib/mock-data";
 
-// â”€â”€ Types â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// ── Types ─────────────────────────────────────────────────────────────────────
 
 // Claude AI forecast shape
 interface AiReorder {
@@ -86,14 +86,14 @@ interface ReorderEntry extends VelocityEntry {
   suggestedQty: number;
 }
 
-// â”€â”€ Static forecast data â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// ── Static forecast data ───────────────────────────────────────────────────────
 
 const FORECAST_ROWS: ForecastRow[] = [
   { name: "Coca-Cola Regular 330ml",    category: "Beverages",      currentStock: 142, forecastUnits: 168, trendPct:  18, confidence: 96, action: "Reorder" },
   { name: "Lucky Me! Pancit Canton",    category: "Instant Noodles", currentStock:  89, forecastUnits: 112, trendPct:  26, confidence: 91, action: "Reorder" },
   { name: "Piattos Cheese 85g",         category: "Snacks",         currentStock: 203, forecastUnits: 195, trendPct:  -4, confidence: 88, action: "Watch"   },
   { name: "555 Sardines Tomato 155g",   category: "Canned Goods",   currentStock:  56, forecastUnits:  94, trendPct:  68, confidence: 85, action: "URGENT"  },
-  { name: "NescafÃ© 3-in-1 Original",   category: "Coffee",         currentStock:  78, forecastUnits:  89, trendPct:  14, confidence: 93, action: "Reorder" },
+  { name: "Nescafé 3-in-1 Original",   category: "Coffee",         currentStock:  78, forecastUnits:  89, trendPct:  14, confidence: 93, action: "Reorder" },
   { name: "Safeguard Classic Bar",      category: "Personal Care",  currentStock:  34, forecastUnits:  67, trendPct:  97, confidence: 79, action: "URGENT"  },
   { name: "Silver Swan Soy Sauce 1L",  category: "Condiments",     currentStock: 112, forecastUnits:  98, trendPct: -12, confidence: 87, action: "OK"      },
   { name: "Surf Powder Detergent",      category: "Household",      currentStock: 167, forecastUnits: 145, trendPct: -13, confidence: 84, action: "OK"      },
@@ -112,29 +112,29 @@ const CATEGORY_FORECASTS: CategoryForecast[] = [
 
 const MAX_ABS_PCT = Math.max(...CATEGORY_FORECASTS.map((c) => Math.abs(c.changePct)));
 
-// â”€â”€ Helpers â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// ── Helpers ────────────────────────────────────────────────────────────────────
 
 function actionStyles(action: ActionType): string {
   switch (action) {
-    case "URGENT":  return "bg-danger-50 dark:bg-danger-500/10 text-danger-700 dark:text-foreground border border-danger-200";
+    case "URGENT":  return "bg-danger-50 dark:bg-danger-500/10 text-danger-600 border border-danger-200";
     case "Reorder": return "bg-brand-50 dark:bg-brand-500/10 text-brand-600 border border-brand-200";
-    case "Watch":   return "bg-warning-50 dark:bg-warning-500/10 text-warning-700 dark:text-foreground border border-warning-200";
+    case "Watch":   return "bg-warning-50 dark:bg-warning-500/10 text-warning-600 border border-warning-200";
     case "OK":      return "bg-surface-100 dark:bg-surface-800 text-muted-foreground";
   }
 }
 
 function urgencyBadgeClass(urgency: AiReorder["urgency"]): string {
   switch (urgency) {
-    case "critical": return "bg-danger-50 dark:bg-danger-500/10 text-danger-700 dark:text-foreground border border-danger-200";
-    case "high":     return "bg-warning-50 dark:bg-warning-500/10 text-warning-700 dark:text-foreground border border-warning-200";
+    case "critical": return "bg-danger-50 dark:bg-danger-500/10 text-danger-600 border border-danger-200";
+    case "high":     return "bg-warning-50 dark:bg-warning-500/10 text-warning-700 border border-warning-200";
     case "medium":   return "bg-info-50 dark:bg-info-500/10 text-info-600 border border-info-200";
   }
 }
 
 function confidenceBarColor(pct: number): string {
-  if (pct >= 90) return "bg-success-500";
+  if (pct >= 90) return "bg-success-50 dark:bg-success-500/100";
   if (pct >= 80) return "bg-amber-500";
-  return "bg-danger-500";
+  return "bg-danger-50 dark:bg-danger-500/100";
 }
 
 function exportCSV() {
@@ -159,7 +159,7 @@ function exportCSV() {
   toastSuccess("Forecast report exported as CSV");
 }
 
-// â”€â”€ Sub-components â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// ── Sub-components ─────────────────────────────────────────────────────────────
 
 function SummaryCard({
   label,
@@ -204,11 +204,11 @@ function ConfidenceBar({ pct }: { pct: number }) {
   );
 }
 
-// â”€â”€ Page â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// ── Page ──────────────────────────────────────────────────────────────────────
 
 export default function AdminForecastPage() {
 
-  // â”€â”€ Claude AI forecast state â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+  // ── Claude AI forecast state ──────────────────────────────────────────────
   const [aiData, setAiData] = useState<AiForecast | null>(null);
   const [aiLoading, setAiLoading] = useState(true);
   const [isMockData, setIsMockData] = useState(false);
@@ -230,7 +230,7 @@ export default function AdminForecastPage() {
 
   useEffect(() => { fetchForecast(); }, [fetchForecast]);
 
-  // â”€â”€ Velocity computation from MOCK_ORDERS â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+  // ── Velocity computation from MOCK_ORDERS ────────────────────────────────
   const velocityData = useMemo<VelocityEntry[]>(() => {
     // Build a map: productId -> { appearances (order-line count), totalQty }
     const velocityMap = new Map<string, { velocity: number; totalQty: number }>();
@@ -295,28 +295,28 @@ export default function AdminForecastPage() {
   const insights: AiInsight[] = [
     {
       icon: <Flame className="h-4 w-4 text-danger-500 shrink-0 mt-0.5" />,
-      text: "Surge detected: Canned Goods demand up 44% â€” holiday season correlation identified across order history.",
+      text: "Surge detected: Canned Goods demand up 44% — holiday season correlation identified across order history.",
       borderColor: "border-danger-400",
-      bgColor: "bg-danger-50/60",
+      bgColor: "bg-danger-50 dark:bg-danger-500/10/60",
     },
     {
-      icon: <ShieldAlert className="h-4 w-4 text-warning-700 dark:text-foreground shrink-0 mt-0.5" />,
+      icon: <ShieldAlert className="h-4 w-4 text-warning-600 shrink-0 mt-0.5" />,
       text: "Restock alert: 3 products may stockout within 7 days based on current order velocity and forecast trajectory.",
       borderColor: "border-warning-400",
-      bgColor: "bg-warning-50/60",
+      bgColor: "bg-warning-50 dark:bg-warning-500/10/60",
     },
     {
       icon: <Lightbulb className="h-4 w-4 text-brand-500 shrink-0 mt-0.5" />,
-      text: "Opportunity: Personal Care up 31% â€” consider stocking Dove and Palmolive variants to capture demand upside.",
+      text: "Opportunity: Personal Care up 31% — consider stocking Dove and Palmolive variants to capture demand upside.",
       borderColor: "border-brand-400",
-      bgColor: "bg-brand-50/60",
+      bgColor: "bg-brand-50 dark:bg-brand-500/10/60",
     },
   ];
 
   return (
     <div className="p-6 space-y-6 max-w-7xl mx-auto">
 
-      {/* â”€â”€ Header â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */}
+      {/* ── Header ──────────────────────────────────────────────────────────── */}
       <div className="flex items-start justify-between gap-4 flex-wrap">
         <div>
           <div className="flex items-center gap-2.5">
@@ -327,23 +327,23 @@ export default function AdminForecastPage() {
           <p className="text-xs text-muted-foreground/60 mt-0.5">Last updated: Jan 21, 2026 at 10:32 AM</p>
         </div>
         <div className="flex items-center gap-2 shrink-0">
-          <Button variant="outline" size="sm" onClick={() => { toastInfo("Generating PDF reportâ€¦"); window.print(); }}>
+          <Button variant="outline" size="sm" onClick={() => { toastInfo("Generating PDF report…"); window.print(); }}>
             <Download className="h-4 w-4" />
             Export Report
           </Button>
           <Button
             size="sm"
-            className="bg-brand-700 hover:bg-brand-800 text-white"
-            onClick={() => { fetchForecast(); toastSuccess("Refreshing AI forecastâ€¦"); }}
+            className="bg-brand-50 dark:bg-brand-500/100 hover:bg-brand-600 text-white"
+            onClick={() => { fetchForecast(); toastSuccess("Refreshing AI forecast…"); }}
             disabled={aiLoading}
           >
             <RefreshCw className={cn("h-4 w-4", aiLoading && "animate-spin")} />
-            {aiLoading ? "Generatingâ€¦" : "Refresh Forecast"}
+            {aiLoading ? "Generating…" : "Refresh Forecast"}
           </Button>
         </div>
       </div>
 
-      {/* â”€â”€ Summary cards â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */}
+      {/* ── Summary cards ───────────────────────────────────────────────────── */}
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
         <SummaryCard
           label="Stockout Risk"
@@ -367,19 +367,19 @@ export default function AdminForecastPage() {
           sub="based on 90-day backtest"
           icon={<CheckCircle2 className="h-5 w-5" />}
           iconBg="bg-success-50 dark:bg-success-500/10"
-          iconColor="text-success-700 dark:text-foreground"
+          iconColor="text-success-600"
         />
         <SummaryCard
           label="Forecast Period"
           value="Next 14 days"
-          sub="Jan 22 â€“ Feb 4, 2026"
+          sub="Jan 22 – Feb 4, 2026"
           icon={<Calendar className="h-5 w-5" />}
           iconBg="bg-surface-100 dark:bg-surface-800"
           iconColor="text-muted-foreground"
         />
       </div>
 
-      {/* â”€â”€ AI Forecast section â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */}
+      {/* ── AI Forecast section ───────────────────────────────────────────────── */}
       <Card>
         <CardHeader className="pb-3">
           <div className="flex items-center justify-between gap-3 flex-wrap">
@@ -394,7 +394,7 @@ export default function AdminForecastPage() {
             </div>
             {isMockData && (
               <span className="text-[11px] text-muted-foreground bg-muted rounded-lg px-2.5 py-1">
-                Using demo data â€” connect AI API for live forecasting
+                Using demo data — connect AI API for live forecasting
               </span>
             )}
           </div>
@@ -403,7 +403,7 @@ export default function AdminForecastPage() {
           {aiLoading ? (
             <div className="flex items-center gap-3 py-6 justify-center">
               <Sparkles className="h-4 w-4 text-brand-400 animate-pulse" />
-              <span className="text-sm text-muted-foreground">Analyzing demand dataâ€¦</span>
+              <span className="text-sm text-muted-foreground">Analyzing demand data…</span>
             </div>
           ) : aiData ? (
             <div className="space-y-5">
@@ -424,7 +424,7 @@ export default function AdminForecastPage() {
                         <span className={cn("inline-block text-xs font-semibold rounded-full px-2 py-0.5 capitalize", urgencyBadgeClass(item.urgency))}>
                           {item.urgency}
                         </span>
-                        <p className="text-xs font-bold text-success-700 dark:text-foreground tabular-nums">+{item.suggestedQty} units</p>
+                        <p className="text-xs font-bold text-success-600 tabular-nums">+{item.suggestedQty} units</p>
                       </div>
                     </div>
                   ))}
@@ -437,9 +437,9 @@ export default function AdminForecastPage() {
                   <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wide mb-3">Seasonal Alerts</p>
                   <div className="space-y-2">
                     {aiData.seasonalAlerts.map((alert, i) => (
-                      <div key={i} className="rounded-xl bg-warning-50/60 border border-warning-200 p-3.5">
+                      <div key={i} className="rounded-xl bg-warning-50 dark:bg-warning-500/10/60 border border-warning-200 p-3.5">
                         <div className="flex items-start gap-2">
-                          <TriangleAlert className="h-4 w-4 text-warning-700 dark:text-foreground shrink-0 mt-0.5" />
+                          <TriangleAlert className="h-4 w-4 text-warning-600 shrink-0 mt-0.5" />
                           <div>
                             <p className="text-sm font-medium text-foreground">{alert.alert}</p>
                             {alert.affectedProducts.length > 0 && (
@@ -457,7 +457,7 @@ export default function AdminForecastPage() {
 
               {/* Insights text */}
               {aiData.insights && (
-                <div className="rounded-xl bg-brand-50/60 border border-brand-200 p-3.5">
+                <div className="rounded-xl bg-brand-50 dark:bg-brand-500/10/60 border border-brand-200 p-3.5">
                   <div className="flex items-start gap-2">
                     <Lightbulb className="h-4 w-4 text-brand-500 shrink-0 mt-0.5" />
                     <p className="text-sm text-foreground leading-relaxed">{aiData.insights}</p>
@@ -471,7 +471,7 @@ export default function AdminForecastPage() {
         </CardContent>
       </Card>
 
-      {/* â”€â”€ Velocity-driven intelligence cards â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */}
+      {/* ── Velocity-driven intelligence cards ──────────────────────────────── */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
 
         {/* High Velocity Items */}
@@ -502,7 +502,7 @@ export default function AdminForecastPage() {
                   </div>
                   <div className="shrink-0 text-right">
                     <Badge variant="neutral" className="text-xs tabular-nums font-semibold">
-                      {item.velocity}Ã— ordered
+                      {item.velocity}× ordered
                     </Badge>
                     <p className="text-[11px] text-muted-foreground mt-0.5 text-right">{item.totalQty} units</p>
                   </div>
@@ -528,7 +528,7 @@ export default function AdminForecastPage() {
           <CardContent className="pt-0 space-y-2.5">
             {stockoutItems.length === 0 ? (
               <div className="flex items-center gap-2 py-4 justify-center">
-                <CheckCircle2 className="h-4 w-4 text-success-700 dark:text-foreground" />
+                <CheckCircle2 className="h-4 w-4 text-success-600" />
                 <p className="text-sm text-muted-foreground">All products have sufficient stock</p>
               </div>
             ) : (
@@ -538,8 +538,8 @@ export default function AdminForecastPage() {
                   <div key={item.productId} className={cn(
                     "rounded-lg p-2.5 border",
                     isUrgent
-                      ? "bg-danger-50/60 border-danger-200"
-                      : "bg-warning-50/40 border-warning-200"
+                      ? "bg-danger-50 dark:bg-danger-500/10/60 border-danger-200"
+                      : "bg-warning-50 dark:bg-warning-500/10/40 border-warning-200"
                   )}>
                     <div className="flex items-start justify-between gap-2">
                       <p className="text-sm font-medium text-foreground leading-tight">{item.name}</p>
@@ -551,7 +551,7 @@ export default function AdminForecastPage() {
                       </Badge>
                     </div>
                     <p className="text-[11px] text-muted-foreground mt-1">
-                      {item.stock} units in stock Â· velocity {item.velocity}Ã—
+                      {item.stock} units in stock · velocity {item.velocity}×
                     </p>
                   </div>
                 );
@@ -565,7 +565,7 @@ export default function AdminForecastPage() {
           <CardHeader className="pb-2">
             <div className="flex items-center gap-2">
               <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-success-50 dark:bg-success-500/10">
-                <ShoppingCart className="h-4 w-4 text-success-700 dark:text-foreground" />
+                <ShoppingCart className="h-4 w-4 text-success-600" />
               </div>
               <div>
                 <CardTitle className="text-base">Recommended Reorders</CardTitle>
@@ -587,7 +587,7 @@ export default function AdminForecastPage() {
                     <p className="text-[11px] text-muted-foreground mt-0.5">{item.stock} in stock</p>
                   </div>
                   <div className="shrink-0 text-right">
-                    <p className="text-sm font-bold text-success-700 dark:text-foreground tabular-nums">+{item.suggestedQty}</p>
+                    <p className="text-sm font-bold text-success-600 tabular-nums">+{item.suggestedQty}</p>
                     <p className="text-[11px] text-muted-foreground">units to order</p>
                   </div>
                 </div>
@@ -597,7 +597,7 @@ export default function AdminForecastPage() {
         </Card>
       </div>
 
-      {/* â”€â”€ Demand forecast table â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */}
+      {/* ── Demand forecast table ────────────────────────────────────────────── */}
       <Card>
         <CardHeader className="pb-2">
           <div className="flex items-center justify-between flex-wrap gap-2">
@@ -607,10 +607,10 @@ export default function AdminForecastPage() {
             </div>
             <div className="flex items-center gap-3 text-[11px] text-muted-foreground">
               <span className="flex items-center gap-1">
-                <span className="inline-block h-2 w-2 rounded-full bg-danger-500" />URGENT
+                <span className="inline-block h-2 w-2 rounded-full bg-danger-50 dark:bg-danger-500/100" />URGENT
               </span>
               <span className="flex items-center gap-1">
-                <span className="inline-block h-2 w-2 rounded-full bg-brand-500" />Reorder
+                <span className="inline-block h-2 w-2 rounded-full bg-brand-50 dark:bg-brand-500/100" />Reorder
               </span>
               <span className="flex items-center gap-1">
                 <span className="inline-block h-2 w-2 rounded-full bg-amber-400" />Watch
@@ -644,7 +644,7 @@ export default function AdminForecastPage() {
                       className={cn(
                         "border-b border-border last:border-0 transition-colors",
                         row.action === "URGENT"
-                          ? "bg-danger-50/30 hover:bg-danger-50/50"
+                          ? "bg-danger-50 dark:bg-danger-500/10/30 hover:bg-danger-50 dark:bg-danger-500/10/50"
                           : "hover:bg-surface-50 dark:bg-surface-900"
                       )}
                     >
@@ -675,10 +675,10 @@ export default function AdminForecastPage() {
                         <span
                           className={cn(
                             "text-xs font-semibold tabular-nums",
-                            isUp ? "text-success-700 dark:text-foreground" : "text-danger-700 dark:text-foreground"
+                            isUp ? "text-success-600" : "text-danger-600"
                           )}
                         >
-                          {isUp ? "â–²" : "â–¼"} {isUp ? "+" : ""}{row.trendPct}%
+                          {isUp ? "▲" : "▼"} {isUp ? "+" : ""}{row.trendPct}%
                         </span>
                       </td>
 
@@ -709,10 +709,10 @@ export default function AdminForecastPage() {
         </CardContent>
       </Card>
 
-      {/* â”€â”€ Category chart + AI Insights â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */}
+      {/* ── Category chart + AI Insights ─────────────────────────────────────── */}
       <div className="grid grid-cols-1 lg:grid-cols-5 gap-4">
 
-        {/* Category bar chart â€” 3/5 width */}
+        {/* Category bar chart — 3/5 width */}
         <Card className="lg:col-span-3">
           <CardHeader className="pb-2">
             <CardTitle>Category Demand Forecast</CardTitle>
@@ -744,7 +744,7 @@ export default function AdminForecastPage() {
                   <span
                     className={cn(
                       "text-sm font-bold w-14 text-right shrink-0 tabular-nums",
-                      isPos ? "text-brand-600" : "text-danger-700 dark:text-foreground"
+                      isPos ? "text-brand-600" : "text-danger-600"
                     )}
                   >
                     {isPos ? "+" : ""}{cat.changePct}%
@@ -756,18 +756,18 @@ export default function AdminForecastPage() {
             {/* Legend */}
             <div className="flex items-center gap-4 pt-2 border-t border-border mt-2">
               <div className="flex items-center gap-1.5">
-                <span className="h-3 w-3 rounded-sm bg-brand-500" />
+                <span className="h-3 w-3 rounded-sm bg-brand-50 dark:bg-brand-500/100" />
                 <span className="text-xs text-muted-foreground">Demand increase</span>
               </div>
               <div className="flex items-center gap-1.5">
-                <span className="h-3 w-3 rounded-sm bg-danger-500" />
+                <span className="h-3 w-3 rounded-sm bg-danger-50 dark:bg-danger-500/100" />
                 <span className="text-xs text-muted-foreground">Demand decrease</span>
               </div>
             </div>
           </CardContent>
         </Card>
 
-        {/* AI Insights â€” 2/5 width */}
+        {/* AI Insights — 2/5 width */}
         <Card className="lg:col-span-2">
           <CardHeader className="pb-2">
             <CardTitle>AI Insights</CardTitle>

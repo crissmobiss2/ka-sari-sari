@@ -39,9 +39,9 @@ type PORecord = {
 
 const STATUS_STYLE: Record<POStatus, string> = {
   draft:     "bg-surface-100 dark:bg-surface-800 text-muted-foreground border-surface-200",
-  sent:      "bg-warning-50 dark:bg-warning-500/10 text-warning-700 dark:text-foreground border-warning-500/25",
+  sent:      "bg-warning-50 dark:bg-warning-500/10 text-warning-600 border-warning-500/25",
   confirmed: "bg-blue-50 text-blue-600 border-blue-200",
-  received:  "bg-success-50 dark:bg-success-500/10 text-success-700 dark:text-foreground border-success-500/25",
+  received:  "bg-success-50 dark:bg-success-500/10 text-success-600 border-success-500/25",
   partial:   "bg-orange-50 text-orange-600 border-orange-200",
 };
 
@@ -49,7 +49,7 @@ const STATUS_BAR: Record<POStatus, string> = {
   draft:     "bg-surface-300",
   sent:      "bg-warning-400",
   confirmed: "bg-blue-400",
-  received:  "bg-success-500",
+  received:  "bg-success-50 dark:bg-success-500/100",
   partial:   "bg-orange-400",
 };
 
@@ -74,28 +74,28 @@ type AutoPOEntry = {
 const AUTO_POS: AutoPOEntry[] = [
   {
     supplier: "PhilBev Distribution Inc.",
-    reason: "Coca-Cola (142 units â†’ needs 168 in 14 days)",
+    reason: "Coca-Cola (142 units → needs 168 in 14 days)",
     items: 2,
     total: 15840,
     urgency: "high",
   },
   {
     supplier: "P&G Philippines",
-    reason: "Safeguard (34 units â†’ needs 67 in 14 days, critically low)",
+    reason: "Safeguard (34 units → needs 67 in 14 days, critically low)",
     items: 1,
     total: 8640,
     urgency: "critical",
   },
   {
-    supplier: "NestlÃ© Philippines",
-    reason: "Milo Active Go (23 units â†’ needs 51 in 14 days)",
+    supplier: "Nestlé Philippines",
+    reason: "Milo Active Go (23 units → needs 51 in 14 days)",
     items: 1,
     total: 11520,
     urgency: "critical",
   },
   {
     supplier: "Lucky Me Foods Corp",
-    reason: "Lucky Me! Pancit Canton (89 units â†’ needs 112 in 14 days)",
+    reason: "Lucky Me! Pancit Canton (89 units → needs 112 in 14 days)",
     items: 3,
     total: 6720,
     urgency: "medium",
@@ -103,9 +103,9 @@ const AUTO_POS: AutoPOEntry[] = [
 ];
 
 const URGENCY_BADGE: Record<AutoPOEntry["urgency"], string> = {
-  critical: "bg-danger-50 dark:bg-danger-500/10 text-danger-700 dark:text-foreground border-danger-200",
+  critical: "bg-danger-50 dark:bg-danger-500/10 text-danger-600 border-danger-200",
   high:     "bg-brand-50 dark:bg-brand-500/10 text-brand-600 border-brand-200",
-  medium:   "bg-warning-50 dark:bg-warning-500/10 text-warning-700 dark:text-foreground border-warning-200",
+  medium:   "bg-warning-50 dark:bg-warning-500/10 text-warning-600 border-warning-200",
 };
 
 const URGENCY_LABEL: Record<AutoPOEntry["urgency"], string> = {
@@ -114,7 +114,7 @@ const URGENCY_LABEL: Record<AutoPOEntry["urgency"], string> = {
   medium:   "Medium",
 };
 
-// â”€â”€â”€ Auto-Generate POs Modal â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// ─── Auto-Generate POs Modal ──────────────────────────────────────────────────
 
 interface AutoPOModalProps {
   onClose: () => void;
@@ -183,12 +183,12 @@ function AutoPOModal({ onClose, onViewDrafts }: AutoPOModalProps) {
             </div>
             <div>
               <h2 className="font-display text-lg font-bold text-foreground">
-                Analyzing inventoryâ€¦
+                Analyzing inventory…
               </h2>
               <div className="mt-3 space-y-1.5 text-sm text-muted-foreground">
-                <p>Scanning 122 products across 12 categoriesâ€¦</p>
-                <p>Checking supplier availabilityâ€¦</p>
-                <p>Calculating reorder pointsâ€¦</p>
+                <p>Scanning 122 products across 12 categories…</p>
+                <p>Checking supplier availability…</p>
+                <p>Calculating reorder points…</p>
               </div>
             </div>
           </div>
@@ -212,7 +212,7 @@ function AutoPOModal({ onClose, onViewDrafts }: AutoPOModalProps) {
                   className={cn(
                     "flex items-start gap-3 rounded-xl border p-3.5 cursor-pointer transition-colors",
                     selectedPOs.has(i)
-                      ? "border-brand-300 bg-brand-50/50"
+                      ? "border-brand-300 bg-brand-50 dark:bg-brand-500/10/50"
                       : "border-border bg-card hover:bg-muted/30"
                   )}
                 >
@@ -240,7 +240,7 @@ function AutoPOModal({ onClose, onViewDrafts }: AutoPOModalProps) {
                     <div className="flex items-center gap-1.5 mt-1.5 text-xs text-muted-foreground">
                       <Package className="h-3 w-3" />
                       <span>{po.items} item{po.items !== 1 ? "s" : ""}</span>
-                      <span className="text-border">Â·</span>
+                      <span className="text-border">·</span>
                       <span className="font-semibold text-foreground tabular-nums">
                         {formatPHP(po.total)}
                       </span>
@@ -265,12 +265,12 @@ function AutoPOModal({ onClose, onViewDrafts }: AutoPOModalProps) {
             <button
               onClick={handleCreate}
               disabled={selectedCount === 0 || isCreating}
-              className="w-full flex items-center justify-center gap-2 rounded-xl bg-brand-700 py-3 text-sm font-medium text-white hover:bg-brand-800 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+              className="w-full flex items-center justify-center gap-2 rounded-xl bg-brand-50 dark:bg-brand-500/100 py-3 text-sm font-medium text-white hover:bg-brand-600 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
             >
               {isCreating ? (
                 <>
                   <Loader2 className="h-4 w-4 animate-spin" />
-                  Creatingâ€¦
+                  Creating…
                 </>
               ) : (
                 <>
@@ -304,7 +304,7 @@ function AutoPOModal({ onClose, onViewDrafts }: AutoPOModalProps) {
               </button>
               <button
                 onClick={onClose}
-                className="flex-1 rounded-xl bg-brand-700 py-2.5 text-sm font-medium text-white hover:bg-brand-800 transition-colors"
+                className="flex-1 rounded-xl bg-brand-50 dark:bg-brand-500/100 py-2.5 text-sm font-medium text-white hover:bg-brand-600 transition-colors"
               >
                 Done
               </button>
@@ -316,7 +316,7 @@ function AutoPOModal({ onClose, onViewDrafts }: AutoPOModalProps) {
   );
 }
 
-// â”€â”€â”€ Create PO Modal â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// ─── Create PO Modal ──────────────────────────────────────────────────────────
 
 interface CreatePOModalProps {
   onClose: () => void;
@@ -382,7 +382,7 @@ function CreatePOModal({ onClose, onSubmit, initialSupplier = "", initialItems, 
               onChange={(e) => setSupplier(e.target.value)}
               className="h-11 w-full border border-input rounded-xl px-3 py-2 text-sm bg-card text-foreground focus:outline-none focus:ring-2 focus:ring-brand-500"
             >
-              <option value="">Select a supplierâ€¦</option>
+              <option value="">Select a supplier…</option>
               {SUPPLIER_OPTIONS.map((s) => <option key={s}>{s}</option>)}
             </select>
           </div>
@@ -461,7 +461,7 @@ function CreatePOModal({ onClose, onSubmit, initialSupplier = "", initialItems, 
           </div>
 
           {validationError && (
-            <p className="text-xs text-danger-700 dark:text-foreground">{validationError}</p>
+            <p className="text-xs text-danger-600">{validationError}</p>
           )}
 
           <div className="flex justify-end items-center gap-2 pt-2 border-t border-border">
@@ -478,7 +478,7 @@ function CreatePOModal({ onClose, onSubmit, initialSupplier = "", initialItems, 
           </button>
           <button
             onClick={handleSubmit}
-            className="flex-1 rounded-xl bg-brand-700 py-2.5 text-sm font-medium text-white hover:bg-brand-800 transition-colors"
+            className="flex-1 rounded-xl bg-brand-50 dark:bg-brand-500/100 py-2.5 text-sm font-medium text-white hover:bg-brand-600 transition-colors"
           >
             {submitLabel}
           </button>
@@ -488,7 +488,7 @@ function CreatePOModal({ onClose, onSubmit, initialSupplier = "", initialItems, 
   );
 }
 
-// â”€â”€â”€ PO Card â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// ─── PO Card ──────────────────────────────────────────────────────────────────
 
 interface POCardProps {
   po: PORecord;
@@ -532,7 +532,7 @@ function POCard({ po, onSend, onEdit, onDelete, confirmDeleteId, onConfirmDelete
           <div className="flex items-center gap-1.5 text-muted-foreground">
             <Package className="h-3.5 w-3.5" />
             <span>{po.items} item{po.items !== 1 ? "s" : ""}</span>
-            <span className="mx-1 text-border">Â·</span>
+            <span className="mx-1 text-border">·</span>
             <span className="font-semibold text-foreground tabular-nums">{formatPHP(po.total)}</span>
           </div>
           <div className="flex items-center gap-1.5 text-muted-foreground">
@@ -547,10 +547,10 @@ function POCard({ po, onSend, onEdit, onDelete, confirmDeleteId, onConfirmDelete
             <>
               {isConfirmingDelete ? (
                 <>
-                  <span className="flex items-center text-xs text-danger-700 dark:text-foreground font-medium">Delete this PO?</span>
+                  <span className="flex items-center text-xs text-danger-600 font-medium">Delete this PO?</span>
                   <button
                     onClick={() => onDelete(po.id)}
-                    className="flex items-center gap-1.5 rounded-xl bg-danger-500 px-3 py-2 text-xs font-medium text-white hover:bg-danger-600 transition-colors"
+                    className="flex items-center gap-1.5 rounded-xl bg-danger-50 dark:bg-danger-500/100 px-3 py-2 text-xs font-medium text-white hover:bg-danger-600 transition-colors"
                   >
                     Confirm
                   </button>
@@ -565,7 +565,7 @@ function POCard({ po, onSend, onEdit, onDelete, confirmDeleteId, onConfirmDelete
                 <>
                   <button
                     onClick={() => onSend(po.id)}
-                    className="flex items-center gap-1.5 rounded-xl bg-brand-700 px-3 py-2 text-xs font-medium text-white hover:bg-brand-800 transition-colors"
+                    className="flex items-center gap-1.5 rounded-xl bg-brand-50 dark:bg-brand-500/100 px-3 py-2 text-xs font-medium text-white hover:bg-brand-600 transition-colors"
                   >
                     <Send className="h-3.5 w-3.5" /> Send to Supplier
                   </button>
@@ -577,7 +577,7 @@ function POCard({ po, onSend, onEdit, onDelete, confirmDeleteId, onConfirmDelete
                   </button>
                   <button
                     onClick={() => onConfirmDelete(po.id)}
-                    className="flex items-center gap-1.5 rounded-xl border border-danger-200 bg-danger-50 dark:bg-danger-500/10 px-3 py-2 text-xs font-medium text-danger-700 dark:text-foreground hover:bg-danger-100 transition-colors"
+                    className="flex items-center gap-1.5 rounded-xl border border-danger-200 bg-danger-50 dark:bg-danger-500/10 px-3 py-2 text-xs font-medium text-danger-600 hover:bg-danger-100 transition-colors"
                   >
                     <Trash2 className="h-3.5 w-3.5" /> Delete
                   </button>
@@ -587,7 +587,7 @@ function POCard({ po, onSend, onEdit, onDelete, confirmDeleteId, onConfirmDelete
           )}
           {(status === "sent" || status === "confirmed") && (
             <>
-              <button className="flex items-center gap-1.5 rounded-xl bg-success-500 px-3 py-2 text-xs font-medium text-white hover:bg-success-600 transition-colors">
+              <button className="flex items-center gap-1.5 rounded-xl bg-success-50 dark:bg-success-500/100 px-3 py-2 text-xs font-medium text-white hover:bg-success-600 transition-colors">
                 <CheckCheck className="h-3.5 w-3.5" /> Mark as Received
               </button>
               <button className="flex items-center gap-1.5 rounded-xl border border-border px-3 py-2 text-xs font-medium text-muted-foreground hover:bg-muted/50 transition-colors">
@@ -606,7 +606,7 @@ function POCard({ po, onSend, onEdit, onDelete, confirmDeleteId, onConfirmDelete
   );
 }
 
-// â”€â”€â”€ Page â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// ─── Page ─────────────────────────────────────────────────────────────────────
 
 export default function AdminPurchaseOrdersPage() {
   const [activeTab, setActiveTab] = useState("all");
@@ -766,7 +766,7 @@ export default function AdminPurchaseOrdersPage() {
           </button>
           <button
             onClick={() => setShowCreate(true)}
-            className="flex items-center gap-2 rounded-xl bg-brand-700 px-4 py-2.5 text-sm font-medium text-white hover:bg-brand-800 transition-colors"
+            className="flex items-center gap-2 rounded-xl bg-brand-50 dark:bg-brand-500/100 px-4 py-2.5 text-sm font-medium text-white hover:bg-brand-600 transition-colors"
           >
             <Plus className="h-4 w-4" /> Create PO
           </button>
@@ -789,7 +789,7 @@ export default function AdminPurchaseOrdersPage() {
             {tab.label}
             <span className={cn(
               "rounded-full px-1.5 py-0.5 text-xs font-semibold tabular-nums",
-              activeTab === tab.id ? "bg-brand-100 dark:bg-brand-700 text-brand-600 dark:text-white" : "bg-surface-100 dark:bg-surface-800 text-muted-foreground"
+              activeTab === tab.id ? "bg-brand-100 text-brand-600" : "bg-surface-100 dark:bg-surface-800 text-muted-foreground"
             )}>
               {tab.count}
             </span>

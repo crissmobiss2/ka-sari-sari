@@ -24,12 +24,12 @@ const TABS: { id: FilterTab; label: string }[] = [
 ];
 
 const STATUS_BADGE: Record<string, { label: string; className: string }> = {
-  pending:   { label: "Pending",   className: "bg-warning-100 text-warning-700 dark:text-foreground border-warning-200" },
-  delivered: { label: "Delivered", className: "bg-success-100 text-success-700 dark:text-foreground border-success-200" },
-  failed:    { label: "Failed",    className: "bg-danger-100 text-danger-700 dark:text-foreground border-danger-200" },
+  pending:   { label: "Pending",   className: "bg-warning-100 text-warning-700 border-warning-200" },
+  delivered: { label: "Delivered", className: "bg-success-100 text-success-700 border-success-200" },
+  failed:    { label: "Failed",    className: "bg-danger-100 text-danger-700 border-danger-200" },
 };
 
-// â”€â”€ Types â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// ── Types ────────────────────────────────────────────────────────────────────
 
 interface ApiDelivery {
   id: string;        // delivery record id (used in PATCH URL)
@@ -53,11 +53,11 @@ interface MappedDelivery extends ApiDelivery {
 function mapApiStatus(status: string): "pending" | "delivered" | "failed" {
   if (status === "delivered") return "delivered";
   if (status === "failed" || status === "failed_delivery" || status === "failed_attempt") return "failed";
-  // "assigned", "pending", "out_for_delivery", etc. â†’ pending tab
+  // "assigned", "pending", "out_for_delivery", etc. → pending tab
   return "pending";
 }
 
-// â”€â”€ Component â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// ── Component ────────────────────────────────────────────────────────────────
 
 export default function DriverDeliveriesPage() {
   const [deliveries, setDeliveries] = useState<MappedDelivery[]>([]);
@@ -75,7 +75,7 @@ export default function DriverDeliveriesPage() {
     setTimeout(() => setToast(null), 2500);
   }
 
-  // â”€â”€ Data fetch â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+  // ── Data fetch ──────────────────────────────────────────────────────────────
 
   const fetchDeliveries = useCallback(async () => {
     try {
@@ -93,7 +93,7 @@ export default function DriverDeliveriesPage() {
       }));
       setDeliveries(mapped);
     } catch {
-      setDeliveries([]); // fall back to empty â€” don't crash the UI
+      setDeliveries([]); // fall back to empty — don't crash the UI
     } finally {
       setLoading(false);
     }
@@ -103,7 +103,7 @@ export default function DriverDeliveriesPage() {
     fetchDeliveries();
   }, [fetchDeliveries]);
 
-  // â”€â”€ Derived counts â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+  // ── Derived counts ──────────────────────────────────────────────────────────
 
   const filtered = deliveries.filter((d) => {
     if (activeTab === "all") return true;
@@ -114,7 +114,7 @@ export default function DriverDeliveriesPage() {
   const deliveredCount = deliveries.filter((d) => d.deliveryStatus === "delivered").length;
   const failedCount    = deliveries.filter((d) => d.deliveryStatus === "failed").length;
 
-  // â”€â”€ Action handlers â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+  // ── Action handlers ─────────────────────────────────────────────────────────
 
   async function handleMarkDelivered(deliveryId: string, orderId: string) {
     try {
@@ -127,7 +127,7 @@ export default function DriverDeliveriesPage() {
       showToast("Marked as delivered!");
       await fetchDeliveries();
     } catch {
-      showToast("Could not sync â€” please retry");
+      showToast("Could not sync — please retry");
     }
   }
 
@@ -149,26 +149,26 @@ export default function DriverDeliveriesPage() {
       await fetchDeliveries();
     } catch {
       setFailTarget(null);
-      showToast("Could not sync â€” please retry");
+      showToast("Could not sync — please retry");
     }
   }
 
-  // â”€â”€ Render â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+  // ── Render ──────────────────────────────────────────────────────────────────
 
   return (
     <div className="min-h-screen bg-background pb-24">
       <div className="sticky top-0 z-20 bg-card border-b border-border">
         <div className="px-4 pt-4 pb-3">
           <h1 className="font-display text-xl font-bold text-foreground">My Deliveries</h1>
-          <p className="text-xs text-muted-foreground mt-0.5">Today Â· {deliveries.length} stops</p>
+          <p className="text-xs text-muted-foreground mt-0.5">Today · {deliveries.length} stops</p>
         </div>
 
         {/* Summary pills */}
         <div className="flex gap-2 px-4 pb-3">
           {[
-            { label: "Pending",   count: pendingCount,   color: "bg-warning-100 text-warning-700 dark:text-foreground" },
-            { label: "Delivered", count: deliveredCount, color: "bg-success-100 text-success-700 dark:text-foreground" },
-            { label: "Failed",    count: failedCount,    color: "bg-danger-100 text-danger-700 dark:text-foreground" },
+            { label: "Pending",   count: pendingCount,   color: "bg-warning-100 text-warning-700" },
+            { label: "Delivered", count: deliveredCount, color: "bg-success-100 text-success-700" },
+            { label: "Failed",    count: failedCount,    color: "bg-danger-100 text-danger-700" },
           ].map(({ label, count, color }) => (
             <div key={label} className={cn("flex items-center gap-1 rounded-full px-2.5 py-1 text-xs font-semibold", color)}>
               <span>{count}</span>
@@ -186,7 +186,7 @@ export default function DriverDeliveriesPage() {
               className={cn(
                 "px-3 py-1.5 rounded-lg text-xs font-semibold transition-colors",
                 activeTab === id
-                  ? "bg-brand-700 text-white"
+                  ? "bg-brand-50 dark:bg-brand-500/100 text-white"
                   : "bg-surface-100 dark:bg-surface-800 text-muted-foreground hover:text-surface-900"
               )}
             >
@@ -226,7 +226,7 @@ export default function DriverDeliveriesPage() {
                         {badgeInfo.label}
                       </span>
                       {isCOD && (
-                        <span className="inline-flex items-center gap-0.5 rounded-full bg-warning-100 border border-warning-200 text-warning-700 dark:text-foreground px-2 py-0.5 text-[10px] font-semibold">
+                        <span className="inline-flex items-center gap-0.5 rounded-full bg-warning-100 border border-warning-200 text-warning-700 px-2 py-0.5 text-[10px] font-semibold">
                           <Banknote className="h-2.5 w-2.5" /> COD
                         </span>
                       )}
@@ -244,24 +244,24 @@ export default function DriverDeliveriesPage() {
                 <div className="flex items-center gap-2">
                   {delivery.deliveryStatus === "pending" && (
                     <>
-                      {/* Navigation uses orderId â€” File 3 reads the URL param as order ID */}
+                      {/* Navigation uses orderId — File 3 reads the URL param as order ID */}
                       <Link
                         href={`/driver/deliveries/${delivery.orderId}`}
-                        className="flex-1 flex items-center justify-center gap-1.5 rounded-xl bg-brand-700 hover:bg-brand-800 text-white text-xs font-semibold h-9 transition-colors"
+                        className="flex-1 flex items-center justify-center gap-1.5 rounded-xl bg-brand-50 dark:bg-brand-500/100 hover:bg-brand-600 text-white text-xs font-semibold h-9 transition-colors"
                       >
                         View Details
                       </Link>
                       {isCOD ? (
                         <Link
                           href={`/driver/deliveries/${delivery.orderId}`}
-                          className="flex items-center gap-1 rounded-xl bg-brand-700 hover:bg-brand-800 text-white text-xs font-semibold h-9 px-3 transition-colors"
+                          className="flex items-center gap-1 rounded-xl bg-brand-50 dark:bg-brand-500/100 hover:bg-brand-600 text-white text-xs font-semibold h-9 px-3 transition-colors"
                         >
                           View & Confirm
                         </Link>
                       ) : (
                         <button
                           onClick={() => handleMarkDelivered(delivery.id, delivery.orderId)}
-                          className="flex items-center gap-1 rounded-xl bg-success-700 hover:bg-success-800 text-white text-xs font-semibold h-9 px-3 transition-colors"
+                          className="flex items-center gap-1 rounded-xl bg-success-50 dark:bg-success-500/100 hover:bg-success-600 text-white text-xs font-semibold h-9 px-3 transition-colors"
                         >
                           <CheckCircle2 className="h-3.5 w-3.5" />
                           Done
@@ -269,7 +269,7 @@ export default function DriverDeliveriesPage() {
                       )}
                       <button
                         onClick={() => setFailTarget({ deliveryId: delivery.id, orderId: delivery.orderId })}
-                        className="flex items-center gap-1 rounded-xl bg-danger-100 hover:bg-danger-200 text-danger-700 dark:text-foreground text-xs font-semibold h-9 px-3 transition-colors"
+                        className="flex items-center gap-1 rounded-xl bg-danger-100 hover:bg-danger-200 text-danger-700 text-xs font-semibold h-9 px-3 transition-colors"
                       >
                         <XCircle className="h-3.5 w-3.5" />
                         Failed
@@ -277,13 +277,13 @@ export default function DriverDeliveriesPage() {
                     </>
                   )}
                   {delivery.deliveryStatus === "delivered" && (
-                    <div className="flex items-center gap-1.5 text-xs text-success-700 dark:text-foreground font-medium">
+                    <div className="flex items-center gap-1.5 text-xs text-success-600 font-medium">
                       <CheckCircle2 className="h-4 w-4" />
                       Delivered successfully
                     </div>
                   )}
                   {delivery.deliveryStatus === "failed" && (
-                    <div className="flex items-center gap-1.5 text-xs text-danger-700 dark:text-foreground font-medium">
+                    <div className="flex items-center gap-1.5 text-xs text-danger-600 font-medium">
                       <XCircle className="h-4 w-4" />
                       {delivery.failReason ?? "Delivery failed"}
                     </div>
@@ -308,8 +308,8 @@ export default function DriverDeliveriesPage() {
             <div className="space-y-2">
               {FAIL_REASONS.map(reason => (
                 <button key={reason} onClick={() => setFailReason(reason)}
-                  className={`w-full flex items-center gap-3 rounded-xl border px-4 py-3 text-sm font-medium text-left transition-colors ${failReason === reason ? "border-danger-400 bg-danger-50 dark:bg-danger-500/10 text-danger-700 dark:text-foreground" : "border-border bg-background text-foreground"}`}>
-                  <div className={`w-4 h-4 rounded-full border-2 flex items-center justify-center flex-shrink-0 ${failReason === reason ? "border-danger-500 bg-danger-500" : "border-surface-300"}`}>
+                  className={`w-full flex items-center gap-3 rounded-xl border px-4 py-3 text-sm font-medium text-left transition-colors ${failReason === reason ? "border-danger-400 bg-danger-50 dark:bg-danger-500/10 text-danger-700" : "border-border bg-background text-foreground"}`}>
+                  <div className={`w-4 h-4 rounded-full border-2 flex items-center justify-center flex-shrink-0 ${failReason === reason ? "border-danger-500 bg-danger-50 dark:bg-danger-500/100" : "border-surface-300"}`}>
                     {failReason === reason && <div className="w-2 h-2 rounded-full bg-white" />}
                   </div>
                   {reason}

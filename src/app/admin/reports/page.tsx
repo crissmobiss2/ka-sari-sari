@@ -1,4 +1,4 @@
-﻿"use client";
+"use client";
 
 import { useState, useMemo } from "react";
 import {
@@ -11,7 +11,7 @@ import { Button } from "@/components/ui/button";
 import { formatPHP, formatNumber } from "@/lib/utils";
 import { ADMIN_STATS, MOCK_ORDERS, PRODUCTS } from "@/lib/mock-data";
 
-// â”€â”€â”€ Static chart / summary data â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// ─── Static chart / summary data ─────────────────────────────────────────────
 
 const MONTHLY_REVENUE = [890000, 1020000, 1150000, 1340000, 1480000, 1250000];
 const MONTHS = ["Aug '25", "Sep '25", "Oct '25", "Nov '25", "Dec '25", "Jan '26"];
@@ -26,7 +26,7 @@ const TOP_CATEGORIES = [
 ];
 
 const KEY_METRICS = [
-  { label: "Order Fulfillment Rate",  value: "96.8%", icon: CheckCircle2, color: "text-success-700 dark:text-foreground bg-success-50 dark:bg-success-500/10" },
+  { label: "Order Fulfillment Rate",  value: "96.8%", icon: CheckCircle2, color: "text-success-600 bg-success-50 dark:bg-success-500/10" },
   { label: "Avg. Delivery Time",      value: "1.8 days", icon: Clock,      color: "text-info-600 bg-info-50 dark:bg-info-500/10" },
   { label: "Customer Retention",      value: "87%",   icon: RefreshCw,   color: "text-brand-600 bg-brand-50 dark:bg-brand-500/10" },
   { label: "New Retailer Conversion", value: "68%",   icon: UserPlus,    color: "text-purple-600 bg-purple-50" },
@@ -42,11 +42,11 @@ const TOP_RETAILERS = [
 ];
 
 const STATUS_COLORS: Record<string, string> = {
-  Active:   "bg-success-50 dark:bg-success-500/10 text-success-700 dark:text-foreground",
+  Active:   "bg-success-50 dark:bg-success-500/10 text-success-700",
   Inactive: "bg-surface-100 dark:bg-surface-800 text-muted-foreground",
 };
 
-// â”€â”€â”€ Generate-report types â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// ─── Generate-report types ────────────────────────────────────────────────────
 
 type ReportType = "sales" | "inventory" | "delivery" | "retailer";
 type DateRange = "7d" | "30d" | "90d" | "all";
@@ -73,7 +73,7 @@ function getCutoff(range: DateRange): Date | null {
   return d;
 }
 
-// â”€â”€â”€ Report computation helpers â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// ─── Report computation helpers ───────────────────────────────────────────────
 
 function computeSalesSummary(cutoff: Date | null) {
   const orders = cutoff
@@ -179,7 +179,7 @@ function computeRetailerActivity(cutoff: Date | null) {
   return { activeRetailers, avgOrdersPerRetailer, rows };
 }
 
-// â”€â”€â”€ CSV generation â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// ─── CSV generation ───────────────────────────────────────────────────────────
 
 function downloadCSV(filename: string, rows: string[][], headers: string[]) {
   const escape = (v: string) =>
@@ -195,7 +195,7 @@ function downloadCSV(filename: string, rows: string[][], headers: string[]) {
   URL.revokeObjectURL(url);
 }
 
-// â”€â”€â”€ Sub-components â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// ─── Sub-components ───────────────────────────────────────────────────────────
 
 function StatusPill({ status }: { status: string }) {
   const cls =
@@ -203,7 +203,7 @@ function StatusPill({ status }: { status: string }) {
       ? "bg-red-50 text-red-700"
       : status === "Low Stock"
       ? "bg-yellow-50 text-yellow-700"
-      : "bg-success-50 dark:bg-success-500/10 text-success-700 dark:text-foreground";
+      : "bg-success-50 dark:bg-success-500/10 text-success-700";
   return (
     <span className={`inline-block rounded-full px-2 py-0.5 text-[11px] font-medium ${cls}`}>
       {status}
@@ -220,7 +220,7 @@ function OrderStatusPill({ status }: { status: string }) {
   };
   const cls =
     status === "delivered"
-      ? "bg-success-50 dark:bg-success-500/10 text-success-700 dark:text-foreground"
+      ? "bg-success-50 dark:bg-success-500/10 text-success-700"
       : status === "failed_delivery" || status === "cancelled"
       ? "bg-red-50 text-red-700"
       : status === "out_for_delivery"
@@ -233,7 +233,7 @@ function OrderStatusPill({ status }: { status: string }) {
   );
 }
 
-// â”€â”€â”€ Generate Report Section â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// ─── Generate Report Section ──────────────────────────────────────────────────
 
 function GenerateReportSection() {
   const [reportType, setReportType] = useState<ReportType | null>(null);
@@ -339,7 +339,7 @@ function GenerateReportSection() {
                 className={`flex items-center gap-2 rounded-xl border px-4 py-3 text-sm font-medium transition-all text-left
                   ${selected
                     ? "border-brand-500 bg-brand-50 dark:bg-brand-500/10 text-brand-700 dark:text-foreground shadow-sm"
-                    : "border-border bg-surface-50 dark:bg-surface-900 text-surface-900 hover:border-brand-300 hover:bg-brand-50/50"
+                    : "border-border bg-surface-50 dark:bg-surface-900 text-surface-900 hover:border-brand-300 hover:bg-brand-50 dark:bg-brand-500/10/50"
                   }`}
               >
                 <Icon className={`h-4 w-4 shrink-0 ${selected ? "text-brand-600" : "text-muted-foreground"}`} />
@@ -349,7 +349,7 @@ function GenerateReportSection() {
           })}
         </div>
 
-        {/* Preview table â€” Sales Summary */}
+        {/* Preview table — Sales Summary */}
         {salesData && (
           <div className="space-y-4">
             <div className="grid grid-cols-3 gap-3">
@@ -401,7 +401,7 @@ function GenerateReportSection() {
           </div>
         )}
 
-        {/* Preview table â€” Inventory Status */}
+        {/* Preview table — Inventory Status */}
         {invData && (
           <div className="space-y-4">
             <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
@@ -448,7 +448,7 @@ function GenerateReportSection() {
           </div>
         )}
 
-        {/* Preview table â€” Delivery Performance */}
+        {/* Preview table — Delivery Performance */}
         {delivData && (
           <div className="space-y-4">
             <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
@@ -499,7 +499,7 @@ function GenerateReportSection() {
           </div>
         )}
 
-        {/* Preview table â€” Retailer Activity */}
+        {/* Preview table — Retailer Activity */}
         {retailData && (
           <div className="space-y-4">
             <div className="grid grid-cols-2 gap-3">
@@ -560,7 +560,7 @@ function GenerateReportSection() {
   );
 }
 
-// â”€â”€â”€ Page â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// ─── Page ─────────────────────────────────────────────────────────────────────
 
 export default function AdminReportsPage() {
   return (
@@ -569,7 +569,7 @@ export default function AdminReportsPage() {
       <div className="flex items-center justify-between flex-wrap gap-3">
         <div>
           <h1 className="font-display text-2xl font-bold text-foreground">Business Intelligence</h1>
-          <p className="text-sm text-muted-foreground mt-0.5">Performance overview Â· Jan 2026</p>
+          <p className="text-sm text-muted-foreground mt-0.5">Performance overview · Jan 2026</p>
         </div>
         <div className="flex items-center gap-2 print:hidden">
           <Button variant="outline" size="md" onClick={() => window.print()}>
@@ -581,7 +581,7 @@ export default function AdminReportsPage() {
       {/* KPI cards */}
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
         {[
-          { label: "Monthly Revenue",  value: formatPHP(ADMIN_STATS.revenueMonth),     icon: TrendingUp,   color: "text-success-700 dark:text-foreground bg-success-50 dark:bg-success-500/10",  delta: "+12.4%" },
+          { label: "Monthly Revenue",  value: formatPHP(ADMIN_STATS.revenueMonth),     icon: TrendingUp,   color: "text-success-600 bg-success-50 dark:bg-success-500/10",  delta: "+12.4%" },
           { label: "Total Orders",     value: formatNumber(ADMIN_STATS.totalOrders),   icon: ShoppingCart, color: "text-info-600 bg-info-50 dark:bg-info-500/10",        delta: "+8.1%" },
           { label: "Active Retailers", value: ADMIN_STATS.activeRetailers.toString(),  icon: Users,        color: "text-brand-600 bg-brand-50 dark:bg-brand-500/10",       delta: "+5" },
           { label: "New Retailers",    value: ADMIN_STATS.newRetailersMonth.toString(),icon: Package,      color: "text-purple-600 bg-purple-50",     delta: "This month" },
@@ -591,7 +591,7 @@ export default function AdminReportsPage() {
               <div className={`flex h-10 w-10 items-center justify-center rounded-xl ${s.color}`}>
                 <s.icon className="h-5 w-5" />
               </div>
-              <span className="text-[11px] font-medium text-success-700 dark:text-foreground bg-success-50 dark:bg-success-500/10 rounded-full px-2 py-0.5">{s.delta}</span>
+              <span className="text-[11px] font-medium text-success-600 bg-success-50 dark:bg-success-500/10 rounded-full px-2 py-0.5">{s.delta}</span>
             </div>
             <div>
               <p className="font-display text-2xl font-bold text-foreground leading-none">{s.value}</p>
@@ -607,20 +607,20 @@ export default function AdminReportsPage() {
         <Card className="lg:col-span-3">
           <CardHeader className="pb-2">
             <CardTitle>Revenue Overview</CardTitle>
-            <p className="text-xs text-muted-foreground">Aug 2025 â€“ Jan 2026</p>
+            <p className="text-xs text-muted-foreground">Aug 2025 – Jan 2026</p>
           </CardHeader>
           <CardContent className="space-y-3 pt-0">
             {MONTHLY_REVENUE.map((v, i) => {
               const pct = (v / maxRevenue) * 100;
               const label = v >= 1_000_000
-                ? `â‚±${(v / 1_000_000).toFixed(2)}M`
-                : `â‚±${(v / 1000).toFixed(0)}k`;
+                ? `₱${(v / 1_000_000).toFixed(2)}M`
+                : `₱${(v / 1000).toFixed(0)}k`;
               return (
                 <div key={i} className="flex items-center gap-3">
                   <span className="text-xs text-muted-foreground w-14 shrink-0">{MONTHS[i]}</span>
                   <div className="flex-1 h-8 bg-surface-100 dark:bg-surface-800 rounded-lg overflow-hidden relative">
                     <div
-                      className="h-full bg-brand-700 rounded-lg flex items-center px-2 transition-all"
+                      className="h-full bg-brand-50 dark:bg-brand-500/100 rounded-lg flex items-center px-2 transition-all"
                       style={{ width: `${pct}%` }}
                     >
                       {pct > 25 && (
@@ -695,7 +695,7 @@ export default function AdminReportsPage() {
         <Card className="lg:col-span-3">
           <CardHeader className="pb-2">
             <CardTitle>Top Retailers This Month</CardTitle>
-            <p className="text-xs text-muted-foreground">By revenue Â· Jan 2026</p>
+            <p className="text-xs text-muted-foreground">By revenue · Jan 2026</p>
           </CardHeader>
           <CardContent className="pt-0">
             <div className="overflow-x-auto">

@@ -20,7 +20,7 @@ import { MOCK_NOTIFICATIONS } from "@/lib/mock-data";
 import type { Notification } from "@/types";
 import { cn } from "@/lib/utils";
 
-// â”€â”€â”€ Seed extra realistic notifications so there are at least 8 â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// ─── Seed extra realistic notifications so there are at least 8 ───────────────
 
 const EXTRA_NOTIFICATIONS: Notification[] = [
   {
@@ -28,7 +28,7 @@ const EXTRA_NOTIFICATIONS: Notification[] = [
     userId: "user-1",
     type: "payment_received",
     title: "Payment confirmed",
-    message: "GCash payment of â‚±1,920 for order #KSS-2025-00142 has been received.",
+    message: "GCash payment of ₱1,920 for order #KSS-2025-00142 has been received.",
     isRead: false,
     orderId: "ord-001",
     createdAt: new Date(Date.now() - 1000 * 60 * 10).toISOString(),
@@ -67,7 +67,7 @@ const EXTRA_NOTIFICATIONS: Notification[] = [
     userId: "user-1",
     type: "system",
     title: "Deal alert: 15% off San Miguel",
-    message: "Limited-time promo on San Miguel Pale Pilsen 330ml â€” ends midnight tonight.",
+    message: "Limited-time promo on San Miguel Pale Pilsen 330ml — ends midnight tonight.",
     isRead: true,
     createdAt: new Date(Date.now() - 1000 * 60 * 60 * 8).toISOString(),
   },
@@ -77,7 +77,7 @@ const EXTRA_NOTIFICATIONS: Notification[] = [
     type: "order_out_for_delivery",
     title: "Delivery ETA updated",
     message:
-      "Your driver is 3 stops away. Expected arrival: 4:30â€“5:00 PM today.",
+      "Your driver is 3 stops away. Expected arrival: 4:30–5:00 PM today.",
     isRead: true,
     orderId: "ord-004",
     createdAt: new Date(Date.now() - 1000 * 60 * 60 * 22).toISOString(),
@@ -98,7 +98,7 @@ const EXTRA_NOTIFICATIONS: Notification[] = [
     type: "system",
     title: "System maintenance tonight",
     message:
-      "Ka Sari-Sari will be briefly unavailable on Jul 7 from 1â€“2 AM for scheduled maintenance.",
+      "Ka Sari-Sari will be briefly unavailable on Jul 7 from 1–2 AM for scheduled maintenance.",
     isRead: true,
     createdAt: new Date(Date.now() - 1000 * 60 * 60 * 48).toISOString(),
   },
@@ -122,7 +122,7 @@ function buildSeedNotifications(): Notification[] {
   );
 }
 
-// â”€â”€â”€ Helpers â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// ─── Helpers ──────────────────────────────────────────────────────────────────
 
 function timeAgo(date: string) {
   const diff = Date.now() - new Date(date).getTime();
@@ -178,14 +178,14 @@ function notifIcon(notif: Notification) {
 function iconColors(notif: Notification, unread: boolean) {
   if (!unread) return "bg-surface-100 dark:bg-surface-800 text-muted-foreground";
   if (notif.type === "payment_received" || notif.type === "order_delivered")
-    return "bg-success-50 dark:bg-success-500/10 text-success-700 dark:text-foreground";
-  if (notif.type === "low_stock") return "bg-warning-50 dark:bg-warning-500/10 text-warning-700 dark:text-foreground";
+    return "bg-success-50 dark:bg-success-500/10 text-success-700";
+  if (notif.type === "low_stock") return "bg-warning-50 dark:bg-warning-500/10 text-warning-600";
   if (/deal|promo/i.test(notif.title + notif.message))
     return "bg-brand-50 dark:bg-brand-500/10 text-brand-600";
-  return "bg-brand-100 dark:bg-brand-700 text-brand-600 dark:text-white";
+  return "bg-brand-100 text-brand-600";
 }
 
-// â”€â”€â”€ Tabs config â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// ─── Tabs config ──────────────────────────────────────────────────────────────
 
 const TABS: { id: FilterTab; label: string }[] = [
   { id: "all", label: "All" },
@@ -195,7 +195,7 @@ const TABS: { id: FilterTab; label: string }[] = [
   { id: "system", label: "System" },
 ];
 
-// â”€â”€â”€ Page â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// ─── Page ─────────────────────────────────────────────────────────────────────
 
 export default function NotificationsPage() {
   const [notifs, setNotifs] = useState<Notification[]>([]);
@@ -305,7 +305,7 @@ export default function NotificationsPage() {
                   className={cn(
                     "relative flex items-center gap-1.5 rounded-full px-3.5 py-1.5 text-sm font-medium transition-colors whitespace-nowrap",
                     isActive
-                      ? "bg-brand-700 text-white"
+                      ? "bg-brand-50 dark:bg-brand-500/100 text-white"
                       : "bg-surface-100 dark:bg-surface-800 text-muted-foreground hover:bg-surface-200"
                   )}
                 >
@@ -316,7 +316,7 @@ export default function NotificationsPage() {
                         "inline-flex items-center justify-center rounded-full text-xs font-semibold min-w-[18px] h-[18px] px-1",
                         isActive
                           ? "bg-white/25 text-white"
-                          : "bg-brand-700 text-white"
+                          : "bg-brand-50 dark:bg-brand-500/100 text-white"
                       )}
                     >
                       {unreadCount}
@@ -357,7 +357,7 @@ export default function NotificationsPage() {
   );
 }
 
-// â”€â”€â”€ Notification group â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// ─── Notification group ───────────────────────────────────────────────────────
 
 function NotifGroup({
   label,
@@ -382,7 +382,7 @@ function NotifGroup({
   );
 }
 
-// â”€â”€â”€ Notification row â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// ─── Notification row ─────────────────────────────────────────────────────────
 
 function NotifRow({
   notif,
@@ -399,7 +399,7 @@ function NotifRow({
       onClick={() => onToggleRead(notif.id)}
       className={cn(
         "w-full flex items-start gap-3 px-4 py-4 text-left hover:bg-muted transition-all duration-200",
-        unread ? "bg-brand-50/40" : "bg-card opacity-80 hover:opacity-100"
+        unread ? "bg-brand-50 dark:bg-brand-500/10/40" : "bg-card opacity-80 hover:opacity-100"
       )}
     >
       {/* Icon */}
@@ -441,7 +441,7 @@ function NotifRow({
       <div
         className={cn(
           "h-2 w-2 shrink-0 rounded-full mt-1.5 transition-all duration-300",
-          unread ? "bg-brand-500 scale-100 opacity-100" : "scale-0 opacity-0"
+          unread ? "bg-brand-50 dark:bg-brand-500/100 scale-100 opacity-100" : "scale-0 opacity-0"
         )}
       />
     </button>

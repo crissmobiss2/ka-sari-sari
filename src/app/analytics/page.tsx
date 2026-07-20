@@ -1,4 +1,4 @@
-﻿"use client";
+"use client";
 import Link from "next/link";
 import { useState, useEffect } from "react";
 import { BarChart3, TrendingUp, Package, ShoppingBasket, Zap, RotateCcw, Calendar, Loader2 } from "lucide-react";
@@ -7,7 +7,7 @@ import { formatPHP } from "@/lib/utils";
 import { cn } from "@/lib/utils";
 import { MOCK_ORDERS, PRODUCTS, CATEGORIES } from "@/lib/mock-data";
 
-// â”€â”€ Computed stats from MOCK_ORDERS â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// ── Computed stats from MOCK_ORDERS ──────────────────────────────────────────
 
 const totalSpent = MOCK_ORDERS.reduce((sum, o) => sum + o.total, 0);
 const orderCount = MOCK_ORDERS.length;
@@ -17,7 +17,7 @@ const savings = Math.round(totalSpent * (srpPremium - 1) / srpPremium);
 const srpTotal = Math.round(totalSpent * srpPremium);
 const savingsPct = Math.round((savings / srpTotal) * 100);
 
-// â”€â”€ Order frequency stats â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// ── Order frequency stats ─────────────────────────────────────────────────────
 
 const sortedOrders = [...MOCK_ORDERS].sort(
   (a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
@@ -29,7 +29,7 @@ const lastOrderDate = sortedOrders[0]?.createdAt
 
 const lastOrderLabel = lastOrderDate
   ? lastOrderDate.toLocaleDateString("en-PH", { month: "long", day: "numeric", year: "numeric" })
-  : "â€”";
+  : "—";
 
 // Average days between orders
 let avgDaysBetween = 0;
@@ -42,7 +42,7 @@ if (sortedOrders.length >= 2) {
   avgDaysBetween = Math.round(totalDays / (sortedOrders.length - 1));
 }
 
-// Orders this month (Jul 2026 is current per app context â€” match the year/month of most recent order)
+// Orders this month (Jul 2026 is current per app context — match the year/month of most recent order)
 const mostRecentMonth = lastOrderDate ? lastOrderDate.getMonth() : -1;
 const mostRecentYear = lastOrderDate ? lastOrderDate.getFullYear() : -1;
 const ordersThisMonth = MOCK_ORDERS.filter((o) => {
@@ -50,14 +50,14 @@ const ordersThisMonth = MOCK_ORDERS.filter((o) => {
   return d.getMonth() === mostRecentMonth && d.getFullYear() === mostRecentYear;
 }).length;
 
-// â”€â”€ Category breakdown from order items â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// ── Category breakdown from order items ───────────────────────────────────────
 
-// Build productId â†’ categoryId map
+// Build productId → categoryId map
 const productCategoryMap = new Map<string, string>(
   PRODUCTS.map((p) => [p.id, p.categoryId])
 );
 
-// Build categoryId â†’ name map
+// Build categoryId → name map
 const categoryNameMap = new Map<string, string>(
   CATEGORIES.map((c) => [c.id, c.name])
 );
@@ -84,7 +84,7 @@ const TOP_CATEGORIES = Array.from(categoryTotals.entries())
     pct: itemsTotal > 0 ? Math.round((total / itemsTotal) * 100) : 0,
   }));
 
-// â”€â”€ Static chart & display data â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// ── Static chart & display data ───────────────────────────────────────────────
 
 const MONTHLY_DATA = [
   { month: "Feb", value: 3200 },
@@ -97,9 +97,9 @@ const MONTHLY_DATA = [
 
 const MAX_VALUE = Math.max(...MONTHLY_DATA.map((d) => d.value));
 
-// â”€â”€ Computed top products from MOCK_ORDERS â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// ── Computed top products from MOCK_ORDERS ────────────────────────────────────
 
-// Build productId â†’ total quantity ordered
+// Build productId → total quantity ordered
 const productQtyMap = new Map<string, number>();
 for (const order of MOCK_ORDERS) {
   for (const item of order.items) {
@@ -107,7 +107,7 @@ for (const order of MOCK_ORDERS) {
   }
 }
 
-// Build productId â†’ number of orders it appears in
+// Build productId → number of orders it appears in
 const productOrderCountMap = new Map<string, number>();
 for (const order of MOCK_ORDERS) {
   const seen = new Set<string>();
@@ -119,7 +119,7 @@ for (const order of MOCK_ORDERS) {
   }
 }
 
-// Build productId â†’ Product lookup
+// Build productId → Product lookup
 const productMap = new Map(PRODUCTS.map((p) => [p.id, p]));
 
 // Sort by total quantity descending, take top 5
@@ -143,7 +143,7 @@ const TOP_PRODUCTS = Array.from(productQtyMap.entries())
     };
   });
 
-// â”€â”€ Computed restock suggestions â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// ── Computed restock suggestions ──────────────────────────────────────────────
 
 // Find the most-ordered product categories from MOCK_ORDERS items
 const categoryOrderQtyMap = new Map<string, number>();
@@ -194,27 +194,27 @@ const RESTOCK_SUGGESTIONS: Array<{ name: string; brand: string; productId: strin
           };
         });
 
-// â”€â”€ Savings forecast for CTA â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// ── Savings forecast for CTA ──────────────────────────────────────────────────
 
 const savingsForecast = Math.round(totalSpent * (srpPremium - 1));
 
 const RANK_COLORS = [
-  "bg-brand-500",
+  "bg-brand-50 dark:bg-brand-500/100",
   "bg-brand-400",
   "bg-brand-300",
   "bg-brand-200",
   "bg-brand-100",
 ];
 
-// Category bar opacity classes â€” brand-500 at decreasing opacity
+// Category bar opacity classes — brand-500 at decreasing opacity
 const CATEGORY_BAR_CLASSES = [
-  "bg-brand-500",
-  "bg-brand-500/70",
-  "bg-brand-500/50",
-  "bg-brand-500/30",
+  "bg-brand-50 dark:bg-brand-500/100",
+  "bg-brand-50 dark:bg-brand-500/100/70",
+  "bg-brand-50 dark:bg-brand-500/100/50",
+  "bg-brand-50 dark:bg-brand-500/100/30",
 ];
 
-// â”€â”€ Stat card â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// ── Stat card ────────────────────────────────────────────────────────────────
 
 function StatCard({
   label,
@@ -230,11 +230,11 @@ function StatCard({
   return (
     <div className="rounded-2xl border border-border bg-card shadow-card px-4 py-4">
       <p className="text-[11px] font-semibold uppercase tracking-wide text-muted-foreground mb-1">{label}</p>
-      <p className={cn("font-display text-xl font-black leading-tight", accent ? "text-success-700 dark:text-foreground" : "text-foreground")}>
+      <p className={cn("font-display text-xl font-black leading-tight", accent ? "text-success-600" : "text-foreground")}>
         {value}
       </p>
       {sub && (
-        <p className={cn("text-xs mt-1 flex items-center gap-1", accent ? "text-success-700 dark:text-foreground" : "text-muted-foreground")}>
+        <p className={cn("text-xs mt-1 flex items-center gap-1", accent ? "text-success-600" : "text-muted-foreground")}>
           {accent && <TrendingUp className="h-3 w-3" />}
           {sub}
         </p>
@@ -243,10 +243,10 @@ function StatCard({
   );
 }
 
-// â”€â”€ Main page â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// ── Main page ────────────────────────────────────────────────────────────────
 
 export default function AnalyticsPage() {
-  // Analytics data â€” loaded from API, falling back to mock-derived values while loading
+  // Analytics data — loaded from API, falling back to mock-derived values while loading
   const [analyticsLoading, setAnalyticsLoading] = useState(true);
   const [apiStats, setApiStats] = useState<{
     totalSpent: number;
@@ -285,7 +285,7 @@ export default function AnalyticsPage() {
         });
       })
       .catch(() => {
-        // Fall back to mock-derived data on error â€” page stays functional
+        // Fall back to mock-derived data on error — page stays functional
         setApiStats(null);
       })
       .finally(() => setAnalyticsLoading(false));
@@ -345,7 +345,7 @@ export default function AnalyticsPage() {
                   <div
                     className={cn(
                       "w-full rounded-t-lg transition-all",
-                      d.current ? "bg-brand-500" : "bg-brand-200"
+                      d.current ? "bg-brand-50 dark:bg-brand-500/100" : "bg-brand-200"
                     )}
                     style={{ height: `${heightPct}%` }}
                     title={`${d.month}: ${formatPHP(d.value)}`}
@@ -357,7 +357,7 @@ export default function AnalyticsPage() {
           <div className="flex items-start gap-2 mt-1.5">
             {stats.monthlyData.map((d) => (
               <div key={d.month} className="flex-1 text-center">
-                <span className={cn("text-[10px] font-medium", d.current ? "text-brand-700 font-bold" : "text-muted-foreground")}>
+                <span className={cn("text-[10px] font-medium", d.current ? "text-brand-600 font-bold" : "text-muted-foreground")}>
                   {d.month}
                 </span>
               </div>
@@ -365,7 +365,7 @@ export default function AnalyticsPage() {
           </div>
           <div className="flex items-center gap-3 mt-3 pt-3 border-t border-border">
             <div className="flex items-center gap-1.5">
-              <div className="h-2.5 w-2.5 rounded-sm bg-brand-500" />
+              <div className="h-2.5 w-2.5 rounded-sm bg-brand-50 dark:bg-brand-500/100" />
               <span className="text-[10px] text-muted-foreground">Current month</span>
             </div>
             <div className="flex items-center gap-1.5">
@@ -374,7 +374,7 @@ export default function AnalyticsPage() {
             </div>
           </div>
           <p className="text-[10px] text-muted-foreground mt-2">
-            Based on order history Â· Updated monthly
+            Based on order history · Updated monthly
           </p>
         </div>
 
@@ -407,7 +407,7 @@ export default function AnalyticsPage() {
               ))}
             </div>
             <p className="text-[10px] text-muted-foreground mt-3 pt-3 border-t border-border">
-              Based on itemized orders Â· Top {stats.topCategories.length} categories shown
+              Based on itemized orders · Top {stats.topCategories.length} categories shown
             </p>
           </div>
         )}
@@ -427,15 +427,15 @@ export default function AnalyticsPage() {
                   <div className="flex items-center gap-3 px-4 py-3.5 flex-1 min-w-0">
                     <span className={cn(
                       "flex h-7 w-7 shrink-0 items-center justify-center rounded-lg text-xs font-black",
-                      p.rank === 1 ? "bg-brand-700 text-white" : "bg-surface-100 dark:bg-surface-800 text-muted-foreground"
+                      p.rank === 1 ? "bg-brand-50 dark:bg-brand-500/100 text-white" : "bg-surface-100 dark:bg-surface-800 text-muted-foreground"
                     )}>
                       {p.rank}
                     </span>
                     <div className="flex-1 min-w-0">
                       <p className="text-sm font-semibold text-foreground truncate">{p.name}</p>
                       <p className="text-xs text-muted-foreground mt-0.5">
-                        {p.brand && <span className="mr-1">{p.brand} Â·</span>}
-                        {p.totalQty} units ordered Â· {p.pctOfOrders}% of orders
+                        {p.brand && <span className="mr-1">{p.brand} ·</span>}
+                        {p.totalQty} units ordered · {p.pctOfOrders}% of orders
                       </p>
                     </div>
                   </div>
@@ -459,7 +459,7 @@ export default function AnalyticsPage() {
             <div className="flex items-center justify-between px-5 py-3.5">
               <span className="text-sm text-muted-foreground">Avg. days between orders</span>
               <span className="text-sm font-bold text-foreground tabular-nums">
-                {stats.avgDaysBetween > 0 ? `${stats.avgDaysBetween} days` : "â€”"}
+                {stats.avgDaysBetween > 0 ? `${stats.avgDaysBetween} days` : "—"}
               </span>
             </div>
             <div className="flex items-center justify-between px-5 py-3.5">
@@ -488,14 +488,14 @@ export default function AnalyticsPage() {
                   <div className="flex-1 min-w-0">
                     <p className="text-sm font-semibold text-foreground truncate">{s.name}</p>
                     <p className="text-xs text-muted-foreground mt-0.5">
-                      {s.brand && <span>{s.brand} Â· </span>}
-                      {s.isLowStock ? "Low on stock â€” time to reorder" : "Consider stocking more"}
+                      {s.brand && <span>{s.brand} · </span>}
+                      {s.isLowStock ? "Low on stock — time to reorder" : "Consider stocking more"}
                     </p>
                     <div className="flex items-center gap-1.5 mt-2">
                       <span className={cn(
                         "rounded-full px-2 py-0.5 text-[10px] font-semibold",
                         s.isLowStock
-                          ? "bg-warning-50 dark:bg-warning-500/10 text-warning-700 dark:text-foreground border border-warning-200"
+                          ? "bg-warning-50 dark:bg-warning-500/10 text-warning-600 border border-warning-200"
                           : "bg-surface-100 dark:bg-surface-800 text-muted-foreground border border-border"
                       )}>
                         {s.isLowStock ? "Low stock" : "Frequently ordered"}
@@ -504,7 +504,7 @@ export default function AnalyticsPage() {
                   </div>
                   <Link
                     href="/catalog"
-                    className="shrink-0 rounded-xl bg-brand-700 px-3 py-2 text-xs font-bold text-white active:scale-95 transition-transform hover:bg-brand-800"
+                    className="shrink-0 rounded-xl bg-brand-50 dark:bg-brand-500/100 px-3 py-2 text-xs font-bold text-white active:scale-95 transition-transform hover:bg-brand-600"
                   >
                     Add to cart
                   </Link>
@@ -535,7 +535,7 @@ export default function AnalyticsPage() {
                 </div>
                 <div className="flex-1 h-3 rounded-full bg-surface-100 dark:bg-surface-800 overflow-hidden">
                   <div
-                    className="h-full bg-brand-500 rounded-full"
+                    className="h-full bg-brand-50 dark:bg-brand-500/100 rounded-full"
                     style={{ width: `${stats.srpTotal > 0 ? Math.round((stats.totalSpent / stats.srpTotal) * 100) : 0}%` }}
                   />
                 </div>
@@ -556,19 +556,19 @@ export default function AnalyticsPage() {
 
             <div className="mt-3 rounded-xl bg-success-50 dark:bg-success-500/10 border border-success-200 px-4 py-3 flex items-center justify-between">
               <div>
-                <p className="text-xs font-semibold text-success-700 dark:text-foreground">Total savings this year</p>
-                <p className="text-[11px] text-success-700 dark:text-foreground mt-0.5">Buying through Ka Sari-Sari</p>
+                <p className="text-xs font-semibold text-success-700">Total savings this year</p>
+                <p className="text-[11px] text-success-600 mt-0.5">Buying through Ka Sari-Sari</p>
               </div>
               <div className="text-right">
-                <p className="font-display text-lg font-black text-success-700 dark:text-foreground">{formatPHP(stats.savings)}</p>
-                <p className="text-xs text-success-700 dark:text-foreground font-semibold">{stats.savingsPct}% saved</p>
+                <p className="font-display text-lg font-black text-success-700">{formatPHP(stats.savings)}</p>
+                <p className="text-xs text-success-600 font-semibold">{stats.savingsPct}% saved</p>
               </div>
             </div>
           </div>
         </div>
 
         {/* CTA */}
-        <div className="rounded-2xl border border-dashed border-brand-300 bg-brand-50/50 p-5">
+        <div className="rounded-2xl border border-dashed border-brand-300 bg-brand-50 dark:bg-brand-500/10/50 p-5">
           <div className="flex items-start gap-3">
             <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-xl bg-brand-100 text-brand-500">
               <ShoppingBasket className="h-4 w-4" />
@@ -578,7 +578,7 @@ export default function AnalyticsPage() {
               <p className="text-xs text-muted-foreground mt-0.5">
                 You&apos;re on track to save <span className="text-brand-600 font-semibold">{formatPHP(displaySavingsForecast)}</span> this year if you keep ordering through Ka Sari-Sari.
               </p>
-              <Link href="/catalog" className="mt-2.5 inline-flex items-center gap-1 rounded-xl bg-brand-700 px-3 py-1.5 text-xs font-bold text-white hover:bg-brand-800 transition-colors active:scale-95">
+              <Link href="/catalog" className="mt-2.5 inline-flex items-center gap-1 rounded-xl bg-brand-50 dark:bg-brand-500/100 px-3 py-1.5 text-xs font-bold text-white hover:bg-brand-600 transition-colors active:scale-95">
                 Browse catalog
               </Link>
             </div>

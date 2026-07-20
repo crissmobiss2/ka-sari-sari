@@ -10,32 +10,32 @@ import { PRODUCTS, CATEGORIES } from "@/lib/mock-data";
 import type { Product } from "@/types";
 import { BarcodeScanner } from "@/components/pos/barcode-scanner";
 
-// â”€â”€â”€ Types â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// ─── Types ──────────────────────────────────────────────────────────────────
 
 interface SaleItem { product: Product; quantity: number; }
 
 type PayStep = "idle" | "pay" | "done";
 
 const PH_METHODS = [
-  { id: "cash",      label: "Cash",     icon: "ðŸ’µ" },
-  { id: "gcash",     label: "GCash",    icon: "ðŸ’š" },
-  { id: "maya",      label: "Maya",     icon: "ðŸ’œ" },
-  { id: "shopeepay", label: "ShopeePay",icon: "ðŸ›ï¸" },
-  { id: "qrph",      label: "QR Ph",    icon: "ðŸ“±" },
-  { id: "card",      label: "Card",     icon: "ðŸ’³" },
+  { id: "cash",      label: "Cash",     icon: "💵" },
+  { id: "gcash",     label: "GCash",    icon: "💚" },
+  { id: "maya",      label: "Maya",     icon: "💜" },
+  { id: "shopeepay", label: "ShopeePay",icon: "🛍️" },
+  { id: "qrph",      label: "QR Ph",    icon: "📱" },
+  { id: "card",      label: "Card",     icon: "💳" },
 ];
 
-// â”€â”€â”€ Numpad for cash tender â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// ─── Numpad for cash tender ──────────────────────────────────────────────────
 
 function Numpad({ value, onChange }: { value: string; onChange: (v: string) => void }) {
   function press(key: string) {
-    if (key === "âŒ«") { onChange(value.slice(0, -1) || "0"); return; }
+    if (key === "⌫") { onChange(value.slice(0, -1) || "0"); return; }
     if (key === "C") { onChange("0"); return; }
     if (value === "0") { onChange(key); return; }
     if (value.length >= 8) return;
     onChange(value + key);
   }
-  const keys = ["7","8","9","4","5","6","1","2","3","C","0","âŒ«"];
+  const keys = ["7","8","9","4","5","6","1","2","3","C","0","⌫"];
   return (
     <div className="grid grid-cols-3 gap-1.5">
       {keys.map((k) => (
@@ -44,8 +44,8 @@ function Numpad({ value, onChange }: { value: string; onChange: (v: string) => v
           onClick={() => press(k)}
           className={cn(
             "rounded-xl h-12 text-base font-semibold transition-colors active:scale-95",
-            k === "C" ? "bg-danger-100 text-danger-700 dark:text-foreground hover:bg-danger-200"
-            : k === "âŒ«" ? "bg-surface-200 text-surface-900 hover:bg-surface-300"
+            k === "C" ? "bg-danger-100 text-danger-700 hover:bg-danger-200"
+            : k === "⌫" ? "bg-surface-200 text-surface-900 hover:bg-surface-300"
             : "bg-surface-100 dark:bg-surface-800 text-surface-900 hover:bg-surface-200"
           )}
         >
@@ -56,7 +56,7 @@ function Numpad({ value, onChange }: { value: string; onChange: (v: string) => v
   );
 }
 
-// â”€â”€â”€ Main component â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// ─── Main component ──────────────────────────────────────────────────────────
 
 export default function RetailerPOSPage() {
   const [search, setSearch] = useState("");
@@ -168,26 +168,26 @@ export default function RetailerPOSPage() {
     if (feedbackTimerRef.current) clearTimeout(feedbackTimerRef.current);
     if (product) {
       addToCart(product);
-      setScanFeedback({ ok: true, text: `âœ“ Added: ${product.name}` });
+      setScanFeedback({ ok: true, text: `✓ Added: ${product.name}` });
     } else {
       setScanFeedback({ ok: false, text: `Not found: ${code}` });
     }
     feedbackTimerRef.current = setTimeout(() => setScanFeedback(null), 2500);
   }, [allProducts]);
 
-  // â”€â”€ Receipt screen â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+  // ── Receipt screen ──────────────────────────────────────────────────────────
   if (step === "done") {
     return (
       <div className="fixed inset-0 bg-background flex flex-col overflow-hidden">
         <header className="flex items-center gap-3 px-4 py-3 border-b border-border bg-card shrink-0">
-          <div className="flex h-8 w-8 items-center justify-center rounded-xl bg-brand-500">
+          <div className="flex h-8 w-8 items-center justify-center rounded-xl bg-brand-50 dark:bg-brand-500/100">
             <ShoppingCart className="h-4 w-4 text-white" />
           </div>
           <p className="text-sm font-bold text-foreground">Point of Sale</p>
         </header>
         <div className="flex-1 flex flex-col items-center justify-center p-6 text-center gap-4">
           <div className="flex h-16 w-16 items-center justify-center rounded-full bg-success-100">
-            <CheckCircle2 className="h-8 w-8 text-success-700 dark:text-foreground" />
+            <CheckCircle2 className="h-8 w-8 text-success-600" />
           </div>
           <div>
             <p className="font-display text-xl font-bold text-foreground">Payment received!</p>
@@ -218,7 +218,7 @@ export default function RetailerPOSPage() {
           <div className="flex flex-col gap-2 w-full max-w-xs">
             <button
               onClick={handleNewSale}
-              className="w-full rounded-xl bg-brand-700 hover:bg-brand-800 text-white text-sm font-bold h-11 transition-colors flex items-center justify-center gap-2"
+              className="w-full rounded-xl bg-brand-50 dark:bg-brand-500/100 hover:bg-brand-600 text-white text-sm font-bold h-11 transition-colors flex items-center justify-center gap-2"
             >
               <RefreshCcw className="h-4 w-4" />
               New Sale
@@ -233,7 +233,7 @@ export default function RetailerPOSPage() {
     );
   }
 
-  // â”€â”€ Main POS layout â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+  // ── Main POS layout ─────────────────────────────────────────────────────────
   return (
     <div className="fixed inset-0 bg-background flex flex-col overflow-hidden">
 
@@ -242,7 +242,7 @@ export default function RetailerPOSPage() {
         <Link href="/dashboard" className="flex items-center text-muted-foreground hover:text-foreground transition-colors">
           <ArrowLeft className="h-4 w-4" />
         </Link>
-        <div className="flex h-8 w-8 items-center justify-center rounded-xl bg-brand-500">
+        <div className="flex h-8 w-8 items-center justify-center rounded-xl bg-brand-50 dark:bg-brand-500/100">
           <ShoppingCart className="h-4 w-4 text-white" />
         </div>
         <div className="flex-1">
@@ -262,7 +262,7 @@ export default function RetailerPOSPage() {
         </div>
       </header>
 
-      {/* Mobile tab bar â€” products / cart */}
+      {/* Mobile tab bar — products / cart */}
       <div className="flex md:hidden border-b border-border bg-card shrink-0">
         <button
           onClick={() => setMobileView("products")}
@@ -286,7 +286,7 @@ export default function RetailerPOSPage() {
         >
           Cart
           {cartCount > 0 && (
-            <span className="ml-1.5 inline-flex items-center justify-center h-4 min-w-4 px-1 rounded-full bg-brand-700 text-white text-[10px] font-bold">
+            <span className="ml-1.5 inline-flex items-center justify-center h-4 min-w-4 px-1 rounded-full bg-brand-50 dark:bg-brand-500/100 text-white text-[10px] font-bold">
               {cartCount}
             </span>
           )}
@@ -295,7 +295,7 @@ export default function RetailerPOSPage() {
 
       <div className="flex flex-1 overflow-hidden">
 
-        {/* â”€â”€ Left / Products panel â”€â”€ */}
+        {/* ── Left / Products panel ── */}
         <div className={cn(
           "flex-col overflow-hidden border-r border-border",
           mobileView === "products" ? "flex flex-1" : "hidden",
@@ -309,7 +309,7 @@ export default function RetailerPOSPage() {
                 ref={searchRef}
                 value={search}
                 onChange={(e) => setSearch(e.target.value)}
-                placeholder="Search product or scan barcodeâ€¦"
+                placeholder="Search product or scan barcode…"
                 className="w-full rounded-xl border border-border bg-surface-50 dark:bg-surface-900 pl-8 pr-10 py-2 text-xs placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-brand-500"
               />
               <button
@@ -331,7 +331,7 @@ export default function RetailerPOSPage() {
                 className={cn(
                   "shrink-0 rounded-full px-3 py-1 text-xs font-semibold transition-colors whitespace-nowrap",
                   categoryId === cat.id
-                    ? "bg-brand-700 text-white"
+                    ? "bg-brand-50 dark:bg-brand-500/100 text-white"
                     : "bg-surface-100 dark:bg-surface-800 text-muted-foreground hover:text-foreground"
                 )}
               >
@@ -344,7 +344,7 @@ export default function RetailerPOSPage() {
           {scanFeedback && (
             <div className={cn(
               "mx-3 mb-2 rounded-xl px-3 py-2 text-xs font-semibold text-white shrink-0",
-              scanFeedback.ok ? "bg-success-500" : "bg-danger-500"
+              scanFeedback.ok ? "bg-success-50 dark:bg-success-500/100" : "bg-danger-50 dark:bg-danger-500/100"
             )}>
               {scanFeedback.text}
             </div>
@@ -365,7 +365,7 @@ export default function RetailerPOSPage() {
                     )}
                   >
                     {inCart && (
-                      <span className="absolute top-1.5 right-1.5 z-10 flex h-5 w-5 items-center justify-center rounded-full bg-brand-700 text-[10px] font-bold text-white">
+                      <span className="absolute top-1.5 right-1.5 z-10 flex h-5 w-5 items-center justify-center rounded-full bg-brand-50 dark:bg-brand-500/100 text-[10px] font-bold text-white">
                         {inCart.quantity}
                       </span>
                     )}
@@ -392,7 +392,7 @@ export default function RetailerPOSPage() {
           </div>
         </div>
 
-        {/* â”€â”€ Right / Cart & Payment panel â”€â”€ */}
+        {/* ── Right / Cart & Payment panel ── */}
         <div className={cn(
           "flex-col bg-card",
           mobileView === "cart" ? "flex flex-1" : "hidden",
@@ -406,7 +406,7 @@ export default function RetailerPOSPage() {
                 <div className="flex items-center justify-between">
                   <p className="text-sm font-semibold text-foreground">Payment</p>
                   <button onClick={() => setStep("idle")} className="text-xs text-muted-foreground hover:text-foreground">
-                    â† Back
+                    ← Back
                   </button>
                 </div>
                 <p className="font-display text-2xl font-black text-foreground mt-1">{formatPHP(total)}</p>
@@ -447,13 +447,13 @@ export default function RetailerPOSPage() {
                           onClick={() => setTendered(String(amt))}
                           className="rounded-lg bg-surface-100 dark:bg-surface-800 hover:bg-surface-200 text-xs font-semibold py-1.5 transition-colors text-surface-900"
                         >
-                          â‚±{amt}
+                          ₱{amt}
                         </button>
                       ))}
                     </div>
                     <Numpad value={tendered} onChange={setTendered} />
                     {tenderedNum > 0 && (
-                      <div className={cn("rounded-xl p-2.5 text-center text-sm font-bold", tenderedNum >= total ? "bg-success-100 text-success-700 dark:text-foreground" : "bg-danger-100 text-danger-700 dark:text-foreground")}>
+                      <div className={cn("rounded-xl p-2.5 text-center text-sm font-bold", tenderedNum >= total ? "bg-success-100 text-success-700" : "bg-danger-100 text-danger-700")}>
                         {tenderedNum >= total ? `Change: ${formatPHP(change)}` : `Short by ${formatPHP(total - tenderedNum)}`}
                       </div>
                     )}
@@ -463,19 +463,19 @@ export default function RetailerPOSPage() {
 
               <div className="p-4 border-t border-border space-y-2">
                 {txnError && (
-                  <div className="rounded-xl bg-danger-50 dark:bg-danger-500/10 border border-danger-200 px-3 py-2 text-xs text-danger-700 dark:text-foreground">
+                  <div className="rounded-xl bg-danger-50 dark:bg-danger-500/10 border border-danger-200 px-3 py-2 text-xs text-danger-700">
                     {txnError}
                   </div>
                 )}
                 <button
                   onClick={handlePay}
                   disabled={(method === "cash" && tenderedNum < total) || txnLoading}
-                  className="w-full rounded-2xl bg-success-700 hover:bg-success-800 disabled:opacity-40 text-white text-sm font-bold h-12 transition-colors flex items-center justify-center gap-2"
+                  className="w-full rounded-2xl bg-success-50 dark:bg-success-500/100 hover:bg-success-600 disabled:opacity-40 text-white text-sm font-bold h-12 transition-colors flex items-center justify-center gap-2"
                 >
                   {txnLoading ? (
                     <>
                       <span className="h-5 w-5 rounded-full border-2 border-white border-t-transparent animate-spin" />
-                      Processingâ€¦
+                      Processing…
                     </>
                   ) : (
                     <>
@@ -532,7 +532,7 @@ export default function RetailerPOSPage() {
                         <span className="text-xs font-bold text-foreground w-5 text-center tabular-nums">{item.quantity}</span>
                         <button
                           onClick={() => updateQty(item.product.id, 1)}
-                          className="flex h-6 w-6 items-center justify-center rounded-lg bg-brand-700 hover:bg-brand-800 text-white transition-colors"
+                          className="flex h-6 w-6 items-center justify-center rounded-lg bg-brand-50 dark:bg-brand-500/100 hover:bg-brand-600 text-white transition-colors"
                         >
                           <Plus className="h-3 w-3" />
                         </button>
@@ -559,7 +559,7 @@ export default function RetailerPOSPage() {
                 <button
                   onClick={() => setStep("pay")}
                   disabled={cart.length === 0}
-                  className="w-full rounded-2xl bg-brand-700 hover:bg-brand-800 disabled:opacity-40 text-white text-sm font-bold h-12 transition-colors flex items-center justify-center gap-2"
+                  className="w-full rounded-2xl bg-brand-50 dark:bg-brand-500/100 hover:bg-brand-600 disabled:opacity-40 text-white text-sm font-bold h-12 transition-colors flex items-center justify-center gap-2"
                 >
                   <Banknote className="h-5 w-5" />
                   Charge {cart.length > 0 ? formatPHP(total) : ""}

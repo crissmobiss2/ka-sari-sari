@@ -48,23 +48,23 @@ const DRIVERS_DATA: Driver[] = [
 ];
 
 const ROUTES: Route[] = [
-  { id: "rt-1", name: "Route A â€“ North Valenzuela", area: "Valenzuela City", stops: 12, estimatedHours: 4, assignedTo: "drv-1" },
-  { id: "rt-2", name: "Route B â€“ Caloocan Central", area: "Caloocan City", stops: 9, estimatedHours: 3, assignedTo: "drv-2" },
-  { id: "rt-3", name: "Route C â€“ Malabon / Navotas", area: "Malabon & Navotas", stops: 7, estimatedHours: 2.5 },
-  { id: "rt-4", name: "Route D â€“ QC East", area: "Quezon City", stops: 15, estimatedHours: 5 },
-  { id: "rt-5", name: "Route E â€“ Bagumbayan Loop", area: "Valenzuela City", stops: 8, estimatedHours: 3 },
+  { id: "rt-1", name: "Route A – North Valenzuela", area: "Valenzuela City", stops: 12, estimatedHours: 4, assignedTo: "drv-1" },
+  { id: "rt-2", name: "Route B – Caloocan Central", area: "Caloocan City", stops: 9, estimatedHours: 3, assignedTo: "drv-2" },
+  { id: "rt-3", name: "Route C – Malabon / Navotas", area: "Malabon & Navotas", stops: 7, estimatedHours: 2.5 },
+  { id: "rt-4", name: "Route D – QC East", area: "Quezon City", stops: 15, estimatedHours: 5 },
+  { id: "rt-5", name: "Route E – Bagumbayan Loop", area: "Valenzuela City", stops: 8, estimatedHours: 3 },
 ];
 
 const STATUS_CONFIG: Record<DriverStatus, { label: string; badgeClass: string; avatarClass: string }> = {
   on_route: {
     label: "On Route",
-    badgeClass: "bg-brand-50 dark:bg-brand-500/10 text-brand-700 dark:text-foreground border border-brand-200 dark:border-brand-500/30",
-    avatarClass: "bg-brand-100 dark:bg-brand-700 text-brand-600 dark:text-white",
+    badgeClass: "bg-brand-50 dark:bg-brand-500/10 text-brand-600 border border-brand-200",
+    avatarClass: "bg-brand-100 text-brand-600",
   },
   active: {
     label: "Available",
-    badgeClass: "bg-success-50 dark:bg-success-500/10 text-success-700 dark:text-foreground border border-success-200 dark:border-success-500/30",
-    avatarClass: "bg-success-100 text-success-700 dark:text-foreground",
+    badgeClass: "bg-success-50 dark:bg-success-500/10 text-success-600 border border-success-200",
+    avatarClass: "bg-success-100 text-success-600",
   },
   off_duty: {
     label: "Off Duty",
@@ -248,10 +248,10 @@ export default function AdminDriversPage() {
 
       {/* Stats */}
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
-        <StatCard icon={Truck} value={onRoute} label="On Route" color="bg-brand-50 dark:bg-brand-500/10 text-brand-700 dark:text-foreground" />
-        <StatCard icon={CheckCircle2} value={available} label="Available" color="bg-success-50 dark:bg-success-500/10 text-success-700 dark:text-foreground" />
+        <StatCard icon={Truck} value={onRoute} label="On Route" color="bg-brand-50 dark:bg-brand-500/10 text-brand-500" />
+        <StatCard icon={CheckCircle2} value={available} label="Available" color="bg-success-50 dark:bg-success-500/10 text-success-500" />
         <StatCard icon={Clock} value={offDuty} label="Off Duty" color="bg-surface-100 dark:bg-surface-800 text-muted-foreground" />
-        <StatCard icon={TrendingUp} value={deliveriesToday} label="Deliveries Today" color="bg-info-50 dark:bg-info-500/10 text-info-700 dark:text-foreground" />
+        <StatCard icon={TrendingUp} value={deliveriesToday} label="Deliveries Today" color="bg-info-50 dark:bg-info-500/10 text-info-500" />
       </div>
 
       {/* Driver Cards Grid */}
@@ -289,11 +289,11 @@ export default function AdminDriversPage() {
               <div className="flex items-center gap-1.5 text-xs text-muted-foreground">
                 <Truck className="h-3.5 w-3.5 shrink-0" />
                 <span>{driver.vehicleType}</span>
-                <span className="text-border">Â·</span>
+                <span className="text-border">·</span>
                 <span className="font-mono font-medium text-foreground">{driver.vehiclePlate}</span>
                 {driver.area && (
                   <>
-                    <span className="text-border">Â·</span>
+                    <span className="text-border">·</span>
                     <MapPin className="h-3 w-3 shrink-0" />
                     <span>{driver.area}</span>
                   </>
@@ -369,7 +369,7 @@ export default function AdminDriversPage() {
                 const cfg = STATUS_CONFIG[driver.status];
                 const isTop = topDriver && driver.id === topDriver.id;
                 return (
-                  <tr key={driver.id} className={cn("border-b border-border last:border-0 transition-colors hover:bg-muted/40 cursor-pointer", isTop && "bg-warning-50/40")} onClick={() => setViewDriver(driver)}>
+                  <tr key={driver.id} className={cn("border-b border-border last:border-0 transition-colors hover:bg-muted/40 cursor-pointer", isTop && "bg-warning-50 dark:bg-warning-500/10/40")} onClick={() => setViewDriver(driver)}>
                     <td className="px-5 py-3">
                       <div className="flex items-center gap-2.5">
                         <div className={cn("flex h-7 w-7 shrink-0 items-center justify-center rounded-lg text-xs font-bold", cfg.avatarClass)}>
@@ -412,7 +412,7 @@ export default function AdminDriversPage() {
         </div>
       </Card>
 
-      {/* â”€â”€ Add Driver Modal â”€â”€ */}
+      {/* ── Add Driver Modal ── */}
       {showAdd && (
         <ModalBackdrop onClose={() => setShowAdd(false)}>
           <div className="p-6 space-y-5">
@@ -435,7 +435,7 @@ export default function AdminDriversPage() {
                       onClick={() => setAddForm({ ...addForm, vehicleType: type })}
                       className={cn(
                         "flex-1 rounded-xl border py-2.5 text-sm font-semibold transition-colors",
-                        addForm.vehicleType === type ? "border-brand-500 bg-brand-700 text-white" : "border-border bg-card text-foreground hover:border-brand-300"
+                        addForm.vehicleType === type ? "border-brand-500 bg-brand-50 dark:bg-brand-500/100 text-white" : "border-border bg-card text-foreground hover:border-brand-300"
                       )}
                     >
                       {type}
@@ -463,7 +463,7 @@ export default function AdminDriversPage() {
         </ModalBackdrop>
       )}
 
-      {/* â”€â”€ View Driver Modal â”€â”€ */}
+      {/* ── View Driver Modal ── */}
       {viewDriver && (
         <ModalBackdrop onClose={() => setViewDriver(null)}>
           <div className="p-6 space-y-5">
@@ -492,9 +492,9 @@ export default function AdminDriversPage() {
             <div className="grid grid-cols-2 gap-3">
               {[
                 { label: "Phone", value: viewDriver.phone },
-                { label: "Vehicle", value: `${viewDriver.vehicleType} Â· ${viewDriver.vehiclePlate}` },
-                { label: "Service Area", value: viewDriver.area ?? "â€”" },
-                { label: "Member Since", value: viewDriver.joined ?? "â€”" },
+                { label: "Vehicle", value: `${viewDriver.vehicleType} · ${viewDriver.vehiclePlate}` },
+                { label: "Service Area", value: viewDriver.area ?? "—" },
+                { label: "Member Since", value: viewDriver.joined ?? "—" },
               ].map(({ label, value }) => (
                 <div key={label} className="rounded-xl bg-surface-50 dark:bg-surface-900 px-3 py-3">
                   <p className="text-[10px] text-muted-foreground uppercase tracking-wide font-medium">{label}</p>
@@ -528,7 +528,7 @@ export default function AdminDriversPage() {
                   <Navigation className="h-4 w-4 text-brand-500 shrink-0" />
                   <div>
                     <p className="text-sm font-semibold text-brand-700 dark:text-foreground">{assignedRoute.name}</p>
-                    <p className="text-xs text-brand-500">{assignedRoute.stops} stops Â· ~{assignedRoute.estimatedHours}h</p>
+                    <p className="text-xs text-brand-500">{assignedRoute.stops} stops · ~{assignedRoute.estimatedHours}h</p>
                   </div>
                 </div>
               ) : (
@@ -554,7 +554,7 @@ export default function AdminDriversPage() {
         </ModalBackdrop>
       )}
 
-      {/* â”€â”€ Route Assignment Modal â”€â”€ */}
+      {/* ── Route Assignment Modal ── */}
       {routeDriver && (
         <ModalBackdrop onClose={() => setRouteDriver(null)}>
           <div className="p-6 space-y-5">
@@ -569,7 +569,7 @@ export default function AdminDriversPage() {
               </div>
               <div>
                 <p className="text-sm font-semibold text-foreground">{routeDriver.name}</p>
-                <p className="text-xs text-muted-foreground">{routeDriver.vehicleType} Â· {routeDriver.vehiclePlate}</p>
+                <p className="text-xs text-muted-foreground">{routeDriver.vehicleType} · {routeDriver.vehiclePlate}</p>
               </div>
             </div>
 
@@ -588,20 +588,20 @@ export default function AdminDriversPage() {
                         isSelected ? "border-brand-500 bg-brand-50 dark:bg-brand-500/10" : "border-border bg-card hover:border-brand-200"
                       )}
                     >
-                      <div className={cn("mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-full border-2", isSelected ? "border-brand-500 bg-brand-500" : "border-border")}>
+                      <div className={cn("mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-full border-2", isSelected ? "border-brand-500 bg-brand-50 dark:bg-brand-500/100" : "border-border")}>
                         {isSelected && <CheckCircle2 className="h-3 w-3 text-white" />}
                       </div>
                       <div className="flex-1 min-w-0">
                         <div className="flex items-center justify-between gap-2">
                           <p className="text-sm font-semibold text-foreground truncate">{route.name}</p>
                           {assignedDriver && (
-                            <span className="text-[10px] text-warning-700 dark:text-foreground bg-warning-50 dark:bg-warning-500/10 border border-warning-200 rounded-full px-2 py-0.5 shrink-0">
+                            <span className="text-[10px] text-warning-600 bg-warning-50 dark:bg-warning-500/10 border border-warning-200 rounded-full px-2 py-0.5 shrink-0">
                               {assignedDriver.initials}
                             </span>
                           )}
                         </div>
                         <p className="text-xs text-muted-foreground mt-0.5">
-                          <MapPin className="h-3 w-3 inline mr-0.5" />{route.area} Â· {route.stops} stops Â· ~{route.estimatedHours}h
+                          <MapPin className="h-3 w-3 inline mr-0.5" />{route.area} · {route.stops} stops · ~{route.estimatedHours}h
                         </p>
                       </div>
                     </button>
