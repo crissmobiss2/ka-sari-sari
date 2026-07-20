@@ -250,7 +250,7 @@ function WhatsAppChatbot() {
           onChange={(e) => setInput(e.target.value)}
           onKeyDown={handleKeyDown}
           placeholder="Type a message…"
-          className="flex-1 rounded-full border border-gray-300 bg-gray-50 px-4 py-2 text-sm text-gray-800 placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:border-transparent"
+          className="flex-1 rounded-full border border-gray-300 bg-gray-50 px-4 py-2 text-sm text-gray-800 placeholder:text-gray-600 focus:outline-none focus:ring-2 focus:border-transparent"
           style={{ ["--tw-ring-color" as string]: "#075E54" }}
           disabled={isTyping}
         />
