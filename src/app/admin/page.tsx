@@ -149,7 +149,7 @@ export default function AdminDashboardPage() {
       up: true,
       icon: TrendingUp,
       href: "/admin/reports",
-      color: "text-success-600 bg-success-50",
+      color: "text-success-700 bg-success-50",
     },
     {
       label: "Active Retailers",
@@ -167,7 +167,7 @@ export default function AdminDashboardPage() {
       up: false,
       icon: AlertTriangle,
       href: "/admin/inventory",
-      color: "text-warning-600 bg-warning-50",
+      color: "text-warning-700 bg-warning-50",
     },
   ];
 
@@ -213,13 +213,13 @@ export default function AdminDashboardPage() {
                     <div className={`flex h-9 w-9 items-center justify-center rounded-xl ${s.color}`}>
                       <s.icon className="h-4.5 w-4.5" />
                     </div>
-                    <div className={`flex items-center gap-1 text-xs font-medium ${s.up ? "text-success-600" : "text-warning-600"}`}>
+                    <div className={`flex items-center gap-1 text-xs font-medium ${s.up ? "text-success-700" : "text-warning-700"}`}>
                       {s.up ? <TrendingUp className="h-3 w-3" /> : <TrendingDown className="h-3 w-3" />}
                     </div>
                   </div>
                   <p className="font-display text-2xl font-bold text-foreground">{s.value}</p>
                   <p className="text-xs text-muted-foreground mt-1">{s.label}</p>
-                  <p className={`text-xs mt-0.5 font-medium ${s.up ? "text-success-600" : "text-warning-600"}`}>{s.change}</p>
+                  <p className={`text-xs mt-0.5 font-medium ${s.up ? "text-success-700" : "text-warning-700"}`}>{s.change}</p>
                 </CardContent>
               </Card>
             </Link>
@@ -249,10 +249,10 @@ export default function AdminDashboardPage() {
           <CardHeader><CardTitle>Pending Actions</CardTitle></CardHeader>
           <CardContent className="space-y-3">
             {[
-              { label: "Orders to pick", count: stats.pendingOrders, color: "text-warning-600 bg-warning-50", href: "/admin/fulfillment" },
+              { label: "Orders to pick", count: stats.pendingOrders, color: "text-warning-700 bg-warning-50", href: "/admin/fulfillment" },
               { label: "Orders to pack", count: stats.processingOrders, color: "text-info-600 bg-info-50", href: "/admin/fulfillment" },
               { label: "Out for delivery", count: stats.outForDelivery, color: "text-brand-600 bg-brand-50", href: "/admin/delivery" },
-              { label: "Low stock items", count: stats.lowStockItems, color: "text-danger-600 bg-danger-50", href: "/admin/inventory" },
+              { label: "Low stock items", count: stats.lowStockItems, color: "text-danger-700 dark:text-danger-500 bg-danger-50", href: "/admin/inventory" },
             ].map((item) => (
               <Link key={item.label} href={item.href} className="flex items-center justify-between hover:opacity-80 transition-opacity">
                 <span className="text-sm text-foreground">{item.label}</span>

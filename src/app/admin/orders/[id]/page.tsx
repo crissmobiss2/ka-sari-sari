@@ -98,7 +98,7 @@ export default function AdminOrderDetailPage() {
         <div className="rounded-2xl border border-danger-200 bg-danger-50 p-8 text-center">
           <XCircle className="h-10 w-10 text-danger-400 mx-auto mb-3" />
           <p className="font-semibold text-danger-700">Failed to load order</p>
-          <p className="text-sm text-danger-600 mt-1">{fetchError ?? "Order not found"}</p>
+          <p className="text-sm text-danger-700 dark:text-danger-500 mt-1">{fetchError ?? "Order not found"}</p>
           <Button size="sm" variant="outline" className="mt-4" onClick={() => window.location.reload()}>
             Retry
           </Button>
@@ -298,7 +298,7 @@ export default function AdminOrderDetailPage() {
             <CardContent className="space-y-2 text-sm">
               <div className="flex items-center justify-between">
                 <span className="text-muted-foreground capitalize">{order.paymentMethod.replace(/_/g, " ")}</span>
-                <span className={`font-semibold ${order.paymentStatus === "paid" ? "text-success-600" : "text-warning-600"}`}>
+                <span className={`font-semibold ${order.paymentStatus === "paid" ? "text-success-700" : "text-warning-700"}`}>
                   {order.paymentStatus === "paid" ? "Paid" : "Pending"}
                 </span>
               </div>
@@ -365,7 +365,7 @@ export default function AdminOrderDetailPage() {
                   {!showCancelForm ? (
                     <button
                       onClick={() => setShowCancelForm(true)}
-                      className="w-full rounded-xl border border-danger-200 text-danger-600 py-2 text-sm font-semibold hover:bg-danger-50 transition-colors flex items-center justify-center gap-1.5"
+                      className="w-full rounded-xl border border-danger-200 text-danger-700 dark:text-danger-500 py-2 text-sm font-semibold hover:bg-danger-50 transition-colors flex items-center justify-center gap-1.5"
                     >
                       <XCircle className="h-3.5 w-3.5" /> Cancel Order
                     </button>

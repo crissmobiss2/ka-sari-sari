@@ -203,7 +203,7 @@ function AddStaffModal({ onClose, onAdd }: AddStaffModalProps) {
 
           {/* API error */}
           {apiError && (
-            <p className="text-sm text-danger-600 font-medium">{apiError}</p>
+            <p className="text-sm text-danger-700 dark:text-danger-500 font-medium">{apiError}</p>
           )}
 
           {/* Actions */}
@@ -388,7 +388,7 @@ function StaffCard({ member, onToggleStatus, onEdit }: StaffCardProps) {
           onClick={() => onToggleStatus(member.id)}
           className={`flex-1 text-xs ${
             isActive
-              ? "border-danger-200 dark:border-danger-500/40 text-danger-600 dark:text-danger-500 hover:bg-danger-50 dark:hover:bg-danger-500/10"
+              ? "border-danger-200 dark:border-danger-500/40 text-danger-700 dark:text-danger-500 dark:text-danger-500 hover:bg-danger-50 dark:hover:bg-danger-500/10"
               : "border-success-200 dark:border-success-500/40 text-success-700 dark:text-success-500 hover:bg-success-50 dark:hover:bg-success-500/10"
           }`}
         >

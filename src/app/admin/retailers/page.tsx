@@ -28,7 +28,7 @@ const HUB_COLORS: Record<string, string> = {
   "NCR":          "bg-brand-50 text-brand-600 border-brand-100",
   "North Luzon":  "bg-purple-50 text-purple-600 border-purple-100",
   "South Luzon":  "bg-info-50 text-info-600 border-info-100",
-  "Visayas":      "bg-success-50 text-success-600 border-success-100",
+  "Visayas":      "bg-success-50 text-success-700 border-success-100",
   "Mindanao":     "bg-warning-50 text-warning-700 border-warning-100",
 };
 
@@ -150,7 +150,7 @@ export default function AdminRetailersPage() {
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
         {[
           { label: "Total Retailers", value: MOCK_RETAILERS.length, icon: Users, color: "text-brand-600 bg-brand-50" },
-          { label: "Active",          value: activeCount,           icon: CheckCircle2, color: "text-success-600 bg-success-50" },
+          { label: "Active",          value: activeCount,           icon: CheckCircle2, color: "text-success-700 bg-success-50" },
           { label: "Inactive",        value: MOCK_RETAILERS.length - activeCount, icon: XCircle, color: "text-muted-foreground bg-surface-100" },
           { label: "Cities Served",   value: new Set(MOCK_RETAILERS.map(r => r.city)).size, icon: MapPin, color: "text-info-600 bg-info-50" },
         ].map((s) => (

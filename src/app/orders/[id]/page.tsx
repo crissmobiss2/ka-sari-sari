@@ -107,7 +107,7 @@ function ConfirmBanner() {
       <CheckCircle2 className="h-5 w-5 text-success-500 shrink-0 mt-0.5" />
       <div>
         <p className="text-sm font-semibold text-success-700">Order placed successfully!</p>
-        <p className="text-xs text-success-600 mt-0.5">We&apos;ll notify you when it&apos;s being prepared.</p>
+        <p className="text-xs text-success-700 mt-0.5">We&apos;ll notify you when it&apos;s being prepared.</p>
       </div>
     </div>
   );
@@ -212,7 +212,7 @@ function DeliveryTimeline({
           <AlertCircle className="h-4 w-4 text-danger-500" />
           <h3 className="font-display text-sm font-semibold text-foreground">Order Status</h3>
         </div>
-        <p className="text-sm text-danger-600 mt-1">
+        <p className="text-sm text-danger-700 dark:text-danger-500 mt-1">
           This order was {ORDER_STATUS_LABELS[status]?.toLowerCase() ?? status.replace(/_/g, " ")}.
         </p>
       </div>
@@ -333,7 +333,7 @@ function DeliveryAddress({ address, notes }: { address: string; notes?: string }
       <p className="text-sm font-medium text-foreground leading-relaxed">{address}</p>
       {notes && (
         <div className="mt-3 flex items-start gap-2 rounded-xl bg-warning-50 border border-warning-200 p-3">
-          <AlertCircle className="h-3.5 w-3.5 text-warning-600 mt-0.5 shrink-0" />
+          <AlertCircle className="h-3.5 w-3.5 text-warning-700 mt-0.5 shrink-0" />
           <p className="text-xs text-warning-700">{notes}</p>
         </div>
       )}
@@ -441,7 +441,7 @@ function OrderItems({
                     {unitLabel !== "pc" ? "s" : "s"} &times; {formatPHP(orderItem.unitPrice)}
                   </p>
                   {orderItem.status === "partial" && (
-                    <p className="text-xs text-warning-600 mt-0.5">
+                    <p className="text-xs text-warning-700 mt-0.5">
                       Partial: {orderItem.fulfilledQty ?? "?"} fulfilled
                     </p>
                   )}
@@ -676,7 +676,7 @@ function RatingSection({ orderId }: { orderId: string }) {
       <div className="mx-4 rounded-2xl bg-success-50 border border-success-500/25 p-5 text-center">
         <CheckCircle2 className="h-8 w-8 text-success-500 mx-auto mb-2" />
         <p className="font-display font-semibold text-success-700">Thanks for your feedback!</p>
-        <p className="text-xs text-success-600 mt-1">Your rating helps us improve our service.</p>
+        <p className="text-xs text-success-700 mt-1">Your rating helps us improve our service.</p>
       </div>
     );
   }

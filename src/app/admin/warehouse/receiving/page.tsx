@@ -342,7 +342,7 @@ export default function GoodsReceivingPage() {
                   className="w-full flex items-center justify-between px-5 py-4 text-left hover:bg-muted/30 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-500"
                 >
                   <div className="flex items-center gap-3">
-                    <div className="flex h-7 w-7 items-center justify-center rounded-lg bg-success-50 text-success-600">
+                    <div className="flex h-7 w-7 items-center justify-center rounded-lg bg-success-50 text-success-700">
                       <CheckCircle2 className="h-4 w-4" />
                     </div>
                     <div>

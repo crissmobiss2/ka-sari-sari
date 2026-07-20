@@ -246,7 +246,7 @@ function SuccessContent() {
             <p className="text-sm font-bold text-brand-700">
               You earned {ptsEarned} loyalty points!
             </p>
-            <p className="text-xs text-brand-600 mt-0.5">
+            <p className="text-xs text-brand-700 dark:text-brand-500 mt-0.5">
               Visit your Rewards page to see your balance.
             </p>
           </div>

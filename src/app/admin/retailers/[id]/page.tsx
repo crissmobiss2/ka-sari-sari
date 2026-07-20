@@ -97,7 +97,7 @@ const ORDER_STATUS_LABEL: Record<string, string> = {
 const ORDER_STATUS_STYLE: Record<string, string> = {
   out_for_delivery: "bg-brand-50 text-brand-600 border-brand-500/25",
   delivered:        "bg-success-50 text-success-700 border-success-500/25",
-  pending:          "bg-warning-50 text-warning-600 border-warning-500/25",
+  pending:          "bg-warning-50 text-warning-700 border-warning-500/25",
   confirmed:        "bg-blue-50 text-blue-600 border-blue-200",
 };
 
@@ -221,7 +221,7 @@ export default function AdminRetailerProfilePage() {
           </button>
           <button
             onClick={() => setSuspendConfirm(true)}
-            className="flex items-center gap-1.5 rounded-xl border border-danger-200 bg-danger-50 px-4 py-2 text-sm font-medium text-danger-600 hover:bg-danger-100 transition-colors"
+            className="flex items-center gap-1.5 rounded-xl border border-danger-200 bg-danger-50 px-4 py-2 text-sm font-medium text-danger-700 dark:text-danger-500 hover:bg-danger-100 transition-colors"
           >
             <AlertTriangle className="h-3.5 w-3.5" /> Suspend Account
           </button>
@@ -233,7 +233,7 @@ export default function AdminRetailerProfilePage() {
             <p className="text-sm font-semibold text-danger-700 mb-1">
               Suspend {retailer.name}?
             </p>
-            <p className="text-sm text-danger-600">
+            <p className="text-sm text-danger-700 dark:text-danger-500">
               The retailer will lose app access and cannot place orders. This action can be reversed.
             </p>
             {suspendError && (
@@ -398,7 +398,7 @@ export default function AdminRetailerProfilePage() {
           </button>
           <button
             onClick={() => setSuspendConfirm(true)}
-            className="flex items-center gap-2 rounded-xl border border-danger-200 px-4 py-2.5 text-sm font-medium text-danger-600 hover:bg-danger-50 transition-colors"
+            className="flex items-center gap-2 rounded-xl border border-danger-200 px-4 py-2.5 text-sm font-medium text-danger-700 dark:text-danger-500 hover:bg-danger-50 transition-colors"
           >
             <AlertTriangle className="h-4 w-4" />
             Suspend Account

@@ -208,8 +208,8 @@ export default function EarningsPage() {
             <div className="grid grid-cols-3 gap-2">
               {[
                 { label: "Expected",  value: COD_THIS_WEEK.expected,  color: "text-foreground" },
-                { label: "Collected", value: COD_THIS_WEEK.collected, color: "text-success-600" },
-                { label: "Pending",   value: COD_THIS_WEEK.pending,   color: "text-warning-600" },
+                { label: "Collected", value: COD_THIS_WEEK.collected, color: "text-success-700" },
+                { label: "Pending",   value: COD_THIS_WEEK.pending,   color: "text-warning-700" },
               ].map(({ label, value, color }) => (
                 <div key={label} className="rounded-xl bg-surface-50 dark:bg-surface-800 border border-border/60 p-2.5 text-center">
                   <p className={cn("text-base font-black tabular-nums", color)}>₱{value.toLocaleString()}</p>
@@ -220,7 +220,7 @@ export default function EarningsPage() {
             <div>
               <div className="flex justify-between text-xs mb-1">
                 <span className="text-muted-foreground">Collection rate</span>
-                <span className="font-semibold text-success-600">{Math.round((COD_THIS_WEEK.collected / COD_THIS_WEEK.expected) * 100)}%</span>
+                <span className="font-semibold text-success-700">{Math.round((COD_THIS_WEEK.collected / COD_THIS_WEEK.expected) * 100)}%</span>
               </div>
               <div className="h-2 bg-surface-100 rounded-full overflow-hidden">
                 <div
@@ -257,10 +257,10 @@ export default function EarningsPage() {
                     )}
                   </div>
                   <div className="ml-3 text-right shrink-0">
-                    <p className={cn("text-sm font-black tabular-nums", b.earned ? "text-success-600" : "text-foreground")}>
+                    <p className={cn("text-sm font-black tabular-nums", b.earned ? "text-success-700" : "text-foreground")}>
                       +₱{b.amount}
                     </p>
-                    {b.earned && <p className="text-[10px] text-success-600 mt-0.5 font-medium">Earned ✓</p>}
+                    {b.earned && <p className="text-[10px] text-success-700 mt-0.5 font-medium">Earned ✓</p>}
                   </div>
                 </div>
               </div>
@@ -287,7 +287,7 @@ export default function EarningsPage() {
                 <span className="text-xs text-muted-foreground">Next payment</span>
                 <div className="flex items-center gap-1.5">
                   <CheckCircle2 className="w-3.5 h-3.5 text-success-500" />
-                  <span className="text-xs font-semibold text-success-600">Fri, Jul 11, 2026</span>
+                  <span className="text-xs font-semibold text-success-700">Fri, Jul 11, 2026</span>
                 </div>
               </div>
             </div>
@@ -348,7 +348,7 @@ export default function EarningsPage() {
                   <div className="flex items-center gap-2">
                     <span className={cn(
                       "text-xs",
-                      c.trend === "up" ? "text-success-600" : c.trend === "down" ? "text-danger-600" : "text-muted-foreground"
+                      c.trend === "up" ? "text-success-700" : c.trend === "down" ? "text-danger-700 dark:text-danger-500" : "text-muted-foreground"
                     )}>
                       {c.trend === "up" ? "↑" : c.trend === "down" ? "↓" : "→"}
                     </span>

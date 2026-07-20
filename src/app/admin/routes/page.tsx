@@ -237,7 +237,7 @@ function OptimizeModal({
                   className={cn(
                     "text-sm transition-all duration-300",
                     i < visibleLines
-                      ? "text-success-600 opacity-100 translate-y-0"
+                      ? "text-success-700 opacity-100 translate-y-0"
                       : "text-muted-foreground opacity-0 translate-y-1"
                   )}
                 >
@@ -285,14 +285,14 @@ function OptimizeModal({
                       <p className="text-xs text-muted-foreground">{result.before.time}</p>
                     </div>
                     <div className="rounded-lg bg-success-50 px-3 py-2.5 space-y-1">
-                      <p className="text-[10px] font-semibold uppercase tracking-wide text-success-600">After</p>
+                      <p className="text-[10px] font-semibold uppercase tracking-wide text-success-700">After</p>
                       <p className="text-sm font-semibold text-success-700">{result.after.distance}</p>
-                      <p className="text-xs text-success-600">{result.after.time}</p>
+                      <p className="text-xs text-success-700">{result.after.time}</p>
                     </div>
                   </div>
 
                   {/* Savings row */}
-                  <div className="flex items-center gap-1.5 text-xs text-success-600 font-medium">
+                  <div className="flex items-center gap-1.5 text-xs text-success-700 font-medium">
                     <TrendingDown className="h-3.5 w-3.5 shrink-0" />
                     <span>
                       -{result.savings.distance} · -{result.savings.time} · Saves {result.savings.fuel} in fuel
@@ -303,7 +303,7 @@ function OptimizeModal({
                   <div className="space-y-1.5">
                     <div className="flex items-center justify-between text-[10px] text-muted-foreground">
                       <span>Route efficiency</span>
-                      <span className="text-success-600 font-semibold">65% → 82%</span>
+                      <span className="text-success-700 font-semibold">65% → 82%</span>
                     </div>
                     <div className="relative h-2 rounded-full bg-surface-100 overflow-hidden">
                       {/* Before bar (gray, underneath) */}
@@ -527,7 +527,7 @@ export default function AdminRoutesPage() {
                     onChange={() => setSelectedDriver(driver.id)}
                     className="accent-brand-500"
                   />
-                  <div className="flex h-7 w-7 items-center justify-center rounded-lg bg-success-100 text-success-600 text-xs font-bold">
+                  <div className="flex h-7 w-7 items-center justify-center rounded-lg bg-success-100 text-success-700 text-xs font-bold">
                     {driver.name.split(" ").map((n) => n[0]).slice(0, 2).join("")}
                   </div>
                   <span className="text-sm font-medium text-foreground">{driver.name}</span>
@@ -595,7 +595,7 @@ export default function AdminRoutesPage() {
         {[
           { icon: Radio, value: activeCount, label: "Active Routes", color: "bg-brand-50 text-brand-600 dark:bg-brand-500/10 dark:text-foreground" },
           { icon: Clock, value: plannedCount, label: "Planned Routes", color: "bg-warning-50 text-warning-700 dark:bg-warning-500/10 dark:text-foreground" },
-          { icon: CheckCircle2, value: completedCount, label: "Completed Today", color: "bg-success-50 text-success-600 dark:bg-success-500/10 dark:text-foreground" },
+          { icon: CheckCircle2, value: completedCount, label: "Completed Today", color: "bg-success-50 text-success-700 dark:bg-success-500/10 dark:text-foreground" },
           { icon: MapPin, value: totalOrders, label: "Orders in Routes", color: "bg-info-50 text-info-600 dark:bg-info-500/10 dark:text-foreground" },
         ].map(({ icon: Icon, value, label, color }) => (
           <Card key={label} className="p-4 flex items-center gap-3">
@@ -631,7 +631,7 @@ export default function AdminRoutesPage() {
                     </div>
                     <div className="flex items-center gap-3 mt-1 text-xs text-muted-foreground flex-wrap">
                       {unassigned ? (
-                        <span className="flex items-center gap-1 text-warning-600 font-medium">
+                        <span className="flex items-center gap-1 text-warning-700 font-medium">
                           <AlertTriangle className="h-3 w-3" />
                           Unassigned
                         </span>
@@ -913,7 +913,7 @@ export default function AdminRoutesPage() {
               </div>
               <div className="rounded-xl bg-success-50 border border-success-200 p-4 flex items-center gap-3">
                 <CheckCircle2 className="h-8 w-8 text-success-500 shrink-0" />
-                <div><p className="font-semibold text-success-700 text-sm">Route Completed</p><p className="text-xs text-success-600">{r.name} · {r.driver}</p></div>
+                <div><p className="font-semibold text-success-700 text-sm">Route Completed</p><p className="text-xs text-success-700">{r.name} · {r.driver}</p></div>
               </div>
               <div className="grid grid-cols-2 gap-3">
                 {[

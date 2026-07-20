@@ -389,7 +389,7 @@ export default function AccountPage() {
                 / {CREDIT_SCORE_MAX}
               </text>
             </svg>
-            <p className="text-xs font-black tracking-widest text-success-600 -mt-1">GOOD</p>
+            <p className="text-xs font-black tracking-widest text-success-700 -mt-1">GOOD</p>
           </div>
 
           {/* Score breakdown */}
@@ -419,7 +419,7 @@ export default function AccountPage() {
             </div>
             <div className="text-right">
               <p className="text-xs text-muted-foreground">Available</p>
-              <p className="text-base font-bold text-success-600">â‚±{creditData.available.toLocaleString()}</p>
+              <p className="text-base font-bold text-success-700">â‚±{creditData.available.toLocaleString()}</p>
             </div>
           </div>
 
@@ -466,12 +466,12 @@ export default function AccountPage() {
                     Submitted {new Date(app.created_at).toLocaleDateString("en-PH", { month: "short", day: "numeric", year: "numeric" })}
                   </p>
                   {app.status === "approved" && app.approved_limit && (
-                    <p className="text-xs text-success-600 font-medium mt-0.5">
+                    <p className="text-xs text-success-700 font-medium mt-0.5">
                       Approved: â‚±{app.approved_limit.toLocaleString()} Â· {app.requested_terms ?? 7}-day terms
                     </p>
                   )}
                   {app.status === "rejected" && app.rejection_reason && (
-                    <p className="text-xs text-danger-600 mt-0.5">{app.rejection_reason}</p>
+                    <p className="text-xs text-danger-700 dark:text-danger-500 mt-0.5">{app.rejection_reason}</p>
                   )}
                 </div>
               ))}
@@ -481,10 +481,10 @@ export default function AccountPage() {
           {/* Success after submission */}
           {creditSubmitted && (
             <div className="flex items-start gap-3 rounded-xl bg-success-50 border border-success-200 px-4 py-3">
-              <CheckCircle2 className="h-4 w-4 text-success-600 shrink-0 mt-0.5" />
+              <CheckCircle2 className="h-4 w-4 text-success-700 shrink-0 mt-0.5" />
               <div>
                 <p className="text-sm font-semibold text-success-700">Application submitted!</p>
-                <p className="text-xs text-success-600 mt-0.5">We'll review within 24 hours and notify you of the decision.</p>
+                <p className="text-xs text-success-700 mt-0.5">We'll review within 24 hours and notify you of the decision.</p>
               </div>
             </div>
           )}
@@ -602,18 +602,18 @@ export default function AccountPage() {
         {subIsActive ? (
           <div className="rounded-2xl border border-success-500/25 bg-success-50 p-5">
             <div className="flex items-start gap-3">
-              <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-success-100 text-success-600">
+              <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-success-100 text-success-700">
                 <Shield className="h-4 w-4" />
               </div>
               <div className="flex-1">
                 <p className="text-sm font-semibold text-success-700">Active Subscription</p>
-                <p className="text-xs text-success-600 mt-0.5">Platform access Â· Free Trial Â· Year 1</p>
+                <p className="text-xs text-success-700 mt-0.5">Platform access Â· Free Trial Â· Year 1</p>
                 <div className="flex items-center gap-2 mt-2">
                   <Check className="h-3.5 w-3.5 text-success-500" />
-                  <span className="text-xs text-success-600">Unlimited orders</span>
+                  <span className="text-xs text-success-700">Unlimited orders</span>
                   <span className="text-success-300">Â·</span>
                   <Clock className="h-3 w-3 text-success-500" />
-                  <span className="text-xs text-success-600">{subDaysLeft !== null ? subDaysLeft : 'â€”'} days left</span>
+                  <span className="text-xs text-success-700">{subDaysLeft !== null ? subDaysLeft : 'â€”'} days left</span>
                 </div>
               </div>
             </div>
@@ -661,7 +661,7 @@ export default function AccountPage() {
                   </p>
                   <p className="text-xs text-muted-foreground mt-0.5">
                     Browser permission: <span className={cn("font-semibold capitalize",
-                      pushPermission === "granted" ? "text-success-600" :
+                      pushPermission === "granted" ? "text-success-700" :
                       pushPermission === "denied" ? "text-danger-500" : "text-muted-foreground"
                     )}>{pushPermission}</span>
                   </p>
@@ -702,7 +702,7 @@ export default function AccountPage() {
 
               {pushSuccess && (
                 <div className="flex items-center gap-2 rounded-xl bg-success-50 border border-success-200 px-3 py-2.5">
-                  <CheckCircle2 className="h-4 w-4 text-success-600 shrink-0" />
+                  <CheckCircle2 className="h-4 w-4 text-success-700 shrink-0" />
                   <p className="text-xs text-success-700">{pushSuccess}</p>
                 </div>
               )}
@@ -755,7 +755,7 @@ export default function AccountPage() {
             }
             router.push("/login");
           }}
-          className="flex w-full items-center gap-3 rounded-2xl border border-danger-500/20 bg-danger-50 px-5 py-4 text-danger-600 hover:bg-danger-100 transition-colors"
+          className="flex w-full items-center gap-3 rounded-2xl border border-danger-500/20 bg-danger-50 px-5 py-4 text-danger-700 dark:text-danger-500 hover:bg-danger-100 transition-colors"
         >
           <LogOut className="h-4 w-4" />
           <span className="text-sm font-semibold">Sign out</span>

@@ -45,7 +45,7 @@ function Field({ label, error, children }: { label: string; error?: string; chil
     <div className="space-y-1.5">
       <label className="block text-xs font-semibold text-foreground">{label}</label>
       {children}
-      {error && <p className="text-xs text-danger-600">{error}</p>}
+      {error && <p className="text-xs text-danger-700 dark:text-danger-500">{error}</p>}
     </div>
   );
 }
@@ -220,9 +220,9 @@ export default function AdminProductsPage() {
       <div className="flex gap-3 flex-wrap">
         {[
           { label: "Total", value: stats.total, color: "text-foreground" },
-          { label: "Active", value: stats.active, color: "text-success-600" },
-          { label: "Out of Stock", value: stats.outOfStock, color: "text-danger-600" },
-          { label: "Low Stock", value: stats.lowStock, color: "text-warning-600" },
+          { label: "Active", value: stats.active, color: "text-success-700" },
+          { label: "Out of Stock", value: stats.outOfStock, color: "text-danger-700 dark:text-danger-500" },
+          { label: "Low Stock", value: stats.lowStock, color: "text-warning-700" },
         ].map(s => (
           <div key={s.label} className="flex items-center gap-2 rounded-xl border border-border bg-card px-3 py-2">
             <span className={`font-display text-xl font-bold ${s.color}`}>{s.value}</span>
@@ -299,8 +299,8 @@ export default function AdminProductsPage() {
                     <td className="px-5 py-3.5 text-right font-semibold text-foreground">{formatPHP(product.price)}</td>
                     <td className="px-5 py-3.5 text-right">
                       <span className={cn("font-medium tabular-nums",
-                        product.stock === 0 ? "text-danger-600" :
-                        product.stock <= product.lowStockThreshold ? "text-warning-600" : "text-foreground"
+                        product.stock === 0 ? "text-danger-700 dark:text-danger-500" :
+                        product.stock <= product.lowStockThreshold ? "text-warning-700" : "text-foreground"
                       )}>
                         {product.stock}
                       </span>

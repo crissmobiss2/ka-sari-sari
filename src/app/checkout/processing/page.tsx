@@ -117,7 +117,7 @@ function ProcessingContent() {
           <span key={i} className={cn(
             "text-xs transition-colors duration-300",
             i === step ? "text-brand-500 font-semibold" :
-            i < step ? "text-success-600 font-medium" :
+            i < step ? "text-success-700 font-medium" :
             "text-muted-foreground/50"
           )}>
             {s.label}

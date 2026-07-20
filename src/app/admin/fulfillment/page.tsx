@@ -101,7 +101,7 @@ export default function FulfillmentPage() {
       {/* Summary strip */}
       <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
         {[
-          { label: "To Pick",          count: confirmedCount,      color: "text-warning-600" },
+          { label: "To Pick",          count: confirmedCount,      color: "text-warning-700" },
           { label: "Picking",          count: pickingCount,        color: "text-purple-600" },
           { label: "Ready to Ship",    count: packedCount,         color: "text-info-600" },
           { label: "Out for Delivery", count: outForDeliveryCount, color: "text-brand-600" },
@@ -149,7 +149,7 @@ export default function FulfillmentPage() {
 
                         {/* Wait time row */}
                         <div className="flex items-center justify-between text-xs text-muted-foreground">
-                          <div className={cn("flex items-center gap-1", overdue && "text-warning-600 font-medium")}>
+                          <div className={cn("flex items-center gap-1", overdue && "text-warning-700 font-medium")}>
                             {overdue
                               ? <AlertTriangle className="h-3 w-3 text-warning-500" aria-label="Waiting over 2 hours" />
                               : <Clock className="h-3 w-3" />

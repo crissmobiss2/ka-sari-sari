@@ -66,14 +66,14 @@ export default function SubscriptionPage() {
         ) : (
           <div className={`rounded-2xl border p-6 space-y-4 ${isActive ? "border-success-500/25 bg-success-50" : "border-border bg-card"}`}>
             <div className="flex items-center gap-3">
-              <div className={`flex h-12 w-12 items-center justify-center rounded-2xl ${isActive ? "bg-success-100 text-success-600" : "bg-surface-100 dark:bg-surface-800 text-muted-foreground"}`}>
+              <div className={`flex h-12 w-12 items-center justify-center rounded-2xl ${isActive ? "bg-success-100 text-success-700" : "bg-surface-100 dark:bg-surface-800 text-muted-foreground"}`}>
                 <Shield className="h-6 w-6" />
               </div>
               <div>
                 <p className={`font-display text-lg font-bold ${isActive ? "text-success-700" : "text-foreground"}`}>
                   {sub ? (isActive ? "Active" : "Inactive") : "No Subscription"}
                 </p>
-                <p className={`text-sm ${isActive ? "text-success-600" : "text-muted-foreground"}`}>
+                <p className={`text-sm ${isActive ? "text-success-700" : "text-muted-foreground"}`}>
                   Ka Sari-Sari Platform Access
                 </p>
               </div>
@@ -82,21 +82,21 @@ export default function SubscriptionPage() {
             {sub && (
               <div className="grid grid-cols-2 gap-3">
                 <div className={`rounded-xl p-3 ${isActive ? "bg-white/60" : "bg-surface-50"}`}>
-                  <p className={`text-xs mb-0.5 ${isActive ? "text-success-600" : "text-muted-foreground"}`}>Plan</p>
+                  <p className={`text-xs mb-0.5 ${isActive ? "text-success-700" : "text-muted-foreground"}`}>Plan</p>
                   <p className={`text-sm font-bold ${isActive ? "text-success-700" : "text-surface-900"}`}>
                     {sub.plan === "free_trial" ? "Free Trial (Year 1)" : sub.plan.charAt(0).toUpperCase() + sub.plan.slice(1)}
                   </p>
                 </div>
                 <div className={`rounded-xl p-3 ${isActive ? "bg-white/60" : "bg-surface-50"}`}>
-                  <p className={`text-xs mb-0.5 ${isActive ? "text-success-600" : "text-muted-foreground"}`}>Amount paid</p>
+                  <p className={`text-xs mb-0.5 ${isActive ? "text-success-700" : "text-muted-foreground"}`}>Amount paid</p>
                   <p className={`text-sm font-bold ${isActive ? "text-success-700" : "text-surface-900"}`}>{sub.amount === 0 ? "Free" : formatPHP(sub.amount)}</p>
                 </div>
                 <div className={`rounded-xl p-3 ${isActive ? "bg-white/60" : "bg-surface-50"}`}>
-                  <p className={`text-xs mb-0.5 ${isActive ? "text-success-600" : "text-muted-foreground"}`}>Renews on</p>
+                  <p className={`text-xs mb-0.5 ${isActive ? "text-success-700" : "text-muted-foreground"}`}>Renews on</p>
                   <p className={`text-sm font-bold ${isActive ? "text-success-700" : "text-surface-900"}`}>{sub.renewalDate}</p>
                 </div>
                 <div className={`rounded-xl p-3 ${isActive ? "bg-white/60" : "bg-surface-50"}`}>
-                  <p className={`text-xs mb-0.5 ${isActive ? "text-success-600" : "text-muted-foreground"}`}>Days remaining</p>
+                  <p className={`text-xs mb-0.5 ${isActive ? "text-success-700" : "text-muted-foreground"}`}>Days remaining</p>
                   <p className={`text-sm font-bold ${isActive ? "text-success-700" : "text-surface-900"}`}>{sub.daysLeft} days</p>
                 </div>
               </div>
@@ -125,7 +125,7 @@ export default function SubscriptionPage() {
               {sub.paymentHistory.map((h, i) => (
                 <div key={i} className="flex items-center justify-between py-2 first:pt-0">
                   <div className="flex items-center gap-3">
-                    <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-success-50 text-success-600">
+                    <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-success-50 text-success-700">
                       <CreditCard className="h-4 w-4" />
                     </div>
                     <div>

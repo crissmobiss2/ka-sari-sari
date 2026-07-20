@@ -63,8 +63,8 @@ const STATUS_CONFIG: Record<DriverStatus, { label: string; badgeClass: string; a
   },
   active: {
     label: "Available",
-    badgeClass: "bg-success-50 text-success-600 border border-success-200",
-    avatarClass: "bg-success-100 text-success-600",
+    badgeClass: "bg-success-50 text-success-700 border border-success-200",
+    avatarClass: "bg-success-100 text-success-700",
   },
   off_duty: {
     label: "Off Duty",
@@ -595,7 +595,7 @@ export default function AdminDriversPage() {
                         <div className="flex items-center justify-between gap-2">
                           <p className="text-sm font-semibold text-foreground truncate">{route.name}</p>
                           {assignedDriver && (
-                            <span className="text-[10px] text-warning-600 bg-warning-50 border border-warning-200 rounded-full px-2 py-0.5 shrink-0">
+                            <span className="text-[10px] text-warning-700 bg-warning-50 border border-warning-200 rounded-full px-2 py-0.5 shrink-0">
                               {assignedDriver.initials}
                             </span>
                           )}

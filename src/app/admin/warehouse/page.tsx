@@ -153,8 +153,8 @@ export default function WarehouseDashboardPage() {
           value="68%"
           label="Capacity Used"
           sub="of 5,000 unit capacity"
-          iconBg="bg-brand-50 text-brand-600"
-          accent="text-brand-600"
+          iconBg="bg-brand-50 dark:bg-brand-500/10 text-brand-700 dark:text-foreground"
+          accent="text-brand-700 dark:text-foreground"
           ring={68}
         />
         <KpiCard
@@ -170,8 +170,8 @@ export default function WarehouseDashboardPage() {
           value={`${readyToPack} orders`}
           label="Ready to Pack"
           sub="Awaiting dispatch"
-          iconBg="bg-success-50 text-success-600"
-          accent="text-success-600"
+          iconBg="bg-success-50 dark:bg-success-500/10 text-success-700 dark:text-foreground"
+          accent="text-success-700 dark:text-foreground"
         />
         <KpiCard
           icon={Truck}
@@ -215,7 +215,7 @@ export default function WarehouseDashboardPage() {
                     </div>
                     <div className="text-right shrink-0">
                       <p className="text-xs text-muted-foreground">
-                        {pl.assignedTo ?? <span className="text-warning-600 font-medium">Unassigned</span>}
+                        {pl.assignedTo ?? <span className="text-warning-700 font-medium">Unassigned</span>}
                       </p>
                       <p className="text-xs text-muted-foreground mt-0.5">{totalItems} items</p>
                     </div>
@@ -334,7 +334,7 @@ export default function WarehouseDashboardPage() {
           <div className="space-y-3">
             <div className="flex items-center justify-between">
               <h2 className="font-display text-base font-semibold text-foreground">Stock Alerts</h2>
-              <span className="flex h-5 w-5 items-center justify-center rounded-full bg-danger-50 text-danger-600 text-[10px] font-bold">
+              <span className="flex h-5 w-5 items-center justify-center rounded-full bg-danger-50 dark:bg-danger-500/10 text-danger-700 dark:text-foreground text-[10px] font-bold">
                 {STOCK_ALERTS.length}
               </span>
             </div>
@@ -345,14 +345,14 @@ export default function WarehouseDashboardPage() {
                   <div
                     className={cn(
                       "flex h-7 w-7 shrink-0 items-center justify-center rounded-lg",
-                      alert.level === "out" ? "bg-danger-50 text-danger-600" : "bg-warning-50 text-warning-600"
+                      alert.level === "out" ? "bg-danger-50 dark:bg-danger-500/10 text-danger-700 dark:text-foreground" : "bg-warning-50 dark:bg-warning-500/10 text-warning-700 dark:text-foreground"
                     )}
                   >
                     <AlertTriangle className="h-3.5 w-3.5" />
                   </div>
                   <div className="flex-1 min-w-0">
                     <p className="text-xs font-medium text-foreground truncate">{alert.name}</p>
-                    <p className={cn("text-[11px] font-semibold", alert.level === "out" ? "text-danger-600" : "text-warning-600")}>
+                    <p className={cn("text-[11px] font-semibold", alert.level === "out" ? "text-danger-700" : "text-warning-700")}>
                       {alert.level === "out" ? "Out of Stock" : `Low — ${alert.stock} units`}
                     </p>
                   </div>
@@ -360,7 +360,7 @@ export default function WarehouseDashboardPage() {
                     href="/admin/purchase-orders"
                     size="sm"
                     variant="ghost"
-                    className="text-[11px] h-7 px-2 text-brand-600 hover:bg-brand-50 shrink-0"
+                    className="text-[11px] h-7 px-2 text-brand-700 hover:bg-brand-50 shrink-0"
                   >
                     Replenish
                   </ButtonLink>
@@ -381,7 +381,7 @@ export default function WarehouseDashboardPage() {
             return (
               <Card key={cat.id} className="p-3.5 flex flex-col gap-2.5">
                 <div className="flex items-center justify-between">
-                  <div className="flex h-6 w-6 items-center justify-center rounded-lg bg-brand-50 text-brand-600 text-xs font-bold font-mono">
+                  <div className="flex h-6 w-6 items-center justify-center rounded-lg bg-brand-50 dark:bg-brand-500/10 text-brand-700 dark:text-foreground text-xs font-bold font-mono">
                     {info.aisle}
                   </div>
                   <span className="text-[10px] text-muted-foreground font-medium">{info.items} SKUs</span>

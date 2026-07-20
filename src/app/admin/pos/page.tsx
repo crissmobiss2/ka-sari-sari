@@ -219,7 +219,7 @@ export default function POSPage() {
               <span className="text-brand-500">{formatPHP(total)}</span>
             </div>
             {payMethod === "cash" && change > 0 && (
-              <div className="flex justify-between text-sm font-semibold text-success-600">
+              <div className="flex justify-between text-sm font-semibold text-success-700">
                 <span>Change</span>
                 <span>{formatPHP(change)}</span>
               </div>
@@ -334,7 +334,7 @@ export default function POSPage() {
                     <div className={cn("h-20 flex items-center justify-center relative bg-gradient-to-br", d.gradient)}>
                       <span className="text-4xl">{d.emoji}</span>
                       {inCart && <span className="absolute top-1.5 right-1.5 h-6 w-6 rounded-full bg-brand-700 text-white text-[11px] font-bold flex items-center justify-center shadow">{inCart.quantity}</span>}
-                      {outOfStock && <div className="absolute inset-0 bg-white/70 flex items-center justify-center"><span className="text-[10px] font-black text-danger-600 tracking-wide">OUT</span></div>}
+                      {outOfStock && <div className="absolute inset-0 bg-white/70 flex items-center justify-center"><span className="text-[10px] font-black text-danger-700 dark:text-danger-500 tracking-wide">OUT</span></div>}
                     </div>
                     <div className="p-2.5">
                       <p className="text-[11px] font-semibold text-foreground line-clamp-2 leading-tight min-h-[28px]">{product.name}</p>
@@ -417,7 +417,7 @@ export default function POSPage() {
                 </div>
               ) : (
                 <div className="flex items-center justify-between text-xs">
-                  <span className="text-success-600 font-medium">âœ“ Promo applied: {promoInput}</span>
+                  <span className="text-success-700 font-medium">âœ“ Promo applied: {promoInput}</span>
                   <button onClick={() => { setPromoApplied(false); setPromoInput(""); setDiscount(0); }} className="text-muted-foreground hover:text-foreground">Remove</button>
                 </div>
               )}
@@ -425,7 +425,7 @@ export default function POSPage() {
                 <div className="flex justify-between text-xs text-muted-foreground">
                   <span>Subtotal ({cartCount})</span><span>{formatPHP(subtotal)}</span>
                 </div>
-                {discount > 0 && <div className="flex justify-between text-xs text-success-600"><span>Discount</span><span>-{formatPHP(discount)}</span></div>}
+                {discount > 0 && <div className="flex justify-between text-xs text-success-700"><span>Discount</span><span>-{formatPHP(discount)}</span></div>}
                 <div className="flex justify-between text-sm font-bold text-foreground border-t border-border pt-1.5">
                   <span>Total</span><span className="text-brand-500 text-base">{formatPHP(total)}</span>
                 </div>
@@ -488,7 +488,7 @@ export default function POSPage() {
                   {cashTendered && cash < total && (
                     <div className="flex items-center gap-2 rounded-xl bg-danger-50 border border-danger-200 px-3 py-2">
                       <AlertCircle className="h-4 w-4 text-danger-500 shrink-0" />
-                      <span className="text-xs text-danger-600 font-medium">Short by {formatPHP(total - cash)}</span>
+                      <span className="text-xs text-danger-700 dark:text-danger-500 font-medium">Short by {formatPHP(total - cash)}</span>
                     </div>
                   )}
                 </div>

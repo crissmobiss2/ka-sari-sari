@@ -36,7 +36,7 @@ const AVG_ORDER_VALUE = 800;
 
 const STATUS_STYLE: Record<PromoStatus, string> = {
   active:    "bg-success-50 text-success-700 border-success-500/25",
-  scheduled: "bg-warning-50 text-warning-600 border-warning-500/25",
+  scheduled: "bg-warning-50 text-warning-700 border-warning-500/25",
   ended:     "bg-surface-100 dark:bg-surface-800 text-muted-foreground border-surface-200",
   paused:    "bg-surface-100 dark:bg-surface-800 text-muted-foreground border-surface-200",
   expired:   "bg-surface-100 dark:bg-surface-800 text-muted-foreground border-surface-200",
@@ -157,7 +157,7 @@ function PromoCard({ promo, onPause, onEdit, onDuplicate, onArchiveOrCancel }: P
               </button>
               <button
                 onClick={() => onArchiveOrCancel(promo.id)}
-                className="flex items-center gap-1.5 rounded-xl border border-danger-200 bg-danger-50 px-3 py-2 text-xs font-medium text-danger-600 hover:bg-danger-100 transition-colors"
+                className="flex items-center gap-1.5 rounded-xl border border-danger-200 bg-danger-50 px-3 py-2 text-xs font-medium text-danger-700 dark:text-danger-500 hover:bg-danger-100 transition-colors"
               >
                 <Ban className="h-3.5 w-3.5" /> Cancel
               </button>
@@ -322,8 +322,8 @@ function CreatePromoModal({ onClose, onSave }: CreatePromoModalProps) {
             value={form.maxUsage}
             onChange={set("maxUsage")}
           />
-          {error && <p className="text-xs text-danger-600">{error}</p>}
-          {saved && <p className="text-xs text-success-600">Promotion created successfully.</p>}
+          {error && <p className="text-xs text-danger-700 dark:text-danger-500">{error}</p>}
+          {saved && <p className="text-xs text-success-700">Promotion created successfully.</p>}
         </div>
         <div className="flex gap-3 p-5 pt-0">
           <button
@@ -483,8 +483,8 @@ function EditPromoModal({ promo, onClose, onSave }: EditPromoModalProps) {
             value={form.maxUsage}
             onChange={set("maxUsage")}
           />
-          {error && <p className="text-xs text-danger-600">{error}</p>}
-          {saved && <p className="text-xs text-success-600">Promotion updated successfully.</p>}
+          {error && <p className="text-xs text-danger-700 dark:text-danger-500">{error}</p>}
+          {saved && <p className="text-xs text-success-700">Promotion updated successfully.</p>}
         </div>
         <div className="flex gap-3 p-5 pt-0">
           <button
@@ -655,8 +655,8 @@ export default function AdminPromotionsPage() {
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
         {[
           { icon: Zap, label: "Active Promos", value: activeCount.toString(), color: "text-brand-500", bg: "bg-brand-50" },
-          { icon: BarChart3, label: "Total Uses", value: totalUses.toString(), color: "text-success-600", bg: "bg-success-50" },
-          { icon: TrendingUp, label: "Revenue Impact", value: revenueImpactLabel, color: "text-warning-600", bg: "bg-warning-50" },
+          { icon: BarChart3, label: "Total Uses", value: totalUses.toString(), color: "text-success-700", bg: "bg-success-50" },
+          { icon: TrendingUp, label: "Revenue Impact", value: revenueImpactLabel, color: "text-warning-700", bg: "bg-warning-50" },
         ].map((s) => (
           <Card key={s.label} className="p-4 flex items-center gap-4">
             <div className={cn("flex h-10 w-10 shrink-0 items-center justify-center rounded-xl", s.bg, s.color)}>

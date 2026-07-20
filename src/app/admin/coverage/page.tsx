@@ -30,7 +30,7 @@ function CityRow({ city }: { city: NexoflowCity }) {
         <span className="text-xs text-muted-foreground ml-2">{city.province}</span>
       </div>
       {count > 0 ? (
-        <span className="text-xs font-semibold text-success-600 bg-success-50 border border-success-200 rounded-full px-2 py-0.5">
+        <span className="text-xs font-semibold text-success-700 bg-success-50 border border-success-200 rounded-full px-2 py-0.5">
           {count} retailers
         </span>
       ) : (
@@ -81,9 +81,9 @@ export default function CoveragePage() {
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
         {[
           { label: "Partner Cities", value: "137", sub: "Luzon Â· Visayas Â· Mindanao", icon: MapPin, color: "text-brand-600 bg-brand-50" },
-          { label: "Active Cities", value: activeCities.toString(), sub: `${NEXOFLOW_CITIES.length - activeCities} not yet activated`, icon: CheckCircle2, color: "text-success-600 bg-success-50" },
+          { label: "Active Cities", value: activeCities.toString(), sub: `${NEXOFLOW_CITIES.length - activeCities} not yet activated`, icon: CheckCircle2, color: "text-success-700 bg-success-50" },
           { label: "Total Retailers", value: totalRetailers.toString(), sub: "Registered store owners", icon: Users, color: "text-info-600 bg-info-50" },
-          { label: "Delivery Hubs", value: "5", sub: "NCR Â· N. Luzon Â· S. Luzon Â· Visayas Â· Mindanao", icon: Truck, color: "text-warning-600 bg-warning-50" },
+          { label: "Delivery Hubs", value: "5", sub: "NCR Â· N. Luzon Â· S. Luzon Â· Visayas Â· Mindanao", icon: Truck, color: "text-warning-700 bg-warning-50" },
         ].map((s) => (
           <Card key={s.label}>
             <CardContent className="p-5">

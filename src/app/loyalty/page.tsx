@@ -284,7 +284,7 @@ export default function LoyaltyPage() {
                   entry.type === "earn" ? "bg-success-50" : "bg-brand-50"
                 )}>
                   {entry.type === "earn"
-                    ? <Star className="h-4 w-4 text-success-600" />
+                    ? <Star className="h-4 w-4 text-success-700" />
                     : <Gift className="h-4 w-4 text-brand-500" />}
                 </div>
                 <div className="flex-1 min-w-0">
@@ -293,7 +293,7 @@ export default function LoyaltyPage() {
                 </div>
                 <span className={cn(
                   "text-sm font-black tabular-nums shrink-0",
-                  entry.type === "earn" ? "text-success-600" : "text-brand-500"
+                  entry.type === "earn" ? "text-success-700" : "text-brand-500"
                 )}>
                   {entry.type === "earn" ? "+" : "−"}{entry.pts} pts
                 </span>

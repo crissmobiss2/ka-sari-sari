@@ -187,7 +187,7 @@ export default function RetailerPOSPage() {
         </header>
         <div className="flex-1 flex flex-col items-center justify-center p-6 text-center gap-4">
           <div className="flex h-16 w-16 items-center justify-center rounded-full bg-success-100">
-            <CheckCircle2 className="h-8 w-8 text-success-600" />
+            <CheckCircle2 className="h-8 w-8 text-success-700" />
           </div>
           <div>
             <p className="font-display text-xl font-bold text-foreground">Payment received!</p>

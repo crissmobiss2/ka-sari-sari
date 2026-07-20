@@ -169,7 +169,7 @@ export default function RegisterPage() {
                 leftIcon={<Phone className="h-4 w-4" />}
               />
               {error && (
-                <p className="text-sm text-danger-600">{error}</p>
+                <p className="text-sm text-danger-700 dark:text-danger-500">{error}</p>
               )}
               <Button
                 size="lg"
@@ -203,7 +203,7 @@ export default function RegisterPage() {
                 leftIcon={<CheckCircle2 className="h-4 w-4" />}
               />
               {error && (
-                <p className="text-sm text-danger-600">{error}</p>
+                <p className="text-sm text-danger-700 dark:text-danger-500">{error}</p>
               )}
               <Button
                 size="lg"
@@ -340,7 +340,7 @@ export default function RegisterPage() {
                     <p className="font-display text-3xl font-bold text-brand-500">FREE</p>
                     <p className="text-sm text-muted-foreground">First year on us</p>
                   </div>
-                  <span className="rounded-full bg-success-50 border border-success-500/25 px-2.5 py-1 text-xs font-medium text-success-600">
+                  <span className="rounded-full bg-success-50 border border-success-500/25 px-2.5 py-1 text-xs font-medium text-success-700">
                     No credit card
                   </span>
                 </div>
@@ -354,7 +354,7 @@ export default function RegisterPage() {
               </div>
 
               {error && (
-                <div className="rounded-xl bg-danger-50 border border-danger-500/25 px-4 py-3 text-sm text-danger-600">
+                <div className="rounded-xl bg-danger-50 border border-danger-500/25 px-4 py-3 text-sm text-danger-700 dark:text-danger-500">
                   {error}
                 </div>
               )}

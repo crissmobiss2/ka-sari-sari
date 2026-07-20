@@ -59,7 +59,7 @@ const HUBS: Record<HubKey, HubConfig> = {
     label: "Visayas Hub",
     location: "Mandaue, Cebu",
     color: "bg-success-500",
-    accent: "text-success-600 bg-success-50 border-success-200",
+    accent: "text-success-700 bg-success-50 border-success-200",
     cities: getCitiesByHub("Visayas").length,
     capacity: 400, used: 180, pickers: 2, driversActive: 4,
   },
@@ -194,7 +194,7 @@ export default function WarehouseDashboard() {
           <div>
             <div className="flex items-center justify-between text-xs mb-1">
               <span className="text-muted-foreground">Storage capacity</span>
-              <span className={cn("font-semibold", capacityPct > 80 ? "text-danger-600" : capacityPct > 60 ? "text-warning-600" : "text-success-600")}>
+              <span className={cn("font-semibold", capacityPct > 80 ? "text-danger-700 dark:text-danger-500" : capacityPct > 60 ? "text-warning-700" : "text-success-700")}>
                 {hub.used}/{hub.capacity} pallets ({capacityPct}%)
               </span>
             </div>
@@ -229,7 +229,7 @@ export default function WarehouseDashboard() {
         {[
           { label: "Open Pick Lists", value: openPickLists, icon: ClipboardList, color: "text-brand-500", bg: "bg-brand-500/10" },
           { label: "Items to Pick",   value: itemsToPick,   icon: ScanLine,       color: "text-blue-500",  bg: "bg-blue-500/10" },
-          { label: "Receiving Queue", value: receivingQueue, icon: PackageCheck,  color: "text-warning-600",bg: "bg-warning-50" },
+          { label: "Receiving Queue", value: receivingQueue, icon: PackageCheck,  color: "text-warning-700",bg: "bg-warning-50" },
           { label: "Completed Today", value: completedToday, icon: CheckCircle2,  color: "text-success-700",bg: "bg-success-50" },
           { label: "Packed & Ready",  value: packedCount,    icon: PackageCheck,  color: "text-amber-600",  bg: "bg-amber-50" },
         ].map(({ label, value, icon: Icon, color, bg }) => (
@@ -288,7 +288,7 @@ export default function WarehouseDashboard() {
               <Card key={i} className={cn(t.urgent && "border-warning-200")}>
                 <CardContent className="p-3.5 flex items-center gap-3">
                   <div className={cn("flex h-8 w-8 shrink-0 items-center justify-center rounded-xl", t.urgent ? "bg-warning-100" : "bg-surface-100")}>
-                    <Truck className={cn("h-4 w-4", t.urgent ? "text-warning-600" : "text-muted-foreground")} />
+                    <Truck className={cn("h-4 w-4", t.urgent ? "text-warning-700" : "text-muted-foreground")} />
                   </div>
                   <div className="flex-1 min-w-0">
                     <div className="flex items-center gap-1.5 mb-0.5">
@@ -340,7 +340,7 @@ export default function WarehouseDashboard() {
                   pl.status === "completed" ? "bg-success-50" : pl.status === "in_progress" ? "bg-brand-50" : "bg-surface-100"
                 )}>
                   {pl.status === "completed"
-                    ? <CheckCircle2 className="h-4 w-4 text-success-600" />
+                    ? <CheckCircle2 className="h-4 w-4 text-success-700" />
                     : pl.status === "in_progress"
                     ? <ScanLine className="h-4 w-4 text-brand-500" />
                     : <ClipboardList className="h-4 w-4 text-muted-foreground" />}

@@ -202,13 +202,13 @@ export default function InventoryPage() {
                 <span className="text-[10px] text-muted-foreground text-center leading-tight">Out of Stock</span>
               </div>
               <div className="flex flex-col items-center gap-1">
-                <AlertTriangle className="h-4 w-4 text-warning-600" />
-                <span className="font-display text-xl font-bold text-warning-600">{lowStockCount}</span>
+                <AlertTriangle className="h-4 w-4 text-warning-700" />
+                <span className="font-display text-xl font-bold text-warning-700">{lowStockCount}</span>
                 <span className="text-[10px] text-muted-foreground text-center leading-tight">Low Stock</span>
               </div>
               <div className="flex flex-col items-center gap-1">
-                <CheckCircle2 className="h-4 w-4 text-success-600" />
-                <span className="font-display text-xl font-bold text-success-600">
+                <CheckCircle2 className="h-4 w-4 text-success-700" />
+                <span className="font-display text-xl font-bold text-success-700">
                   {totalUnits.toLocaleString()}
                 </span>
                 <span className="text-[10px] text-muted-foreground text-center leading-tight">Total Units</span>
@@ -272,7 +272,7 @@ export default function InventoryPage() {
       <div className="px-4">
         {lowStockFiltered.length > 0 && (
           <div className="bg-warning-50 border border-warning-300 rounded-xl p-3 mb-3 flex items-start gap-2">
-            <AlertTriangle className="h-4 w-4 text-warning-600 shrink-0 mt-0.5" />
+            <AlertTriangle className="h-4 w-4 text-warning-700 shrink-0 mt-0.5" />
             <p className="text-sm text-warning-700 font-medium">
               {lowStockFiltered.length} product{lowStockFiltered.length !== 1 ? "s are" : " is"} running low on
               stock. Review and reorder soon.
@@ -331,7 +331,7 @@ export default function InventoryPage() {
 
                       {/* Right: stock value + badge + adjust */}
                       <div className="flex flex-col items-end gap-1 shrink-0">
-                        <span className={cn("font-bold text-lg leading-none", isOut ? "text-danger-500" : isLow ? "text-warning-600" : "text-success-600")}>
+                        <span className={cn("font-bold text-lg leading-none", isOut ? "text-danger-500" : isLow ? "text-warning-700" : "text-success-700")}>
                           {stock.toLocaleString()}
                         </span>
                         <Badge variant={isOut ? "danger" : isLow ? "warning" : "success"} className="text-xs">

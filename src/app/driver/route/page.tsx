@@ -317,10 +317,10 @@ export default function RouteMapPage() {
       {/* EOD reconciliation banner */}
       {allDone && (
         <div className="mx-4 mt-4 rounded-2xl border border-success-200 bg-success-50 p-4 flex items-center gap-3">
-          <CheckCircle2 className="h-6 w-6 text-success-600 shrink-0" />
+          <CheckCircle2 className="h-6 w-6 text-success-700 shrink-0" />
           <div className="flex-1">
             <p className="text-sm font-bold text-success-700">Route Complete!</p>
-            <p className="text-xs text-success-600 mt-0.5">Remit {formatPHP(collectedCOD)} COD to dispatch</p>
+            <p className="text-xs text-success-700 mt-0.5">Remit {formatPHP(collectedCOD)} COD to dispatch</p>
           </div>
           <button
             onClick={() => setShowReconcile(true)}
@@ -357,8 +357,8 @@ export default function RouteMapPage() {
                 {/* Status indicator */}
                 <div className={cn(
                   "flex h-8 w-8 shrink-0 items-center justify-center rounded-full font-bold text-sm",
-                  isDone ? "bg-success-100 text-success-600"
-                  : isFailed ? "bg-danger-100 text-danger-600"
+                  isDone ? "bg-success-100 text-success-700"
+                  : isFailed ? "bg-danger-100 text-danger-700 dark:text-danger-500"
                   : isNext ? "bg-brand-700 text-white"
                   : "bg-surface-100 dark:bg-surface-800 text-muted-foreground"
                 )}>
@@ -379,7 +379,7 @@ export default function RouteMapPage() {
                   <p className="text-sm font-black text-foreground">{formatPHP(stop.total)}</p>
                   <div className={cn(
                     "flex items-center gap-0.5 justify-end text-[10px] font-semibold mt-0.5",
-                    stop.paymentMethod === "cod" ? "text-warning-600" : "text-info-600"
+                    stop.paymentMethod === "cod" ? "text-warning-700" : "text-info-600"
                   )}>
                     {payIcon(stop.paymentMethod)}
                     {payLabel(stop.paymentMethod)}
@@ -410,7 +410,7 @@ export default function RouteMapPage() {
                     </div>
                     <div>
                       <p className="text-xs text-muted-foreground uppercase tracking-wide font-medium">Payment</p>
-                      <p className={cn("font-bold mt-0.5", stop.paymentMethod === "cod" ? "text-warning-600" : "text-info-600")}>
+                      <p className={cn("font-bold mt-0.5", stop.paymentMethod === "cod" ? "text-warning-700" : "text-info-600")}>
                         {payLabel(stop.paymentMethod)} Â· {formatPHP(stop.total)}
                       </p>
                     </div>
@@ -425,7 +425,7 @@ export default function RouteMapPage() {
                   {/* COD collection indicator */}
                   {stop.paymentMethod === "cod" && isDone && (
                     <div className="flex items-center gap-2 rounded-xl bg-success-50 border border-success-200 px-3 py-2">
-                      <Banknote className="h-4 w-4 text-success-600" />
+                      <Banknote className="h-4 w-4 text-success-700" />
                       <p className="text-xs font-semibold text-success-700">
                         COD collected: {formatPHP(stop.collectedCOD ?? stop.total)}
                       </p>
@@ -453,7 +453,7 @@ export default function RouteMapPage() {
                       </a>
                       <button
                         onClick={() => { if (window.confirm("Mark this stop as failed delivery?")) { markFailed(stop); } }}
-                        className="flex flex-col items-center gap-1 rounded-xl bg-danger-50 hover:bg-danger-100 px-2 py-2.5 text-xs font-semibold text-danger-600 transition-colors"
+                        className="flex flex-col items-center gap-1 rounded-xl bg-danger-50 hover:bg-danger-100 px-2 py-2.5 text-xs font-semibold text-danger-700 dark:text-danger-500 transition-colors"
                       >
                         <XCircle className="h-4 w-4" />
                         Failed
@@ -472,14 +472,14 @@ export default function RouteMapPage() {
                   )}
 
                   {isDone && (
-                    <div className="flex items-center gap-2 text-sm text-success-600 font-medium">
+                    <div className="flex items-center gap-2 text-sm text-success-700 font-medium">
                       <CheckCircle2 className="h-4 w-4" />
                       Delivered successfully
                     </div>
                   )}
 
                   {isFailed && (
-                    <div className="flex items-center gap-2 text-sm text-danger-600 font-medium">
+                    <div className="flex items-center gap-2 text-sm text-danger-700 dark:text-danger-500 font-medium">
                       <AlertTriangle className="h-4 w-4" />
                       Delivery failed â€” reported to dispatch
                     </div>
@@ -504,7 +504,7 @@ export default function RouteMapPage() {
                   <p className="font-semibold">{s.storeName}</p>
                   <p className="text-xs text-muted-foreground">{s.orderNumber}</p>
                 </div>
-                <div className={cn("text-right font-bold", s.status === "done" ? "text-success-600" : "text-muted-foreground")}>
+                <div className={cn("text-right font-bold", s.status === "done" ? "text-success-700" : "text-muted-foreground")}>
                   {s.status === "done" ? formatPHP(s.total) : "â€”"}
                 </div>
               </div>

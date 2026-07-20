@@ -376,7 +376,7 @@ export default function ForgotPasswordPage() {
                     </div>
 
                     {passwordError && (
-                      <p className="text-sm text-danger-600 font-medium">{passwordError}</p>
+                      <p className="text-sm text-danger-700 dark:text-danger-500 font-medium">{passwordError}</p>
                     )}
 
                     <Button

@@ -273,10 +273,10 @@ export default function ProductDetailPage() {
           {/* SRP savings highlight */}
           {hasSrp && (
             <div className="mt-2 inline-flex items-center gap-1.5 rounded-xl bg-success-50 border border-success-200 px-3 py-1.5">
-              <TrendingDown className="h-4 w-4 text-success-600 shrink-0" />
+              <TrendingDown className="h-4 w-4 text-success-700 shrink-0" />
               <p className="text-sm font-semibold text-success-700">
                 You save {formatPHP(savingsTotal)} vs retail price
-                <span className="ml-1 font-normal text-success-600">({savingsPct}% off SRP)</span>
+                <span className="ml-1 font-normal text-success-700">({savingsPct}% off SRP)</span>
               </p>
             </div>
           )}
@@ -291,7 +291,7 @@ export default function ProductDetailPage() {
           <Tag className="h-5 w-5 text-brand-500 shrink-0" />
           <div>
             <p className="text-xs font-bold text-brand-700 uppercase tracking-wide">Minimum Order</p>
-            <p className="text-sm font-semibold text-brand-600">
+            <p className="text-sm font-semibold text-brand-700 dark:text-brand-500">
               {product.minOrderQty} {product.unit}{product.minOrderQty > 1 ? "s" : ""} per order
             </p>
           </div>
@@ -302,7 +302,7 @@ export default function ProductDetailPage() {
           <div className="flex items-center justify-between mb-3">
             <p className="text-sm font-semibold text-foreground">Quantity</p>
             {belowMinOrder && (
-              <p className="text-xs font-semibold text-danger-600">
+              <p className="text-xs font-semibold text-danger-700 dark:text-danger-500">
                 Min. {product.minOrderQty} required
               </p>
             )}
@@ -327,7 +327,7 @@ export default function ProductDetailPage() {
               <p className="text-xs text-muted-foreground">Total</p>
               <p className="text-lg font-bold text-foreground">{formatPHP(product.price * qty)}</p>
               {activeTier && (
-                <p className="text-xs text-success-600 font-semibold">{activeTier.discountPct}% bulk discount applied</p>
+                <p className="text-xs text-success-700 font-semibold">{activeTier.discountPct}% bulk discount applied</p>
               )}
             </div>
           </div>
@@ -336,7 +336,7 @@ export default function ProductDetailPage() {
         {/* Bulk discount hint */}
         <div className="rounded-2xl border border-border bg-card shadow-card p-4">
           <div className="flex items-center gap-2 mb-3">
-            <TrendingDown className="h-4 w-4 text-success-600" />
+            <TrendingDown className="h-4 w-4 text-success-700" />
             <h2 className="text-sm font-bold text-foreground">Bulk Discounts Available</h2>
           </div>
           <div className="space-y-2">
@@ -366,7 +366,7 @@ export default function ProductDetailPage() {
                       -{tier.discountPct}%
                     </span>
                     {isActive && (
-                      <CheckCircle2 className="h-3.5 w-3.5 text-success-600" />
+                      <CheckCircle2 className="h-3.5 w-3.5 text-success-700" />
                     )}
                   </div>
                 </div>
@@ -413,8 +413,8 @@ export default function ProductDetailPage() {
           </div>
           {hasSrp && (
             <div className="mt-1 pt-2 border-t border-border flex justify-between items-center">
-              <span className="text-xs font-semibold text-success-600">Your savings per unit</span>
-              <span className="text-sm font-bold text-success-600">{formatPHP(savingsPerUnit)} ({savingsPct}% off)</span>
+              <span className="text-xs font-semibold text-success-700">Your savings per unit</span>
+              <span className="text-sm font-bold text-success-700">{formatPHP(savingsPerUnit)} ({savingsPct}% off)</span>
             </div>
           )}
         </div>
@@ -482,7 +482,7 @@ export default function ProductDetailPage() {
         ) : (
           <div className="space-y-2">
             {belowMinOrder && !isOutOfStock && (
-              <p className="text-center text-xs text-danger-600 font-semibold">
+              <p className="text-center text-xs text-danger-700 dark:text-danger-500 font-semibold">
                 Set quantity to at least {product.minOrderQty} to add to cart
               </p>
             )}

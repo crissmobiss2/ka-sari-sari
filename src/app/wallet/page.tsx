@@ -224,10 +224,10 @@ export default function WalletPage() {
         {/* Payment pending notice */}
         {paymentPending && (
           <div className="flex items-start gap-3 rounded-2xl border border-warning-200 bg-warning-50 px-4 py-3.5">
-            <Clock className="h-4 w-4 text-warning-600 shrink-0 mt-0.5" />
+            <Clock className="h-4 w-4 text-warning-700 shrink-0 mt-0.5" />
             <div className="flex-1">
               <p className="text-sm font-semibold text-warning-700">Waiting for payment confirmation…</p>
-              <p className="text-xs text-warning-600 mt-0.5">
+              <p className="text-xs text-warning-700 mt-0.5">
                 Complete your payment in the checkout page. Your wallet balance will update automatically once confirmed.
               </p>
             </div>
@@ -556,7 +556,7 @@ export default function WalletPage() {
             {withdrawStep === "done" && (
               <div className="text-center py-4 space-y-3">
                 <div className="flex h-16 w-16 items-center justify-center rounded-full bg-success-100 mx-auto">
-                  <CheckCircle2 className="h-8 w-8 text-success-600" />
+                  <CheckCircle2 className="h-8 w-8 text-success-700" />
                 </div>
                 <div>
                   <p className="font-display text-base font-bold text-foreground">{formatPHP(withdrawAmount)} on its way!</p>
@@ -581,7 +581,7 @@ export default function WalletPage() {
                 <div key={txn.id} className="flex items-center gap-3 px-4 py-3.5">
                   <div className={cn(
                     "flex h-10 w-10 items-center justify-center rounded-xl shrink-0",
-                    txn.type === "credit" ? "bg-success-50 text-success-600" : "bg-danger-50 text-danger-500"
+                    txn.type === "credit" ? "bg-success-50 text-success-700" : "bg-danger-50 text-danger-500"
                   )}>
                     {txn.type === "credit"
                       ? <ArrowDownLeft className="h-5 w-5" />
@@ -596,7 +596,7 @@ export default function WalletPage() {
                   </div>
                   <span className={cn(
                     "text-sm font-bold shrink-0",
-                    txn.type === "credit" ? "text-success-600" : "text-foreground"
+                    txn.type === "credit" ? "text-success-700" : "text-foreground"
                   )}>
                     {txn.type === "credit" ? "+" : "−"}{formatPHP(txn.amount)}
                   </span>

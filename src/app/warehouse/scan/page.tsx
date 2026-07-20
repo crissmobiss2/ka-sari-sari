@@ -202,8 +202,8 @@ export default function ScanPage() {
                   (foundProduct.stock ?? 0) === 0
                     ? "text-danger-500"
                     : (foundProduct.stock ?? 0) <= 20
-                    ? "text-warning-600"
-                    : "text-success-600"
+                    ? "text-warning-700"
+                    : "text-success-700"
                 )}
               >
                 {foundProduct.stock ?? 0}

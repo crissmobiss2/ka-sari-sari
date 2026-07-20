@@ -479,7 +479,7 @@ export default function PickingPage() {
 
                       {/* Picked badge */}
                       {isItemPicked && !isCompleted && (
-                        <span className="text-xs font-medium text-success-600 shrink-0">Picked</span>
+                        <span className="text-xs font-medium text-success-700 shrink-0">Picked</span>
                       )}
 
                       {/* Completed checkmark */}
@@ -540,7 +540,7 @@ export default function PickingPage() {
               {/* Completed footer */}
               {isCompleted && (
                 <div className="flex items-center gap-2 border-t border-border px-5 py-3 bg-success-50/40">
-                  <CheckCircle2 className="h-4 w-4 text-success-600 shrink-0" />
+                  <CheckCircle2 className="h-4 w-4 text-success-700 shrink-0" />
                   <p className="text-xs font-medium text-success-700">
                     All {totalCount} items picked — ready to pack
                   </p>

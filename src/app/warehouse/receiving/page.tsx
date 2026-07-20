@@ -284,7 +284,7 @@ export default function ReceivingPage() {
   const completed = receipts.filter((gr) => gr.status === "completed");
 
   const sections = [
-    { label: "Pending Receipt", items: pending, accent: "text-warning-600" },
+    { label: "Pending Receipt", items: pending, accent: "text-warning-700" },
     { label: "In Progress", items: inProgress, accent: "text-blue-600" },
     { label: "Completed", items: completed, accent: "text-success-700" },
   ];
@@ -577,7 +577,7 @@ function ReceiptCard({
                             </button>
                           </div>
                           {form.barcode && form.barcode !== item.sku && (
-                            <p className="text-xs text-warning-600 font-medium">
+                            <p className="text-xs text-warning-700 font-medium">
                               SKU mismatch — expected {item.sku}
                             </p>
                           )}
@@ -676,7 +676,7 @@ function ReceiptCard({
               <Button
                 variant="outline"
                 size="sm"
-                className="border-danger-400 text-danger-600 hover:bg-danger-50 hover:border-danger-500"
+                className="border-danger-400 text-danger-700 dark:text-danger-500 hover:bg-danger-50 hover:border-danger-500"
                 onClick={handleReject}
               >
                 Reject Shipment

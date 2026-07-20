@@ -137,7 +137,7 @@ function AiFeatureRow({ feature }: { feature: AiFeature }) {
           {/* Expand toggle */}
           <button
             onClick={() => setExpanded(!expanded)}
-            className="flex items-center gap-1 mt-2 text-xs text-brand-500 hover:text-brand-600 font-medium transition-colors"
+            className="flex items-center gap-1 mt-2 text-xs text-brand-700 hover:text-brand-800 font-medium transition-colors"
           >
             {expanded ? <ChevronUp className="h-3 w-3" /> : <ChevronDown className="h-3 w-3" />}
             {expanded ? "Less details" : "How it works"}
@@ -238,7 +238,7 @@ export default function AdminSettingsPage() {
               />
             ))}
             {saveErrors[section.title] && (
-              <p className="text-sm text-danger-600">{saveErrors[section.title]}</p>
+              <p className="text-sm text-danger-700">{saveErrors[section.title]}</p>
             )}
             <Button size="md" onClick={() => handleSaveSection(section.title)} className="flex items-center gap-1.5">
               {savedSections[section.title] ? <><Check className="h-4 w-4" /> Saved!</> : `Save ${section.title}`}

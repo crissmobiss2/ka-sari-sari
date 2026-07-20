@@ -87,7 +87,7 @@ function LiveLocationSection({ location }: { location: DriverLocation | null }) 
             <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-success-500 opacity-75" />
             <span className="relative inline-flex rounded-full h-2 w-2 bg-success-500" />
           </span>
-          <span className="text-[11px] text-success-600 font-semibold">Live</span>
+          <span className="text-[11px] text-success-700 font-semibold">Live</span>
         </div>
       </div>
 
@@ -149,7 +149,7 @@ function RouteMap() {
             <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-success-500 opacity-75" />
             <span className="relative inline-flex rounded-full h-2 w-2 bg-success-500" />
           </span>
-          <span className="text-[11px] text-success-600 font-semibold">Tracking Active</span>
+          <span className="text-[11px] text-success-700 font-semibold">Tracking Active</span>
         </div>
       </div>
 
@@ -334,7 +334,7 @@ function DriverCard({ driver = DRIVER }: { driver?: typeof DRIVER }) {
             className={cn(
               "flex flex-col items-center gap-1.5 rounded-xl border py-3 transition-colors",
               called
-                ? "border-success-200 bg-success-50 text-success-600"
+                ? "border-success-200 bg-success-50 text-success-700"
                 : "border-brand-200 bg-brand-50 text-brand-600 hover:bg-brand-100"
             )}
           >
@@ -345,7 +345,7 @@ function DriverCard({ driver = DRIVER }: { driver?: typeof DRIVER }) {
             href={waLink}
             target="_blank"
             rel="noreferrer"
-            className="flex flex-col items-center gap-1.5 rounded-xl border border-success-200 bg-success-50 py-3 text-success-600 hover:bg-success-100 transition-colors"
+            className="flex flex-col items-center gap-1.5 rounded-xl border border-success-200 bg-success-50 py-3 text-success-700 hover:bg-success-100 transition-colors"
           >
             <MessageCircle className="h-4 w-4" />
             <span className="text-[11px] font-semibold">WhatsApp</span>
@@ -410,7 +410,7 @@ function StopsBreakdown() {
                   {stop.label}
                 </p>
                 <span className={cn("text-[11px] shrink-0 tabular-nums font-medium",
-                  stop.status === "done"    ? "text-success-600" :
+                  stop.status === "done"    ? "text-success-700" :
                   stop.status === "current" ? "text-brand-500" : "text-muted-foreground"
                 )}>
                   {stop.eta}
@@ -463,7 +463,7 @@ function LiveUpdates({ extraUpdates = [] }: { extraUpdates?: typeof INITIAL_UPDA
             <span className="text-[11px] text-muted-foreground shrink-0 w-16 tabular-nums pt-0.5">{u.time}</span>
             <p className={cn("text-[11px] flex-1 leading-relaxed",
               u.type === "highlight" ? "text-brand-600 font-semibold" :
-              u.type === "success"   ? "text-success-600 font-medium" :
+              u.type === "success"   ? "text-success-700 font-medium" :
               "text-foreground"
             )}>
               {u.text}
@@ -700,10 +700,10 @@ export default function TrackingPage() {
         {/* COD notice */}
         {(orderData ?? ORDER).paymentMethod.toLowerCase() === "cod" && (
           <div className="mx-4 rounded-xl border border-warning-200 bg-warning-50 px-4 py-3 flex items-start gap-3">
-            <Clock className="h-4 w-4 text-warning-600 shrink-0 mt-0.5" />
+            <Clock className="h-4 w-4 text-warning-700 shrink-0 mt-0.5" />
             <div>
               <p className="text-xs font-bold text-warning-700 mb-0.5">Prepare Cash on Delivery</p>
-              <p className="text-xs text-warning-600 leading-relaxed">
+              <p className="text-xs text-warning-700 leading-relaxed">
                 Have <strong>₱{(orderData ?? ORDER).total.toLocaleString()} cash</strong> ready when the driver arrives.
                 Payment is collected on delivery.
               </p>

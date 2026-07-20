@@ -125,7 +125,7 @@ export default function ProfilePage() {
             <p className="text-2xs text-muted-foreground uppercase tracking-wide font-medium text-center">Today</p>
           </div>
           <div className="flex flex-col items-center gap-1 px-3">
-            <p className="font-display text-xl font-bold text-success-600 tabular-nums">{driver.rating}</p>
+            <p className="font-display text-xl font-bold text-success-700 tabular-nums">{driver.rating}</p>
             <p className="text-2xs text-muted-foreground uppercase tracking-wide font-medium text-center">Rating</p>
           </div>
         </div>
@@ -227,7 +227,7 @@ export default function ProfilePage() {
           fetch("/api/auth/logout", { method: "POST" })
             .finally(() => router.push("/login"));
         }}
-        className="w-full py-3 rounded-lg border-2 border-danger-500 text-danger-600 font-semibold text-sm hover:bg-danger-50 active:bg-danger-100 transition-colors"
+        className="w-full py-3 rounded-lg border-2 border-danger-500 text-danger-700 dark:text-danger-500 font-semibold text-sm hover:bg-danger-50 active:bg-danger-100 transition-colors"
       >
         Sign Out
       </button>

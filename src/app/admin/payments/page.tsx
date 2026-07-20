@@ -339,7 +339,7 @@ export default function PaymentsPage() {
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">
         <Card>
           <CardContent className="p-4">
-            <div className="h-8 w-8 rounded-xl flex items-center justify-center mb-3 bg-success-50 text-success-600">
+            <div className="h-8 w-8 rounded-xl flex items-center justify-center mb-3 bg-success-50 text-success-700">
               <TrendingUp className="h-4 w-4" />
             </div>
             <p className="font-display text-lg font-bold text-foreground">{formatPHP(collected)}</p>
@@ -350,7 +350,7 @@ export default function PaymentsPage() {
 
         <Card>
           <CardContent className="p-4">
-            <div className="h-8 w-8 rounded-xl flex items-center justify-center mb-3 bg-warning-50 text-warning-600">
+            <div className="h-8 w-8 rounded-xl flex items-center justify-center mb-3 bg-warning-50 text-warning-700">
               <Clock className="h-4 w-4" />
             </div>
             <p className="font-display text-lg font-bold text-foreground">{formatPHP(totalPending)}</p>
@@ -374,7 +374,7 @@ export default function PaymentsPage() {
 
         <Card>
           <CardContent className="p-4">
-            <div className="h-8 w-8 rounded-xl flex items-center justify-center mb-3 bg-danger-50 text-danger-600">
+            <div className="h-8 w-8 rounded-xl flex items-center justify-center mb-3 bg-danger-50 text-danger-700 dark:text-danger-500">
               <TrendingDown className="h-4 w-4" />
             </div>
             <p className="font-display text-lg font-bold text-foreground">{formatPHP(failedTotal)}</p>
@@ -416,7 +416,7 @@ export default function PaymentsPage() {
             <div className="mt-2 space-y-1">
               <div className="flex justify-between text-xs">
                 <span className="text-muted-foreground">Collected</span>
-                <span className="font-semibold text-success-600">{formatPHP(stats.completed)}</span>
+                <span className="font-semibold text-success-700">{formatPHP(stats.completed)}</span>
               </div>
               <div className="flex justify-between text-xs">
                 <span className="text-muted-foreground">Pending</span>
@@ -443,7 +443,7 @@ export default function PaymentsPage() {
       {needsReconcile.length > 0 && (
         <div className="rounded-2xl border border-warning-200 bg-warning-50 dark:bg-surface-800 dark:border-warning-600/40 p-4">
           <div className="flex items-start gap-3">
-            <AlertCircle className="h-4 w-4 text-warning-600 shrink-0 mt-0.5" />
+            <AlertCircle className="h-4 w-4 text-warning-700 shrink-0 mt-0.5" />
             <div className="flex-1 min-w-0">
               <p className="text-sm font-semibold text-warning-800">
                 {needsReconcile.length} COD {needsReconcile.length === 1 ? "order needs" : "orders need"} reconciliation
@@ -750,7 +750,7 @@ export default function PaymentsPage() {
                   </button>
                   <button
                     onClick={() => { handleMarkFailed(selected.id); }}
-                    className="flex-1 h-10 rounded-xl border border-danger-200 text-danger-600 text-sm font-semibold hover:bg-danger-50 transition-colors"
+                    className="flex-1 h-10 rounded-xl border border-danger-200 text-danger-700 dark:text-danger-500 text-sm font-semibold hover:bg-danger-50 transition-colors"
                   >
                     Mark Failed
                   </button>

@@ -350,12 +350,12 @@ export default function ChatPage() {
             className="mx-4 mb-2.5 flex items-center justify-between rounded-xl border border-success-200 bg-success-50 px-3 py-2 cursor-pointer hover:bg-success-100 transition-colors"
           >
             <div className="flex items-center gap-2">
-              <ShoppingCart className="h-3.5 w-3.5 text-success-600" />
+              <ShoppingCart className="h-3.5 w-3.5 text-success-700" />
               <span className="text-xs font-semibold text-success-700">
                 {cart.length} item{cart.length !== 1 ? "s" : ""} · ₱{cartTotal.toLocaleString()}
               </span>
             </div>
-            <span className="text-xs text-success-600 font-semibold">{showCart ? "Isara ▲" : "Tingnan ▼"}</span>
+            <span className="text-xs text-success-700 font-semibold">{showCart ? "Isara ▲" : "Tingnan ▼"}</span>
           </div>
         )}
 
@@ -458,7 +458,7 @@ export default function ChatPage() {
               <div className="rounded-lg bg-warning-50 border border-warning-200 px-3 py-2 space-y-0.5">
                 <p className="text-xs font-medium text-warning-700">Needs clarification:</p>
                 {aiParsedOrder.clarifications.map((c, i) => (
-                  <p key={i} className="text-xs text-warning-600">• {c}</p>
+                  <p key={i} className="text-xs text-warning-700">• {c}</p>
                 ))}
               </div>
             )}

@@ -179,7 +179,7 @@ function iconColors(notif: Notification, unread: boolean) {
   if (!unread) return "bg-surface-100 dark:bg-surface-800 text-muted-foreground";
   if (notif.type === "payment_received" || notif.type === "order_delivered")
     return "bg-success-50 text-success-700";
-  if (notif.type === "low_stock") return "bg-warning-50 text-warning-600";
+  if (notif.type === "low_stock") return "bg-warning-50 text-warning-700";
   if (/deal|promo/i.test(notif.title + notif.message))
     return "bg-brand-50 text-brand-600";
   return "bg-brand-100 dark:bg-brand-700 text-brand-600 dark:text-white";

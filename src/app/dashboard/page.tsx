@@ -210,7 +210,7 @@ export default function DashboardPage() {
                   </div>
                   <ChevronRight className="h-4 w-4 text-brand-400" />
                 </div>
-                <p className="text-xs text-brand-600">{activeOrder.orderNumber} · {activeOrder.eta ? `Expected by ${activeOrder.eta}` : "Estimated delivery by today"}</p>
+                <p className="text-xs text-brand-700 dark:text-brand-500">{activeOrder.orderNumber} · {activeOrder.eta ? `Expected by ${activeOrder.eta}` : "Estimated delivery by today"}</p>
                 <div className="mt-3 flex gap-1">
                   {(["confirmed", "picking", "packed", "out_for_delivery"] as OrderStatus[]).map((s, i) => {
                     const steps = ["confirmed", "picking", "packed", "out_for_delivery"];
@@ -365,7 +365,7 @@ export default function DashboardPage() {
                         </div>
                         <span className="text-[10px] text-muted-foreground">{p.stock} left</span>
                       </div>
-                      <p className="text-xs text-brand-600 font-bold mt-0.5">{formatPHP(p.price)} · min {p.minOrderQty} {p.unit}s</p>
+                      <p className="text-xs text-brand-700 dark:text-brand-500 font-bold mt-0.5">{formatPHP(p.price)} · min {p.minOrderQty} {p.unit}s</p>
                     </div>
                     <button
                       onClick={() => addItem(p)}

@@ -39,9 +39,9 @@ type PORecord = {
 
 const STATUS_STYLE: Record<POStatus, string> = {
   draft:     "bg-surface-100 dark:bg-surface-800 text-muted-foreground border-surface-200",
-  sent:      "bg-warning-50 text-warning-600 border-warning-500/25",
+  sent:      "bg-warning-50 text-warning-700 border-warning-500/25",
   confirmed: "bg-blue-50 text-blue-600 border-blue-200",
-  received:  "bg-success-50 text-success-600 border-success-500/25",
+  received:  "bg-success-50 text-success-700 border-success-500/25",
   partial:   "bg-orange-50 text-orange-600 border-orange-200",
 };
 
@@ -103,9 +103,9 @@ const AUTO_POS: AutoPOEntry[] = [
 ];
 
 const URGENCY_BADGE: Record<AutoPOEntry["urgency"], string> = {
-  critical: "bg-danger-50 text-danger-600 border-danger-200",
+  critical: "bg-danger-50 text-danger-700 dark:text-danger-500 border-danger-200",
   high:     "bg-brand-50 text-brand-600 border-brand-200",
-  medium:   "bg-warning-50 text-warning-600 border-warning-200",
+  medium:   "bg-warning-50 text-warning-700 border-warning-200",
 };
 
 const URGENCY_LABEL: Record<AutoPOEntry["urgency"], string> = {
@@ -461,7 +461,7 @@ function CreatePOModal({ onClose, onSubmit, initialSupplier = "", initialItems, 
           </div>
 
           {validationError && (
-            <p className="text-xs text-danger-600">{validationError}</p>
+            <p className="text-xs text-danger-700 dark:text-danger-500">{validationError}</p>
           )}
 
           <div className="flex justify-end items-center gap-2 pt-2 border-t border-border">
@@ -547,7 +547,7 @@ function POCard({ po, onSend, onEdit, onDelete, confirmDeleteId, onConfirmDelete
             <>
               {isConfirmingDelete ? (
                 <>
-                  <span className="flex items-center text-xs text-danger-600 font-medium">Delete this PO?</span>
+                  <span className="flex items-center text-xs text-danger-700 dark:text-danger-500 font-medium">Delete this PO?</span>
                   <button
                     onClick={() => onDelete(po.id)}
                     className="flex items-center gap-1.5 rounded-xl bg-danger-500 px-3 py-2 text-xs font-medium text-white hover:bg-danger-600 transition-colors"
@@ -577,7 +577,7 @@ function POCard({ po, onSend, onEdit, onDelete, confirmDeleteId, onConfirmDelete
                   </button>
                   <button
                     onClick={() => onConfirmDelete(po.id)}
-                    className="flex items-center gap-1.5 rounded-xl border border-danger-200 bg-danger-50 px-3 py-2 text-xs font-medium text-danger-600 hover:bg-danger-100 transition-colors"
+                    className="flex items-center gap-1.5 rounded-xl border border-danger-200 bg-danger-50 px-3 py-2 text-xs font-medium text-danger-700 dark:text-danger-500 hover:bg-danger-100 transition-colors"
                   >
                     <Trash2 className="h-3.5 w-3.5" /> Delete
                   </button>

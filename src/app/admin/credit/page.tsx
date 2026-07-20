@@ -52,8 +52,8 @@ const APPLICATION_STATUS_CONFIG = {
 } as const;
 
 const STATUS_CONFIG: Record<CreditStatus, { label: string; color: string; badge: string; icon: typeof CheckCircle2 }> = {
-  good:      { label: "Good Standing",  color: "text-success-600 bg-success-50 border-success-200",  badge: "success",  icon: CheckCircle2 },
-  overdue:   { label: "Overdue",        color: "text-danger-600 bg-danger-50 border-danger-200",      badge: "danger",   icon: AlertTriangle },
+  good:      { label: "Good Standing",  color: "text-success-700 bg-success-50 border-success-200",  badge: "success",  icon: CheckCircle2 },
+  overdue:   { label: "Overdue",        color: "text-danger-700 dark:text-danger-500 bg-danger-50 border-danger-200",      badge: "danger",   icon: AlertTriangle },
   at_limit:  { label: "At Limit",       color: "text-warning-700 bg-warning-50 border-warning-200",   badge: "warning",  icon: TrendingUp },
   suspended: { label: "Suspended",      color: "text-muted-foreground bg-surface-100 border-border",  badge: "neutral",  icon: Clock },
 };
@@ -575,7 +575,7 @@ export default function AdminCreditPage() {
                         </button>
                         <button
                           onClick={() => { setRejectApp(app); setRejectReason(""); }}
-                          className="rounded-lg border border-danger-200 text-danger-600 px-3 py-1.5 text-xs font-semibold hover:bg-danger-50 transition-colors"
+                          className="rounded-lg border border-danger-200 text-danger-700 dark:text-danger-500 px-3 py-1.5 text-xs font-semibold hover:bg-danger-50 transition-colors"
                         >
                           Reject
                         </button>
@@ -594,7 +594,7 @@ export default function AdminCreditPage() {
         {[
           { label: "Total Outstanding",  value: formatPHP(totalOutstanding), sub: `of ${formatPHP(totalLimit)} limit`, color: "text-brand-600 bg-brand-50", icon: CreditCard },
           { label: "Utilization Rate",   value: `${Math.round((totalOutstanding / totalLimit) * 100)}%`, sub: "across all accounts", color: "text-info-600 bg-info-50", icon: TrendingUp },
-          { label: "Overdue Accounts",   value: overdueCount.toString(), sub: `${formatPHP(atRiskAmount)} at risk`, color: overdueCount > 0 ? "text-danger-600 bg-danger-50" : "text-success-600 bg-success-50", icon: AlertTriangle },
+          { label: "Overdue Accounts",   value: overdueCount.toString(), sub: `${formatPHP(atRiskAmount)} at risk`, color: overdueCount > 0 ? "text-danger-700 dark:text-danger-500 bg-danger-50" : "text-success-700 bg-success-50", icon: AlertTriangle },
           { label: "Avg Terms",          value: "30 days", sub: "payment window", color: "text-muted-foreground bg-surface-100", icon: Clock },
         ].map((s) => (
           <Card key={s.label} className="p-4">
@@ -731,14 +731,14 @@ export default function AdminCreditPage() {
                 {selectedAccount.status !== "suspended" ? (
                   <button
                     onClick={() => handleSuspend(selectedAccount)}
-                    className="w-full rounded-xl border border-danger-200 text-danger-600 py-2.5 text-sm font-semibold hover:bg-danger-50 transition-colors"
+                    className="w-full rounded-xl border border-danger-200 text-danger-700 dark:text-danger-500 py-2.5 text-sm font-semibold hover:bg-danger-50 transition-colors"
                   >
                     Suspend Account
                   </button>
                 ) : (
                   <button
                     onClick={() => handleReactivate(selectedAccount)}
-                    className="w-full rounded-xl border border-success-200 text-success-600 py-2.5 text-sm font-semibold hover:bg-success-50 transition-colors"
+                    className="w-full rounded-xl border border-success-200 text-success-700 py-2.5 text-sm font-semibold hover:bg-success-50 transition-colors"
                   >
                     Reactivate Account
                   </button>

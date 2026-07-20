@@ -350,7 +350,7 @@ export default function WhatsAppSettingsPage() {
           {saveMessage && (
             <span className={cn(
               "text-sm font-medium",
-              saveMessage === "Settings saved" ? "text-success-600" : "text-amber-600"
+              saveMessage === "Settings saved" ? "text-success-700" : "text-amber-700"
             )}>
               {saveMessage}
             </span>
@@ -371,8 +371,8 @@ export default function WhatsAppSettingsPage() {
                 isConnected ? "bg-success-50" : "bg-amber-50"
               )}>
                 {isConnected
-                  ? <Wifi className="h-4 w-4 text-success-600" />
-                  : <WifiOff className="h-4 w-4 text-amber-600" />
+                  ? <Wifi className="h-4 w-4 text-success-700" />
+                  : <WifiOff className="h-4 w-4 text-amber-700" />
                 }
               </div>
               <div>
@@ -380,13 +380,13 @@ export default function WhatsAppSettingsPage() {
                 <div className="flex items-center gap-1.5 mt-0.5">
                   {isConnected ? (
                     <>
-                      <CheckCircle2 className="h-3 w-3 text-success-600" />
-                      <span className="text-xs font-medium text-success-600">Connected</span>
+                      <CheckCircle2 className="h-3 w-3 text-success-700" />
+                      <span className="text-xs font-medium text-success-700">Connected</span>
                     </>
                   ) : (
                     <>
-                      <AlertTriangle className="h-3 w-3 text-amber-600" />
-                      <span className="text-xs font-medium text-amber-600">Not Connected</span>
+                      <AlertTriangle className="h-3 w-3 text-amber-700" />
+                      <span className="text-xs font-medium text-amber-700">Not Connected</span>
                     </>
                   )}
                 </div>
@@ -395,7 +395,7 @@ export default function WhatsAppSettingsPage() {
 
             {!isConnected && (
               <div className="flex items-center gap-2 px-3 py-2 rounded-xl bg-amber-50 border border-amber-200">
-                <AlertTriangle className="h-4 w-4 text-amber-600 shrink-0" />
+                <AlertTriangle className="h-4 w-4 text-amber-700 shrink-0" />
                 <p className="text-xs text-amber-700">
                   WhatsApp notifications are <span className="font-semibold">disabled</span> until the API is connected.
                 </p>
@@ -459,7 +459,7 @@ export default function WhatsAppSettingsPage() {
               )}
             </Button>
             {testMessage && (
-              <span className="text-sm font-medium text-success-600">{testMessage}</span>
+              <span className="text-sm font-medium text-success-700">{testMessage}</span>
             )}
             {!isConnected && (
               <Button size="sm" onClick={handleConnect} disabled={isConnecting}>
@@ -467,7 +467,7 @@ export default function WhatsAppSettingsPage() {
               </Button>
             )}
             {connectMessage && (
-              <span className="text-sm font-medium text-success-600">{connectMessage}</span>
+              <span className="text-sm font-medium text-success-700">{connectMessage}</span>
             )}
           </div>
         </CardContent>

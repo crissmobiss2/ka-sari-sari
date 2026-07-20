@@ -277,13 +277,13 @@ export default function DriverDeliveriesPage() {
                     </>
                   )}
                   {delivery.deliveryStatus === "delivered" && (
-                    <div className="flex items-center gap-1.5 text-xs text-success-600 font-medium">
+                    <div className="flex items-center gap-1.5 text-xs text-success-700 font-medium">
                       <CheckCircle2 className="h-4 w-4" />
                       Delivered successfully
                     </div>
                   )}
                   {delivery.deliveryStatus === "failed" && (
-                    <div className="flex items-center gap-1.5 text-xs text-danger-600 font-medium">
+                    <div className="flex items-center gap-1.5 text-xs text-danger-700 dark:text-danger-500 font-medium">
                       <XCircle className="h-4 w-4" />
                       {delivery.failReason ?? "Delivery failed"}
                     </div>
