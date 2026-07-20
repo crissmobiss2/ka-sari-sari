@@ -268,31 +268,31 @@ function EtaCard({ estimatedDelivery = ORDER.estimatedDelivery }: { estimatedDel
       <div className="flex items-start justify-between gap-3">
         <div className="flex-1">
           <div className="flex items-center gap-2 mb-1">
-            <Truck className="h-4 w-4 opacity-80" />
-            <p className="text-sm font-semibold opacity-90">Driver heading to you</p>
+            <Truck className="h-4 w-4 text-white/80" />
+            <p className="text-sm font-semibold">Driver heading to you</p>
           </div>
           <div className="flex items-end gap-2">
             <p className="font-display text-5xl font-black leading-none">{mins}</p>
-            <p className="text-xl font-medium opacity-80 mb-1">min</p>
+            <p className="text-xl font-medium mb-1">min</p>
           </div>
           <p className="text-sm text-brand-100 mt-1">{estimatedDelivery}</p>
         </div>
         <div className="text-right shrink-0">
-          <div className="rounded-xl bg-white/15 px-3 py-2.5 text-center min-w-[56px]">
+          <div className="rounded-xl bg-black/25 px-3 py-2.5 text-center min-w-[56px]">
             <p className="font-display text-2xl font-black">1</p>
-            <p className="text-[11px] opacity-80 leading-tight">stop<br />away</p>
+            <p className="text-[11px] leading-tight">stop<br />away</p>
           </div>
         </div>
       </div>
       <div className="mt-4">
         <div className="flex items-center justify-between mb-1">
-          <span className="text-[11px] opacity-70">Route progress</span>
-          <span className="text-[11px] opacity-70">~65% complete</span>
+          <span className="text-[11px] text-white/80">Route progress</span>
+          <span className="text-[11px] text-white/80">~65% complete</span>
         </div>
         <div className="h-2 bg-white/20 rounded-full overflow-hidden">
           <div className="h-full bg-white rounded-full" style={{ width: "65%" }} />
         </div>
-        <div className="flex justify-between mt-1.5 text-[10px] opacity-60">
+        <div className="flex justify-between mt-1.5 text-[10px] text-white/80">
           <span>Warehouse</span>
           <span>Your Store</span>
         </div>

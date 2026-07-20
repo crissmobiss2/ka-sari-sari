@@ -276,18 +276,18 @@ export default function RouteMapPage() {
   return (
     <div className="min-h-screen bg-background pb-28">
       {/* Route header card */}
-      <div className="bg-brand-50 dark:bg-brand-500/100 px-4 pt-5 pb-6 text-white">
+      <div className="bg-brand-800 dark:bg-brand-700 px-4 pt-5 pb-6 text-white">
         <div className="flex items-start justify-between mb-4">
           <div>
-            <p className="text-xs font-medium opacity-80 uppercase tracking-wider">Today's Route</p>
+            <p className="text-xs font-medium uppercase tracking-wider text-white/90">Today's Route</p>
             <h1 className="font-display text-xl font-bold mt-0.5">Caloocan North</h1>
-            <p className="text-sm opacity-80 mt-0.5">
+            <p className="text-sm text-white/90 mt-0.5">
               {doneStops}/{totalStops} stops · {formatPHP(stops.filter(s=>s.status==="done").reduce((s,x)=>s+x.total,0))} delivered
             </p>
           </div>
           <div className="text-right">
             <p className="text-2xl font-black">{progress}%</p>
-            <p className="text-xs opacity-70">complete</p>
+            <p className="text-xs text-white/90">complete</p>
           </div>
         </div>
 
@@ -306,9 +306,9 @@ export default function RouteMapPage() {
             { label: "Collected", value: formatPHP(collectedCOD), green: true },
             { label: "Pending", value: formatPHP(pendingCOD), warn: pendingCOD > 0 },
           ].map(({ label, value, green, warn }) => (
-            <div key={label} className="rounded-xl bg-white/10 px-2 py-2">
+            <div key={label} className="rounded-xl bg-black/20 px-2 py-2">
               <p className={cn("text-sm font-black", green && collectedCOD > 0 && "text-green-200", warn && pendingCOD > 0 && "text-yellow-200")}>{value}</p>
-              <p className="text-[10px] opacity-70 mt-0.5">{label}</p>
+              <p className="text-[10px] mt-0.5">{label}</p>
             </div>
           ))}
         </div>
