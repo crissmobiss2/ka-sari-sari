@@ -629,7 +629,7 @@ function ReceiptCard({
 
                       {/* Error */}
                       {form.error && (
-                        <p className="text-sm text-danger-500 font-medium bg-danger-50 dark:bg-danger-500/10 rounded-xl px-3 py-2">
+                        <p className="text-sm text-danger-500 dark:text-foreground font-medium bg-danger-50 dark:bg-danger-500/10 rounded-xl px-3 py-2">
                           {form.error}
                         </p>
                       )}

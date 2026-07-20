@@ -228,7 +228,7 @@ export default function HomePage() {
                 </div>
                 <p className="text-sm text-foreground leading-relaxed mb-5">&ldquo;{t.text}&rdquo;</p>
                 <div className="flex items-center gap-2.5">
-                  <div className="h-8 w-8 rounded-full bg-brand-100 dark:bg-brand-500/20 flex items-center justify-center text-brand-600 text-xs font-bold shrink-0">
+                  <div className="h-8 w-8 rounded-full bg-brand-100 dark:bg-brand-500/20 flex items-center justify-center text-brand-600 dark:text-foreground text-xs font-bold shrink-0">
                     {t.name.charAt(0)}
                   </div>
                   <div>

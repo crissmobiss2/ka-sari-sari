@@ -336,7 +336,7 @@ export default function AccountPage() {
         {/* Profile card */}
         <div className="rounded-2xl border border-border bg-card shadow-card p-5">
           <div className="flex items-center gap-4">
-            <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-brand-100 dark:bg-brand-500/20 text-brand-600 text-2xl font-black shrink-0">
+            <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-brand-100 dark:bg-brand-500/20 text-brand-600 dark:text-foreground text-2xl font-black shrink-0">
               {userInfo.initial}
             </div>
             <div>
