@@ -42,7 +42,7 @@ const STATUS_STYLE: Record<POStatus, string> = {
   sent:      "bg-warning-50 dark:bg-warning-500/10 text-warning-600 dark:text-foreground border-warning-500/25",
   confirmed: "bg-blue-50 text-blue-600 border-blue-200",
   received:  "bg-success-50 dark:bg-success-500/10 text-success-600 dark:text-foreground border-success-500/25",
-  partial:   "bg-orange-50 text-orange-600 border-orange-200",
+  partial:   "bg-orange-50 dark:bg-orange-500/20 text-orange-700 dark:text-foreground border-orange-200",
 };
 
 const STATUS_BAR: Record<POStatus, string> = {

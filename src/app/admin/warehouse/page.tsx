@@ -162,8 +162,8 @@ export default function WarehouseDashboardPage() {
           value={`${totalPickUnits} units`}
           label="Items to Pick"
           sub={`${activePicks.length} active pick lists`}
-          iconBg="bg-purple-50 text-purple-600"
-          accent="text-purple-600"
+          iconBg="bg-purple-50 dark:bg-purple-500/20 text-purple-600 dark:text-foreground"
+          accent="text-purple-600 dark:text-foreground"
         />
         <KpiCard
           icon={PackageCheck}

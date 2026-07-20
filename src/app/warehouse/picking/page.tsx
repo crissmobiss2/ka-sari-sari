@@ -54,7 +54,7 @@ function StatusBanner({ status }: { status: PickList["status"] }) {
   }
   if (status === "in_progress") {
     return (
-      <div className="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-blue-500/10 text-blue-600 text-sm font-semibold w-fit">
+      <div className="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-blue-500/10 dark:bg-blue-500/20 text-blue-600 dark:text-foreground text-sm font-semibold w-fit">
         <Clock className="h-4 w-4" />
         In Progress
       </div>
@@ -151,7 +151,7 @@ function PickListCard({
                 className={cn(
                   "text-xs font-bold",
                   pl.status === "in_progress"
-                    ? "border-blue-400 text-blue-600 bg-blue-50 dark:bg-blue-950/20"
+                    ? "border-blue-400 text-blue-600 dark:text-foreground bg-blue-50 dark:bg-blue-500/20"
                     : "border-brand-400 text-brand-600 dark:text-foreground bg-brand-50 dark:bg-brand-500/10 dark:bg-brand-950/20"
                 )}
               >

@@ -564,7 +564,7 @@ export default function POSPage() {
               {payMethod === "cod" && (
                 <div className="rounded-xl bg-brand-50 dark:bg-brand-500/10 border border-brand-200 p-3 text-xs space-y-1 pt-1">
                   <p className="font-bold text-brand-700 dark:text-brand-400">Cash on Delivery</p>
-                  <p className="text-brand-600">Driver will collect {formatPHP(total)} upon delivery.</p>
+                  <p className="text-brand-600 dark:text-foreground">Driver will collect {formatPHP(total)} upon delivery.</p>
                 </div>
               )}
 

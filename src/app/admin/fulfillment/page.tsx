@@ -102,7 +102,7 @@ export default function FulfillmentPage() {
       <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
         {[
           { label: "To Pick",          count: confirmedCount,      color: "text-warning-700 dark:text-foreground" },
-          { label: "Picking",          count: pickingCount,        color: "text-purple-600" },
+          { label: "Picking",          count: pickingCount,        color: "text-purple-600 dark:text-foreground" },
           { label: "Ready to Ship",    count: packedCount,         color: "text-info-600 dark:text-foreground" },
           { label: "Out for Delivery", count: outForDeliveryCount, color: "text-brand-600" },
         ].map(({ label, count, color }) => (

@@ -285,7 +285,7 @@ export default function ReceivingPage() {
 
   const sections = [
     { label: "Pending Receipt", items: pending, accent: "text-warning-700 dark:text-foreground" },
-    { label: "In Progress", items: inProgress, accent: "text-blue-600" },
+    { label: "In Progress", items: inProgress, accent: "text-blue-600 dark:text-foreground" },
     { label: "Completed", items: completed, accent: "text-success-700 dark:text-foreground" },
   ];
 
