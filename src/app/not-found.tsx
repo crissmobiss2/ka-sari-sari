@@ -8,7 +8,7 @@ export default function NotFound() {
         <PackageSearch className="h-10 w-10 text-brand-700 dark:text-brand-400" />
       </div>
 
-      <p className="text-sm font-bold tracking-widest text-brand-400 uppercase mb-3">404</p>
+      <p className="text-sm font-bold tracking-widest text-brand-700 dark:text-brand-400 uppercase mb-3">404</p>
       <h1 className="font-display text-2xl font-bold text-foreground mb-2">Page not found</h1>
       <p className="text-muted-foreground text-sm max-w-xs mb-8">
         Ay naku! We couldn&apos;t find that page. It may have been moved or the link is incorrect.

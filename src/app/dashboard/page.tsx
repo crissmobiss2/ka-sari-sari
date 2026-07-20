@@ -208,7 +208,7 @@ export default function DashboardPage() {
                     </span>
                     <p className="text-sm font-semibold text-brand-700 dark:text-brand-400">Order on the way!</p>
                   </div>
-                  <ChevronRight className="h-4 w-4 text-brand-400" />
+                  <ChevronRight className="h-4 w-4 text-brand-700 dark:text-brand-400" />
                 </div>
                 <p className="text-xs text-brand-700 dark:text-brand-400">{activeOrder.orderNumber} · {activeOrder.eta ? `Expected by ${activeOrder.eta}` : "Estimated delivery by today"}</p>
                 <div className="mt-3 flex gap-1">

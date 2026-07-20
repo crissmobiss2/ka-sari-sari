@@ -237,7 +237,7 @@ export default function DriverDeliveriesPage() {
                 </div>
 
                 <div className="flex items-start gap-2 text-xs text-muted-foreground">
-                  <MapPin className="h-3.5 w-3.5 shrink-0 mt-0.5 text-brand-400" />
+                  <MapPin className="h-3.5 w-3.5 shrink-0 mt-0.5 text-brand-700 dark:text-brand-400" />
                   <span>{delivery.deliveryAddress}</span>
                 </div>
 

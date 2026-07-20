@@ -223,7 +223,7 @@ export default function HomePage() {
               <div key={t.name} className="p-6 rounded-2xl border border-border bg-card shadow-card">
                 <div className="flex gap-0.5 mb-4">
                   {[...Array(5)].map((_, i) => (
-                    <Star key={i} className="h-3.5 w-3.5 fill-brand-400 text-brand-400" />
+                    <Star key={i} className="h-3.5 w-3.5 fill-brand-700 text-brand-700 dark:fill-brand-400 dark:text-brand-400" />
                   ))}
                 </div>
                 <p className="text-sm text-foreground leading-relaxed mb-5">&ldquo;{t.text}&rdquo;</p>

@@ -418,7 +418,7 @@ export default function RouteMapPage() {
 
                   {/* Address */}
                   <div className="flex items-start gap-2 rounded-xl bg-background border border-border px-3 py-2.5">
-                    <MapPin className="h-4 w-4 text-brand-400 shrink-0 mt-0.5" />
+                    <MapPin className="h-4 w-4 text-brand-700 dark:text-brand-400 shrink-0 mt-0.5" />
                     <p className="text-xs text-foreground leading-relaxed">{stop.address}</p>
                   </div>
 

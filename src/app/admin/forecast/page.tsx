@@ -93,7 +93,7 @@ const FORECAST_ROWS: ForecastRow[] = [
   { name: "Lucky Me! Pancit Canton",    category: "Instant Noodles", currentStock:  89, forecastUnits: 112, trendPct:  26, confidence: 91, action: "Reorder" },
   { name: "Piattos Cheese 85g",         category: "Snacks",         currentStock: 203, forecastUnits: 195, trendPct:  -4, confidence: 88, action: "Watch"   },
   { name: "555 Sardines Tomato 155g",   category: "Canned Goods",   currentStock:  56, forecastUnits:  94, trendPct:  68, confidence: 85, action: "URGENT"  },
-  { name: "Nescafé 3-in-1 Original",   category: "Coffee",         currentStock:  78, forecastUnits:  89, trendPct:  14, confidence: 93, action: "Reorder" },
+  { name: "Nescafï¿½ 3-in-1 Original",   category: "Coffee",         currentStock:  78, forecastUnits:  89, trendPct:  14, confidence: 93, action: "Reorder" },
   { name: "Safeguard Classic Bar",      category: "Personal Care",  currentStock:  34, forecastUnits:  67, trendPct:  97, confidence: 79, action: "URGENT"  },
   { name: "Silver Swan Soy Sauce 1L",  category: "Condiments",     currentStock: 112, forecastUnits:  98, trendPct: -12, confidence: 87, action: "OK"      },
   { name: "Surf Powder Detergent",      category: "Household",      currentStock: 167, forecastUnits: 145, trendPct: -13, confidence: 84, action: "OK"      },
@@ -295,7 +295,7 @@ export default function AdminForecastPage() {
   const insights: AiInsight[] = [
     {
       icon: <Flame className="h-4 w-4 text-danger-600 dark:text-danger-500 shrink-0 mt-0.5" />,
-      text: "Surge detected: Canned Goods demand up 44% — holiday season correlation identified across order history.",
+      text: "Surge detected: Canned Goods demand up 44% ï¿½ holiday season correlation identified across order history.",
       borderColor: "border-danger-400",
       bgColor: "bg-danger-50 dark:bg-danger-500/10/60",
     },
@@ -307,7 +307,7 @@ export default function AdminForecastPage() {
     },
     {
       icon: <Lightbulb className="h-4 w-4 text-brand-700 dark:text-brand-400 shrink-0 mt-0.5" />,
-      text: "Opportunity: Personal Care up 31% — consider stocking Dove and Palmolive variants to capture demand upside.",
+      text: "Opportunity: Personal Care up 31% ï¿½ consider stocking Dove and Palmolive variants to capture demand upside.",
       borderColor: "border-brand-400",
       bgColor: "bg-brand-50 dark:bg-brand-500/10/60",
     },
@@ -327,18 +327,18 @@ export default function AdminForecastPage() {
           <p className="text-xs text-muted-foreground mt-0.5">Last updated: Jan 21, 2026 at 10:32 AM</p>
         </div>
         <div className="flex items-center gap-2 shrink-0">
-          <Button variant="outline" size="sm" onClick={() => { toastInfo("Generating PDF report…"); window.print(); }}>
+          <Button variant="outline" size="sm" onClick={() => { toastInfo("Generating PDF reportï¿½"); window.print(); }}>
             <Download className="h-4 w-4" />
             Export Report
           </Button>
           <Button
             size="sm"
             className="bg-brand-700 dark:bg-brand-500 hover:bg-brand-800 text-white"
-            onClick={() => { fetchForecast(); toastSuccess("Refreshing AI forecast…"); }}
+            onClick={() => { fetchForecast(); toastSuccess("Refreshing AI forecastï¿½"); }}
             disabled={aiLoading}
           >
             <RefreshCw className={cn("h-4 w-4", aiLoading && "animate-spin")} />
-            {aiLoading ? "Generating…" : "Refresh Forecast"}
+            {aiLoading ? "Generatingï¿½" : "Refresh Forecast"}
           </Button>
         </div>
       </div>
@@ -372,7 +372,7 @@ export default function AdminForecastPage() {
         <SummaryCard
           label="Forecast Period"
           value="Next 14 days"
-          sub="Jan 22 – Feb 4, 2026"
+          sub="Jan 22 ï¿½ Feb 4, 2026"
           icon={<Calendar className="h-5 w-5" />}
           iconBg="bg-surface-100 dark:bg-surface-800"
           iconColor="text-muted-foreground"
@@ -394,7 +394,7 @@ export default function AdminForecastPage() {
             </div>
             {isMockData && (
               <span className="text-[11px] text-muted-foreground bg-muted rounded-lg px-2.5 py-1">
-                Using demo data — connect AI API for live forecasting
+                Using demo data ï¿½ connect AI API for live forecasting
               </span>
             )}
           </div>
@@ -402,8 +402,8 @@ export default function AdminForecastPage() {
         <CardContent className="pt-0">
           {aiLoading ? (
             <div className="flex items-center gap-3 py-6 justify-center">
-              <Sparkles className="h-4 w-4 text-brand-400 animate-pulse" />
-              <span className="text-sm text-muted-foreground">Analyzing demand data…</span>
+              <Sparkles className="h-4 w-4 text-brand-700 dark:text-brand-400 animate-pulse" />
+              <span className="text-sm text-muted-foreground">Analyzing demand dataï¿½</span>
             </div>
           ) : aiData ? (
             <div className="space-y-5">
@@ -502,7 +502,7 @@ export default function AdminForecastPage() {
                   </div>
                   <div className="shrink-0 text-right">
                     <Badge variant="neutral" className="text-xs tabular-nums font-semibold">
-                      {item.velocity}× ordered
+                      {item.velocity}ï¿½ ordered
                     </Badge>
                     <p className="text-[11px] text-muted-foreground mt-0.5 text-right">{item.totalQty} units</p>
                   </div>
@@ -551,7 +551,7 @@ export default function AdminForecastPage() {
                       </Badge>
                     </div>
                     <p className="text-[11px] text-muted-foreground mt-1">
-                      {item.stock} units in stock · velocity {item.velocity}×
+                      {item.stock} units in stock ï¿½ velocity {item.velocity}ï¿½
                     </p>
                   </div>
                 );
@@ -712,7 +712,7 @@ export default function AdminForecastPage() {
       {/* -- Category chart + AI Insights --------------------------------------- */}
       <div className="grid grid-cols-1 lg:grid-cols-5 gap-4">
 
-        {/* Category bar chart — 3/5 width */}
+        {/* Category bar chart ï¿½ 3/5 width */}
         <Card className="lg:col-span-3">
           <CardHeader className="pb-2">
             <CardTitle>Category Demand Forecast</CardTitle>
@@ -767,7 +767,7 @@ export default function AdminForecastPage() {
           </CardContent>
         </Card>
 
-        {/* AI Insights — 2/5 width */}
+        {/* AI Insights ï¿½ 2/5 width */}
         <Card className="lg:col-span-2">
           <CardHeader className="pb-2">
             <CardTitle>AI Insights</CardTitle>

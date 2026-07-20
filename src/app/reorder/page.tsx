@@ -166,7 +166,7 @@ function FrequentlyReordered({
         {items.map((item) => (
           <div key={item.productId} className="flex items-center gap-3 px-4 py-3">
             <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-brand-50 dark:bg-brand-500/10">
-              <Package className="h-4 w-4 text-brand-400" />
+              <Package className="h-4 w-4 text-brand-700 dark:text-brand-400" />
             </div>
             <div className="flex-1 min-w-0">
               <p className="text-sm font-medium text-foreground truncate">{item.name}</p>
