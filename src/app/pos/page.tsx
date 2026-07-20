@@ -542,7 +542,7 @@ export default function RetailerPOSPage() {
                       </div>
                       <button
                         onClick={() => removeFromCart(item.product.id)}
-                        className="text-muted-foreground/40 hover:text-danger-600 transition-colors"
+                        className="text-muted-foreground hover:text-danger-600 transition-colors"
                       >
                         <X className="h-3.5 w-3.5" />
                       </button>

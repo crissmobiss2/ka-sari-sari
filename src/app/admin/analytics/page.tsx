@@ -1,4 +1,4 @@
-﻿"use client";
+"use client";
 
 import { useMemo } from "react";
 import { TrendingUp, Users, ShoppingCart, Package, Download, FileDown, ArrowUpRight, ArrowDownRight, Zap, Star } from "lucide-react";
@@ -14,17 +14,17 @@ import {
   ADMIN_STATS,
 } from "@/lib/mock-data";
 
-// ── Constants ─────────────────────────────────────────────────────────────────
+// -- Constants -----------------------------------------------------------------
 
 const BRAND_COLOR = "#f47028";
 
-// ── Static chart data (monthly revenue trend — platform-level) ───────────────
+// -- Static chart data (monthly revenue trend � platform-level) ---------------
 
 const MONTHLY_REVENUE = [890_000, 1_020_000, 1_150_000, 1_340_000, 1_480_000, 1_250_000];
 const MONTHS = ["Aug '25", "Sep '25", "Oct '25", "Nov '25", "Dec '25", "Jan '26"];
 const maxRevenue = Math.max(...MONTHLY_REVENUE);
 
-// ── Retailer names (synthetic — keyed to storeId from ADMIN_RECENT_ORDERS) ───
+// -- Retailer names (synthetic � keyed to storeId from ADMIN_RECENT_ORDERS) ---
 
 const RETAILER_NAMES: Record<string, string> = {
   "s1": "Aling Nena's Store",
@@ -35,7 +35,7 @@ const RETAILER_NAMES: Record<string, string> = {
   "store-1": "Aling Nena's Store",
 };
 
-// ── Payment methods static split (from ADMIN_STATS scale) ────────────────────
+// -- Payment methods static split (from ADMIN_STATS scale) --------------------
 
 const PAYMENT_METHODS = [
   { name: "GCash",  pct: 58, barColor: "bg-blue-500" },
@@ -43,7 +43,7 @@ const PAYMENT_METHODS = [
   { name: "Maya",   pct: 15, barColor: "bg-emerald-500" },
 ];
 
-// ── CSV / PDF export ─────────────────────────────────────────────────────────
+// -- CSV / PDF export ---------------------------------------------------------
 
 function downloadCSV(monthlyRevenue: number[], months: string[]) {
   const rows = [
@@ -71,15 +71,15 @@ function downloadPDF() {
   window.print();
 }
 
-// ── Helpers ───────────────────────────────────────────────────────────────────
+// -- Helpers -------------------------------------------------------------------
 
 function formatMillions(n: number) {
-  if (n >= 1_000_000) return `₱${(n / 1_000_000).toFixed(2)}M`;
-  if (n >= 1_000)     return `₱${(n / 1_000).toFixed(0)}k`;
-  return `₱${n}`;
+  if (n >= 1_000_000) return `?${(n / 1_000_000).toFixed(2)}M`;
+  if (n >= 1_000)     return `?${(n / 1_000).toFixed(0)}k`;
+  return `?${n}`;
 }
 
-// ── SVG Bar Chart ─────────────────────────────────────────────────────────────
+// -- SVG Bar Chart -------------------------------------------------------------
 
 const CHART_W = 600;
 const CHART_H = 200;
@@ -166,23 +166,23 @@ function RevenueSvgChart() {
   );
 }
 
-// ── Page ──────────────────────────────────────────────────────────────────────
+// -- Page ----------------------------------------------------------------------
 
 export default function AdminAnalyticsPage() {
 
-  // ── Build product lookup map ───────────────────────────────────────────────
+  // -- Build product lookup map -----------------------------------------------
   const productMap = useMemo(
     () => new Map(PRODUCTS.map((p) => [p.id, p])),
     []
   );
 
-  // ── Build category lookup map ──────────────────────────────────────────────
+  // -- Build category lookup map ----------------------------------------------
   const categoryMap = useMemo(
     () => new Map(PRODUCT_CATEGORIES.map((c) => [c.id, c])),
     []
   );
 
-  // ── Top products by revenue (from MOCK_ORDERS items × product prices) ─────
+  // -- Top products by revenue (from MOCK_ORDERS items � product prices) -----
   const topProducts = useMemo(() => {
     const revenueByProduct = new Map<string, { name: string; revenue: number; qty: number; categoryId: string }>();
 
@@ -211,7 +211,7 @@ export default function AdminAnalyticsPage() {
       .slice(0, 5);
   }, [productMap]);
 
-  // ── Revenue by Category (MOCK_ORDERS items × product prices) ──────────────
+  // -- Revenue by Category (MOCK_ORDERS items � product prices) --------------
   // Supplement with ADMIN_STATS scale so the chart reflects realistic proportions.
   // We compute real percentages from order items, then scale to ADMIN_STATS revenue.
   const categoryRevenue = useMemo(() => {
@@ -261,7 +261,7 @@ export default function AdminAnalyticsPage() {
     return entries;
   }, [productMap, categoryMap]);
 
-  // ── Sales Velocity — orders per day from order dates ──────────────────────
+  // -- Sales Velocity � orders per day from order dates ----------------------
   const salesVelocity = useMemo(() => {
     if (MOCK_ORDERS.length === 0) return { ordersPerDay: 0, busiestDay: "N/A", dayBreakdown: [], platformOrdersPerDay: 0 };
 
@@ -297,7 +297,7 @@ export default function AdminAnalyticsPage() {
     return { ordersPerDay, busiestDay, dayBreakdown, platformOrdersPerDay };
   }, []);
 
-  // ── Top Retailers from MOCK_ORDERS (grouped by storeId) ───────────────────
+  // -- Top Retailers from MOCK_ORDERS (grouped by storeId) -------------------
   const topRetailers = useMemo(() => {
     const byStore = new Map<string, { orders: number; revenue: number }>();
 
@@ -341,7 +341,7 @@ export default function AdminAnalyticsPage() {
     return merged.slice(0, 5);
   }, []);
 
-  // ── KPI numbers — use ADMIN_STATS for platform-level realism ───────────────
+  // -- KPI numbers � use ADMIN_STATS for platform-level realism ---------------
   const kpi = useMemo(() => {
     return {
       totalRevenue: ADMIN_STATS.revenueMonth,
@@ -351,7 +351,7 @@ export default function AdminAnalyticsPage() {
     };
   }, []);
 
-  // ── Order status distribution computed from MOCK_ORDERS ───────────────────
+  // -- Order status distribution computed from MOCK_ORDERS -------------------
   const orderStatusDist = useMemo(() => {
     const counts: Record<string, number> = {};
     for (const o of MOCK_ORDERS) {
@@ -376,7 +376,7 @@ export default function AdminAnalyticsPage() {
   return (
     <div className="p-6 space-y-6 max-w-7xl mx-auto">
 
-      {/* ── Header ─────────────────────────────────────────────────────────── */}
+      {/* -- Header ----------------------------------------------------------- */}
       <div className="flex items-start justify-between gap-4 flex-wrap">
         <div>
           <h1 className="font-display text-2xl font-bold text-foreground">Analytics</h1>
@@ -384,7 +384,7 @@ export default function AdminAnalyticsPage() {
         </div>
         <div className="flex items-center gap-2">
           <Button variant="outline" size="sm">
-            This Month ▼
+            This Month ?
           </Button>
           <Button size="sm" onClick={() => downloadCSV(MONTHLY_REVENUE, MONTHS)}>
             <Download className="h-4 w-4" />
@@ -397,7 +397,7 @@ export default function AdminAnalyticsPage() {
         </div>
       </div>
 
-      {/* ── KPI Row ────────────────────────────────────────────────────────── */}
+      {/* -- KPI Row ---------------------------------------------------------- */}
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
         {/* Total Revenue */}
         <Card className="p-5">
@@ -413,7 +413,7 @@ export default function AdminAnalyticsPage() {
             {formatMillions(kpi.totalRevenue)}
           </p>
           <p className="text-xs text-muted-foreground mt-1">Total Revenue</p>
-          <p className="text-[11px] text-muted-foreground/70 mt-0.5">vs last month</p>
+          <p className="text-[11px] text-muted-foreground mt-0.5">vs last month</p>
         </Card>
 
         {/* Active Retailers */}
@@ -430,7 +430,7 @@ export default function AdminAnalyticsPage() {
             {kpi.activeRetailers.toLocaleString()}
           </p>
           <p className="text-xs text-muted-foreground mt-1">Active Retailers</p>
-          <p className="text-[11px] text-muted-foreground/70 mt-0.5">this month</p>
+          <p className="text-[11px] text-muted-foreground mt-0.5">this month</p>
         </Card>
 
         {/* Orders This Month */}
@@ -447,7 +447,7 @@ export default function AdminAnalyticsPage() {
             {kpi.ordersThisMonth.toLocaleString()}
           </p>
           <p className="text-xs text-muted-foreground mt-1">Orders This Month</p>
-          <p className="text-[11px] text-muted-foreground/70 mt-0.5">vs last month</p>
+          <p className="text-[11px] text-muted-foreground mt-0.5">vs last month</p>
         </Card>
 
         {/* Avg Order Value */}
@@ -464,17 +464,17 @@ export default function AdminAnalyticsPage() {
             {formatPHP(kpi.avgOrderValue)}
           </p>
           <p className="text-xs text-muted-foreground mt-1">Avg Order Value</p>
-          <p className="text-[11px] text-muted-foreground/70 mt-0.5">vs last month</p>
+          <p className="text-[11px] text-muted-foreground mt-0.5">vs last month</p>
         </Card>
       </div>
 
-      {/* ── Revenue Trend SVG Chart ─────────────────────────────────────────── */}
+      {/* -- Revenue Trend SVG Chart ------------------------------------------- */}
       <Card>
         <CardHeader className="pb-2">
           <div className="flex items-center justify-between">
             <div>
               <CardTitle>Revenue Trend</CardTitle>
-              <p className="text-xs text-muted-foreground mt-0.5">Aug 2025 – Jan 2026</p>
+              <p className="text-xs text-muted-foreground mt-0.5">Aug 2025 � Jan 2026</p>
             </div>
             <div className="flex items-center gap-2">
               <span className="inline-block h-3 w-3 rounded-sm" style={{ background: BRAND_COLOR }} />
@@ -487,14 +487,14 @@ export default function AdminAnalyticsPage() {
         </CardContent>
       </Card>
 
-      {/* ── Sales Velocity ──────────────────────────────────────────────────── */}
+      {/* -- Sales Velocity ---------------------------------------------------- */}
       <Card>
         <CardHeader className="pb-2">
           <div className="flex items-center gap-2">
             <Zap className="h-4 w-4 text-brand-700 dark:text-brand-400" />
             <CardTitle>Sales Velocity</CardTitle>
           </div>
-          <p className="text-xs text-muted-foreground mt-0.5">Orders per day · computed from order dates</p>
+          <p className="text-xs text-muted-foreground mt-0.5">Orders per day � computed from order dates</p>
         </CardHeader>
         <CardContent className="pt-2">
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-5">
@@ -527,7 +527,7 @@ export default function AdminAnalyticsPage() {
           {/* Day-by-day breakdown from MOCK_ORDERS */}
           {salesVelocity.dayBreakdown.length > 0 && (
             <div>
-              <p className="text-xs font-semibold text-muted-foreground mb-3 uppercase tracking-wide">Order Activity — Sample Window</p>
+              <p className="text-xs font-semibold text-muted-foreground mb-3 uppercase tracking-wide">Order Activity � Sample Window</p>
               <div className="flex flex-wrap gap-2">
                 {salesVelocity.dayBreakdown.map((d) => (
                   <div
@@ -547,17 +547,17 @@ export default function AdminAnalyticsPage() {
         </CardContent>
       </Card>
 
-      {/* ── Order Status + Payment Methods ─────────────────────────────────── */}
+      {/* -- Order Status + Payment Methods ----------------------------------- */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
 
         {/* Order Status Donut */}
         <Card>
           <CardHeader className="pb-2">
             <CardTitle>Order Status</CardTitle>
-            <p className="text-xs text-muted-foreground">Distribution · MOCK_ORDERS sample</p>
+            <p className="text-xs text-muted-foreground">Distribution � MOCK_ORDERS sample</p>
           </CardHeader>
           <CardContent className="pt-2 flex flex-col items-center gap-5">
-            {/* Donut via conic-gradient — built from computed orderStatusDist */}
+            {/* Donut via conic-gradient � built from computed orderStatusDist */}
             <div className="relative flex-shrink-0">
               {(() => {
                 // Build conic stops from real data
@@ -609,7 +609,7 @@ export default function AdminAnalyticsPage() {
         <Card>
           <CardHeader className="pb-2">
             <CardTitle>Payment Methods</CardTitle>
-            <p className="text-xs text-muted-foreground">Transaction split · Jan 2026</p>
+            <p className="text-xs text-muted-foreground">Transaction split � Jan 2026</p>
           </CardHeader>
           <CardContent className="pt-2 space-y-5">
             {paymentMethods.map((pm) => (
@@ -638,7 +638,7 @@ export default function AdminAnalyticsPage() {
         </Card>
       </div>
 
-      {/* ── Top Retailers Table ─────────────────────────────────────────────── */}
+      {/* -- Top Retailers Table ----------------------------------------------- */}
       <Card>
         <CardHeader className="pb-2">
           <div className="flex items-center gap-2">
@@ -646,7 +646,7 @@ export default function AdminAnalyticsPage() {
             <CardTitle>Top Retailers by Revenue</CardTitle>
           </div>
           <p className="text-xs text-muted-foreground mt-0.5">
-            Computed from order history · Sorted by total revenue
+            Computed from order history � Sorted by total revenue
           </p>
         </CardHeader>
         <CardContent className="pt-0">
@@ -699,18 +699,18 @@ export default function AdminAnalyticsPage() {
           </div>
           <div className="mt-4 pt-3 border-t border-border">
             <button className="text-xs font-medium text-brand-600 hover:text-brand-700 dark:text-brand-400 transition-colors">
-              View All Retailers →
+              View All Retailers ?
             </button>
           </div>
         </CardContent>
       </Card>
 
-      {/* ── Top Products by Revenue ─────────────────────────────────────────── */}
+      {/* -- Top Products by Revenue ------------------------------------------- */}
       {topProducts.length > 0 && (
         <Card>
           <CardHeader className="pb-2">
             <CardTitle>Top Products by Revenue</CardTitle>
-            <p className="text-xs text-muted-foreground mt-0.5">Computed from MOCK_ORDERS line items × unit prices</p>
+            <p className="text-xs text-muted-foreground mt-0.5">Computed from MOCK_ORDERS line items � unit prices</p>
           </CardHeader>
           <CardContent className="pt-2 space-y-3">
             {topProducts.map((p, i) => {
@@ -748,7 +748,7 @@ export default function AdminAnalyticsPage() {
                       </span>
                     </div>
                     {cat && (
-                      <span className="text-[10px] text-muted-foreground/70">{cat.name}</span>
+                      <span className="text-[10px] text-muted-foreground">{cat.name}</span>
                     )}
                   </div>
                 </div>
@@ -758,12 +758,12 @@ export default function AdminAnalyticsPage() {
         </Card>
       )}
 
-      {/* ── Category Performance ────────────────────────────────────────────── */}
+      {/* -- Category Performance ---------------------------------------------- */}
       <Card>
         <CardHeader className="pb-2">
           <CardTitle>Revenue by Category</CardTitle>
           <p className="text-xs text-muted-foreground mt-0.5">
-            Computed from order items · scaled to platform revenue
+            Computed from order items � scaled to platform revenue
           </p>
         </CardHeader>
         <CardContent className="pt-2 space-y-4">

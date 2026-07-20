@@ -54,7 +54,7 @@ export function RetailerBottomNav() {
           );
         })}
       </div>
-      <p className="text-center text-[9px] text-muted-foreground/40 leading-none pb-0.5">
+      <p className="text-center text-[9px] text-muted-foreground leading-none pb-0.5">
         Powered by <span className="font-semibold">NexoFlow</span>
       </p>
       <div className="pb-safe" style={{ paddingBottom: "env(safe-area-inset-bottom)" }} />

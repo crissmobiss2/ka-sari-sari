@@ -25,7 +25,7 @@ export default function Error({
       <p className="text-muted-foreground text-sm max-w-xs mb-8 leading-relaxed">
         An unexpected error occurred. You can try again or return to the home page.
         {error?.digest && (
-          <span className="block text-xs text-muted-foreground/60 mt-1">Ref: {error.digest}</span>
+          <span className="block text-xs text-muted-foreground mt-1">Ref: {error.digest}</span>
         )}
       </p>
 

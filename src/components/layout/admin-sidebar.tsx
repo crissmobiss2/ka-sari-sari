@@ -125,8 +125,8 @@ export function AdminSidebar() {
 
       {/* NexoFlow attribution */}
       <div className="px-3 pt-2 pb-1 text-center">
-        <p className="text-[9px] text-muted-foreground/40 leading-snug">
-          Powered by <span className="font-semibold text-brand-400/60">⚡ NexoFlow</span><br />
+        <p className="text-[9px] text-muted-foreground leading-snug">
+          Powered by <span className="font-semibold text-brand-700 dark:text-brand-400">⚡ NexoFlow</span><br />
           <span className="text-[8px]">Pacific Nexus Global Supply Chain</span>
         </p>
       </div>

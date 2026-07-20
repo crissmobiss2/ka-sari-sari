@@ -253,13 +253,13 @@ function OrderCard({
                   {checked ? (
                     <CheckSquare2 className="h-5 w-5" />
                   ) : (
-                    <Square className="h-5 w-5 text-muted-foreground/50" />
+                    <Square className="h-5 w-5 text-muted-foreground" />
                   )}
                 </button>
               )}
 
               <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-surface-100 dark:bg-surface-800">
-                <Package className="h-4 w-4 text-muted-foreground/60" />
+                <Package className="h-4 w-4 text-muted-foreground" />
               </div>
 
               <div className="flex-1 min-w-0">

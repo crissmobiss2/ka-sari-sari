@@ -347,7 +347,7 @@ export default function DashboardPage() {
                         <img src={p.imageUrl} alt={p.name} className="h-full w-full object-cover" />
                       ) : (
                         <div className="h-full w-full flex items-center justify-center">
-                          <Package className="h-5 w-5 text-muted-foreground/40" />
+                          <Package className="h-5 w-5 text-muted-foreground" />
                         </div>
                       )}
                     </div>

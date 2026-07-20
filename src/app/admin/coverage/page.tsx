@@ -92,7 +92,7 @@ export default function CoveragePage() {
               </div>
               <p className="font-display text-2xl font-bold text-foreground">{s.value}</p>
               <p className="text-xs text-muted-foreground mt-0.5">{s.label}</p>
-              <p className="text-[11px] text-muted-foreground/70 mt-1 leading-snug">{s.sub}</p>
+              <p className="text-[11px] text-muted-foreground mt-1 leading-snug">{s.sub}</p>
             </CardContent>
           </Card>
         ))}

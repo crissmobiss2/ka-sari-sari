@@ -131,7 +131,7 @@ export default function LoginPage() {
             <p><span className="font-mono text-surface-900">09172345678</span> + <span className="font-mono text-surface-900">warehouse</span> → Warehouse</p>
             <p><span className="font-mono text-surface-900">09173456789</span> + <span className="font-mono text-surface-900">driver</span> → Driver</p>
             <p><span className="font-mono text-surface-900">09181234567</span> + <span className="font-mono text-surface-900">demo1234</span> → Retailer</p>
-            <p className="text-muted-foreground/70 mt-1.5">Or use any 09XX number with any password to auto-register as a retailer.</p>
+            <p className="text-muted-foreground mt-1.5">Or use any 09XX number with any password to auto-register as a retailer.</p>
           </div>
           )}
         </div>

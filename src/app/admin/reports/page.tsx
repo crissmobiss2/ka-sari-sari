@@ -1,4 +1,4 @@
-﻿"use client";
+"use client";
 
 import { useState, useMemo } from "react";
 import {
@@ -11,7 +11,7 @@ import { Button } from "@/components/ui/button";
 import { formatPHP, formatNumber } from "@/lib/utils";
 import { ADMIN_STATS, MOCK_ORDERS, PRODUCTS } from "@/lib/mock-data";
 
-// ─── Static chart / summary data ─────────────────────────────────────────────
+// --- Static chart / summary data ---------------------------------------------
 
 const MONTHLY_REVENUE = [890000, 1020000, 1150000, 1340000, 1480000, 1250000];
 const MONTHS = ["Aug '25", "Sep '25", "Oct '25", "Nov '25", "Dec '25", "Jan '26"];
@@ -46,7 +46,7 @@ const STATUS_COLORS: Record<string, string> = {
   Inactive: "bg-surface-100 dark:bg-surface-800 text-muted-foreground",
 };
 
-// ─── Generate-report types ────────────────────────────────────────────────────
+// --- Generate-report types ----------------------------------------------------
 
 type ReportType = "sales" | "inventory" | "delivery" | "retailer";
 type DateRange = "7d" | "30d" | "90d" | "all";
@@ -73,7 +73,7 @@ function getCutoff(range: DateRange): Date | null {
   return d;
 }
 
-// ─── Report computation helpers ───────────────────────────────────────────────
+// --- Report computation helpers -----------------------------------------------
 
 function computeSalesSummary(cutoff: Date | null) {
   const orders = cutoff
@@ -179,7 +179,7 @@ function computeRetailerActivity(cutoff: Date | null) {
   return { activeRetailers, avgOrdersPerRetailer, rows };
 }
 
-// ─── CSV generation ───────────────────────────────────────────────────────────
+// --- CSV generation -----------------------------------------------------------
 
 function downloadCSV(filename: string, rows: string[][], headers: string[]) {
   const escape = (v: string) =>
@@ -195,7 +195,7 @@ function downloadCSV(filename: string, rows: string[][], headers: string[]) {
   URL.revokeObjectURL(url);
 }
 
-// ─── Sub-components ───────────────────────────────────────────────────────────
+// --- Sub-components -----------------------------------------------------------
 
 function StatusPill({ status }: { status: string }) {
   const cls =
@@ -233,7 +233,7 @@ function OrderStatusPill({ status }: { status: string }) {
   );
 }
 
-// ─── Generate Report Section ──────────────────────────────────────────────────
+// --- Generate Report Section --------------------------------------------------
 
 function GenerateReportSection() {
   const [reportType, setReportType] = useState<ReportType | null>(null);
@@ -349,7 +349,7 @@ function GenerateReportSection() {
           })}
         </div>
 
-        {/* Preview table — Sales Summary */}
+        {/* Preview table � Sales Summary */}
         {salesData && (
           <div className="space-y-4">
             <div className="grid grid-cols-3 gap-3">
@@ -401,7 +401,7 @@ function GenerateReportSection() {
           </div>
         )}
 
-        {/* Preview table — Inventory Status */}
+        {/* Preview table � Inventory Status */}
         {invData && (
           <div className="space-y-4">
             <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
@@ -448,7 +448,7 @@ function GenerateReportSection() {
           </div>
         )}
 
-        {/* Preview table — Delivery Performance */}
+        {/* Preview table � Delivery Performance */}
         {delivData && (
           <div className="space-y-4">
             <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
@@ -499,7 +499,7 @@ function GenerateReportSection() {
           </div>
         )}
 
-        {/* Preview table — Retailer Activity */}
+        {/* Preview table � Retailer Activity */}
         {retailData && (
           <div className="space-y-4">
             <div className="grid grid-cols-2 gap-3">
@@ -552,7 +552,7 @@ function GenerateReportSection() {
           <div className="flex flex-col items-center justify-center py-10 text-center">
             <FileText className="h-10 w-10 text-muted-foreground/40 mb-3" />
             <p className="text-sm font-medium text-muted-foreground">Select a report type above to preview data</p>
-            <p className="text-xs text-muted-foreground/60 mt-1">Then download as CSV for offline use</p>
+            <p className="text-xs text-muted-foreground mt-1">Then download as CSV for offline use</p>
           </div>
         )}
       </CardContent>
@@ -560,7 +560,7 @@ function GenerateReportSection() {
   );
 }
 
-// ─── Page ─────────────────────────────────────────────────────────────────────
+// --- Page ---------------------------------------------------------------------
 
 export default function AdminReportsPage() {
   return (
@@ -569,7 +569,7 @@ export default function AdminReportsPage() {
       <div className="flex items-center justify-between flex-wrap gap-3">
         <div>
           <h1 className="font-display text-2xl font-bold text-foreground">Business Intelligence</h1>
-          <p className="text-sm text-muted-foreground mt-0.5">Performance overview · Jan 2026</p>
+          <p className="text-sm text-muted-foreground mt-0.5">Performance overview � Jan 2026</p>
         </div>
         <div className="flex items-center gap-2 print:hidden">
           <Button variant="outline" size="md" onClick={() => window.print()}>
@@ -607,14 +607,14 @@ export default function AdminReportsPage() {
         <Card className="lg:col-span-3">
           <CardHeader className="pb-2">
             <CardTitle>Revenue Overview</CardTitle>
-            <p className="text-xs text-muted-foreground">Aug 2025 – Jan 2026</p>
+            <p className="text-xs text-muted-foreground">Aug 2025 � Jan 2026</p>
           </CardHeader>
           <CardContent className="space-y-3 pt-0">
             {MONTHLY_REVENUE.map((v, i) => {
               const pct = (v / maxRevenue) * 100;
               const label = v >= 1_000_000
-                ? `₱${(v / 1_000_000).toFixed(2)}M`
-                : `₱${(v / 1000).toFixed(0)}k`;
+                ? `?${(v / 1_000_000).toFixed(2)}M`
+                : `?${(v / 1000).toFixed(0)}k`;
               return (
                 <div key={i} className="flex items-center gap-3">
                   <span className="text-xs text-muted-foreground w-14 shrink-0">{MONTHS[i]}</span>
@@ -695,7 +695,7 @@ export default function AdminReportsPage() {
         <Card className="lg:col-span-3">
           <CardHeader className="pb-2">
             <CardTitle>Top Retailers This Month</CardTitle>
-            <p className="text-xs text-muted-foreground">By revenue · Jan 2026</p>
+            <p className="text-xs text-muted-foreground">By revenue � Jan 2026</p>
           </CardHeader>
           <CardContent className="pt-0">
             <div className="overflow-x-auto">

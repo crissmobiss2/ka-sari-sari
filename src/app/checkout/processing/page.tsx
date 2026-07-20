@@ -118,7 +118,7 @@ function ProcessingContent() {
             "text-xs transition-colors duration-300",
             i === step ? "text-brand-700 dark:text-brand-400 font-semibold" :
             i < step ? "text-success-700 dark:text-foreground font-medium" :
-            "text-muted-foreground/50"
+            "text-muted-foreground"
           )}>
             {s.label}
           </span>

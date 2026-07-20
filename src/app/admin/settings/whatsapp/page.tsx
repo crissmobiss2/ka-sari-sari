@@ -573,7 +573,7 @@ export default function WhatsAppSettingsPage() {
                   <p className="text-sm font-medium text-foreground">{retailer.name}</p>
                   <div className="flex items-center gap-2 mt-0.5 flex-wrap">
                     <span className="text-xs text-muted-foreground">{retailer.phone}</span>
-                    <span className="text-muted-foreground/40 text-xs">·</span>
+                    <span className="text-muted-foreground text-xs">·</span>
                     <span className="text-xs text-muted-foreground">Opted out {retailer.optedOutDate}</span>
                   </div>
                 </div>

@@ -35,7 +35,7 @@ export default function FavoritesPage() {
                     <img src={product.imageUrl} alt={product.name} className="h-full w-full object-cover" />
                   ) : (
                     <div className="h-full w-full flex items-center justify-center">
-                      <Package className="h-7 w-7 text-muted-foreground/50" />
+                      <Package className="h-7 w-7 text-muted-foreground" />
                     </div>
                   )}
                 </div>

@@ -158,7 +158,7 @@ export default function CartPage() {
                 <span>Delivery fee</span>
                 {freeDelivery ? (
                   <span className="text-success-700 dark:text-foreground font-medium line-through-none flex items-center gap-1">
-                    <span className="line-through text-muted-foreground/60">{formatPHP(DELIVERY_FEE)}</span>
+                    <span className="line-through text-muted-foreground">{formatPHP(DELIVERY_FEE)}</span>
                     <span className="text-success-700 dark:text-foreground">FREE</span>
                   </span>
                 ) : (

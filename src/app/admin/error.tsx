@@ -20,7 +20,7 @@ export default function AdminError({
       <h2 className="font-display text-lg font-bold text-foreground mb-1">Admin panel error</h2>
       <p className="text-muted-foreground text-sm max-w-xs mb-6">
         Something went wrong loading this page.
-        {error?.digest && <span className="block text-xs mt-1 text-muted-foreground/60">Ref: {error.digest}</span>}
+        {error?.digest && <span className="block text-xs mt-1 text-muted-foreground">Ref: {error.digest}</span>}
       </p>
       <button
         onClick={reset}

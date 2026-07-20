@@ -259,7 +259,7 @@ export default function LoyaltyPage() {
                     )}>
                       <ChevronRight className={cn(
                         "h-3.5 w-3.5 mt-0.5 shrink-0",
-                        tier.current ? "text-brand-700 dark:text-brand-400" : "text-muted-foreground/50"
+                        tier.current ? "text-brand-700 dark:text-brand-400" : "text-muted-foreground"
                       )} />
                       {perk}
                     </li>
