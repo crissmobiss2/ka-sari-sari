@@ -207,17 +207,17 @@ export default function WalletPage() {
 
       <div className="px-4 py-5 space-y-5">
         {/* Balance card */}
-        <div className="relative overflow-hidden rounded-2xl bg-gradient-to-br from-brand-500 to-brand-700 p-6 text-white shadow-brand">
+        <div className="relative overflow-hidden rounded-2xl bg-gradient-to-br from-brand-700 to-brand-800 p-6 text-white shadow-brand">
           <div className="absolute -top-6 -right-6 h-32 w-32 rounded-full bg-white/10" />
           <div className="absolute -bottom-8 -left-4 h-24 w-24 rounded-full bg-white/5" />
           <div className="relative">
             <div className="flex items-center gap-2 mb-4">
-              <Wallet className="h-5 w-5 text-brand-200" />
-              <span className="text-sm text-brand-200">Ka Sari-Sari Wallet</span>
+              <Wallet className="h-5 w-5 text-white/90" />
+              <span className="text-sm text-white/90">Ka Sari-Sari Wallet</span>
             </div>
-            <p className="text-xs text-brand-200 uppercase tracking-wide mb-1">Available balance</p>
+            <p className="text-xs text-white/90 uppercase tracking-wide mb-1">Available balance</p>
             <p className="font-display text-4xl font-black">{formatPHP(balance)}</p>
-            <p className="text-xs text-brand-200 mt-2">Valid for all purchases · No expiry</p>
+            <p className="text-xs text-white/90 mt-2">Valid for all purchases · No expiry</p>
           </div>
         </div>
 

@@ -23,7 +23,7 @@ const PROMO_BANNERS = [
     title: "Up to 30% Off",
     sub: "Beverages & Snacks · Today only",
     href: "/deals",
-    gradient: "from-danger-500 to-brand-500",
+    gradient: "from-danger-600 to-brand-700",
     icon: "🔥",
   },
   {
@@ -32,7 +32,7 @@ const PROMO_BANNERS = [
     title: "Free Delivery",
     sub: "Orders ₱1,500 and above",
     href: "/catalog",
-    gradient: "from-brand-500 to-brand-700",
+    gradient: "from-brand-700 to-brand-800",
     icon: "🚚",
   },
 ];
@@ -169,10 +169,10 @@ export default function DashboardPage() {
               className={`shrink-0 w-72 relative overflow-hidden rounded-2xl bg-gradient-to-r ${b.gradient} p-5 text-white active:scale-[0.98] transition-transform`}
             >
               <div className="absolute -top-4 -right-4 h-20 w-20 rounded-full bg-white/10" />
-              <span className="text-xs font-bold bg-white/25 rounded-full px-2 py-0.5">{b.label}</span>
+              <span className="text-xs font-bold bg-black/20 rounded-full px-2 py-0.5">{b.label}</span>
               <p className="text-2xl font-black mt-2 leading-tight">{b.icon} {b.title}</p>
-              <p className="text-sm text-white/80 mt-1">{b.sub}</p>
-              <div className="flex items-center gap-1 mt-3 text-sm font-semibold text-white/90">
+              <p className="text-sm mt-1">{b.sub}</p>
+              <div className="flex items-center gap-1 mt-3 text-sm font-semibold">
                 Shop now <ArrowRight className="h-4 w-4" />
               </div>
             </Link>

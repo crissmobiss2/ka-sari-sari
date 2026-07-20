@@ -122,9 +122,9 @@ function StatusHero({ status, createdAt }: { status: OrderStatus; createdAt: str
   const isPending = ["pending", "confirmed"].includes(status);
 
   const bannerClass = isOutForDelivery
-    ? "bg-gradient-to-r from-brand-500 via-brand-400 to-orange-400 text-white"
+    ? "bg-brand-700 text-white"
     : isDelivered
-    ? "bg-gradient-to-r from-success-500 to-success-400 text-white"
+    ? "bg-gradient-to-r from-success-600 to-success-700 text-white"
     : isCancelled
     ? "bg-danger-50 dark:bg-danger-500/10 text-danger-700 dark:text-foreground"
     : "bg-warning-50 dark:bg-warning-500/10 text-warning-700 dark:text-foreground";
@@ -151,7 +151,7 @@ function StatusHero({ status, createdAt }: { status: OrderStatus; createdAt: str
     <div className={cn("mx-4 rounded-2xl p-6 flex items-center gap-5", bannerClass)}>
       <div className={cn(
         "flex h-16 w-16 shrink-0 items-center justify-center rounded-2xl",
-        (isOutForDelivery || isDelivered) ? "bg-white/20" : "bg-white/60"
+        (isOutForDelivery || isDelivered) ? "bg-black/20" : "bg-white/60"
       )}>
         <Icon className={cn(
           "h-8 w-8",
@@ -168,7 +168,7 @@ function StatusHero({ status, createdAt }: { status: OrderStatus; createdAt: str
         </p>
         <p className={cn(
           "text-sm mt-1 font-medium",
-          isOutForDelivery ? "text-white/80" : isDelivered ? "text-white/80" : isCancelled ? "text-danger-700 dark:text-foreground" : "text-warning-700 dark:text-foreground"
+          isOutForDelivery ? "" : isDelivered ? "" : isCancelled ? "text-danger-700 dark:text-foreground" : "text-warning-700 dark:text-foreground"
         )}>{subtext}</p>
       </div>
     </div>
