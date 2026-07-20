@@ -520,7 +520,7 @@ export default function POSPage() {
                     <p className="text-blue-700 font-semibold">{BANK_ACCOUNTS[payMethod].name}</p>
                     <p className="font-mono text-blue-900 font-bold text-sm">{BANK_ACCOUNTS[payMethod].account}</p>
                     <p className="text-blue-600">Account Name: Ka Sari-Sari Inc.</p>
-                    <p className="text-blue-500 text-[10px] mt-1">Use order reference as remarks/notes</p>
+                    <p className="text-blue-600 text-[10px] mt-1">Use order reference as remarks/notes</p>
                   </div>
                   <input type="text" placeholder="Bank reference / confirmation code" value={reference} onChange={e => setReference(e.target.value)}
                     className="h-10 w-full rounded-xl border border-input bg-background px-3 text-sm focus:outline-none focus:ring-2 focus:ring-brand-500" />
