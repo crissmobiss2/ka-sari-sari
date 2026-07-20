@@ -88,8 +88,8 @@ function Toggle({ enabled, onToggle }: { enabled: boolean; onToggle: () => void 
       role="switch"
       aria-checked={enabled}
       className={cn(
-        "relative inline-flex h-6 w-11 shrink-0 cursor-pointer items-center rounded-full border-2 border-transparent transition-colors focus:outline-none focus:ring-2 focus:ring-brand-500 focus:ring-offset-2",
-        enabled ? "bg-brand-700" : "bg-surface-200"
+        "relative inline-flex h-6 w-11 shrink-0 cursor-pointer items-center rounded-full border-2 border-transparent transition-colors focus:outline-none focus:ring-2 focus:ring-brand-700 focus:ring-offset-2",
+        enabled ? "bg-brand-700" : "bg-surface-500"
       )}
     >
       <span

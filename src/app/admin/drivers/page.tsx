@@ -595,7 +595,7 @@ export default function AdminDriversPage() {
                         <div className="flex items-center justify-between gap-2">
                           <p className="text-sm font-semibold text-foreground truncate">{route.name}</p>
                           {assignedDriver && (
-                            <span className="text-[10px] text-warning-600 dark:text-foreground bg-warning-50 dark:bg-warning-500/10 border border-warning-200 rounded-full px-2 py-0.5 shrink-0">
+                            <span className="text-[10px] text-warning-700 dark:text-foreground bg-warning-50 dark:bg-warning-500/10 border border-warning-200 rounded-full px-2 py-0.5 shrink-0">
                               {assignedDriver.initials}
                             </span>
                           )}

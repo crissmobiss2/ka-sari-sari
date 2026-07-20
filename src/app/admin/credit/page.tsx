@@ -316,7 +316,7 @@ export default function AdminCreditPage() {
                 type="number"
                 value={approveLimit}
                 onChange={(e) => setApproveLimit(e.target.value)}
-                className="w-full h-10 rounded-xl border border-input bg-background px-4 text-sm focus:outline-none focus:ring-2 focus:ring-brand-500"
+                className="w-full h-10 rounded-xl border border-input bg-background px-4 text-sm focus:outline-none focus:ring-2 focus:ring-brand-700"
                 autoFocus
                 onKeyDown={(e) => { if (e.key === "Enter") handleApprove(); }}
               />
@@ -368,7 +368,7 @@ export default function AdminCreditPage() {
               <button
                 onClick={handleReject}
                 disabled={!rejectReason.trim() || rejecting}
-                className="flex-1 rounded-xl bg-danger-500 text-white py-2.5 text-sm font-semibold hover:bg-danger-600 transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
+                className="flex-1 rounded-xl bg-danger-700 text-white py-2.5 text-sm font-semibold hover:bg-danger-600 transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
               >
                 {rejecting ? "Rejecting�" : "Reject"}
               </button>
@@ -397,7 +397,7 @@ export default function AdminCreditPage() {
               placeholder="Amount (PHP)"
               value={paymentAmount}
               onChange={(e) => setPaymentAmount(e.target.value)}
-              className="w-full h-10 rounded-xl border border-input bg-background px-4 text-sm focus:outline-none focus:ring-2 focus:ring-brand-500 mb-4"
+              className="w-full h-10 rounded-xl border border-input bg-background px-4 text-sm focus:outline-none focus:ring-2 focus:ring-brand-700 mb-4"
               autoFocus
               onKeyDown={(e) => { if (e.key === "Enter") handleRecordPayment(); }}
             />
@@ -444,7 +444,7 @@ export default function AdminCreditPage() {
                   placeholder="e.g. Juan dela Cruz"
                   value={newRetailer}
                   onChange={(e) => setNewRetailer(e.target.value)}
-                  className="w-full h-10 rounded-xl border border-input bg-background px-4 text-sm focus:outline-none focus:ring-2 focus:ring-brand-500"
+                  className="w-full h-10 rounded-xl border border-input bg-background px-4 text-sm focus:outline-none focus:ring-2 focus:ring-brand-700"
                   autoFocus
                 />
               </div>
@@ -456,7 +456,7 @@ export default function AdminCreditPage() {
                   value={newLimit}
                   onChange={(e) => setNewLimit(e.target.value)}
                   min={1}
-                  className="w-full h-10 rounded-xl border border-input bg-background px-4 text-sm focus:outline-none focus:ring-2 focus:ring-brand-500"
+                  className="w-full h-10 rounded-xl border border-input bg-background px-4 text-sm focus:outline-none focus:ring-2 focus:ring-brand-700"
                 />
               </div>
               <div>
@@ -464,7 +464,7 @@ export default function AdminCreditPage() {
                 <select
                   value={newTerms}
                   onChange={(e) => setNewTerms(Number(e.target.value) as 7 | 14 | 30 | 45)}
-                  className="w-full h-10 rounded-xl border border-input bg-background px-4 text-sm focus:outline-none focus:ring-2 focus:ring-brand-500"
+                  className="w-full h-10 rounded-xl border border-input bg-background px-4 text-sm focus:outline-none focus:ring-2 focus:ring-brand-700"
                 >
                   <option value={7}>7 days</option>
                   <option value={14}>14 days</option>
@@ -617,7 +617,7 @@ export default function AdminCreditPage() {
             value={search}
             onChange={(e) => setSearch(e.target.value)}
             placeholder="Search retailer or city�"
-            className="h-10 w-full rounded-xl border border-input bg-card pl-10 pr-4 text-sm focus:outline-none focus:ring-2 focus:ring-brand-500"
+            className="h-10 w-full rounded-xl border border-input bg-card pl-10 pr-4 text-sm focus:outline-none focus:ring-2 focus:ring-brand-700"
           />
         </div>
         <div className="flex gap-1.5">

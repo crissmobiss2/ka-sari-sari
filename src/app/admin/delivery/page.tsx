@@ -43,7 +43,7 @@ function DriverSelect({ value, onChange, drivers }: { value: string | null | und
       <select
         value={value ?? ""}
         onChange={(e) => onChange(e.target.value)}
-        className="w-full appearance-none rounded-lg border border-border bg-background px-2.5 py-1.5 pr-7 text-xs font-medium text-foreground focus:outline-none focus:ring-2 focus:ring-brand-500 focus:ring-offset-1 cursor-pointer"
+        className="w-full appearance-none rounded-lg border border-border bg-background px-2.5 py-1.5 pr-7 text-xs font-medium text-foreground focus:outline-none focus:ring-2 focus:ring-brand-700 focus:ring-offset-1 cursor-pointer"
       >
         <option value="">Select driver…</option>
         {drivers.map((d) => (
@@ -399,7 +399,7 @@ export default function AdminDeliveryPage() {
               {FAIL_REASONS.map((reason) => (
                 <button key={reason} onClick={() => setFailReason(reason)}
                   className={`w-full flex items-center gap-3 rounded-xl border px-4 py-3 text-sm font-medium text-left transition-colors ${failReason === reason ? "border-danger-400 dark:border-danger-500/50 bg-danger-50 dark:bg-danger-500/10 dark:bg-danger-500/20 text-danger-700 dark:text-foreground" : "border-border bg-background text-foreground"}`}>
-                  <div className={`w-4 h-4 rounded-full border-2 flex items-center justify-center flex-shrink-0 ${failReason === reason ? "border-danger-500 bg-danger-500" : "border-surface-300"}`}>
+                  <div className={`w-4 h-4 rounded-full border-2 flex items-center justify-center flex-shrink-0 ${failReason === reason ? "border-danger-500 bg-danger-500" : "border-surface-500"}`}>
                     {failReason === reason && <div className="w-2 h-2 rounded-full bg-white" />}
                   </div>
                   {reason}

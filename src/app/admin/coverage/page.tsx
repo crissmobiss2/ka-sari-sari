@@ -139,12 +139,12 @@ export default function CoveragePage() {
             className={cn(
               "flex items-center gap-1.5 rounded-xl px-3 py-1.5 text-sm font-semibold transition-colors",
               selectedIsland === id
-                ? "bg-brand-700 dark:bg-brand-500 text-white"
+                ? "bg-brand-700 text-white"
                 : "bg-surface-100 dark:bg-surface-800 text-muted-foreground hover:text-foreground"
             )}
           >
             {label}
-            <span className={cn("text-xs rounded-full px-1.5 py-0.5", selectedIsland === id ? "bg-white/20 text-white" : "bg-surface-200 text-muted-foreground")}>
+            <span className={cn("text-xs rounded-full px-1.5 py-0.5", selectedIsland === id ? "bg-white text-brand-700" : "bg-surface-100 text-muted-foreground")}>
               {count}
             </span>
           </button>
@@ -161,7 +161,7 @@ export default function CoveragePage() {
                 value={search}
                 onChange={(e) => setSearch(e.target.value)}
                 placeholder="Search city or province…"
-                className="h-10 w-full rounded-xl border border-input bg-card pl-10 pr-4 text-sm focus:outline-none focus:ring-2 focus:ring-brand-500"
+                className="h-10 w-full rounded-xl border border-input bg-card pl-10 pr-4 text-sm focus:outline-none focus:ring-2 focus:ring-brand-700"
               />
             </div>
             <span className="text-sm text-muted-foreground shrink-0">{filtered.length} cities</span>
