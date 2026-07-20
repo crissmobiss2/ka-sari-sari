@@ -53,12 +53,12 @@ const INITIAL_STAFF: StaffMember[] = [
 const ROLE_CONFIG: Record<Role, { label: string; avatarClass: string; badgeClass: string }> = {
   admin: {
     label: "Admin",
-    avatarClass: "bg-purple-500",
+    avatarClass: "bg-purple-700",
     badgeClass: "bg-purple-50 dark:bg-purple-500/20 text-purple-700 dark:text-foreground border border-purple-200 dark:border-purple-500/30",
   },
   warehouse: {
     label: "Warehouse",
-    avatarClass: "bg-blue-500",
+    avatarClass: "bg-blue-700",
     badgeClass: "bg-blue-50 dark:bg-blue-500/20 text-blue-700 dark:text-foreground border border-blue-200 dark:border-blue-500/30",
   },
   driver: {

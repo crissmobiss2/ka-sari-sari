@@ -207,7 +207,7 @@ function SuccessContent() {
       {/* -- delivery chip -- */}
       <div className="inline-flex items-center gap-2 rounded-full bg-amber-50 border border-amber-200 px-4 py-1.5 text-amber-700 text-sm font-semibold mb-8">
         <Clock className="h-4 w-4 text-amber-700" />
-        Expected delivery in 2–4 hours
+        Expected delivery in 2ï¿½4 hours
       </div>
 
       {/* -- order details card -- */}
@@ -225,14 +225,14 @@ function SuccessContent() {
         </div>
         <div className="flex justify-between text-sm">
           <span className="text-muted-foreground">Status</span>
-          <span className="inline-flex items-center gap-1 font-semibold text-green-600 dark:text-success-500">
-            <span className="h-1.5 w-1.5 rounded-full bg-green-500 animate-pulse" />
+          <span className="inline-flex items-center gap-1 font-semibold text-success-700 dark:text-success-500">
+            <span className="h-1.5 w-1.5 rounded-full bg-success-700 animate-pulse" />
             Confirmed
           </span>
         </div>
         <div className="flex justify-between text-sm">
           <span className="text-muted-foreground">Estimated delivery</span>
-          <span className="font-semibold text-foreground">2–4 hours</span>
+          <span className="font-semibold text-foreground">2ï¿½4 hours</span>
         </div>
       </div>
 
