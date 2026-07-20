@@ -327,7 +327,7 @@ export default function LoyaltyPage() {
             <h2 className="font-display text-sm font-bold text-foreground">Refer a Friend</h2>
           </div>
           <p className="text-xs text-muted-foreground mb-4">
-            Earn <span className="font-semibold text-brand-600">50 bonus points</span> for every sari-sari store owner you bring in.
+            Earn <span className="font-semibold text-brand-700">50 bonus points</span> for every sari-sari store owner you bring in.
           </p>
 
           {/* Code display */}

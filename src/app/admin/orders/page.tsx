@@ -116,7 +116,7 @@ export default function AdminOrdersPage() {
             className={cn(
               "shrink-0 px-4 py-2.5 text-sm font-medium border-b-2 transition-colors",
               activeTab === tab.id
-                ? "border-brand-500 text-brand-600"
+                ? "border-brand-500 text-brand-700"
                 : "border-transparent text-muted-foreground hover:text-foreground"
             )}
           >

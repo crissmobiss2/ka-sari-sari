@@ -104,7 +104,7 @@ export default function FulfillmentPage() {
           { label: "To Pick",          count: confirmedCount,      color: "text-warning-700 dark:text-foreground" },
           { label: "Picking",          count: pickingCount,        color: "text-purple-600 dark:text-foreground" },
           { label: "Ready to Ship",    count: packedCount,         color: "text-info-600 dark:text-foreground" },
-          { label: "Out for Delivery", count: outForDeliveryCount, color: "text-brand-600" },
+          { label: "Out for Delivery", count: outForDeliveryCount, color: "text-brand-700" },
         ].map(({ label, count, color }) => (
           <Card key={label} className="p-3 flex items-center gap-3">
             <Package className={cn("h-5 w-5 shrink-0", color)} />

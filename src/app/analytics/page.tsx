@@ -356,7 +356,7 @@ export default function AnalyticsPage() {
           <div className="flex items-start gap-2 mt-1.5">
             {stats.monthlyData.map((d) => (
               <div key={d.month} className="flex-1 text-center">
-                <span className={cn("text-[10px] font-medium", d.current ? "text-brand-600 font-bold" : "text-muted-foreground")}>
+                <span className={cn("text-[10px] font-medium", d.current ? "text-brand-700 font-bold" : "text-muted-foreground")}>
                   {d.month}
                 </span>
               </div>
@@ -575,7 +575,7 @@ export default function AnalyticsPage() {
             <div>
               <p className="text-sm font-semibold text-foreground">Keep saving more</p>
               <p className="text-xs text-muted-foreground mt-0.5">
-                You&apos;re on track to save <span className="text-brand-600 font-semibold">{formatPHP(displaySavingsForecast)}</span> this year if you keep ordering through Ka Sari-Sari.
+                You&apos;re on track to save <span className="text-brand-700 font-semibold">{formatPHP(displaySavingsForecast)}</span> this year if you keep ordering through Ka Sari-Sari.
               </p>
               <Link href="/catalog" className="mt-2.5 inline-flex items-center gap-1 rounded-xl bg-brand-700 dark:bg-brand-500 px-3 py-1.5 text-xs font-bold text-white hover:bg-brand-800 transition-colors active:scale-95">
                 Browse catalog

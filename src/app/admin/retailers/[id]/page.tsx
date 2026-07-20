@@ -95,7 +95,7 @@ const ORDER_STATUS_LABEL: Record<string, string> = {
 };
 
 const ORDER_STATUS_STYLE: Record<string, string> = {
-  out_for_delivery: "bg-brand-50 dark:bg-brand-500/10 text-brand-600 dark:text-foreground border-brand-500/25",
+  out_for_delivery: "bg-brand-50 dark:bg-brand-500/10 text-brand-700 dark:text-foreground border-brand-500/25",
   delivered:        "bg-success-50 dark:bg-success-500/10 text-success-700 dark:text-foreground border-success-500/25",
   pending:          "bg-warning-50 dark:bg-warning-500/10 text-warning-700 dark:text-foreground border-warning-500/25",
   confirmed:        "bg-blue-50 text-blue-600 border-blue-200",
@@ -163,7 +163,7 @@ export default function AdminRetailerProfilePage() {
         <div className="flex flex-col sm:flex-row sm:items-start gap-5">
 
           {/* Avatar */}
-          <div className="flex h-16 w-16 shrink-0 items-center justify-center rounded-2xl bg-brand-100 dark:bg-brand-700 text-brand-600 dark:text-white text-xl font-bold font-display select-none">
+          <div className="flex h-16 w-16 shrink-0 items-center justify-center rounded-2xl bg-brand-100 dark:bg-brand-700 text-brand-700 dark:text-white text-xl font-bold font-display select-none">
             {retailer.initials}
           </div>
 

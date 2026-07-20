@@ -184,7 +184,7 @@ function ActiveProgressBar({ status }: { status: OrderStatus }) {
         ))}
       </div>
       <p className="text-xs text-muted-foreground">
-        <span className="font-medium text-brand-600">{ORDER_STATUS_LABELS[status]}</span>
+        <span className="font-medium text-brand-700">{ORDER_STATUS_LABELS[status]}</span>
         {" "}&mdash; {pct}% complete
       </p>
     </div>
@@ -328,7 +328,7 @@ export default function OrdersPage() {
       <div className="px-4 pt-4 pb-3">
         <p className="text-sm text-muted-foreground">
           <span className="font-bold text-foreground">{counts.all}</span> total orders &middot;{" "}
-          <span className="font-semibold text-brand-600">{counts.active} active</span>
+          <span className="font-semibold text-brand-700">{counts.active} active</span>
         </p>
       </div>
 

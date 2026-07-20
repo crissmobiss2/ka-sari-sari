@@ -181,8 +181,8 @@ function iconColors(notif: Notification, unread: boolean) {
     return "bg-success-50 dark:bg-success-500/10 text-success-700 dark:text-foreground";
   if (notif.type === "low_stock") return "bg-warning-50 dark:bg-warning-500/10 text-warning-600 dark:text-foreground";
   if (/deal|promo/i.test(notif.title + notif.message))
-    return "bg-brand-50 dark:bg-brand-500/10 text-brand-600 dark:text-foreground";
-  return "bg-brand-100 dark:bg-brand-500/20 text-brand-600 dark:text-foreground";
+    return "bg-brand-50 dark:bg-brand-500/10 text-brand-700 dark:text-foreground";
+  return "bg-brand-100 dark:bg-brand-500/20 text-brand-700 dark:text-foreground";
 }
 
 // ─── Tabs config ──────────────────────────────────────────────────────────────

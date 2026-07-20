@@ -336,7 +336,7 @@ export default function AccountPage() {
         {/* Profile card */}
         <div className="rounded-2xl border border-border bg-card shadow-card p-5">
           <div className="flex items-center gap-4">
-            <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-brand-100 dark:bg-brand-500/20 text-brand-600 dark:text-foreground text-2xl font-black shrink-0">
+            <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-brand-100 dark:bg-brand-500/20 text-brand-700 dark:text-foreground text-2xl font-black shrink-0">
               {userInfo.initial}
             </div>
             <div>
@@ -493,7 +493,7 @@ export default function AccountPage() {
           {!showCreditForm && !creditSubmitted && (
             <button
               onClick={() => { setShowCreditForm(true); setCreditError(""); }}
-              className="w-full rounded-xl border border-brand-200 bg-brand-50 dark:bg-brand-500/10 py-3 text-sm font-semibold text-brand-600 dark:text-foreground hover:bg-brand-100 transition-colors flex items-center justify-center gap-2"
+              className="w-full rounded-xl border border-brand-200 bg-brand-50 dark:bg-brand-500/10 py-3 text-sm font-semibold text-brand-700 dark:text-foreground hover:bg-brand-100 transition-colors flex items-center justify-center gap-2"
             >
               <DollarSign className="h-4 w-4" />
               Apply for Credit Line

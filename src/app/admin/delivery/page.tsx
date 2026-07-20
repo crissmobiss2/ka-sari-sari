@@ -99,7 +99,7 @@ function DispatchCard({
             <span>{driverName}</span>
           </div>
           {eta && (
-            <div className="flex items-center gap-1 text-brand-600 font-medium">
+            <div className="flex items-center gap-1 text-brand-700 font-medium">
               <Clock className="h-3 w-3" />
               <span>ETA {eta}</span>
             </div>

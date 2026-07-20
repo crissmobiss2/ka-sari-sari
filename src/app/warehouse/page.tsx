@@ -35,7 +35,7 @@ const HUBS: Record<HubKey, HubConfig> = {
     label: "NCR Hub",
     location: "Valenzuela, Metro Manila",
     color: "bg-brand-500",
-    accent: "text-brand-600 dark:text-foreground bg-brand-50 dark:bg-brand-500/10 border-brand-200",
+    accent: "text-brand-700 dark:text-foreground bg-brand-50 dark:bg-brand-500/10 border-brand-200",
     cities: getCitiesByHub("NCR").length,
     capacity: 1200, used: 847, pickers: 8, driversActive: 12,
   },

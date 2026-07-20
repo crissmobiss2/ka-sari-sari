@@ -278,7 +278,7 @@ function DeliveryTimeline({
                       <p className={cn(
                         "text-sm font-semibold",
                         stepStatus === "done" ? "text-foreground"
-                        : stepStatus === "current" ? "text-brand-600"
+                        : stepStatus === "current" ? "text-brand-700"
                         : "text-muted-foreground"
                       )}>
                         {step.label}
@@ -326,7 +326,7 @@ function DeliveryAddress({ address, notes }: { address: string; notes?: string }
     <div className="rounded-2xl border border-border bg-card shadow-card p-5 mx-4">
       <div className="flex items-center gap-2 mb-3">
         <div className="flex h-8 w-8 items-center justify-center rounded-xl bg-brand-100 dark:bg-brand-500/20">
-          <MapPin className="h-4 w-4 text-brand-600" />
+          <MapPin className="h-4 w-4 text-brand-700 dark:text-brand-400" />
         </div>
         <h3 className="font-display text-sm font-semibold text-foreground">Delivery Address</h3>
       </div>
@@ -477,7 +477,7 @@ function OrderItems({
         </div>
         <div className="flex justify-between text-base font-bold text-foreground border-t border-border pt-2.5 mt-1">
           <span>Total</span>
-          <span className="text-brand-600">{formatPHP(total)}</span>
+          <span className="text-brand-700 dark:text-brand-400">{formatPHP(total)}</span>
         </div>
       </div>
 

@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import { useMemo, useState, useEffect, useCallback } from "react";
 import {
@@ -117,7 +117,7 @@ const MAX_ABS_PCT = Math.max(...CATEGORY_FORECASTS.map((c) => Math.abs(c.changeP
 function actionStyles(action: ActionType): string {
   switch (action) {
     case "URGENT":  return "bg-danger-50 dark:bg-danger-500/10 text-danger-600 dark:text-foreground border border-danger-200";
-    case "Reorder": return "bg-brand-50 dark:bg-brand-500/10 text-brand-600 dark:text-foreground border border-brand-200";
+    case "Reorder": return "bg-brand-50 dark:bg-brand-500/10 text-brand-700 dark:text-foreground border border-brand-200";
     case "Watch":   return "bg-warning-50 dark:bg-warning-500/10 text-warning-600 dark:text-foreground border border-warning-200";
     case "OK":      return "bg-surface-100 dark:bg-surface-800 text-muted-foreground";
   }
@@ -744,7 +744,7 @@ export default function AdminForecastPage() {
                   <span
                     className={cn(
                       "text-sm font-bold w-14 text-right shrink-0 tabular-nums",
-                      isPos ? "text-brand-600" : "text-danger-600 dark:text-danger-500"
+                      isPos ? "text-brand-700" : "text-danger-600 dark:text-danger-500"
                     )}
                   >
                     {isPos ? "+" : ""}{cat.changePct}%

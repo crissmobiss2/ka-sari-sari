@@ -147,7 +147,7 @@ export default function ProfilePage() {
               />
               <button
                 onClick={savePhone}
-                className="text-xs font-semibold text-brand-600 hover:text-brand-700 dark:text-brand-400 shrink-0"
+                className="text-xs font-semibold text-brand-700 hover:text-brand-700 dark:text-brand-400 shrink-0"
               >
                 Save
               </button>
@@ -186,7 +186,7 @@ export default function ProfilePage() {
               />
               <button
                 onClick={saveGcash}
-                className="text-xs font-semibold text-brand-600 hover:text-brand-700 dark:text-brand-400 shrink-0"
+                className="text-xs font-semibold text-brand-700 hover:text-brand-700 dark:text-brand-400 shrink-0"
               >
                 Save
               </button>

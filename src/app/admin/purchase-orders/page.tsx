@@ -104,7 +104,7 @@ const AUTO_POS: AutoPOEntry[] = [
 
 const URGENCY_BADGE: Record<AutoPOEntry["urgency"], string> = {
   critical: "bg-danger-50 dark:bg-danger-500/10 text-danger-600 dark:text-foreground border-danger-200",
-  high:     "bg-brand-50 dark:bg-brand-500/10 text-brand-600 dark:text-foreground border-brand-200",
+  high:     "bg-brand-50 dark:bg-brand-500/10 text-brand-700 dark:text-foreground border-brand-200",
   medium:   "bg-warning-50 dark:bg-warning-500/10 text-warning-600 dark:text-foreground border-warning-200",
 };
 
@@ -760,7 +760,7 @@ export default function AdminPurchaseOrdersPage() {
         <div className="flex items-center gap-2">
           <button
             onClick={() => setShowAutoModal(true)}
-            className="flex items-center gap-2 rounded-xl border border-brand-300 bg-brand-50 dark:bg-brand-500/10 px-4 py-2.5 text-sm font-medium text-brand-600 dark:text-foreground hover:bg-brand-100 transition-colors"
+            className="flex items-center gap-2 rounded-xl border border-brand-300 bg-brand-50 dark:bg-brand-500/10 px-4 py-2.5 text-sm font-medium text-brand-700 dark:text-foreground hover:bg-brand-100 transition-colors"
           >
             <Zap className="h-4 w-4" /> Auto-Generate POs
           </button>
@@ -782,14 +782,14 @@ export default function AdminPurchaseOrdersPage() {
             className={cn(
               "shrink-0 flex items-center gap-1.5 px-4 py-2.5 text-sm font-medium border-b-2 transition-colors",
               activeTab === tab.id
-                ? "border-brand-500 text-brand-600"
+                ? "border-brand-500 text-brand-700"
                 : "border-transparent text-muted-foreground hover:text-foreground"
             )}
           >
             {tab.label}
             <span className={cn(
               "rounded-full px-1.5 py-0.5 text-xs font-semibold tabular-nums",
-              activeTab === tab.id ? "bg-brand-100 text-brand-600" : "bg-surface-100 dark:bg-surface-800 text-muted-foreground"
+              activeTab === tab.id ? "bg-brand-100 text-brand-700" : "bg-surface-100 dark:bg-surface-800 text-muted-foreground"
             )}>
               {tab.count}
             </span>

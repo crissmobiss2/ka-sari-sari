@@ -314,7 +314,7 @@ function DriverCard({ driver = DRIVER }: { driver?: typeof DRIVER }) {
       </div>
       <div className="p-4">
         <div className="flex items-center gap-3 mb-4">
-          <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-brand-100 dark:bg-brand-700 text-brand-600 dark:text-white font-bold text-lg">
+          <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-brand-100 dark:bg-brand-700 text-brand-700 dark:text-white font-bold text-lg">
             {driver.name.charAt(0)}
           </div>
           <div className="flex-1 min-w-0">
@@ -335,7 +335,7 @@ function DriverCard({ driver = DRIVER }: { driver?: typeof DRIVER }) {
               "flex flex-col items-center gap-1.5 rounded-xl border py-3 transition-colors",
               called
                 ? "border-success-200 bg-success-50 dark:bg-success-500/10 text-success-700 dark:text-foreground"
-                : "border-brand-200 bg-brand-50 dark:bg-brand-500/10 text-brand-600 dark:text-foreground hover:bg-brand-100"
+                : "border-brand-200 bg-brand-50 dark:bg-brand-500/10 text-brand-700 dark:text-foreground hover:bg-brand-100"
             )}
           >
             <Phone className="h-4 w-4" />
@@ -404,7 +404,7 @@ function StopsBreakdown() {
             <div className="flex-1 min-w-0">
               <div className="flex items-center justify-between gap-2">
                 <p className={cn("text-sm font-semibold leading-tight",
-                  stop.status === "current" || stop.status === "yours" ? "text-brand-600" :
+                  stop.status === "current" || stop.status === "yours" ? "text-brand-700" :
                   stop.status === "future"  ? "text-muted-foreground" : "text-foreground"
                 )}>
                   {stop.label}
@@ -462,7 +462,7 @@ function LiveUpdates({ extraUpdates = [] }: { extraUpdates?: typeof INITIAL_UPDA
           >
             <span className="text-[11px] text-muted-foreground shrink-0 w-16 tabular-nums pt-0.5">{u.time}</span>
             <p className={cn("text-[11px] flex-1 leading-relaxed",
-              u.type === "highlight" ? "text-brand-600 font-semibold" :
+              u.type === "highlight" ? "text-brand-700 font-semibold" :
               u.type === "success"   ? "text-success-700 dark:text-foreground font-medium" :
               "text-foreground"
             )}>
@@ -506,7 +506,7 @@ function StatusTracker({ liveStatus }: { liveStatus?: string }) {
             </div>
             <div className={cn("pb-5 flex-1", i === STAGES.length - 1 && "pb-0")}>
               <p className={cn("text-sm font-semibold leading-none",
-                isCurrent ? "text-brand-600" : isPending ? "text-muted-foreground" : "text-foreground"
+                isCurrent ? "text-brand-700" : isPending ? "text-muted-foreground" : "text-foreground"
               )}>
                 {stage.label}
               </p>

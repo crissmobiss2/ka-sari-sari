@@ -1,4 +1,4 @@
-"use client";
+ï»¿"use client";
 import { useState, useMemo } from "react";
 import {
   Search, Plus, Minus, X, CheckCircle2, Printer,
@@ -127,7 +127,7 @@ export default function POSPage() {
   }
 
   function qty(productId: string, delta: number) {
-    // Clamp at 1 — use the X button to remove an item entirely
+    // Clamp at 1 ï¿½ use the X button to remove an item entirely
     setCart(prev => prev.map(i =>
       i.product.id !== productId ? i : { ...i, quantity: Math.max(1, i.quantity + delta) }
     ));
@@ -246,7 +246,7 @@ export default function POSPage() {
                   }}
                   className={cn(
                     "flex flex-col items-center gap-1 rounded-xl border py-3 text-xs font-medium transition-colors",
-                    receiptMode === mode ? "border-brand-500 bg-brand-50 dark:bg-brand-500/10 text-brand-600 dark:text-foreground" : "border-border bg-card text-muted-foreground hover:bg-muted"
+                    receiptMode === mode ? "border-brand-500 bg-brand-50 dark:bg-brand-500/10 text-brand-700 dark:text-foreground" : "border-border bg-card text-muted-foreground hover:bg-muted"
                   )}
                 >
                   {icon}
@@ -274,7 +274,7 @@ export default function POSPage() {
       <header className="flex items-center justify-between px-4 py-2.5 border-b border-border bg-card shrink-0">
         <div>
           <h1 className="font-display text-sm font-bold text-foreground">Ka Sari-Sari POS</h1>
-          <p className="text-[10px] text-muted-foreground">Warehouse Counter · Walk-in Sales</p>
+          <p className="text-[10px] text-muted-foreground">Warehouse Counter ï¿½ Walk-in Sales</p>
         </div>
         <div className="flex md:hidden items-center border border-border rounded-xl overflow-hidden text-[11px]">
           {(["products", "cart", "pay"] as const).map(t => (
@@ -290,7 +290,7 @@ export default function POSPage() {
         </div>
         <div className="hidden md:flex items-center gap-3 text-xs text-muted-foreground">
           <span>{new Date().toLocaleDateString("en-PH", { weekday: "short", month: "short", day: "numeric", year: "numeric" })}</span>
-          {cartCount > 0 && <span className="font-semibold text-brand-700 dark:text-brand-400">{cartCount} items · {formatPHP(total)}</span>}
+          {cartCount > 0 && <span className="font-semibold text-brand-700 dark:text-brand-400">{cartCount} items ï¿½ {formatPHP(total)}</span>}
         </div>
       </header>
 
@@ -300,7 +300,7 @@ export default function POSPage() {
           <div className="px-3 pt-3 pb-2 border-b border-border space-y-2 shrink-0">
             <div className="relative">
               <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-              <input type="search" placeholder="Search product, SKU, brand…" value={search} onChange={e => setSearch(e.target.value)}
+              <input type="search" placeholder="Search product, SKU, brandï¿½" value={search} onChange={e => setSearch(e.target.value)}
                 className="h-10 w-full rounded-xl border border-input bg-card pl-9 pr-12 text-sm focus:outline-none focus:ring-2 focus:ring-brand-500" />
               <button
                 onClick={() => setShowScanner(true)}
@@ -413,7 +413,7 @@ export default function POSPage() {
                     <input type="text" placeholder="Promo code" value={promoInput} onChange={e => setPromoInput(e.target.value.toUpperCase())}
                       className="h-8 w-full rounded-xl border border-input bg-background pl-7 pr-3 text-xs focus:outline-none focus:ring-2 focus:ring-brand-500" />
                   </div>
-                  <button onClick={applyPromo} className="h-8 px-3 rounded-xl bg-brand-50 dark:bg-brand-500/10 border border-brand-200 text-brand-600 dark:text-foreground text-xs font-semibold hover:bg-brand-100 active:scale-95 transition-all">Apply</button>
+                  <button onClick={applyPromo} className="h-8 px-3 rounded-xl bg-brand-50 dark:bg-brand-500/10 border border-brand-200 text-brand-700 dark:text-foreground text-xs font-semibold hover:bg-brand-100 active:scale-95 transition-all">Apply</button>
                 </div>
               ) : (
                 <div className="flex items-center justify-between text-xs">
@@ -540,7 +540,7 @@ export default function POSPage() {
                 <div className="rounded-xl bg-surface-50 dark:bg-surface-900 border border-border p-4 text-center">
                   <p className="text-2xl mb-2">??</p>
                   <p className="text-sm font-semibold text-surface-900">Swipe or Tap Card</p>
-                  <p className="text-xs text-muted-foreground mt-1">Visa · Mastercard · JCB · UnionPay</p>
+                  <p className="text-xs text-muted-foreground mt-1">Visa ï¿½ Mastercard ï¿½ JCB ï¿½ UnionPay</p>
                   <p className="text-xs text-muted-foreground mt-0.5">Amount: {formatPHP(total)}</p>
                 </div>
               )}
@@ -564,7 +564,7 @@ export default function POSPage() {
               {payMethod === "cod" && (
                 <div className="rounded-xl bg-brand-50 dark:bg-brand-500/10 border border-brand-200 p-3 text-xs space-y-1 pt-1">
                   <p className="font-bold text-brand-700 dark:text-brand-400">Cash on Delivery</p>
-                  <p className="text-brand-600 dark:text-foreground">Driver will collect {formatPHP(total)} upon delivery.</p>
+                  <p className="text-brand-700 dark:text-foreground">Driver will collect {formatPHP(total)} upon delivery.</p>
                 </div>
               )}
 
@@ -591,7 +591,7 @@ export default function POSPage() {
               </button>
 
               <p className="text-center text-[10px] text-muted-foreground">
-                {pm?.icon} {pm?.label} · Secure transaction
+                {pm?.icon} {pm?.label} ï¿½ Secure transaction
               </p>
             </div>
           </div>

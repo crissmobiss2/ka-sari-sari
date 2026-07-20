@@ -1,4 +1,4 @@
-"use client";
+ï»¿"use client";
 
 import { useState, useMemo } from "react";
 import {
@@ -28,7 +28,7 @@ const TOP_CATEGORIES = [
 const KEY_METRICS = [
   { label: "Order Fulfillment Rate",  value: "96.8%", icon: CheckCircle2, color: "text-success-700 dark:text-foreground bg-success-50 dark:bg-success-500/10" },
   { label: "Avg. Delivery Time",      value: "1.8 days", icon: Clock,      color: "text-info-600 dark:text-foreground bg-info-50 dark:bg-info-500/10" },
-  { label: "Customer Retention",      value: "87%",   icon: RefreshCw,   color: "text-brand-600 dark:text-foreground bg-brand-50 dark:bg-brand-500/10" },
+  { label: "Customer Retention",      value: "87%",   icon: RefreshCw,   color: "text-brand-700 dark:text-foreground bg-brand-50 dark:bg-brand-500/10" },
   { label: "New Retailer Conversion", value: "68%",   icon: UserPlus,    color: "text-purple-600 bg-purple-50" },
   { label: "Payment Collection Rate", value: "98.2%", icon: Wallet,      color: "text-emerald-600 bg-emerald-50" },
 ];
@@ -295,7 +295,7 @@ function GenerateReportSection() {
         <div className="flex items-center justify-between flex-wrap gap-3">
           <div>
             <CardTitle className="flex items-center gap-2">
-              <FileText className="h-4 w-4 text-brand-600" />
+              <FileText className="h-4 w-4 text-brand-700" />
               Generate Report
             </CardTitle>
             <p className="text-xs text-muted-foreground mt-0.5">
@@ -342,14 +342,14 @@ function GenerateReportSection() {
                     : "border-border bg-surface-50 dark:bg-surface-900 text-surface-900 hover:border-brand-300 hover:bg-brand-50 dark:bg-brand-500/10/50"
                   }`}
               >
-                <Icon className={`h-4 w-4 shrink-0 ${selected ? "text-brand-600" : "text-muted-foreground"}`} />
+                <Icon className={`h-4 w-4 shrink-0 ${selected ? "text-brand-700" : "text-muted-foreground"}`} />
                 <span className="leading-tight">{opt.label}</span>
               </button>
             );
           })}
         </div>
 
-        {/* Preview table — Sales Summary */}
+        {/* Preview table ï¿½ Sales Summary */}
         {salesData && (
           <div className="space-y-4">
             <div className="grid grid-cols-3 gap-3">
@@ -401,7 +401,7 @@ function GenerateReportSection() {
           </div>
         )}
 
-        {/* Preview table — Inventory Status */}
+        {/* Preview table ï¿½ Inventory Status */}
         {invData && (
           <div className="space-y-4">
             <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
@@ -448,7 +448,7 @@ function GenerateReportSection() {
           </div>
         )}
 
-        {/* Preview table — Delivery Performance */}
+        {/* Preview table ï¿½ Delivery Performance */}
         {delivData && (
           <div className="space-y-4">
             <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
@@ -499,7 +499,7 @@ function GenerateReportSection() {
           </div>
         )}
 
-        {/* Preview table — Retailer Activity */}
+        {/* Preview table ï¿½ Retailer Activity */}
         {retailData && (
           <div className="space-y-4">
             <div className="grid grid-cols-2 gap-3">
@@ -569,7 +569,7 @@ export default function AdminReportsPage() {
       <div className="flex items-center justify-between flex-wrap gap-3">
         <div>
           <h1 className="font-display text-2xl font-bold text-foreground">Business Intelligence</h1>
-          <p className="text-sm text-muted-foreground mt-0.5">Performance overview · Jan 2026</p>
+          <p className="text-sm text-muted-foreground mt-0.5">Performance overview ï¿½ Jan 2026</p>
         </div>
         <div className="flex items-center gap-2 print:hidden">
           <Button variant="outline" size="md" onClick={() => window.print()}>
@@ -583,7 +583,7 @@ export default function AdminReportsPage() {
         {[
           { label: "Monthly Revenue",  value: formatPHP(ADMIN_STATS.revenueMonth),     icon: TrendingUp,   color: "text-success-700 dark:text-foreground bg-success-50 dark:bg-success-500/10",  delta: "+12.4%" },
           { label: "Total Orders",     value: formatNumber(ADMIN_STATS.totalOrders),   icon: ShoppingCart, color: "text-info-600 dark:text-foreground bg-info-50 dark:bg-info-500/10",        delta: "+8.1%" },
-          { label: "Active Retailers", value: ADMIN_STATS.activeRetailers.toString(),  icon: Users,        color: "text-brand-600 dark:text-foreground bg-brand-50 dark:bg-brand-500/10",       delta: "+5" },
+          { label: "Active Retailers", value: ADMIN_STATS.activeRetailers.toString(),  icon: Users,        color: "text-brand-700 dark:text-foreground bg-brand-50 dark:bg-brand-500/10",       delta: "+5" },
           { label: "New Retailers",    value: ADMIN_STATS.newRetailersMonth.toString(),icon: Package,      color: "text-purple-600 bg-purple-50",     delta: "This month" },
         ].map((s) => (
           <Card key={s.label} className="p-5 h-28 flex flex-col justify-between">
@@ -607,7 +607,7 @@ export default function AdminReportsPage() {
         <Card className="lg:col-span-3">
           <CardHeader className="pb-2">
             <CardTitle>Revenue Overview</CardTitle>
-            <p className="text-xs text-muted-foreground">Aug 2025 – Jan 2026</p>
+            <p className="text-xs text-muted-foreground">Aug 2025 ï¿½ Jan 2026</p>
           </CardHeader>
           <CardContent className="space-y-3 pt-0">
             {MONTHLY_REVENUE.map((v, i) => {
@@ -695,7 +695,7 @@ export default function AdminReportsPage() {
         <Card className="lg:col-span-3">
           <CardHeader className="pb-2">
             <CardTitle>Top Retailers This Month</CardTitle>
-            <p className="text-xs text-muted-foreground">By revenue · Jan 2026</p>
+            <p className="text-xs text-muted-foreground">By revenue ï¿½ Jan 2026</p>
           </CardHeader>
           <CardContent className="pt-0">
             <div className="overflow-x-auto">

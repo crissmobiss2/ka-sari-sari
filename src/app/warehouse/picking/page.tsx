@@ -152,7 +152,7 @@ function PickListCard({
                   "text-xs font-bold",
                   pl.status === "in_progress"
                     ? "border-blue-400 text-blue-600 dark:text-foreground bg-blue-50 dark:bg-blue-500/20"
-                    : "border-brand-400 text-brand-600 dark:text-foreground bg-brand-50 dark:bg-brand-500/10 dark:bg-brand-950/20"
+                    : "border-brand-400 text-brand-700 dark:text-foreground bg-brand-50 dark:bg-brand-500/10 dark:bg-brand-950/20"
                 )}
               >
                 {remainingCount} item{remainingCount !== 1 ? "s" : ""} remaining

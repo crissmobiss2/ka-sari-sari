@@ -25,7 +25,7 @@ const MOCK_RETAILERS = [
 type HubFilter = "all" | "NCR" | "North Luzon" | "South Luzon" | "Visayas" | "Mindanao";
 
 const HUB_COLORS: Record<string, string> = {
-  "NCR":          "bg-brand-50 dark:bg-brand-500/10 text-brand-600 dark:text-foreground border-brand-100",
+  "NCR":          "bg-brand-50 dark:bg-brand-500/10 text-brand-700 dark:text-foreground border-brand-100",
   "North Luzon":  "bg-purple-50 text-purple-600 border-purple-100",
   "South Luzon":  "bg-info-50 dark:bg-info-500/10 text-info-600 dark:text-foreground border-info-100",
   "Visayas":      "bg-success-50 dark:bg-success-500/10 text-success-700 dark:text-foreground border-success-100",
@@ -140,7 +140,7 @@ export default function AdminRetailersPage() {
         </div>
         <button
           onClick={() => setInviteModal(true)}
-          className="flex items-center gap-2 rounded-xl border border-brand-200 bg-brand-50 dark:bg-brand-500/10 px-4 py-2 text-sm font-semibold text-brand-600 dark:text-foreground hover:bg-brand-100 transition-colors"
+          className="flex items-center gap-2 rounded-xl border border-brand-200 bg-brand-50 dark:bg-brand-500/10 px-4 py-2 text-sm font-semibold text-brand-700 dark:text-foreground hover:bg-brand-100 transition-colors"
         >
           + Invite Retailer
         </button>
@@ -149,7 +149,7 @@ export default function AdminRetailersPage() {
       {/* KPI cards */}
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
         {[
-          { label: "Total Retailers", value: MOCK_RETAILERS.length, icon: Users, color: "text-brand-600 dark:text-foreground bg-brand-50 dark:bg-brand-500/10" },
+          { label: "Total Retailers", value: MOCK_RETAILERS.length, icon: Users, color: "text-brand-700 dark:text-foreground bg-brand-50 dark:bg-brand-500/10" },
           { label: "Active",          value: activeCount,           icon: CheckCircle2, color: "text-success-700 dark:text-foreground bg-success-50 dark:bg-success-500/10" },
           { label: "Inactive",        value: MOCK_RETAILERS.length - activeCount, icon: XCircle, color: "text-muted-foreground bg-surface-100 dark:bg-surface-800" },
           { label: "Cities Served",   value: new Set(MOCK_RETAILERS.map(r => r.city)).size, icon: MapPin, color: "text-info-600 dark:text-foreground bg-info-50 dark:bg-info-500/10" },
@@ -244,7 +244,7 @@ export default function AdminRetailersPage() {
                 >
                   <td className="px-5 py-3.5">
                     <div className="flex items-center gap-3">
-                      <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-brand-100 dark:bg-brand-700 text-brand-600 dark:text-white text-sm font-bold">
+                      <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-brand-100 dark:bg-brand-700 text-brand-700 dark:text-white text-sm font-bold">
                         {r.name.charAt(0)}
                       </div>
                       <div>

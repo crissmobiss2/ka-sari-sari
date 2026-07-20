@@ -58,8 +58,8 @@ const ROUTES: Route[] = [
 const STATUS_CONFIG: Record<DriverStatus, { label: string; badgeClass: string; avatarClass: string }> = {
   on_route: {
     label: "On Route",
-    badgeClass: "bg-brand-50 dark:bg-brand-500/10 text-brand-600 dark:text-foreground border border-brand-200",
-    avatarClass: "bg-brand-100 dark:bg-brand-500/20 text-brand-600 dark:text-foreground",
+    badgeClass: "bg-brand-50 dark:bg-brand-500/10 text-brand-700 dark:text-foreground border border-brand-200",
+    avatarClass: "bg-brand-100 dark:bg-brand-500/20 text-brand-700 dark:text-foreground",
   },
   active: {
     label: "Available",

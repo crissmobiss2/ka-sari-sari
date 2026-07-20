@@ -238,7 +238,7 @@ export default function DriverHomePage() {
         <div className="mb-3">
           <div className="flex justify-between text-xs text-muted-foreground mb-1.5">
             <span>{route.completedStops} of {route.stops} stops complete</span>
-            <span className="font-semibold text-brand-600">{progressPct}%</span>
+            <span className="font-semibold text-brand-700">{progressPct}%</span>
           </div>
           <div className="h-2.5 bg-brand-100 dark:bg-brand-500/20 rounded-full overflow-hidden">
             <div

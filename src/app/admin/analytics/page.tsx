@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import { useMemo } from "react";
 import { TrendingUp, Users, ShoppingCart, Package, Download, FileDown, ArrowUpRight, ArrowDownRight, Zap, Star } from "lucide-react";
@@ -419,7 +419,7 @@ export default function AdminAnalyticsPage() {
         {/* Active Retailers */}
         <Card className="p-5">
           <div className="flex items-start justify-between mb-3">
-            <div className="flex h-10 w-10 items-center justify-center rounded-xl text-brand-600 dark:text-foreground bg-brand-50 dark:bg-brand-500/10">
+            <div className="flex h-10 w-10 items-center justify-center rounded-xl text-brand-700 dark:text-foreground bg-brand-50 dark:bg-brand-500/10">
               <Users className="h-5 w-5" />
             </div>
             <span className="inline-flex items-center gap-0.5 text-[11px] font-semibold text-success-700 dark:text-foreground bg-success-50 dark:bg-success-500/10 rounded-full px-2 py-0.5">
@@ -504,7 +504,7 @@ export default function AdminAnalyticsPage() {
               <p className="font-display text-3xl font-bold text-brand-700 dark:text-brand-400 leading-none">
                 {salesVelocity.platformOrdersPerDay}
               </p>
-              <p className="text-[11px] text-brand-600 mt-1">orders / day (Jan 2026)</p>
+              <p className="text-[11px] text-brand-700 mt-1">orders / day (Jan 2026)</p>
             </div>
             {/* Today */}
             <div className="rounded-xl bg-surface-50 dark:bg-surface-900 border border-border p-4">
@@ -698,7 +698,7 @@ export default function AdminAnalyticsPage() {
             </table>
           </div>
           <div className="mt-4 pt-3 border-t border-border">
-            <button className="text-xs font-medium text-brand-600 hover:text-brand-700 dark:text-brand-400 transition-colors">
+            <button className="text-xs font-medium text-brand-700 hover:text-brand-700 dark:text-brand-400 transition-colors">
               View All Retailers ?
             </button>
           </div>

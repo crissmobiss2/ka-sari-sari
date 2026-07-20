@@ -52,7 +52,7 @@ export default function AdminSubscriptionsPage() {
       <div className="grid grid-cols-3 gap-4">
         {[
           { label: "Total Revenue", value: formatPHP(totalRevenue), icon: CreditCard, color: "text-success-700 dark:text-foreground bg-success-50 dark:bg-success-500/10" },
-          { label: "Active", value: active.toString(), icon: CheckCircle2, color: "text-brand-600 dark:text-foreground bg-brand-50 dark:bg-brand-500/10" },
+          { label: "Active", value: active.toString(), icon: CheckCircle2, color: "text-brand-700 dark:text-foreground bg-brand-50 dark:bg-brand-500/10" },
           { label: "Pending", value: pending.toString(), icon: Clock, color: "text-warning-700 dark:text-foreground bg-warning-50 dark:bg-warning-500/10" },
         ].map((s) => (
           <Card key={s.label} className="p-5">

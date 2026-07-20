@@ -593,7 +593,7 @@ export default function AdminRoutesPage() {
       {/* Overview stats */}
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
         {[
-          { icon: Radio, value: activeCount, label: "Active Routes", color: "bg-brand-50 dark:bg-brand-500/10 text-brand-600 dark:text-foreground dark:bg-brand-500/10 dark:text-foreground" },
+          { icon: Radio, value: activeCount, label: "Active Routes", color: "bg-brand-50 dark:bg-brand-500/10 text-brand-700 dark:text-foreground dark:bg-brand-500/10 dark:text-foreground" },
           { icon: Clock, value: plannedCount, label: "Planned Routes", color: "bg-warning-50 dark:bg-warning-500/10 text-warning-700 dark:text-foreground dark:bg-warning-500/10 dark:text-foreground" },
           { icon: CheckCircle2, value: completedCount, label: "Completed Today", color: "bg-success-50 dark:bg-success-500/10 text-success-700 dark:text-foreground dark:bg-success-500/10 dark:text-foreground" },
           { icon: MapPin, value: totalOrders, label: "Orders in Routes", color: "bg-info-50 dark:bg-info-500/10 text-info-600 dark:text-foreground dark:bg-info-500/10 dark:text-foreground" },

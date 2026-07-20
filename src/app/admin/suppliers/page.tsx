@@ -44,7 +44,7 @@ function SupplierCard({ s, onView, onNewPO, onEdit }: { s: Supplier } & CardHand
     <Card className="p-5 flex flex-col gap-4 hover:shadow-card-md transition-shadow">
       <div className="flex items-start justify-between gap-3">
         <div className="flex items-center gap-3">
-          <div className="h-11 w-11 shrink-0 rounded-xl bg-brand-100 dark:bg-brand-700 text-brand-600 dark:text-white flex items-center justify-center text-sm font-bold">
+          <div className="h-11 w-11 shrink-0 rounded-xl bg-brand-100 dark:bg-brand-700 text-brand-700 dark:text-white flex items-center justify-center text-sm font-bold">
             {initials}
           </div>
           <div>
@@ -146,7 +146,7 @@ function ViewSupplierModal({ s, onClose }: { s: Supplier; onClose: () => void })
         </div>
         <div className="p-5 space-y-4">
           <div className="flex items-center gap-3">
-            <div className="h-12 w-12 shrink-0 rounded-xl bg-brand-100 dark:bg-brand-700 text-brand-600 dark:text-white flex items-center justify-center text-sm font-bold">
+            <div className="h-12 w-12 shrink-0 rounded-xl bg-brand-100 dark:bg-brand-700 text-brand-700 dark:text-white flex items-center justify-center text-sm font-bold">
               {s.name.split(" ").slice(0, 2).map((w) => w[0]).join("").toUpperCase()}
             </div>
             <div>

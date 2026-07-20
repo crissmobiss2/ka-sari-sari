@@ -570,7 +570,7 @@ export default function ReorderPage() {
               "flex items-center gap-1.5 rounded-xl px-3 py-2 text-xs font-bold transition-all active:scale-95",
               selectionMode
                 ? "bg-surface-100 dark:bg-surface-800 text-foreground border border-border"
-                : "bg-brand-50 dark:bg-brand-500/10 text-brand-600 dark:text-foreground border border-brand-200 hover:bg-brand-100"
+                : "bg-brand-50 dark:bg-brand-500/10 text-brand-700 dark:text-foreground border border-brand-200 hover:bg-brand-100"
             )}
           >
             <ListChecks className="h-3.5 w-3.5" />

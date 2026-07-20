@@ -93,7 +93,7 @@ function PromoCard({ promo, onPause, onEdit, onDuplicate, onArchiveOrCancel }: P
         <p className="text-sm text-muted-foreground mt-1.5">{promo.description}</p>
 
         <div className="mt-4 flex flex-wrap gap-3 items-center">
-          <span className="inline-flex items-center gap-1.5 rounded-xl bg-brand-50 dark:bg-brand-500/10 border border-brand-200 px-3 py-1.5 text-sm font-bold text-brand-600 dark:text-foreground">
+          <span className="inline-flex items-center gap-1.5 rounded-xl bg-brand-50 dark:bg-brand-500/10 border border-brand-200 px-3 py-1.5 text-sm font-bold text-brand-700 dark:text-foreground">
             <Tag className="h-3.5 w-3.5" /> {discountLabel}
           </span>
           <span className="text-xs text-muted-foreground">
@@ -678,14 +678,14 @@ export default function AdminPromotionsPage() {
             className={cn(
               "shrink-0 flex items-center gap-1.5 px-4 py-2.5 text-sm font-medium border-b-2 transition-colors",
               activeTab === tab.id
-                ? "border-brand-500 text-brand-600"
+                ? "border-brand-500 text-brand-700"
                 : "border-transparent text-muted-foreground hover:text-foreground"
             )}
           >
             {tab.label}
             <span className={cn(
               "rounded-full px-1.5 py-0.5 text-xs font-semibold tabular-nums",
-              activeTab === tab.id ? "bg-brand-100 text-brand-600" : "bg-surface-100 dark:bg-surface-800 text-muted-foreground"
+              activeTab === tab.id ? "bg-brand-100 text-brand-700" : "bg-surface-100 dark:bg-surface-800 text-muted-foreground"
             )}>
               {tab.count}
             </span>

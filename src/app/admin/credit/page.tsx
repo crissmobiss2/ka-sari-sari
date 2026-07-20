@@ -1,4 +1,4 @@
-"use client";
+ï»¿"use client";
 import { useState, useEffect, useCallback } from "react";
 import { CreditCard, AlertTriangle, CheckCircle2, Clock, TrendingUp, Search, X, FileText, RefreshCw } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -116,7 +116,7 @@ export default function AdminCreditPage() {
       const data = await res.json();
       setApplications((data.applications ?? []) as CreditApplication[]);
     } catch {
-      // silently fail — no applications shown
+      // silently fail ï¿½ no applications shown
     } finally {
       setAppLoading(false);
     }
@@ -268,7 +268,7 @@ export default function AdminCreditPage() {
         id: `ca-${String(accounts.length + 1).padStart(2, "0")}`,
         retailer: retailerName,
         store: `${retailerName} Store`,
-        city: "—",
+        city: "ï¿½",
         creditLimit: limitAmount,
         outstanding: 0,
         oldestInvoiceDays: 0,
@@ -309,7 +309,7 @@ export default function AdminCreditPage() {
                 <X className="h-4 w-4" />
               </button>
             </div>
-            <p className="text-sm text-muted-foreground mb-4">{approveApp.retailerName}{approveApp.storeName ? ` · ${approveApp.storeName}` : ""}</p>
+            <p className="text-sm text-muted-foreground mb-4">{approveApp.retailerName}{approveApp.storeName ? ` ï¿½ ${approveApp.storeName}` : ""}</p>
             <div className="mb-4">
               <label className="block text-xs font-semibold text-muted-foreground mb-1.5">Approved Limit (PHP)</label>
               <input
@@ -328,7 +328,7 @@ export default function AdminCreditPage() {
                 disabled={!approveLimit || Number(approveLimit) <= 0 || approving}
                 className="flex-1 rounded-xl bg-success-700 text-white py-2.5 text-sm font-semibold hover:bg-success-800 transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
               >
-                {approving ? "Approving…" : "Approve"}
+                {approving ? "Approvingï¿½" : "Approve"}
               </button>
               <button
                 onClick={() => setApproveApp(null)}
@@ -351,7 +351,7 @@ export default function AdminCreditPage() {
                 <X className="h-4 w-4" />
               </button>
             </div>
-            <p className="text-sm text-muted-foreground mb-4">{rejectApp.retailerName}{rejectApp.storeName ? ` · ${rejectApp.storeName}` : ""}</p>
+            <p className="text-sm text-muted-foreground mb-4">{rejectApp.retailerName}{rejectApp.storeName ? ` ï¿½ ${rejectApp.storeName}` : ""}</p>
             <div className="mb-4">
               <label className="block text-xs font-semibold text-muted-foreground mb-1.5">Rejection Reason</label>
               <input
@@ -370,7 +370,7 @@ export default function AdminCreditPage() {
                 disabled={!rejectReason.trim() || rejecting}
                 className="flex-1 rounded-xl bg-danger-500 text-white py-2.5 text-sm font-semibold hover:bg-danger-600 transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
               >
-                {rejecting ? "Rejecting…" : "Reject"}
+                {rejecting ? "Rejectingï¿½" : "Reject"}
               </button>
               <button
                 onClick={() => setRejectApp(null)}
@@ -557,8 +557,8 @@ export default function AdminCreditPage() {
                     <div className="flex-1 min-w-0">
                       <p className="text-sm font-semibold text-foreground truncate">{app.retailerName}</p>
                       <p className="text-xs text-muted-foreground">
-                        {app.storeName ? `${app.storeName} · ` : ""}
-                        {formatPHP(app.requestedLimit)} requested · {app.requestedTerms}-day terms
+                        {app.storeName ? `${app.storeName} ï¿½ ` : ""}
+                        {formatPHP(app.requestedLimit)} requested ï¿½ {app.requestedTerms}-day terms
                       </p>
                       <p className="text-[11px] text-muted-foreground mt-0.5">{formatDate(app.createdAt)}</p>
                     </div>
@@ -616,7 +616,7 @@ export default function AdminCreditPage() {
             type="search"
             value={search}
             onChange={(e) => setSearch(e.target.value)}
-            placeholder="Search retailer or city…"
+            placeholder="Search retailer or cityï¿½"
             className="h-10 w-full rounded-xl border border-input bg-card pl-10 pr-4 text-sm focus:outline-none focus:ring-2 focus:ring-brand-500"
           />
         </div>
@@ -658,12 +658,12 @@ export default function AdminCreditPage() {
                   >
                     <div className="flex items-start justify-between gap-3">
                       <div className="flex items-center gap-3 flex-1 min-w-0">
-                        <div className={cn("flex h-9 w-9 shrink-0 items-center justify-center rounded-full text-sm font-bold", a.status === "good" ? "bg-brand-100 dark:bg-brand-700 text-brand-600 dark:text-white" : "bg-surface-200 text-surface-900")}>
+                        <div className={cn("flex h-9 w-9 shrink-0 items-center justify-center rounded-full text-sm font-bold", a.status === "good" ? "bg-brand-100 dark:bg-brand-700 text-brand-700 dark:text-white" : "bg-surface-200 text-surface-900")}>
                           {a.retailer.charAt(0)}
                         </div>
                         <div className="min-w-0">
                           <p className="text-sm font-semibold text-foreground truncate">{a.retailer}</p>
-                          <p className="text-xs text-muted-foreground truncate">{a.store} · {a.city}</p>
+                          <p className="text-xs text-muted-foreground truncate">{a.store} ï¿½ {a.city}</p>
                         </div>
                       </div>
                       <div className="text-right shrink-0">
@@ -676,11 +676,11 @@ export default function AdminCreditPage() {
                       <div className="flex items-center justify-between">
                         <span className={cn("text-[11px] font-semibold rounded-full border px-2 py-0.5", cfg.color)}>
                           {cfg.label}
-                          {a.status === "overdue" && ` · ${a.oldestInvoiceDays}d overdue`}
+                          {a.status === "overdue" && ` ï¿½ ${a.oldestInvoiceDays}d overdue`}
                         </span>
                         <span className="text-[11px] text-muted-foreground">
                           {a.terms}-day terms
-                          {a.nextDue && ` · Due ${formatDate(a.nextDue)}`}
+                          {a.nextDue && ` ï¿½ Due ${formatDate(a.nextDue)}`}
                         </span>
                       </div>
                     </div>
@@ -716,7 +716,7 @@ export default function AdminCreditPage() {
                 ].map(({ label, value, bold }) => (
                   <div key={label} className="flex justify-between items-center py-1.5 border-b border-border/50 last:border-0">
                     <span className="text-muted-foreground">{label}</span>
-                    <span className={cn("font-semibold text-foreground tabular-nums", bold && "text-brand-600")}>{value}</span>
+                    <span className={cn("font-semibold text-foreground tabular-nums", bold && "text-brand-700")}>{value}</span>
                   </div>
                 ))}
               </div>
