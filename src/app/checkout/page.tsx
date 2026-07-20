@@ -25,21 +25,21 @@ const PAYMENT_OPTIONS: {
     label: "GCash",
     description: "Pay via GCash e-wallet",
     badge: "GCash",
-    badgeClass: "bg-gradient-to-r from-blue-500 to-green-400 text-white",
+    badgeClass: "bg-blue-600 text-white",
   },
   {
     id: "maya",
     label: "Maya",
     description: "Pay via Maya e-wallet",
     badge: "Maya",
-    badgeClass: "bg-gradient-to-r from-purple-500 to-purple-700 text-white",
+    badgeClass: "bg-purple-700 text-white",
   },
   {
     id: "cod",
     label: "Cash on Delivery",
     description: "Pay in cash when your order arrives",
     badge: "COD",
-    badgeClass: "bg-gradient-to-r from-amber-500 to-yellow-500 text-white",
+    badgeClass: "bg-warning-700 text-white",
   },
 ];
 

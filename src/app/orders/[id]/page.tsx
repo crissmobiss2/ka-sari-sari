@@ -124,7 +124,7 @@ function StatusHero({ status, createdAt }: { status: OrderStatus; createdAt: str
   const bannerClass = isOutForDelivery
     ? "bg-brand-700 text-white"
     : isDelivered
-    ? "bg-gradient-to-r from-success-600 to-success-700 text-white"
+    ? "bg-success-700 text-white"
     : isCancelled
     ? "bg-danger-50 dark:bg-danger-500/10 text-danger-700 dark:text-foreground"
     : "bg-warning-50 dark:bg-warning-500/10 text-warning-700 dark:text-foreground";

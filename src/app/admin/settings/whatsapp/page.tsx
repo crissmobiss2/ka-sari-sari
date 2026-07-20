@@ -192,7 +192,7 @@ function WhatsAppPreview() {
                 <p className="text-[12px] text-zinc-800 leading-relaxed break-words">
                   {PREVIEW_MESSAGE}
                 </p>
-                <p className="mt-1.5 text-right text-[10px] text-zinc-400">
+                <p className="mt-1.5 text-right text-[10px] text-zinc-500">
                   9:41 AM ✓✓
                 </p>
               </div>
@@ -208,7 +208,7 @@ function WhatsAppPreview() {
         {/* Input bar placeholder */}
         <div className="flex items-center gap-2 bg-[#f0f0f0] px-3 py-2">
           <div className="flex-1 rounded-full bg-white px-4 py-1.5">
-            <p className="text-[11px] text-zinc-400">Message</p>
+            <p className="text-[11px] text-zinc-500">Message</p>
           </div>
           <div className="flex h-8 w-8 items-center justify-center rounded-full bg-[#075E54]">
             <WhatsAppIcon className="h-4 w-4 text-white" />
