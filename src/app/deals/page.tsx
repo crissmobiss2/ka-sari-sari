@@ -192,19 +192,19 @@ export default function DealsPage() {
 
       <div className="px-4 py-5 space-y-6">
         {/* Hero banner */}
-        <div className="relative overflow-hidden rounded-2xl bg-gradient-to-r from-danger-500 to-brand-500 p-5 text-white">
+        <div className="relative overflow-hidden rounded-2xl bg-gradient-to-r from-danger-500 to-brand-700 p-5 text-white">
           <div className="absolute -top-4 -right-4 h-24 w-24 rounded-full bg-white/10" />
           <div className="absolute -bottom-6 -right-8 h-32 w-32 rounded-full bg-white/5" />
           <div className="relative">
             <div className="flex items-center gap-2 mb-1">
               <Flame className="h-5 w-5 text-yellow-300" />
-              <span className="text-xs font-semibold uppercase tracking-wider text-white/80">Flash Sale Today</span>
+              <span className="text-xs font-semibold uppercase tracking-wider">Flash Sale Today</span>
             </div>
             <h2 className="font-display text-2xl font-black leading-tight">Up to 30% Off</h2>
-            <p className="text-sm text-white/80 mt-1">Exclusive deals for Ka Sari-Sari members</p>
+            <p className="text-sm mt-1">Exclusive deals for Ka Sari-Sari members</p>
             <div className="mt-3 flex items-center gap-2">
-              <span className="text-xs font-medium text-white/70">Ends in:</span>
-              <span className="rounded-lg bg-white/20 px-2 py-1 text-sm font-bold">
+              <span className="text-xs font-medium text-white/90">Ends in:</span>
+              <span className="rounded-lg bg-black/25 px-2 py-1 text-sm font-bold">
                 <Countdown seconds={3600 * 8 + 1234} />
               </span>
             </div>
