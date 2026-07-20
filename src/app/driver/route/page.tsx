@@ -265,7 +265,7 @@ export default function RouteMapPage() {
         <p className="text-sm text-muted-foreground text-center">Check your connection and try again.</p>
         <button
           onClick={() => { setRouteError(false); setLoading(true); fetch("/api/driver/route").then(r => r.ok ? r.json() : Promise.reject()).then(d => { if (d.stops?.length) { let na = false; setStops((d.stops as ApiStop[]).map(s => { const isNext = (s.status !== "delivered" && s.status !== "failed") && !na; if (isNext) na = true; return mapApiStop(s, isNext); })); } }).catch(() => setRouteError(true)).finally(() => setLoading(false)); }}
-          className="rounded-xl bg-brand-700 dark:bg-brand-500 px-4 py-2 text-sm font-semibold text-white"
+          className="rounded-xl bg-brand-700 px-4 py-2 text-sm font-semibold text-white"
         >
           Retry
         </button>
@@ -368,7 +368,7 @@ export default function RouteMapPage() {
                 <div className="flex-1 min-w-0">
                   <div className="flex items-center gap-2">
                     <p className="text-sm font-bold text-foreground truncate">{stop.storeName}</p>
-                    {isNext && <span className="shrink-0 rounded-full bg-brand-700 dark:bg-brand-500 text-white text-[10px] font-bold px-2 py-0.5">NEXT</span>}
+                    {isNext && <span className="shrink-0 rounded-full bg-brand-700 text-white text-[10px] font-bold px-2 py-0.5">NEXT</span>}
                   </div>
                   <div className="flex items-center gap-2 mt-0.5">
                     <span className="text-xs text-muted-foreground truncate">{stop.barangay}, {stop.city}</span>
@@ -518,7 +518,7 @@ export default function RouteMapPage() {
             <button
               onClick={handleSubmitReport}
               disabled={isSubmitting}
-              className="w-full rounded-2xl bg-brand-700 dark:bg-brand-500 hover:bg-brand-800 text-white font-bold h-12 transition-colors disabled:opacity-60"
+              className="w-full rounded-2xl bg-brand-700 hover:bg-brand-800 text-white font-bold h-12 transition-colors disabled:opacity-60"
             >
               {isSubmitting ? "Submitting…" : "Confirm & Submit Report"}
             </button>

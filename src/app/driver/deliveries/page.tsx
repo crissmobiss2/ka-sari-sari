@@ -186,7 +186,7 @@ export default function DriverDeliveriesPage() {
               className={cn(
                 "px-3 py-1.5 rounded-lg text-xs font-semibold transition-colors",
                 activeTab === id
-                  ? "bg-brand-700 dark:bg-brand-500 text-white"
+                  ? "bg-brand-700 text-white"
                   : "bg-surface-100 dark:bg-surface-800 text-muted-foreground hover:text-surface-900"
               )}
             >
@@ -247,21 +247,21 @@ export default function DriverDeliveriesPage() {
                       {/* Navigation uses orderId — File 3 reads the URL param as order ID */}
                       <Link
                         href={`/driver/deliveries/${delivery.orderId}`}
-                        className="flex-1 flex items-center justify-center gap-1.5 rounded-xl bg-brand-700 dark:bg-brand-500 hover:bg-brand-800 text-white text-xs font-semibold h-9 transition-colors"
+                        className="flex-1 flex items-center justify-center gap-1.5 rounded-xl bg-brand-700 hover:bg-brand-800 text-white text-xs font-semibold h-9 transition-colors"
                       >
                         View Details
                       </Link>
                       {isCOD ? (
                         <Link
                           href={`/driver/deliveries/${delivery.orderId}`}
-                          className="flex items-center gap-1 rounded-xl bg-brand-700 dark:bg-brand-500 hover:bg-brand-800 text-white text-xs font-semibold h-9 px-3 transition-colors"
+                          className="flex items-center gap-1 rounded-xl bg-brand-700 hover:bg-brand-800 text-white text-xs font-semibold h-9 px-3 transition-colors"
                         >
                           View & Confirm
                         </Link>
                       ) : (
                         <button
                           onClick={() => handleMarkDelivered(delivery.id, delivery.orderId)}
-                          className="flex items-center gap-1 rounded-xl bg-success-700 dark:bg-success-500 hover:bg-success-800 text-white text-xs font-semibold h-9 px-3 transition-colors"
+                          className="flex items-center gap-1 rounded-xl bg-success-700 hover:bg-success-800 text-white text-xs font-semibold h-9 px-3 transition-colors"
                         >
                           <CheckCircle2 className="h-3.5 w-3.5" />
                           Done
@@ -309,7 +309,7 @@ export default function DriverDeliveriesPage() {
               {FAIL_REASONS.map(reason => (
                 <button key={reason} onClick={() => setFailReason(reason)}
                   className={`w-full flex items-center gap-3 rounded-xl border px-4 py-3 text-sm font-medium text-left transition-colors ${failReason === reason ? "border-danger-400 bg-danger-50 dark:bg-danger-500/10 text-danger-700 dark:text-foreground" : "border-border bg-background text-foreground"}`}>
-                  <div className={`w-4 h-4 rounded-full border-2 flex items-center justify-center flex-shrink-0 ${failReason === reason ? "border-danger-500 bg-danger-700 dark:bg-danger-500" : "border-surface-300"}`}>
+                  <div className={`w-4 h-4 rounded-full border-2 flex items-center justify-center flex-shrink-0 ${failReason === reason ? "border-danger-500 bg-danger-700 dark:bg-danger-500" : "border-surface-500"}`}>
                     {failReason === reason && <div className="w-2 h-2 rounded-full bg-white" />}
                   </div>
                   {reason}
