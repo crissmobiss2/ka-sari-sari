@@ -77,7 +77,7 @@ function PromoCard({ promo, onPause, onEdit, onDuplicate, onArchiveOrCancel }: P
             {status === "active" && (
               <span className="relative flex h-2.5 w-2.5 shrink-0" aria-label="Live">
                 <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-success-400 opacity-75" />
-                <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-success-50 dark:bg-success-500/100" />
+                <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-success-700 dark:bg-success-500" />
               </span>
             )}
             <p className="font-semibold text-foreground">{promo.title}</p>

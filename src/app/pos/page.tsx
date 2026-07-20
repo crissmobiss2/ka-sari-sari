@@ -344,7 +344,7 @@ export default function RetailerPOSPage() {
           {scanFeedback && (
             <div className={cn(
               "mx-3 mb-2 rounded-xl px-3 py-2 text-xs font-semibold text-white shrink-0",
-              scanFeedback.ok ? "bg-success-50 dark:bg-success-500/100" : "bg-danger-50 dark:bg-danger-500/100"
+              scanFeedback.ok ? "bg-success-700 dark:bg-success-500" : "bg-danger-700 dark:bg-danger-500"
             )}>
               {scanFeedback.text}
             </div>
@@ -470,7 +470,7 @@ export default function RetailerPOSPage() {
                 <button
                   onClick={handlePay}
                   disabled={(method === "cash" && tenderedNum < total) || txnLoading}
-                  className="w-full rounded-2xl bg-success-50 dark:bg-success-500/100 hover:bg-success-600 disabled:opacity-40 text-white text-sm font-bold h-12 transition-colors flex items-center justify-center gap-2"
+                  className="w-full rounded-2xl bg-success-700 dark:bg-success-500 hover:bg-success-800 disabled:opacity-40 text-white text-sm font-bold h-12 transition-colors flex items-center justify-center gap-2"
                 >
                   {txnLoading ? (
                     <>

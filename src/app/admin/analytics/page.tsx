@@ -360,7 +360,7 @@ export default function AdminAnalyticsPage() {
     const total = MOCK_ORDERS.length || 1;
     return [
       { label: "Delivered",   pct: Math.round(((counts["delivered"] ?? 0) / total) * 100), color: "bg-green-500" },
-      { label: "In Transit",  pct: Math.round(((counts["out_for_delivery"] ?? 0) / total) * 100), color: "bg-amber-500" },
+      { label: "In Transit",  pct: Math.round(((counts["out_for_delivery"] ?? 0) / total) * 100), color: "bg-amber-700 dark:bg-amber-500" },
       { label: "Processing",  pct: Math.round(((counts["picking"] ?? 0) + (counts["packed"] ?? 0) + (counts["confirmed"] ?? 0)) / total * 100), color: "bg-blue-500" },
       { label: "Cancelled",   pct: Math.round(((counts["cancelled"] ?? 0) + (counts["failed_delivery"] ?? 0)) / total * 100), color: "bg-red-500" },
     ];

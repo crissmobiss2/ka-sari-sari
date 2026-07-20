@@ -715,7 +715,7 @@ export default function AccountPage() {
                   "Credit application updates",
                 ].map((item) => (
                   <div key={item} className="flex items-center gap-2">
-                    <div className={cn("h-1.5 w-1.5 rounded-full shrink-0", isPushEnabled ? "bg-success-50 dark:bg-success-500/100" : "bg-surface-300")} />
+                    <div className={cn("h-1.5 w-1.5 rounded-full shrink-0", isPushEnabled ? "bg-success-700 dark:bg-success-500" : "bg-surface-300")} />
                     <span className="text-xs text-muted-foreground">{item}</span>
                   </div>
                 ))}

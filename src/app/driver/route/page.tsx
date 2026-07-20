@@ -324,7 +324,7 @@ export default function RouteMapPage() {
           </div>
           <button
             onClick={() => setShowReconcile(true)}
-            className="shrink-0 rounded-xl bg-success-50 dark:bg-success-500/100 text-white text-xs font-bold px-3 py-2"
+            className="shrink-0 rounded-xl bg-success-700 hover:bg-success-800 text-white text-xs font-bold px-3 py-2"
           >
             Submit Report
           </button>
@@ -464,7 +464,7 @@ export default function RouteMapPage() {
                   {!isDone && !isFailed && (
                     <button
                       onClick={() => markDone(stop.stopNumber)}
-                      className="w-full rounded-2xl bg-success-50 dark:bg-success-500/100 hover:bg-success-600 text-white text-sm font-bold h-11 flex items-center justify-center gap-2 transition-colors"
+                      className="w-full rounded-2xl bg-success-700 hover:bg-success-800 text-white text-sm font-bold h-11 flex items-center justify-center gap-2 transition-colors"
                     >
                       <CheckCircle2 className="h-5 w-5" />
                       {stop.paymentMethod === "cod" ? `Mark Delivered · Collect ${formatPHP(stop.total)}` : "Mark Delivered"}

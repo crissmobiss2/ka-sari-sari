@@ -24,7 +24,7 @@ function CityRow({ city }: { city: NexoflowCity }) {
   const isActive = count > 0;
   return (
     <div className="flex items-center gap-3 px-4 py-2.5 hover:bg-muted/40 transition-colors rounded-lg">
-      <div className={cn("h-2 w-2 rounded-full shrink-0", isActive ? "bg-success-50 dark:bg-success-500/100" : "bg-surface-300")} />
+      <div className={cn("h-2 w-2 rounded-full shrink-0", isActive ? "bg-success-700 dark:bg-success-500" : "bg-surface-300")} />
       <div className="flex-1 min-w-0">
         <span className="text-sm font-medium text-foreground">{city.city}</span>
         <span className="text-xs text-muted-foreground ml-2">{city.province}</span>
@@ -170,7 +170,7 @@ export default function CoveragePage() {
         <CardContent className="p-0">
           {/* Legend */}
           <div className="flex items-center gap-4 px-4 pb-2 text-xs text-muted-foreground">
-            <div className="flex items-center gap-1.5"><div className="h-2 w-2 rounded-full bg-success-50 dark:bg-success-500/100" />Active (has retailers)</div>
+            <div className="flex items-center gap-1.5"><div className="h-2 w-2 rounded-full bg-success-700 dark:bg-success-500" />Active (has retailers)</div>
             <div className="flex items-center gap-1.5"><div className="h-2 w-2 rounded-full bg-surface-300" />Available (no retailers yet)</div>
           </div>
 

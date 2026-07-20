@@ -132,9 +132,9 @@ function urgencyBadgeClass(urgency: AiReorder["urgency"]): string {
 }
 
 function confidenceBarColor(pct: number): string {
-  if (pct >= 90) return "bg-success-50 dark:bg-success-500/100";
-  if (pct >= 80) return "bg-amber-500";
-  return "bg-danger-50 dark:bg-danger-500/100";
+  if (pct >= 90) return "bg-success-700 dark:bg-success-500";
+  if (pct >= 80) return "bg-amber-700 dark:bg-amber-500";
+  return "bg-danger-700 dark:bg-danger-500";
 }
 
 function exportCSV() {
@@ -607,7 +607,7 @@ export default function AdminForecastPage() {
             </div>
             <div className="flex items-center gap-3 text-[11px] text-muted-foreground">
               <span className="flex items-center gap-1">
-                <span className="inline-block h-2 w-2 rounded-full bg-danger-50 dark:bg-danger-500/100" />URGENT
+                <span className="inline-block h-2 w-2 rounded-full bg-danger-700 dark:bg-danger-500" />URGENT
               </span>
               <span className="flex items-center gap-1">
                 <span className="inline-block h-2 w-2 rounded-full bg-brand-50 dark:bg-brand-500/100" />Reorder
@@ -760,7 +760,7 @@ export default function AdminForecastPage() {
                 <span className="text-xs text-muted-foreground">Demand increase</span>
               </div>
               <div className="flex items-center gap-1.5">
-                <span className="h-3 w-3 rounded-sm bg-danger-50 dark:bg-danger-500/100" />
+                <span className="h-3 w-3 rounded-sm bg-danger-700 dark:bg-danger-500" />
                 <span className="text-xs text-muted-foreground">Demand decrease</span>
               </div>
             </div>

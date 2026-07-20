@@ -283,7 +283,7 @@ export default function POSPage() {
               onClick={() => setMobileTab(t)}
               className={cn("relative px-3 py-2 font-medium capitalize transition-colors", mobileTab === t ? "bg-brand-50 dark:bg-brand-500/100 text-white" : "text-muted-foreground")}
             >
-              {t === "cart" && cartCount > 0 && <span className="absolute top-0.5 right-0.5 h-3.5 w-3.5 rounded-full bg-danger-50 dark:bg-danger-500/100 text-white text-[8px] flex items-center justify-center">{cartCount > 9 ? "9+" : cartCount}</span>}
+              {t === "cart" && cartCount > 0 && <span className="absolute top-0.5 right-0.5 h-3.5 w-3.5 rounded-full bg-danger-700 dark:bg-danger-500 text-white text-[8px] flex items-center justify-center">{cartCount > 9 ? "9+" : cartCount}</span>}
               {t === "cart" ? `Cart${cartCount > 0 ? ` (${cartCount})` : ""}` : t === "pay" ? "Pay" : "Items"}
             </button>
           ))}
@@ -602,7 +602,7 @@ export default function POSPage() {
       {scanFeedback && (
         <div className={cn(
           "fixed bottom-6 left-1/2 -translate-x-1/2 z-[150] rounded-2xl px-5 py-3 text-sm font-semibold text-white shadow-lg pointer-events-none",
-          scanFeedback.ok ? "bg-success-50 dark:bg-success-500/100" : "bg-danger-50 dark:bg-danger-500/100"
+          scanFeedback.ok ? "bg-success-700 dark:bg-success-500" : "bg-danger-700 dark:bg-danger-500"
         )}>
           {scanFeedback.text}
         </div>

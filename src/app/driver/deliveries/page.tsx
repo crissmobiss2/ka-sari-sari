@@ -261,7 +261,7 @@ export default function DriverDeliveriesPage() {
                       ) : (
                         <button
                           onClick={() => handleMarkDelivered(delivery.id, delivery.orderId)}
-                          className="flex items-center gap-1 rounded-xl bg-success-50 dark:bg-success-500/100 hover:bg-success-600 text-white text-xs font-semibold h-9 px-3 transition-colors"
+                          className="flex items-center gap-1 rounded-xl bg-success-700 dark:bg-success-500 hover:bg-success-800 text-white text-xs font-semibold h-9 px-3 transition-colors"
                         >
                           <CheckCircle2 className="h-3.5 w-3.5" />
                           Done
@@ -309,7 +309,7 @@ export default function DriverDeliveriesPage() {
               {FAIL_REASONS.map(reason => (
                 <button key={reason} onClick={() => setFailReason(reason)}
                   className={`w-full flex items-center gap-3 rounded-xl border px-4 py-3 text-sm font-medium text-left transition-colors ${failReason === reason ? "border-danger-400 bg-danger-50 dark:bg-danger-500/10 text-danger-700 dark:text-foreground" : "border-border bg-background text-foreground"}`}>
-                  <div className={`w-4 h-4 rounded-full border-2 flex items-center justify-center flex-shrink-0 ${failReason === reason ? "border-danger-500 bg-danger-50 dark:bg-danger-500/100" : "border-surface-300"}`}>
+                  <div className={`w-4 h-4 rounded-full border-2 flex items-center justify-center flex-shrink-0 ${failReason === reason ? "border-danger-500 bg-danger-700 dark:bg-danger-500" : "border-surface-300"}`}>
                     {failReason === reason && <div className="w-2 h-2 rounded-full bg-white" />}
                   </div>
                   {reason}
