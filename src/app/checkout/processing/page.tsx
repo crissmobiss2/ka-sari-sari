@@ -5,8 +5,8 @@ import { Suspense } from "react";
 import { cn } from "@/lib/utils";
 
 const STEPS = [
-  { label: "Placing Order", detail: "Securing your items…" },
-  { label: "Verifying Payment", detail: "Confirming your transfer…" },
+  { label: "Placing Order", detail: "Securing your itemsâ€¦" },
+  { label: "Verifying Payment", detail: "Confirming your transferâ€¦" },
   { label: "Confirmed", detail: "Your order is on its way!" },
 ];
 
@@ -28,7 +28,7 @@ function ProcessingContent() {
 
     // Poll the order status instead of blindly assuming success
     let attempts = 0;
-    const MAX_ATTEMPTS = 20; // 20 × 2s = 40 second timeout
+    const MAX_ATTEMPTS = 20; // 20 Ã— 2s = 40 second timeout
 
     const poll = async () => {
       try {
@@ -43,7 +43,7 @@ function ProcessingContent() {
         } else {
           attempts++;
           if (attempts >= MAX_ATTEMPTS) {
-            // Timeout — treat as failed to avoid stuck UI
+            // Timeout â€” treat as failed to avoid stuck UI
             router.replace(`/checkout/failed?orderId=${orderId}&reason=timeout`);
           } else {
             setTimeout(poll, 2000);

@@ -49,7 +49,7 @@ function FailedContent() {
       </div>
 
       <p className="text-xs text-muted-foreground mt-6 max-w-xs">
-        If money was deducted from your account, it will be refunded within 3–5 business days.
+        If money was deducted from your account, it will be refunded within 3â€“5 business days.
         Contact support if you need help.
       </p>
     </div>
