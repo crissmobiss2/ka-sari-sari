@@ -733,8 +733,8 @@ export default function AdminForecastPage() {
                       className={cn(
                         "h-full rounded-lg transition-all",
                         isPos
-                          ? "bg-gradient-to-r from-brand-400 to-brand-500"
-                          : "bg-gradient-to-r from-danger-400 to-danger-500"
+                          ? "bg-gradient-to-r from-brand-600 to-brand-700"
+                          : "bg-gradient-to-r from-danger-600 to-danger-700"
                       )}
                       style={{ width: `${barWidthPct}%` }}
                     />

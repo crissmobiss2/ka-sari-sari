@@ -267,7 +267,7 @@ export default function WarehouseDashboard() {
                 <Icon className="h-5 w-5" />
                 <div>
                   <p className="text-sm font-bold leading-tight">{label}</p>
-                  <p className="text-xs opacity-70 mt-0.5">{sub}</p>
+                  <p className="text-xs mt-0.5">{sub}</p>
                 </div>
               </div>
             </Link>

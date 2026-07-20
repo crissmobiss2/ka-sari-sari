@@ -336,9 +336,6 @@ export default function ChatPage() {
               )}
             >
               {lang.label}
-              {selectedLang.id !== lang.id && (
-                <span className="ml-1 opacity-50 text-[10px]">{lang.note}</span>
-              )}
             </button>
           ))}
         </div>
