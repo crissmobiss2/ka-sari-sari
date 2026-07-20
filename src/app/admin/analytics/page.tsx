@@ -500,8 +500,8 @@ export default function AdminAnalyticsPage() {
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-5">
             {/* Platform daily avg */}
             <div className="rounded-xl bg-brand-50 dark:bg-brand-500/10 border border-brand-100 p-4">
-              <p className="text-xs text-brand-700 font-medium mb-1">Platform Daily Avg</p>
-              <p className="font-display text-3xl font-bold text-brand-700 leading-none">
+              <p className="text-xs text-brand-700 dark:text-brand-400 font-medium mb-1">Platform Daily Avg</p>
+              <p className="font-display text-3xl font-bold text-brand-700 dark:text-brand-400 leading-none">
                 {salesVelocity.platformOrdersPerDay}
               </p>
               <p className="text-[11px] text-brand-600 mt-1">orders / day (Jan 2026)</p>
@@ -698,7 +698,7 @@ export default function AdminAnalyticsPage() {
             </table>
           </div>
           <div className="mt-4 pt-3 border-t border-border">
-            <button className="text-xs font-medium text-brand-600 hover:text-brand-700 transition-colors">
+            <button className="text-xs font-medium text-brand-600 hover:text-brand-700 dark:text-brand-400 transition-colors">
               View All Retailers →
             </button>
           </div>

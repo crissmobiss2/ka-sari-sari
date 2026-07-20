@@ -481,8 +481,8 @@ export default function POSPage() {
                   </div>
                   {cash >= total && total > 0 && (
                     <div className="flex justify-between rounded-xl bg-success-50 dark:bg-success-500/10 border border-success-200 px-3 py-2">
-                      <span className="text-sm text-success-700 font-medium">Change</span>
-                      <span className="text-sm font-bold text-success-700">{formatPHP(change)}</span>
+                      <span className="text-sm text-success-700 dark:text-foreground font-medium">Change</span>
+                      <span className="text-sm font-bold text-success-700 dark:text-foreground">{formatPHP(change)}</span>
                     </div>
                   )}
                   {cashTendered && cash < total && (
@@ -563,7 +563,7 @@ export default function POSPage() {
 
               {payMethod === "cod" && (
                 <div className="rounded-xl bg-brand-50 dark:bg-brand-500/10 border border-brand-200 p-3 text-xs space-y-1 pt-1">
-                  <p className="font-bold text-brand-700">Cash on Delivery</p>
+                  <p className="font-bold text-brand-700 dark:text-brand-400">Cash on Delivery</p>
                   <p className="text-brand-600">Driver will collect {formatPHP(total)} upon delivery.</p>
                 </div>
               )}

@@ -592,8 +592,8 @@ export default function AdminCreditPage() {
       {/* KPI strip */}
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
         {[
-          { label: "Total Outstanding",  value: formatPHP(totalOutstanding), sub: `of ${formatPHP(totalLimit)} limit`, color: "text-brand-700 bg-brand-50 dark:bg-brand-500/10 dark:text-foreground", icon: CreditCard },
-          { label: "Utilization Rate",   value: `${Math.round((totalOutstanding / totalLimit) * 100)}%`, sub: "across all accounts", color: "text-info-700 bg-info-50 dark:bg-info-500/10 dark:text-foreground", icon: TrendingUp },
+          { label: "Total Outstanding",  value: formatPHP(totalOutstanding), sub: `of ${formatPHP(totalLimit)} limit`, color: "text-brand-700 dark:text-brand-400 bg-brand-50 dark:bg-brand-500/10 dark:text-foreground", icon: CreditCard },
+          { label: "Utilization Rate",   value: `${Math.round((totalOutstanding / totalLimit) * 100)}%`, sub: "across all accounts", color: "text-info-700 dark:text-foreground bg-info-50 dark:bg-info-500/10 dark:text-foreground", icon: TrendingUp },
           { label: "Overdue Accounts",   value: overdueCount.toString(), sub: `${formatPHP(atRiskAmount)} at risk`, color: overdueCount > 0 ? "text-danger-700 dark:text-foreground bg-danger-50 dark:bg-danger-500/10" : "text-success-700 dark:text-foreground bg-success-50 dark:bg-success-500/10", icon: AlertTriangle },
           { label: "Avg Terms",          value: "30 days", sub: "payment window", color: "text-muted-foreground bg-surface-100 dark:bg-surface-800", icon: Clock },
         ].map((s) => (

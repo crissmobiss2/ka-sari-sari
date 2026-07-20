@@ -240,7 +240,7 @@ export default function LoyaltyPage() {
                     <span className="text-xl">{tier.icon}</span>
                     <span className={cn(
                       "font-display text-sm font-bold",
-                      tier.current ? "text-brand-700" : "text-foreground"
+                      tier.current ? "text-brand-700 dark:text-brand-400" : "text-foreground"
                     )}>
                       {tier.name}
                     </span>
@@ -255,7 +255,7 @@ export default function LoyaltyPage() {
                   {tier.perks.map((perk) => (
                     <li key={perk} className={cn(
                       "flex items-start gap-2 text-xs",
-                      tier.current ? "text-brand-700" : "text-muted-foreground"
+                      tier.current ? "text-brand-700 dark:text-brand-400" : "text-muted-foreground"
                     )}>
                       <ChevronRight className={cn(
                         "h-3.5 w-3.5 mt-0.5 shrink-0",
@@ -332,7 +332,7 @@ export default function LoyaltyPage() {
 
           {/* Code display */}
           <div className="flex items-center gap-2 rounded-xl border border-dashed border-brand-300 bg-brand-50 dark:bg-brand-500/10 dark:bg-card dark:border-brand-700/50 px-4 py-3 mb-3">
-            <span className="flex-1 font-mono text-sm font-bold text-brand-700 tracking-wider">
+            <span className="flex-1 font-mono text-sm font-bold text-brand-700 dark:text-brand-400 tracking-wider">
               {referralCode}
             </span>
             <button

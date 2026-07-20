@@ -44,7 +44,7 @@ function Numpad({ value, onChange }: { value: string; onChange: (v: string) => v
           onClick={() => press(k)}
           className={cn(
             "rounded-xl h-12 text-base font-semibold transition-colors active:scale-95",
-            k === "C" ? "bg-danger-100 text-danger-700 hover:bg-danger-200"
+            k === "C" ? "bg-danger-100 text-danger-700 dark:text-foreground hover:bg-danger-200"
             : k === "⌫" ? "bg-surface-200 text-surface-900 hover:bg-surface-300"
             : "bg-surface-100 dark:bg-surface-800 text-surface-900 hover:bg-surface-200"
           )}
@@ -453,7 +453,7 @@ export default function RetailerPOSPage() {
                     </div>
                     <Numpad value={tendered} onChange={setTendered} />
                     {tenderedNum > 0 && (
-                      <div className={cn("rounded-xl p-2.5 text-center text-sm font-bold", tenderedNum >= total ? "bg-success-100 text-success-700" : "bg-danger-100 text-danger-700")}>
+                      <div className={cn("rounded-xl p-2.5 text-center text-sm font-bold", tenderedNum >= total ? "bg-success-100 text-success-700 dark:text-foreground" : "bg-danger-100 text-danger-700 dark:text-foreground")}>
                         {tenderedNum >= total ? `Change: ${formatPHP(change)}` : `Short by ${formatPHP(total - tenderedNum)}`}
                       </div>
                     )}
@@ -463,7 +463,7 @@ export default function RetailerPOSPage() {
 
               <div className="p-4 border-t border-border space-y-2">
                 {txnError && (
-                  <div className="rounded-xl bg-danger-50 dark:bg-danger-500/10 border border-danger-200 px-3 py-2 text-xs text-danger-700">
+                  <div className="rounded-xl bg-danger-50 dark:bg-danger-500/10 border border-danger-200 px-3 py-2 text-xs text-danger-700 dark:text-foreground">
                     {txnError}
                   </div>
                 )}

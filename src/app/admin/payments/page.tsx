@@ -481,7 +481,7 @@ export default function PaymentsPage() {
               {tab.label}
               <span className={cn(
                 "text-[10px] rounded-full px-1.5 py-0.5 font-bold",
-                methodTab === tab.id ? "bg-brand-100 text-brand-700" : "bg-muted text-muted-foreground"
+                methodTab === tab.id ? "bg-brand-100 text-brand-700 dark:text-brand-400" : "bg-muted text-muted-foreground"
               )}>
                 {tab.id === "all"
                   ? transactions.length

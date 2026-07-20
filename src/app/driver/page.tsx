@@ -225,7 +225,7 @@ export default function DriverHomePage() {
       <Card className="p-4 border-brand-200 bg-brand-50/40">
         <div className="flex items-start justify-between mb-3">
           <div>
-            <p className="text-xs font-semibold text-brand-700 uppercase tracking-wider mb-0.5">
+            <p className="text-xs font-semibold text-brand-700 dark:text-brand-400 uppercase tracking-wider mb-0.5">
               Active Route
             </p>
             <h2 className="font-display text-base font-bold text-foreground">{route.name}</h2>
@@ -260,7 +260,7 @@ export default function DriverHomePage() {
         {nextStop ? (
           <div className="flex items-center gap-3">
             <div className="w-10 h-10 rounded-full bg-brand-100 flex items-center justify-center flex-shrink-0">
-              <span className="font-display text-sm font-bold text-brand-700">
+              <span className="font-display text-sm font-bold text-brand-700 dark:text-brand-400">
                 {pendingDeliveries.indexOf(nextStop) + 1}
               </span>
             </div>

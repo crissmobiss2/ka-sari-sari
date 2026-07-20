@@ -137,7 +137,7 @@ function AiFeatureRow({ feature }: { feature: AiFeature }) {
           {/* Expand toggle */}
           <button
             onClick={() => setExpanded(!expanded)}
-            className="flex items-center gap-1 mt-2 text-xs text-brand-700 hover:text-brand-800 font-medium transition-colors"
+            className="flex items-center gap-1 mt-2 text-xs text-brand-700 dark:text-brand-400 hover:text-brand-800 font-medium transition-colors"
           >
             {expanded ? <ChevronUp className="h-3 w-3" /> : <ChevronDown className="h-3 w-3" />}
             {expanded ? "Less details" : "How it works"}

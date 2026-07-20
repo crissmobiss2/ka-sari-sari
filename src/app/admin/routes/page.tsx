@@ -47,7 +47,7 @@ const AVAILABLE_DRIVERS = [
 const STATUS_CONFIG: Record<RouteStatus, { label: string; badgeClass: string; headerClass: string }> = {
   active: {
     label: "Active",
-    badgeClass: "bg-brand-50 dark:bg-brand-500/10 text-brand-700 border border-brand-200 dark:bg-brand-500/20 dark:text-foreground dark:border-brand-500/30",
+    badgeClass: "bg-brand-50 dark:bg-brand-500/10 text-brand-700 dark:text-brand-400 border border-brand-200 dark:bg-brand-500/20 dark:text-foreground dark:border-brand-500/30",
     headerClass: "border-t-brand-400",
   },
   planned: {

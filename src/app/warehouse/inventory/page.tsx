@@ -342,7 +342,7 @@ export default function InventoryPage() {
                         {!isAdjusting ? (
                           <button
                             onClick={() => openAdjust(product.id)}
-                            className="mt-1 text-xs font-medium text-brand-600 hover:text-brand-700 underline underline-offset-2 transition-colors"
+                            className="mt-1 text-xs font-medium text-brand-600 hover:text-brand-700 dark:text-brand-400 underline underline-offset-2 transition-colors"
                           >
                             Adjust Stock
                           </button>

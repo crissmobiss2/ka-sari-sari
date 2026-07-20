@@ -730,7 +730,7 @@ export default function DeliveryDetailPage() {
                     {PRODUCT_NAME_MAP[item.productId] ?? item.productId}
                   </p>
                   <div className="flex items-center gap-2 mt-0.5">
-                    <span className="text-xs font-bold text-brand-700 tabular-nums">
+                    <span className="text-xs font-bold text-brand-700 dark:text-brand-400 tabular-nums">
                       × {item.quantity}
                     </span>
                     <span className="text-xs text-muted-foreground">

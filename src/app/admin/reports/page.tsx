@@ -42,7 +42,7 @@ const TOP_RETAILERS = [
 ];
 
 const STATUS_COLORS: Record<string, string> = {
-  Active:   "bg-success-50 dark:bg-success-500/10 text-success-700",
+  Active:   "bg-success-50 dark:bg-success-500/10 text-success-700 dark:text-foreground",
   Inactive: "bg-surface-100 dark:bg-surface-800 text-muted-foreground",
 };
 
@@ -203,7 +203,7 @@ function StatusPill({ status }: { status: string }) {
       ? "bg-red-50 text-red-700"
       : status === "Low Stock"
       ? "bg-yellow-50 text-yellow-700"
-      : "bg-success-50 dark:bg-success-500/10 text-success-700";
+      : "bg-success-50 dark:bg-success-500/10 text-success-700 dark:text-foreground";
   return (
     <span className={`inline-block rounded-full px-2 py-0.5 text-[11px] font-medium ${cls}`}>
       {status}
@@ -220,7 +220,7 @@ function OrderStatusPill({ status }: { status: string }) {
   };
   const cls =
     status === "delivered"
-      ? "bg-success-50 dark:bg-success-500/10 text-success-700"
+      ? "bg-success-50 dark:bg-success-500/10 text-success-700 dark:text-foreground"
       : status === "failed_delivery" || status === "cancelled"
       ? "bg-red-50 text-red-700"
       : status === "out_for_delivery"

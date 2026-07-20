@@ -206,11 +206,11 @@ export default function DashboardPage() {
                       <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-brand-500 opacity-75" />
                       <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-brand-500" />
                     </span>
-                    <p className="text-sm font-semibold text-brand-700">Order on the way!</p>
+                    <p className="text-sm font-semibold text-brand-700 dark:text-brand-400">Order on the way!</p>
                   </div>
                   <ChevronRight className="h-4 w-4 text-brand-400" />
                 </div>
-                <p className="text-xs text-brand-700">{activeOrder.orderNumber} · {activeOrder.eta ? `Expected by ${activeOrder.eta}` : "Estimated delivery by today"}</p>
+                <p className="text-xs text-brand-700 dark:text-brand-400">{activeOrder.orderNumber} · {activeOrder.eta ? `Expected by ${activeOrder.eta}` : "Estimated delivery by today"}</p>
                 <div className="mt-3 flex gap-1">
                   {(["confirmed", "picking", "packed", "out_for_delivery"] as OrderStatus[]).map((s, i) => {
                     const steps = ["confirmed", "picking", "packed", "out_for_delivery"];
@@ -365,7 +365,7 @@ export default function DashboardPage() {
                         </div>
                         <span className="text-[10px] text-muted-foreground">{p.stock} left</span>
                       </div>
-                      <p className="text-xs text-brand-700 font-bold mt-0.5">{formatPHP(p.price)} · min {p.minOrderQty} {p.unit}s</p>
+                      <p className="text-xs text-brand-700 dark:text-brand-400 font-bold mt-0.5">{formatPHP(p.price)} · min {p.minOrderQty} {p.unit}s</p>
                     </div>
                     <button
                       onClick={() => addItem(p)}

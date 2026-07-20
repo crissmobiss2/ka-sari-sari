@@ -305,9 +305,9 @@ export default function AccountPage() {
 
   function statusBadge(status: CreditApplication["status"]) {
     const styles = {
-      pending: "bg-warning-50 dark:bg-warning-500/10 border-warning-200 text-warning-700",
-      approved: "bg-success-50 dark:bg-success-500/10 border-success-200 text-success-700",
-      rejected: "bg-danger-50 dark:bg-danger-500/10 border-danger-200 text-danger-700",
+      pending: "bg-warning-50 dark:bg-warning-500/10 border-warning-200 text-warning-700 dark:text-foreground",
+      approved: "bg-success-50 dark:bg-success-500/10 border-success-200 text-success-700 dark:text-foreground",
+      rejected: "bg-danger-50 dark:bg-danger-500/10 border-danger-200 text-danger-700 dark:text-foreground",
     };
     return (
       <span className={cn("rounded-full border px-2.5 py-0.5 text-xs font-bold capitalize", styles[status])}>
@@ -372,7 +372,7 @@ export default function AccountPage() {
                 <p className="text-xs text-muted-foreground">Ka Sari-Sari Credit Score</p>
               </div>
             </div>
-            <span className="rounded-full bg-success-50 dark:bg-success-500/10 border border-success-200 px-2.5 py-0.5 text-xs font-bold text-success-700">
+            <span className="rounded-full bg-success-50 dark:bg-success-500/10 border border-success-200 px-2.5 py-0.5 text-xs font-bold text-success-700 dark:text-foreground">
               Good Standing
             </span>
           </div>
@@ -483,7 +483,7 @@ export default function AccountPage() {
             <div className="flex items-start gap-3 rounded-xl bg-success-50 dark:bg-success-500/10 border border-success-200 px-4 py-3">
               <CheckCircle2 className="h-4 w-4 text-success-600 dark:text-success-500 shrink-0 mt-0.5" />
               <div>
-                <p className="text-sm font-semibold text-success-700">Application submitted!</p>
+                <p className="text-sm font-semibold text-success-700 dark:text-foreground">Application submitted!</p>
                 <p className="text-xs text-success-600 dark:text-success-500 mt-0.5">We'll review within 24 hours and notify you of the decision.</p>
               </div>
             </div>
@@ -570,7 +570,7 @@ export default function AccountPage() {
               {creditError && (
                 <div className="flex items-center gap-2 rounded-xl bg-danger-50 dark:bg-danger-500/10 border border-danger-200 px-3 py-2.5">
                   <AlertCircle className="h-4 w-4 text-danger-500 shrink-0" />
-                  <p className="text-xs text-danger-700">{creditError}</p>
+                  <p className="text-xs text-danger-700 dark:text-foreground">{creditError}</p>
                 </div>
               )}
 
@@ -606,7 +606,7 @@ export default function AccountPage() {
                 <Shield className="h-4 w-4" />
               </div>
               <div className="flex-1">
-                <p className="text-sm font-semibold text-success-700">Active Subscription</p>
+                <p className="text-sm font-semibold text-success-700 dark:text-foreground">Active Subscription</p>
                 <p className="text-xs text-success-600 dark:text-foreground mt-0.5">Platform access · Free Trial · Year 1</p>
                 <div className="flex items-center gap-2 mt-2">
                   <Check className="h-3.5 w-3.5 text-success-500" />
@@ -696,14 +696,14 @@ export default function AccountPage() {
               {pushError && (
                 <div className="flex items-center gap-2 rounded-xl bg-danger-50 dark:bg-danger-500/10 border border-danger-200 px-3 py-2.5">
                   <AlertCircle className="h-4 w-4 text-danger-500 shrink-0" />
-                  <p className="text-xs text-danger-700">{pushError}</p>
+                  <p className="text-xs text-danger-700 dark:text-foreground">{pushError}</p>
                 </div>
               )}
 
               {pushSuccess && (
                 <div className="flex items-center gap-2 rounded-xl bg-success-50 dark:bg-success-500/10 border border-success-200 px-3 py-2.5">
                   <CheckCircle2 className="h-4 w-4 text-success-600 dark:text-success-500 shrink-0" />
-                  <p className="text-xs text-success-700">{pushSuccess}</p>
+                  <p className="text-xs text-success-700 dark:text-foreground">{pushSuccess}</p>
                 </div>
               )}
 

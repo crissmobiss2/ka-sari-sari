@@ -243,10 +243,10 @@ function SuccessContent() {
             <Star className="h-5 w-5 text-brand-500 fill-brand-400" />
           </div>
           <div>
-            <p className="text-sm font-bold text-brand-700">
+            <p className="text-sm font-bold text-brand-700 dark:text-brand-400">
               You earned {ptsEarned} loyalty points!
             </p>
-            <p className="text-xs text-brand-700 mt-0.5">
+            <p className="text-xs text-brand-700 dark:text-brand-400 mt-0.5">
               Visit your Rewards page to see your balance.
             </p>
           </div>

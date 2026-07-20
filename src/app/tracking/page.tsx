@@ -392,7 +392,7 @@ function StopsBreakdown() {
                 "flex h-6 w-6 shrink-0 items-center justify-center rounded-full text-[11px] font-bold",
                 stop.status === "done"    ? "bg-success-700 text-white" :
                 stop.status === "current" ? "bg-brand-700 text-white" :
-                stop.status === "yours"   ? "border-2 border-brand-500 bg-white text-brand-700" :
+                stop.status === "yours"   ? "border-2 border-brand-500 bg-white text-brand-700 dark:text-brand-400" :
                 "bg-surface-200 dark:bg-surface-800 text-muted-foreground"
               )}>
                 {stop.status === "done" ? "✓" : stop.status === "current" ? "●" : stop.status === "yours" ? "★" : "○"}

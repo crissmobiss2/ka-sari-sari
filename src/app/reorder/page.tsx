@@ -584,7 +584,7 @@ export default function ReorderPage() {
             <span className="text-brand-500 shrink-0">
               <ShoppingCart className="h-4 w-4" />
             </span>
-            <p className="text-xs text-brand-700 font-medium">
+            <p className="text-xs text-brand-700 dark:text-brand-400 font-medium">
               Tap <span className="font-bold">Reorder All</span> to add a full order to cart, or{" "}
               <span className="font-bold">Select Items</span> to pick specific products.
             </p>

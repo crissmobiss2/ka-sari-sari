@@ -35,7 +35,7 @@ const INITIAL_PROMOS: Promo[] = [
 const AVG_ORDER_VALUE = 800;
 
 const STATUS_STYLE: Record<PromoStatus, string> = {
-  active:    "bg-success-50 dark:bg-success-500/10 text-success-700 border-success-500/25",
+  active:    "bg-success-50 dark:bg-success-500/10 text-success-700 dark:text-foreground border-success-500/25",
   scheduled: "bg-warning-50 dark:bg-warning-500/10 text-warning-600 dark:text-foreground border-warning-500/25",
   ended:     "bg-surface-100 dark:bg-surface-800 text-muted-foreground border-surface-200",
   paused:    "bg-surface-100 dark:bg-surface-800 text-muted-foreground border-surface-200",

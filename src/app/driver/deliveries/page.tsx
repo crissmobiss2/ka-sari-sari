@@ -24,9 +24,9 @@ const TABS: { id: FilterTab; label: string }[] = [
 ];
 
 const STATUS_BADGE: Record<string, { label: string; className: string }> = {
-  pending:   { label: "Pending",   className: "bg-warning-100 text-warning-700 border-warning-200" },
-  delivered: { label: "Delivered", className: "bg-success-100 text-success-700 border-success-200" },
-  failed:    { label: "Failed",    className: "bg-danger-100 text-danger-700 border-danger-200" },
+  pending:   { label: "Pending",   className: "bg-warning-100 text-warning-700 dark:text-foreground border-warning-200" },
+  delivered: { label: "Delivered", className: "bg-success-100 text-success-700 dark:text-foreground border-success-200" },
+  failed:    { label: "Failed",    className: "bg-danger-100 text-danger-700 dark:text-foreground border-danger-200" },
 };
 
 // ── Types ────────────────────────────────────────────────────────────────────
@@ -166,9 +166,9 @@ export default function DriverDeliveriesPage() {
         {/* Summary pills */}
         <div className="flex gap-2 px-4 pb-3">
           {[
-            { label: "Pending",   count: pendingCount,   color: "bg-warning-100 text-warning-700" },
-            { label: "Delivered", count: deliveredCount, color: "bg-success-100 text-success-700" },
-            { label: "Failed",    count: failedCount,    color: "bg-danger-100 text-danger-700" },
+            { label: "Pending",   count: pendingCount,   color: "bg-warning-100 text-warning-700 dark:text-foreground" },
+            { label: "Delivered", count: deliveredCount, color: "bg-success-100 text-success-700 dark:text-foreground" },
+            { label: "Failed",    count: failedCount,    color: "bg-danger-100 text-danger-700 dark:text-foreground" },
           ].map(({ label, count, color }) => (
             <div key={label} className={cn("flex items-center gap-1 rounded-full px-2.5 py-1 text-xs font-semibold", color)}>
               <span>{count}</span>
@@ -226,7 +226,7 @@ export default function DriverDeliveriesPage() {
                         {badgeInfo.label}
                       </span>
                       {isCOD && (
-                        <span className="inline-flex items-center gap-0.5 rounded-full bg-warning-100 border border-warning-200 text-warning-700 px-2 py-0.5 text-[10px] font-semibold">
+                        <span className="inline-flex items-center gap-0.5 rounded-full bg-warning-100 border border-warning-200 text-warning-700 dark:text-foreground px-2 py-0.5 text-[10px] font-semibold">
                           <Banknote className="h-2.5 w-2.5" /> COD
                         </span>
                       )}
@@ -269,7 +269,7 @@ export default function DriverDeliveriesPage() {
                       )}
                       <button
                         onClick={() => setFailTarget({ deliveryId: delivery.id, orderId: delivery.orderId })}
-                        className="flex items-center gap-1 rounded-xl bg-danger-100 hover:bg-danger-200 text-danger-700 text-xs font-semibold h-9 px-3 transition-colors"
+                        className="flex items-center gap-1 rounded-xl bg-danger-100 hover:bg-danger-200 text-danger-700 dark:text-foreground text-xs font-semibold h-9 px-3 transition-colors"
                       >
                         <XCircle className="h-3.5 w-3.5" />
                         Failed
@@ -308,7 +308,7 @@ export default function DriverDeliveriesPage() {
             <div className="space-y-2">
               {FAIL_REASONS.map(reason => (
                 <button key={reason} onClick={() => setFailReason(reason)}
-                  className={`w-full flex items-center gap-3 rounded-xl border px-4 py-3 text-sm font-medium text-left transition-colors ${failReason === reason ? "border-danger-400 bg-danger-50 dark:bg-danger-500/10 text-danger-700" : "border-border bg-background text-foreground"}`}>
+                  className={`w-full flex items-center gap-3 rounded-xl border px-4 py-3 text-sm font-medium text-left transition-colors ${failReason === reason ? "border-danger-400 bg-danger-50 dark:bg-danger-500/10 text-danger-700 dark:text-foreground" : "border-border bg-background text-foreground"}`}>
                   <div className={`w-4 h-4 rounded-full border-2 flex items-center justify-center flex-shrink-0 ${failReason === reason ? "border-danger-500 bg-danger-50 dark:bg-danger-500/100" : "border-surface-300"}`}>
                     {failReason === reason && <div className="w-2 h-2 rounded-full bg-white" />}
                   </div>

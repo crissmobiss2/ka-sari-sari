@@ -556,11 +556,11 @@ export default function AnalyticsPage() {
 
             <div className="mt-3 rounded-xl bg-success-50 dark:bg-success-500/10 border border-success-200 px-4 py-3 flex items-center justify-between">
               <div>
-                <p className="text-xs font-semibold text-success-700">Total savings this year</p>
+                <p className="text-xs font-semibold text-success-700 dark:text-foreground">Total savings this year</p>
                 <p className="text-[11px] text-success-600 dark:text-success-500 mt-0.5">Buying through Ka Sari-Sari</p>
               </div>
               <div className="text-right">
-                <p className="font-display text-lg font-black text-success-700">{formatPHP(stats.savings)}</p>
+                <p className="font-display text-lg font-black text-success-700 dark:text-foreground">{formatPHP(stats.savings)}</p>
                 <p className="text-xs text-success-600 dark:text-success-500 font-semibold">{stats.savingsPct}% saved</p>
               </div>
             </div>

@@ -290,8 +290,8 @@ export default function ProductDetailPage() {
         <div className="rounded-2xl border border-brand-200 bg-brand-50 dark:bg-brand-500/10 px-4 py-3 flex items-center gap-3">
           <Tag className="h-5 w-5 text-brand-500 shrink-0" />
           <div>
-            <p className="text-xs font-bold text-brand-700 uppercase tracking-wide">Minimum Order</p>
-            <p className="text-sm font-semibold text-brand-700">
+            <p className="text-xs font-bold text-brand-700 dark:text-brand-400 uppercase tracking-wide">Minimum Order</p>
+            <p className="text-sm font-semibold text-brand-700 dark:text-brand-400">
               {product.minOrderQty} {product.unit}{product.minOrderQty > 1 ? "s" : ""} per order
             </p>
           </div>

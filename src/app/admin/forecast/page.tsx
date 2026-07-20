@@ -126,7 +126,7 @@ function actionStyles(action: ActionType): string {
 function urgencyBadgeClass(urgency: AiReorder["urgency"]): string {
   switch (urgency) {
     case "critical": return "bg-danger-50 dark:bg-danger-500/10 text-danger-600 dark:text-foreground border border-danger-200";
-    case "high":     return "bg-warning-50 dark:bg-warning-500/10 text-warning-700 border border-warning-200";
+    case "high":     return "bg-warning-50 dark:bg-warning-500/10 text-warning-700 dark:text-foreground border border-warning-200";
     case "medium":   return "bg-info-50 dark:bg-info-500/10 text-info-600 dark:text-foreground border border-info-200";
   }
 }
@@ -413,7 +413,7 @@ export default function AdminForecastPage() {
                 <div className="space-y-2">
                   {aiData.topReorders.map((item, i) => (
                     <div key={i} className="flex items-start gap-3 py-2.5 border-b border-border last:border-0">
-                      <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-brand-100 text-brand-700 text-xs font-bold mt-0.5">
+                      <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-brand-100 text-brand-700 dark:text-brand-400 text-xs font-bold mt-0.5">
                         {i + 1}
                       </span>
                       <div className="flex-1 min-w-0">
@@ -493,7 +493,7 @@ export default function AdminForecastPage() {
             ) : (
               highVelocityItems.map((item, idx) => (
                 <div key={item.productId} className="flex items-start gap-3 py-2 border-b border-border last:border-0">
-                  <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-brand-100 text-brand-700 text-xs font-bold">
+                  <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-brand-100 text-brand-700 dark:text-brand-400 text-xs font-bold">
                     {idx + 1}
                   </span>
                   <div className="flex-1 min-w-0">
