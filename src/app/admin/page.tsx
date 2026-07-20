@@ -62,7 +62,7 @@ function RevenueChart() {
                 </span>
               )}
               <div
-                className={`w-full rounded-t-md transition-all duration-150 ${isCurrent ? "bg-brand-500" : isHovered ? "bg-brand-600 dark:bg-brand-400" : "bg-brand-200"}`}
+                className={`w-full rounded-t-md transition-all duration-150 ${isCurrent ? "bg-brand-700" : isHovered ? "bg-brand-600 dark:bg-brand-400" : "bg-brand-600 dark:bg-brand-300"}`}
                 style={{ height: `${pct}%`, minHeight: "4px" }}
               />
             </div>
