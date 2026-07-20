@@ -184,8 +184,8 @@ export default function LoyaltyPage() {
             {/* Tier badge */}
             <div className="flex items-center justify-between mb-4">
               <div className="flex items-center gap-2">
-                <Crown className="h-4 w-4 text-white/90" />
-                <span className="text-sm text-white/90 font-medium">Ka Sari-Sari Rewards</span>
+                <Crown className="h-4 w-4 text-white" />
+                <span className="text-sm text-white font-medium">Ka Sari-Sari Rewards</span>
               </div>
               <span className="rounded-full border border-brand-700/30 bg-white px-3 py-0.5 text-xs font-bold text-brand-700">
                 {currentTier.icon} {currentTier.name} Member
@@ -193,16 +193,16 @@ export default function LoyaltyPage() {
             </div>
 
             {/* Points */}
-            <p className="text-xs text-white/90 uppercase tracking-wide mb-1">Your points</p>
+            <p className="text-xs text-white uppercase tracking-wide mb-1">Your points</p>
             <p className="font-display text-5xl font-black leading-none">
               {balance.toLocaleString()}
-              <span className="text-2xl text-white/90 ml-1 font-semibold">pts</span>
+              <span className="text-2xl text-white ml-1 font-semibold">pts</span>
             </p>
 
             {/* Progress to next tier */}
             {nextTier ? (
               <div className="mt-5 space-y-2">
-                <div className="flex justify-between text-xs text-white/90">
+                <div className="flex justify-between text-xs text-white">
                   <span>{currentTier.name}</span>
                   <span className="font-semibold text-white">{pointsToNext} pts to {nextTier.name}</span>
                   <span>{nextTier.name}</span>
@@ -213,11 +213,11 @@ export default function LoyaltyPage() {
                     style={{ width: `${progressPct}%` }}
                   />
                 </div>
-                <p className="text-[10px] text-white/90 text-center">{progressPct}% of the way to {nextTier.name}</p>
+                <p className="text-[10px] text-white text-center">{progressPct}% of the way to {nextTier.name}</p>
               </div>
             ) : (
               <div className="mt-5">
-                <p className="text-xs text-white/90 text-center">You&apos;ve reached the highest tier!</p>
+                <p className="text-xs text-white text-center">You&apos;ve reached the highest tier!</p>
               </div>
             )}
           </div>

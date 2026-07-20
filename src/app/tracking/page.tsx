@@ -286,13 +286,13 @@ function EtaCard({ estimatedDelivery = ORDER.estimatedDelivery }: { estimatedDel
       </div>
       <div className="mt-4">
         <div className="flex items-center justify-between mb-1">
-          <span className="text-[11px] text-white/80">Route progress</span>
-          <span className="text-[11px] text-white/80">~65% complete</span>
+          <span className="text-[11px] text-white">Route progress</span>
+          <span className="text-[11px] text-white">~65% complete</span>
         </div>
         <div className="h-2 bg-white/20 rounded-full overflow-hidden">
           <div className="h-full bg-white rounded-full" style={{ width: "65%" }} />
         </div>
-        <div className="flex justify-between mt-1.5 text-[10px] text-white/80">
+        <div className="flex justify-between mt-1.5 text-[10px] text-white">
           <span>Warehouse</span>
           <span>Your Store</span>
         </div>

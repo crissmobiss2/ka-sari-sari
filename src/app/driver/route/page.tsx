@@ -279,15 +279,15 @@ export default function RouteMapPage() {
       <div className="bg-brand-800 dark:bg-brand-700 px-4 pt-5 pb-6 text-white">
         <div className="flex items-start justify-between mb-4">
           <div>
-            <p className="text-xs font-medium uppercase tracking-wider text-white/90">Today's Route</p>
+            <p className="text-xs font-medium uppercase tracking-wider text-white">Today's Route</p>
             <h1 className="font-display text-xl font-bold mt-0.5">Caloocan North</h1>
-            <p className="text-sm text-white/90 mt-0.5">
+            <p className="text-sm text-white mt-0.5">
               {doneStops}/{totalStops} stops · {formatPHP(stops.filter(s=>s.status==="done").reduce((s,x)=>s+x.total,0))} delivered
             </p>
           </div>
           <div className="text-right">
             <p className="text-2xl font-black">{progress}%</p>
-            <p className="text-xs text-white/90">complete</p>
+            <p className="text-xs text-white">complete</p>
           </div>
         </div>
 

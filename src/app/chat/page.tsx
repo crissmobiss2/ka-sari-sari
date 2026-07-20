@@ -494,7 +494,7 @@ export default function ChatPage() {
                     />
                   ))}
                 </div>
-                <span className="text-[11px] text-white/70 font-medium">Nakikinig...</span>
+                <span className="text-[11px] text-white font-medium">Nakikinig...</span>
               </div>
               {liveTranscript && (
                 <p className="text-sm text-white leading-relaxed">{liveTranscript}</p>
