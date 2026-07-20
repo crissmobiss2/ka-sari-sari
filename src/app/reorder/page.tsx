@@ -387,7 +387,7 @@ function AddSelectedFooter({
     <div className="fixed bottom-16 left-0 right-0 z-40 px-4 pb-2">
       <button
         onClick={handleAddSelected}
-        className="flex w-full items-center justify-between rounded-2xl bg-success-600 px-5 py-3.5 shadow-lg active:scale-[0.99] transition-all"
+        className="flex w-full items-center justify-between rounded-2xl bg-success-700 px-5 py-3.5 shadow-lg active:scale-[0.99] transition-all"
       >
         <span className="text-sm font-bold text-white">
           {count} item{count !== 1 ? "s" : ""} selected

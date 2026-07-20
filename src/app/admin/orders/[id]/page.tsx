@@ -1,413 +1,340 @@
 ﻿"use client";
-import { useParams } from "next/navigation";
-import { useState, useEffect } from "react";
-import Link from "next/link";
-import { ArrowLeft, Package, MapPin, CreditCard, CheckCircle2, Clock, Truck, XCircle } from "lucide-react";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { StatusBadge } from "@/components/ui/status-badge";
-import { Button } from "@/components/ui/button";
-import { formatPHP, formatDateTime, type OrderStatus, ORDER_STATUS_LABELS } from "@/lib/utils";
-import { PRODUCTS } from "@/lib/mock-data";
-import { useOrdersStore } from "@/store/orders";
-import { toastSuccess, toastError } from "@/store/toast";
+import { useState, useMemo } from "react";
+import { Search, AlertTriangle, Package, TrendingDown, ArrowUpDown, ArrowUp, ArrowDown, ShoppingCart } from "lucide-react";
+import { Card } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
+import { formatPHP, formatNumber, cn } from "@/lib/utils";
+import { PRODUCTS, CATEGORIES } from "@/lib/mock-data";
 
-const NEXT_STATUS: Partial<Record<OrderStatus, OrderStatus>> = {
-  pending: "confirmed",
-  confirmed: "picking",
-  picking: "packed",
-  packed: "out_for_delivery",
-  out_for_delivery: "delivered",
-};
+type SortKey = "name" | "stock" | "price" | "restock";
+type SortDir = "asc" | "desc";
 
-const TERMINAL_STATUSES: OrderStatus[] = ["delivered", "cancelled", "failed_delivery", "returned"];
+export default function AdminInventoryPage() {
+  const [search, setSearch] = useState("");
+  const [filter, setFilter] = useState<"all" | "low" | "out">("all");
+  const [sortKey, setSortKey] = useState<SortKey>("name");
+  const [sortDir, setSortDir] = useState<SortDir>("asc");
 
-// Statuses where a driver can be assigned
-const ASSIGNABLE_STATUSES: OrderStatus[] = ["confirmed", "picking", "packed"];
+  const lowStockCount = PRODUCTS.filter((p) => p.stock > 0 && p.stock <= p.lowStockThreshold).length;
+  const outCount = PRODUCTS.filter((p) => p.stock === 0).length;
+  const alertCount = lowStockCount + outCount;
 
-export default function AdminOrderDetailPage() {
-  const params = useParams();
-  const id = Array.isArray(params.id) ? params.id[0] : params.id;
+  const totalRestockValue = PRODUCTS.filter((p) => p.stock <= p.lowStockThreshold)
+    .reduce((sum, p) => sum + p.price * (p.lowStockThreshold * 3 - p.stock), 0);
 
-  // API-fetched order data
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const [apiOrder, setApiOrder] = useState<any | null>(null);
-  const [fetchLoading, setFetchLoading] = useState(true);
-  const [fetchError, setFetchError] = useState<string | null>(null);
-
-  // Driver assignment state
-  const [driverId, setDriverId] = useState("");
-  const [assigning, setAssigning] = useState(false);
-
-  // Cancel order state
-  const [cancelReason, setCancelReason] = useState("");
-  const [cancelling, setCancelling] = useState(false);
-  const [showCancelForm, setShowCancelForm] = useState(false);
-
-  // Local status override (after API actions)
-  const [localStatus, setLocalStatus] = useState<OrderStatus | null>(null);
-
-  const storeOrders = useOrdersStore((s) => s.orders);
-  const advance = useOrdersStore((s) => s.advance);
-  const storeDispatch = useOrdersStore((s) => s.dispatch);
-
-  // Fetch order from API on mount
-  useEffect(() => {
-    if (!id) return;
-    setFetchLoading(true);
-    setFetchError(null);
-    fetch(`/api/admin/orders/${id}`)
-      .then((r) => {
-        if (!r.ok) throw new Error(`HTTP ${r.status}`);
-        return r.json();
-      })
-      .then((data) => {
-        setApiOrder(data.order ?? data);
-      })
-      .catch((err) => {
-        setFetchError(err.message ?? "Failed to load order");
-      })
-      .finally(() => setFetchLoading(false));
-  }, [id]);
-
-  // Look up order: API response first, then Zustand store as live fallback
-  const storeOrder = storeOrders.find((o) => o.id === id);
-  const baseOrder = apiOrder ?? storeOrder;
-
-  if (fetchLoading) {
-    return (
-      <div className="p-6 space-y-5 max-w-4xl mx-auto animate-pulse">
-        <div className="h-5 w-32 rounded-xl bg-muted" />
-        <div className="h-8 w-64 rounded-xl bg-muted" />
-        <div className="grid md:grid-cols-3 gap-4">
-          <div className="md:col-span-2 h-64 rounded-2xl bg-muted" />
-          <div className="space-y-4">
-            <div className="h-32 rounded-2xl bg-muted" />
-            <div className="h-24 rounded-2xl bg-muted" />
-          </div>
-        </div>
-      </div>
-    );
-  }
-
-  if (fetchError || !baseOrder) {
-    return (
-      <div className="p-6 max-w-4xl mx-auto">
-        <Link href="/admin/orders" className="inline-flex items-center gap-1.5 text-sm text-muted-foreground hover:text-foreground mb-6">
-          <ArrowLeft className="h-4 w-4" /> Orders
-        </Link>
-        <div className="rounded-2xl border border-danger-200 bg-danger-50 dark:bg-danger-500/10 p-8 text-center">
-          <XCircle className="h-10 w-10 text-danger-400 mx-auto mb-3" />
-          <p className="font-semibold text-danger-700 dark:text-foreground">Failed to load order</p>
-          <p className="text-sm text-danger-700 dark:text-foreground mt-1">{fetchError ?? "Order not found"}</p>
-          <Button size="sm" variant="outline" className="mt-4" onClick={() => window.location.reload()}>
-            Retry
-          </Button>
-        </div>
-      </div>
-    );
-  }
-
-  // Overlay live status from store if the store knows this order
-  const liveStatus: OrderStatus = (storeOrder?.status ?? baseOrder.status) as OrderStatus;
-  const effectiveStatus: OrderStatus = localStatus ?? liveStatus;
-  // Cast to a known shape so downstream access is typed
-  const order = { ...baseOrder, status: effectiveStatus } as {
-    id: string;
-    orderNumber: string;
-    status: OrderStatus;
-    deliveryAddress: string;
-    notes?: string;
-    paymentMethod: string;
-    paymentStatus: string;
-    subtotal: number;
-    deliveryFee: number;
-    total: number;
-    createdAt: string;
-    updatedAt: string;
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    items: any[];
-  };
-
-  const nextStatus = NEXT_STATUS[order.status];
-  const isTerminal = TERMINAL_STATUSES.includes(order.status);
-  const canAssignDriver = ASSIGNABLE_STATUSES.includes(order.status);
-
-  async function handleAdvance() {
-    const next = NEXT_STATUS[order.status];
-    if (!next) return;
-    const label = ORDER_STATUS_LABELS[next] ?? "next status";
-    advance(order.id);
-    try {
-      const res = await fetch(`/api/admin/orders/${order.id}`, {
-        method: "PATCH",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ status: next }),
-      });
-      if (!res.ok) {
-        toastError(`Failed to update order status. Please refresh.`);
-        return;
-      }
-      toastSuccess(`Order ${order.orderNumber} marked as ${label}`);
-    } catch {
-      toastError("Network error. Please check your connection.");
+  function toggleSort(key: SortKey) {
+    if (sortKey === key) {
+      setSortDir((d) => (d === "asc" ? "desc" : "asc"));
+    } else {
+      setSortKey(key);
+      setSortDir("asc");
     }
   }
 
-  async function handleAssignDriver() {
-    if (!driverId.trim()) return;
-    setAssigning(true);
-    try {
-      const res = await fetch(`/api/admin/orders/${order.id}`, {
-        method: "PATCH",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ action: "assign_driver", driverId: driverId.trim() }),
-      });
-      if (!res.ok) throw new Error("Failed");
-      storeDispatch(order.id, driverId.trim());
-      setLocalStatus("out_for_delivery");
-      toastSuccess(`Driver assigned — Order ${order.orderNumber} dispatched`);
-      setDriverId("");
-    } catch {
-      toastError("Failed to assign driver. Please try again.");
-    } finally {
-      setAssigning(false);
-    }
+  const filtered = useMemo(() => {
+    const base = PRODUCTS.filter((p) => {
+      const matchesSearch =
+        p.name.toLowerCase().includes(search.toLowerCase()) ||
+        p.brand?.toLowerCase().includes(search.toLowerCase()) ||
+        p.sku.toLowerCase().includes(search.toLowerCase());
+      if (!matchesSearch) return false;
+      if (filter === "out") return p.stock === 0;
+      if (filter === "low") return p.stock > 0 && p.stock <= p.lowStockThreshold;
+      return true;
+    });
+
+    return base.sort((a, b) => {
+      let cmp = 0;
+      if (sortKey === "name") cmp = a.name.localeCompare(b.name);
+      else if (sortKey === "stock") cmp = a.stock - b.stock;
+      else if (sortKey === "price") cmp = a.price - b.price;
+      else if (sortKey === "restock")
+        cmp = a.price * Math.max(0, a.lowStockThreshold * 3 - a.stock)
+          - b.price * Math.max(0, b.lowStockThreshold * 3 - b.stock);
+      return sortDir === "asc" ? cmp : -cmp;
+    });
+  }, [search, filter, sortKey, sortDir]);
+
+  function stockStatus(p: typeof PRODUCTS[0]) {
+    if (p.stock === 0) return { label: "Out of Stock", color: "danger" as const };
+    if (p.stock <= p.lowStockThreshold) return { label: "Low Stock", color: "warning" as const };
+    return { label: "In Stock", color: "success" as const };
   }
 
-  async function handleCancelOrder() {
-    if (!cancelReason.trim()) return;
-    setCancelling(true);
-    try {
-      const res = await fetch(`/api/admin/orders/${order.id}`, {
-        method: "PATCH",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ action: "cancel", reason: cancelReason.trim() }),
-      });
-      if (!res.ok) throw new Error("Failed");
-      setLocalStatus("cancelled");
-      toastSuccess(`Order ${order.orderNumber} has been cancelled`);
-      setShowCancelForm(false);
-      setCancelReason("");
-    } catch {
-      toastError("Failed to cancel order. Please try again.");
-    } finally {
-      setCancelling(false);
-    }
+  function stockPct(p: typeof PRODUCTS[0]) {
+    const max = Math.max(p.lowStockThreshold * 5, p.stock);
+    return Math.min(100, Math.round((p.stock / max) * 100));
   }
 
-  // Resolve items: use order.items if present, else show a placeholder row
-  const resolvedItems = order.items.length > 0
-    ? order.items.map((item) => {
-        const product = PRODUCTS.find((p) => p.id === item.productId);
-        return {
-          name: product?.name ?? item.productId,
-          brand: product?.brand ?? "—",
-          qty: item.quantity,
-          price: item.unitPrice,
-          total: item.totalPrice,
-        };
-      })
-    : null;
+  function SortIcon({ col }: { col: SortKey }) {
+    if (sortKey !== col) return <ArrowUpDown className="h-3.5 w-3.5 opacity-40" />;
+    return sortDir === "asc"
+      ? <ArrowUp className="h-3.5 w-3.5 text-brand-700 dark:text-brand-400" />
+      : <ArrowDown className="h-3.5 w-3.5 text-brand-700 dark:text-brand-400" />;
+  }
 
   return (
-    <div className="p-6 space-y-5 max-w-4xl mx-auto">
-      <div className="flex items-center gap-3">
-        <Link href="/admin/orders" className="flex items-center gap-1.5 text-sm text-muted-foreground hover:text-foreground">
-          <ArrowLeft className="h-4 w-4" /> Orders
-        </Link>
-        <span className="text-muted-foreground">/</span>
-        <span className="text-sm font-medium text-foreground">{order.orderNumber}</span>
-      </div>
-
-      <div className="flex items-start justify-between gap-4 flex-wrap">
+    <div className="p-6 space-y-5 max-w-7xl mx-auto">
+      {/* ── Header ── */}
+      <div className="flex items-start justify-between gap-4">
         <div>
-          <h1 className="font-display text-2xl font-bold text-foreground">{order.orderNumber}</h1>
-          <p className="text-sm text-muted-foreground mt-0.5">{formatDateTime(order.createdAt)}</p>
-        </div>
-        <div className="flex items-center gap-3">
-          <StatusBadge status={order.status} />
-          {!isTerminal && nextStatus && (
-            <Button size="md" onClick={handleAdvance}>
-              <CheckCircle2 className="h-4 w-4" />
-              Mark as {ORDER_STATUS_LABELS[nextStatus]}
-            </Button>
-          )}
+          <div className="flex items-center gap-3">
+            <h1 className="font-display text-2xl font-bold text-foreground">Inventory</h1>
+            {alertCount > 0 && (
+              <span className="inline-flex items-center gap-1.5 rounded-full bg-danger-50 dark:bg-danger-500/10 px-3 py-1 text-xs font-semibold text-danger-700 dark:text-foreground ring-1 ring-danger-500/20">
+                <AlertTriangle className="h-3.5 w-3.5" />
+                {alertCount} alert{alertCount !== 1 ? "s" : ""}
+              </span>
+            )}
+          </div>
+          <p className="text-sm text-muted-foreground mt-0.5">Monitor stock levels and movements</p>
         </div>
       </div>
 
-      <div className="grid md:grid-cols-3 gap-4">
-        {/* Order items */}
-        <Card className="md:col-span-2">
-          <CardHeader><CardTitle>Order Items</CardTitle></CardHeader>
-          <CardContent className="p-0">
-            <div className="divide-y divide-border">
-              {resolvedItems ? (
-                resolvedItems.map((item) => (
-                  <div key={`${item.name}-${item.qty}`} className="flex items-center gap-3 px-5 py-3.5">
-                    <div className="h-9 w-9 rounded-xl bg-surface-100 dark:bg-surface-800 flex items-center justify-center shrink-0">
-                      <Package className="h-4 w-4 text-muted-foreground" />
-                    </div>
-                    <div className="flex-1 min-w-0">
-                      <p className="text-sm font-medium text-foreground">{item.name}</p>
-                      <p className="text-xs text-muted-foreground">{item.brand} · Qty: {item.qty}</p>
-                    </div>
-                    <div className="text-right">
-                      <p className="text-sm font-semibold text-foreground">{formatPHP(item.total)}</p>
-                      <p className="text-xs text-muted-foreground">{formatPHP(item.price)}/ea</p>
-                    </div>
-                  </div>
-                ))
-              ) : (
-                <div className="flex items-center gap-3 px-5 py-4 text-sm text-muted-foreground">
-                  <Package className="h-4 w-4 shrink-0" />
-                  <span>Item details not available for this order.</span>
-                </div>
-              )}
+      {/* ── Urgent alert banner (only when there are issues) ── */}
+      {(lowStockCount > 0 || outCount > 0) && (
+        <div className="rounded-xl border border-warning-500/30 bg-warning-50 dark:bg-warning-500/10 dark:bg-surface-800 dark:border-warning-600/40 px-4 py-3 flex flex-col sm:flex-row sm:items-center gap-3">
+          <AlertTriangle className="h-5 w-5 text-warning-700 dark:text-foreground shrink-0" />
+          <div className="flex-1 text-sm text-warning-700 dark:text-foreground">
+            <span className="font-semibold">Stock alert: </span>
+            {outCount > 0 && (
+              <span>
+                <span className="font-semibold text-danger-700 dark:text-foreground">{outCount}</span> product{outCount !== 1 ? "s" : ""} out of stock
+                {lowStockCount > 0 ? ", " : ""}
+              </span>
+            )}
+            {lowStockCount > 0 && (
+              <span>
+                <span className="font-semibold">{lowStockCount}</span> running low
+              </span>
+            )}
+            {". "}
+            <button
+              onClick={() => setFilter("out")}
+              className="underline font-medium hover:no-underline"
+            >
+              View critical items
+            </button>
+          </div>
+          <span className="text-xs text-warning-700 dark:text-foreground font-medium shrink-0">
+            Est. restock: {formatPHP(totalRestockValue)}
+          </span>
+        </div>
+      )}
+
+      {/* ── Summary cards ── */}
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+        {[
+          { label: "Total Products",  value: PRODUCTS.length, icon: Package,      color: "text-foreground",    bg: "" },
+          { label: "Low Stock",       value: lowStockCount,   icon: TrendingDown,  color: "text-warning-700 dark:text-foreground",   bg: "bg-warning-50 dark:bg-warning-500/10 dark:bg-card" },
+          { label: "Out of Stock",    value: outCount,        icon: AlertTriangle, color: "text-danger-700 dark:text-foreground",    bg: "bg-danger-50 dark:bg-danger-500/10 dark:bg-card" },
+          { label: "Showing",         value: filtered.length, icon: ShoppingCart,  color: "text-brand-700 dark:text-foreground",     bg: "bg-brand-50 dark:bg-brand-500/10 dark:bg-card" },
+        ].map((s) => (
+          <Card key={s.label} className={cn("p-4", s.bg)}>
+            <div className="flex items-center gap-3">
+              <s.icon className={`h-5 w-5 ${s.color}`} />
+              <div>
+                <p className={`font-display text-xl font-bold ${s.color}`}>{s.value}</p>
+                <p className="text-xs text-muted-foreground">{s.label}</p>
+              </div>
             </div>
-            <div className="border-t border-border px-5 py-4 space-y-1.5">
-              <div className="flex justify-between text-sm text-muted-foreground">
-                <span>Subtotal</span><span>{formatPHP(order.subtotal)}</span>
-              </div>
-              <div className="flex justify-between text-sm text-muted-foreground">
-                <span>Delivery fee</span><span>{formatPHP(order.deliveryFee)}</span>
-              </div>
-              <div className="flex justify-between font-bold text-foreground border-t border-border pt-2">
-                <span>Total</span><span>{formatPHP(order.total)}</span>
-              </div>
-            </div>
-          </CardContent>
-        </Card>
+          </Card>
+        ))}
+      </div>
 
-        {/* Side details */}
-        <div className="space-y-4">
-          <Card>
-            <CardHeader><CardTitle>Delivery</CardTitle></CardHeader>
-            <CardContent className="space-y-2 text-sm">
-              <div className="flex items-start gap-2">
-                <MapPin className="h-4 w-4 text-muted-foreground mt-0.5 shrink-0" />
-                <p className="text-foreground">{order.deliveryAddress}</p>
-              </div>
-              {order.notes && (
-                <p className="text-xs text-muted-foreground italic">{order.notes}</p>
+      {/* ── Filters ── */}
+      <div className="flex flex-col sm:flex-row gap-3">
+        <div className="relative flex-1">
+          <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+          <input
+            type="search"
+            placeholder="Search products, brand, SKU…"
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+            className="h-10 w-full rounded-xl border border-input bg-card pl-10 pr-4 text-sm focus:outline-none focus:ring-2 focus:ring-brand-700"
+          />
+        </div>
+        <div className="flex gap-1">
+          {[
+            { id: "all" as const, label: `All (${PRODUCTS.length})` },
+            { id: "low" as const, label: `Low (${lowStockCount})` },
+            { id: "out" as const, label: `Out (${outCount})` },
+          ].map((f) => (
+            <button
+              key={f.id}
+              onClick={() => setFilter(f.id)}
+              className={cn(
+                "rounded-xl px-4 py-2 text-sm font-medium border transition-colors",
+                filter === f.id
+                  ? "bg-brand-700 text-white border-brand-500"
+                  : "bg-card text-muted-foreground border-border hover:border-brand-300"
               )}
-            </CardContent>
-          </Card>
+            >
+              {f.label}
+            </button>
+          ))}
+        </div>
+      </div>
 
-          <Card>
-            <CardHeader><CardTitle>Payment</CardTitle></CardHeader>
-            <CardContent className="space-y-2 text-sm">
-              <div className="flex items-center justify-between">
-                <span className="text-muted-foreground capitalize">{order.paymentMethod.replace(/_/g, " ")}</span>
-                <span className={`font-semibold ${order.paymentStatus === "paid" ? "text-success-700 dark:text-foreground" : "text-warning-700 dark:text-foreground"}`}>
-                  {order.paymentStatus === "paid" ? "Paid" : "Pending"}
-                </span>
-              </div>
-              <div className="flex items-center justify-between">
-                <span className="text-muted-foreground">Amount</span>
-                <span className="font-bold text-foreground">{formatPHP(order.total)}</span>
-              </div>
-            </CardContent>
-          </Card>
+      {/* ── Table ── */}
+      <Card className="overflow-hidden">
+        <div className="overflow-x-auto">
+          <table className="w-full text-sm">
+            <thead>
+              <tr className="border-b border-border bg-muted/30">
+                <th className="text-left px-5 py-3 text-xs font-semibold text-muted-foreground">
+                  <button
+                    onClick={() => toggleSort("name")}
+                    className="inline-flex items-center gap-1.5 hover:text-foreground transition-colors"
+                  >
+                    Product <SortIcon col="name" />
+                  </button>
+                </th>
+                <th className="text-left px-5 py-3 text-xs font-semibold text-muted-foreground hidden md:table-cell">SKU</th>
+                <th className="text-left px-5 py-3 text-xs font-semibold text-muted-foreground hidden lg:table-cell">Category</th>
+                <th className="text-right px-5 py-3 text-xs font-semibold text-muted-foreground">
+                  <button
+                    onClick={() => toggleSort("price")}
+                    className="inline-flex items-center gap-1.5 hover:text-foreground transition-colors ml-auto"
+                  >
+                    Price <SortIcon col="price" />
+                  </button>
+                </th>
+                <th className="text-right px-5 py-3 text-xs font-semibold text-muted-foreground">
+                  <button
+                    onClick={() => toggleSort("stock")}
+                    className="inline-flex items-center gap-1.5 hover:text-foreground transition-colors ml-auto"
+                  >
+                    Stock <SortIcon col="stock" />
+                  </button>
+                </th>
+                <th className="text-right px-5 py-3 text-xs font-semibold text-muted-foreground hidden xl:table-cell">
+                  <button
+                    onClick={() => toggleSort("restock")}
+                    className="inline-flex items-center gap-1.5 hover:text-foreground transition-colors ml-auto"
+                  >
+                    Restock Value <SortIcon col="restock" />
+                  </button>
+                </th>
+                <th className="text-right px-5 py-3 text-xs font-semibold text-muted-foreground">Status</th>
+              </tr>
+            </thead>
+            <tbody className="divide-y divide-border">
+              {filtered.map((product) => {
+                const { label, color } = stockStatus(product);
+                const cat = CATEGORIES.find((c) => c.id === product.categoryId);
+                const pct = stockPct(product);
+                const restockUnits = Math.max(0, product.lowStockThreshold * 3 - product.stock);
+                const restockCost = product.price * restockUnits;
+                const isOut = product.stock === 0;
+                const isLow = !isOut && product.stock <= product.lowStockThreshold;
 
-          <Card>
-            <CardHeader><CardTitle>Timeline</CardTitle></CardHeader>
-            <CardContent>
-              <div className="space-y-3">
-                {[
-                  { label: "Order placed", time: order.createdAt },
-                  { label: ORDER_STATUS_LABELS[order.status], time: order.updatedAt },
-                ].map((ev) => (
-                  <div key={ev.label} className="flex items-start gap-2.5 text-sm">
-                    <div className="mt-0.5 h-2 w-2 rounded-full bg-brand-700 shrink-0" />
-                    <div>
-                      <p className="font-medium text-foreground">{ev.label}</p>
-                      <p className="text-xs text-muted-foreground">{formatDateTime(ev.time)}</p>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </CardContent>
-          </Card>
-
-          {/* Admin Actions — driver assignment + cancel */}
-          {!isTerminal && (
-            <Card>
-              <CardHeader><CardTitle>Admin Actions</CardTitle></CardHeader>
-              <CardContent className="space-y-4">
-                {/* Assign & Dispatch — only when order is ready */}
-                {canAssignDriver && (
-                  <div className="space-y-2">
-                    <p className="text-xs font-semibold text-muted-foreground flex items-center gap-1.5">
-                      <Truck className="h-3.5 w-3.5" /> Assign Driver
-                    </p>
-                    <input
-                      type="text"
-                      value={driverId}
-                      onChange={(e) => setDriverId(e.target.value)}
-                      placeholder="Driver ID or name"
-                      className="w-full h-9 rounded-xl border border-input bg-background px-3 text-sm focus:outline-none focus:ring-2 focus:ring-brand-500"
-                      onKeyDown={(e) => { if (e.key === "Enter") handleAssignDriver(); }}
-                    />
-                    <Button
-                      size="sm"
-                      className="w-full bg-brand-700 hover:bg-brand-800 text-white"
-                      onClick={handleAssignDriver}
-                      disabled={!driverId.trim() || assigning}
-                    >
-                      <Truck className="h-3.5 w-3.5" />
-                      {assigning ? "Dispatching…" : "Assign & Dispatch"}
-                    </Button>
-                  </div>
-                )}
-
-                {/* Cancel Order */}
-                <div className="space-y-2">
-                  {!showCancelForm ? (
-                    <button
-                      onClick={() => setShowCancelForm(true)}
-                      className="w-full rounded-xl border border-danger-200 text-danger-700 dark:text-foreground py-2 text-sm font-semibold hover:bg-danger-50 dark:bg-danger-500/10 transition-colors flex items-center justify-center gap-1.5"
-                    >
-                      <XCircle className="h-3.5 w-3.5" /> Cancel Order
-                    </button>
-                  ) : (
-                    <>
-                      <p className="text-xs font-semibold text-muted-foreground flex items-center gap-1.5">
-                        <XCircle className="h-3.5 w-3.5 text-danger-600 dark:text-danger-500" /> Cancellation Reason
-                      </p>
-                      <input
-                        type="text"
-                        value={cancelReason}
-                        onChange={(e) => setCancelReason(e.target.value)}
-                        placeholder="e.g. Out of stock"
-                        className="w-full h-9 rounded-xl border border-input bg-background px-3 text-sm focus:outline-none focus:ring-2 focus:ring-danger-500"
-                        autoFocus
-                        onKeyDown={(e) => { if (e.key === "Enter") handleCancelOrder(); }}
-                      />
-                      <div className="flex gap-2">
-                        <Button
-                          size="sm"
-                          variant="outline"
-                          className="flex-1"
-                          onClick={() => { setShowCancelForm(false); setCancelReason(""); }}
-                        >
-                          Back
-                        </Button>
-                        <button
-                          onClick={handleCancelOrder}
-                          disabled={!cancelReason.trim() || cancelling}
-                          className="flex-1 rounded-xl bg-danger-500 text-white py-1.5 text-sm font-semibold hover:bg-danger-600 transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
-                        >
-                          {cancelling ? "Cancelling…" : "Confirm Cancel"}
-                        </button>
+                return (
+                  <tr
+                    key={product.id}
+                    className={cn(
+                      "hover:bg-muted/30 transition-colors",
+                      isOut && "bg-danger-50/40",
+                      isLow && !isOut && "bg-warning-50/30"
+                    )}
+                  >
+                    <td className="px-5 py-3.5">
+                      <div>
+                        <p className="font-medium text-foreground">{product.name}</p>
+                        {product.brand && (
+                          <p className="text-xs text-muted-foreground">{product.brand} · {product.unit} {product.unitSize}</p>
+                        )}
                       </div>
-                    </>
-                  )}
-                </div>
-              </CardContent>
-            </Card>
-          )}
+                    </td>
+                    <td className="px-5 py-3.5 text-xs text-muted-foreground font-mono hidden md:table-cell">
+                      {product.sku}
+                    </td>
+                    <td className="px-5 py-3.5 text-xs text-muted-foreground hidden lg:table-cell">
+                      {cat?.name}
+                    </td>
+                    <td className="px-5 py-3.5 text-right text-foreground font-medium">
+                      {formatPHP(product.price)}
+                    </td>
+                    <td className="px-5 py-3.5 text-right">
+                      <div className="flex flex-col items-end gap-1.5">
+                        <div className="flex items-baseline gap-1">
+                          <span className={cn(
+                            "font-semibold tabular-nums",
+                            isOut ? "text-danger-700 dark:text-foreground" : isLow ? "text-warning-700 dark:text-foreground" : "text-foreground"
+                          )}>
+                            {formatNumber(product.stock)}
+                          </span>
+                          <span className="text-xs text-muted-foreground">/ min {product.lowStockThreshold}</span>
+                        </div>
+                        {/* Stock level bar */}
+                        <div className="w-20 h-1.5 rounded-full bg-muted overflow-hidden">
+                          <div
+                            className={cn(
+                              "h-full rounded-full transition-all",
+                              isOut ? "bg-danger-500 w-0" :
+                              isLow ? "bg-warning-500" :
+                              "bg-success-500"
+                            )}
+                            style={{ width: `${pct}%` }}
+                          />
+                        </div>
+                      </div>
+                    </td>
+                    <td className="px-5 py-3.5 text-right hidden xl:table-cell">
+                      {restockUnits > 0 ? (
+                        <div className="flex flex-col items-end">
+                          <span className="font-medium text-foreground">{formatPHP(restockCost)}</span>
+                          <span className="text-xs text-muted-foreground">{formatNumber(restockUnits)} units needed</span>
+                        </div>
+                      ) : (
+                        <span className="text-xs text-muted-foreground">—</span>
+                      )}
+                    </td>
+                    <td className="px-5 py-3.5 text-right">
+                      <Badge variant={color}>{label}</Badge>
+                    </td>
+                  </tr>
+                );
+              })}
+            </tbody>
+          </table>
         </div>
-      </div>
+
+        {filtered.length === 0 && (
+          <div className="py-16 text-center">
+            <Package className="h-10 w-10 text-muted-foreground/40 mx-auto mb-3" />
+            <p className="text-sm text-muted-foreground font-medium">No products found</p>
+            <p className="text-xs text-muted-foreground mt-1">
+              {filter !== "all"
+                ? `No products match the "${filter}" filter. Try "All" to see everything.`
+                : "Try a different search term."}
+            </p>
+            {filter !== "all" && (
+              <button
+                onClick={() => setFilter("all")}
+                className="mt-3 text-xs text-brand-700 font-medium underline hover:no-underline"
+              >
+                Clear filter
+              </button>
+            )}
+          </div>
+        )}
+
+        {/* Table footer */}
+        {filtered.length > 0 && (
+          <div className="border-t border-border px-5 py-2.5 flex justify-between items-center bg-muted/20">
+            <span className="text-xs text-muted-foreground">
+              {filtered.length} product{filtered.length !== 1 ? "s" : ""} shown
+            </span>
+            <span className="text-xs text-muted-foreground">
+              Total stock value:{" "}
+              <span className="font-semibold text-foreground">
+                {formatPHP(filtered.reduce((sum, p) => sum + p.price * p.stock, 0))}
+              </span>
+            </span>
+          </div>
+        )}
+      </Card>
     </div>
   );
 }

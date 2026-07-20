@@ -66,7 +66,7 @@ export default function FavoritesPage() {
 
           <Link
             href="/catalog"
-            className="block text-center text-sm text-brand-700 dark:text-brand-400 hover:text-brand-600 font-medium py-2"
+            className="block text-center text-sm text-brand-700 dark:text-brand-400 hover:text-brand-700 font-medium py-2"
           >
             Browse more products
           </Link>

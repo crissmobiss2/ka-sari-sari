@@ -47,9 +47,9 @@ const BG_ARC = describeArc(75, 80, 60, 180, 0);
 const SCORE_ARC = describeArc(75, 80, 60, 180, needleAngle);
 
 const DEFAULT_SCORE_FACTORS: { label: string; pct: number; grade: string; color: string }[] = [
-  { label: "Payment History", pct: 95, grade: "Excellent", color: "#22c55e" },
-  { label: "Order Frequency", pct: 78, grade: "Good", color: "#f47028" },
-  { label: "Account Age", pct: 62, grade: "Building", color: "#f59e0b" },
+  { label: "Payment History", pct: 95, grade: "Excellent", color: "#15803d" },
+  { label: "Order Frequency", pct: 78, grade: "Good", color: "#be4514" },
+  { label: "Account Age", pct: 62, grade: "Building", color: "#b45309" },
 ];
 
 // ── Push subscription utilities ───────────────────────────────────────────────
@@ -381,7 +381,7 @@ export default function AccountPage() {
           <div className="flex flex-col items-center mb-4">
             <svg viewBox="0 0 150 90" width={150} height={90} aria-label={`Credit score ${creditData.score} out of ${CREDIT_SCORE_MAX}`}>
               <path d={BG_ARC} fill="none" stroke="#e5e7eb" strokeWidth={12} strokeLinecap="round" />
-              <path d={SCORE_ARC} fill="none" stroke="#22c55e" strokeWidth={12} strokeLinecap="round" />
+              <path d={SCORE_ARC} fill="none" stroke="#15803d" strokeWidth={12} strokeLinecap="round" />
               <text x="75" y="70" textAnchor="middle" fontSize="22" fontWeight="800" fill="currentColor" className="fill-foreground">
                 {creditData.score}
               </text>
@@ -528,7 +528,7 @@ export default function AccountPage() {
                       value={creditForm.requestedLimit}
                       onChange={(e) => { setCreditForm(f => ({ ...f, requestedLimit: e.target.value })); setCreditError(""); }}
                       placeholder="e.g. 10000"
-                      className="h-11 w-full rounded-xl border border-input bg-background pl-7 pr-3 text-sm focus:outline-none focus:ring-2 focus:ring-brand-500"
+                      className="h-11 w-full rounded-xl border border-input bg-background pl-7 pr-3 text-sm focus:outline-none focus:ring-2 focus:ring-brand-700"
                     />
                   </div>
                   <p className="text-[11px] text-muted-foreground mt-1">Minimum ₱500 · 7-day payment terms</p>
@@ -546,7 +546,7 @@ export default function AccountPage() {
                       value={creditForm.monthlyRevenue}
                       onChange={(e) => setCreditForm(f => ({ ...f, monthlyRevenue: e.target.value }))}
                       placeholder="e.g. 50000"
-                      className="h-11 w-full rounded-xl border border-input bg-background pl-7 pr-3 text-sm focus:outline-none focus:ring-2 focus:ring-brand-500"
+                      className="h-11 w-full rounded-xl border border-input bg-background pl-7 pr-3 text-sm focus:outline-none focus:ring-2 focus:ring-brand-700"
                     />
                   </div>
                 </div>
@@ -562,7 +562,7 @@ export default function AccountPage() {
                     value={creditForm.yearsInBusiness}
                     onChange={(e) => setCreditForm(f => ({ ...f, yearsInBusiness: e.target.value }))}
                     placeholder="e.g. 3"
-                    className="h-11 w-full rounded-xl border border-input bg-background px-3 text-sm focus:outline-none focus:ring-2 focus:ring-brand-500"
+                    className="h-11 w-full rounded-xl border border-input bg-background px-3 text-sm focus:outline-none focus:ring-2 focus:ring-brand-700"
                   />
                 </div>
               </div>
@@ -672,7 +672,7 @@ export default function AccountPage() {
                   disabled={pushLoading || pushPermission === "denied"}
                   className={cn(
                     "relative inline-flex h-6 w-11 shrink-0 items-center rounded-full transition-colors focus:outline-none disabled:opacity-50 disabled:cursor-not-allowed",
-                    isPushEnabled ? "bg-brand-700 dark:bg-brand-500" : "bg-surface-300"
+                    isPushEnabled ? "bg-brand-700 dark:bg-brand-500" : "bg-surface-500"
                   )}
                   aria-label={isPushEnabled ? "Disable push notifications" : "Enable push notifications"}
                 >
