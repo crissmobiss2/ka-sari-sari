@@ -1,4 +1,4 @@
-﻿"use client";
+"use client";
 import { useSearchParams } from "next/navigation";
 import { Suspense } from "react";
 import { XCircle, RefreshCcw, Home } from "lucide-react";
@@ -32,7 +32,7 @@ function FailedContent() {
           </div>
           <div className="flex justify-between text-sm">
             <span className="text-muted-foreground">Status</span>
-            <span className="font-semibold text-danger-600 dark:text-danger-500">Failed ✗</span>
+            <span className="font-semibold text-danger-600 dark:text-danger-500">Failed ?</span>
           </div>
         </div>
       )}
@@ -49,7 +49,7 @@ function FailedContent() {
       </div>
 
       <p className="text-xs text-muted-foreground mt-6 max-w-xs">
-        If money was deducted from your account, it will be refunded within 3–5 business days.
+        If money was deducted from your account, it will be refunded within 3�5 business days.
         Contact support if you need help.
       </p>
     </div>
@@ -58,7 +58,7 @@ function FailedContent() {
 
 export default function CheckoutFailedPage() {
   return (
-    <Suspense fallback={<div className="min-h-screen flex items-center justify-center"><div className="animate-spin h-8 w-8 rounded-full border-4 border-brand-500 border-t-transparent" /></div>}>
+    <Suspense fallback={<div className="min-h-screen flex items-center justify-center"><div className="animate-spin h-8 w-8 rounded-full border-4 border-brand-700 border-t-transparent" /></div>}>
       <FailedContent />
     </Suspense>
   );

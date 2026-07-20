@@ -1,4 +1,4 @@
-﻿"use client";
+"use client";
 import { useSearchParams } from "next/navigation";
 import { Suspense, useEffect, useRef, useState } from "react";
 import Link from "next/link";
@@ -7,7 +7,7 @@ import { ButtonLink } from "@/components/ui/button";
 import { earnPoints, POINTS_PER_PESO } from "@/store/loyalty";
 import { useCartStore } from "@/store/cart";
 
-// ─── animated checkmark ────────────────────────────────────────────────────
+// --- animated checkmark ----------------------------------------------------
 const CheckmarkSVG = () => (
   <svg
     viewBox="0 0 52 52"
@@ -80,7 +80,7 @@ const CheckmarkSVG = () => (
   </svg>
 );
 
-// ─── tiny confetti dots ─────────────────────────────────────────────────────
+// --- tiny confetti dots -----------------------------------------------------
 const CONFETTI = [
   { color: "#f59e0b", x: -38, delay: 0.1 },
   { color: "#3b82f6", x:  38, delay: 0.15 },
@@ -90,7 +90,7 @@ const CONFETTI = [
   { color: "#f97316", x:  50, delay: 0.05 },
 ];
 
-// ─── main inner component (uses useSearchParams) ────────────────────────────
+// --- main inner component (uses useSearchParams) ----------------------------
 function SuccessContent() {
   const params = useSearchParams();
   const clearCart = useCartStore((s) => s.clearCart);
@@ -171,7 +171,7 @@ function SuccessContent() {
   return (
     <div className="min-h-screen bg-background flex flex-col items-center justify-center px-4 py-12 text-center">
 
-      {/* ── animated checkmark + confetti ── */}
+      {/* -- animated checkmark + confetti -- */}
       <div className="relative mb-8 flex items-center justify-center">
         {/* confetti dots scattered around the circle */}
         {shown && CONFETTI.map((c, i) => (
@@ -196,7 +196,7 @@ function SuccessContent() {
         </div>
       </div>
 
-      {/* ── headline ── */}
+      {/* -- headline -- */}
       <h1 className="font-display text-3xl font-black text-foreground mb-1 leading-tight">
         Order {orderId} confirmed!
       </h1>
@@ -204,13 +204,13 @@ function SuccessContent() {
         Salamat for shopping with Ka Sari-Sari! Your order is now being prepared.
       </p>
 
-      {/* ── delivery chip ── */}
+      {/* -- delivery chip -- */}
       <div className="inline-flex items-center gap-2 rounded-full bg-amber-50 border border-amber-200 px-4 py-1.5 text-amber-700 text-sm font-semibold mb-8">
         <Clock className="h-4 w-4 text-amber-700" />
-        Expected delivery in 2–4 hours
+        Expected delivery in 2�4 hours
       </div>
 
-      {/* ── order details card ── */}
+      {/* -- order details card -- */}
       <div className="w-full max-w-sm rounded-2xl border border-border bg-card shadow-sm p-5 space-y-3 text-left mb-4">
         <p className="text-xs font-semibold uppercase tracking-wider text-muted-foreground mb-1">
           Order details
@@ -232,11 +232,11 @@ function SuccessContent() {
         </div>
         <div className="flex justify-between text-sm">
           <span className="text-muted-foreground">Estimated delivery</span>
-          <span className="font-semibold text-foreground">2–4 hours</span>
+          <span className="font-semibold text-foreground">2�4 hours</span>
         </div>
       </div>
 
-      {/* ── loyalty points banner ── */}
+      {/* -- loyalty points banner -- */}
       {ptsEarned > 0 && (
         <div className="kss-points-in w-full max-w-sm rounded-2xl border border-brand-200 bg-brand-50 dark:bg-brand-500/10 p-4 flex items-center gap-3 text-left mb-6">
           <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-brand-100 dark:bg-brand-500/20">
@@ -253,7 +253,7 @@ function SuccessContent() {
         </div>
       )}
 
-      {/* ── action buttons ── */}
+      {/* -- action buttons -- */}
       <div className="w-full max-w-sm flex flex-col gap-3">
         <ButtonLink href={`/tracking?orderId=${rawId ?? ""}`} size="lg" className="w-full">
           <MapPin className="h-4 w-4 shrink-0" />
@@ -290,13 +290,13 @@ function SuccessContent() {
   );
 }
 
-// ─── page (Suspense wraps useSearchParams) ───────────────────────────────────
+// --- page (Suspense wraps useSearchParams) -----------------------------------
 export default function CheckoutSuccessPage() {
   return (
     <Suspense
       fallback={
         <div className="min-h-screen flex items-center justify-center">
-          <div className="animate-spin h-10 w-10 rounded-full border-4 border-brand-500 border-t-transparent" />
+          <div className="animate-spin h-10 w-10 rounded-full border-4 border-brand-700 border-t-transparent" />
         </div>
       }
     >

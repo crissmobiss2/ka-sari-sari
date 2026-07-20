@@ -266,7 +266,7 @@ function DeliveryTimeline({
                     </div>
                   ) : (
                     <div className="h-8 w-8 rounded-full border-2 border-surface-200 bg-surface-50 dark:bg-surface-900 flex items-center justify-center">
-                      <Circle className="h-2.5 w-2.5 text-surface-300" />
+                      <Circle className="h-2.5 w-2.5 text-surface-500" />
                     </div>
                   )}
                 </div>
@@ -285,7 +285,7 @@ function DeliveryTimeline({
                       </p>
                       <p className={cn(
                         "text-xs mt-0.5",
-                        stepStatus === "upcoming" ? "text-surface-300" : "text-muted-foreground"
+                        stepStatus === "upcoming" ? "text-muted-foreground" : "text-muted-foreground"
                       )}>
                         {step.description}
                       </p>
@@ -628,7 +628,7 @@ function MapPlaceholder() {
           <rect x="320" y="100" width="55" height="36" rx="4" fill="#0f766e" opacity="0.1" />
         </svg>
         <div className="absolute left-8 top-1/2 -translate-y-1/2 flex flex-col items-center">
-          <div className="h-8 w-8 rounded-full bg-white shadow-lg flex items-center justify-center border-2 border-brand-500">
+          <div className="h-8 w-8 rounded-full bg-white shadow-lg flex items-center justify-center border-2 border-brand-700">
             <Package className="h-4 w-4 text-brand-700 dark:text-brand-400" />
           </div>
           <div className="mt-1 rounded-md bg-brand-700 px-2 py-0.5 text-[10px] font-semibold text-white whitespace-nowrap shadow">
@@ -721,7 +721,7 @@ function RatingSection({ orderId }: { orderId: string }) {
                 "h-9 w-9 transition-all",
                 s <= (hovered || rating)
                   ? "fill-warning-400 text-warning-400 drop-shadow-md"
-                  : "fill-surface-200 text-surface-300"
+                  : "fill-surface-100 text-surface-500"
               )}
             />
           </button>
@@ -787,7 +787,7 @@ export default function OrderDetailPage() {
   if (orderLoading) {
     return (
       <div className="min-h-screen bg-background flex items-center justify-center">
-        <div className="h-8 w-8 animate-spin rounded-full border-2 border-brand-500 border-t-transparent" />
+        <div className="h-8 w-8 animate-spin rounded-full border-2 border-brand-700 border-t-transparent" />
       </div>
     );
   }

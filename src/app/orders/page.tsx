@@ -1,4 +1,4 @@
-﻿"use client";
+"use client";
 import { useState, useEffect } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
@@ -14,7 +14,7 @@ import { MOCK_ORDERS } from "@/lib/mock-data";
 import { cn } from "@/lib/utils";
 import { toastSuccess } from "@/store/toast";
 
-// ─── Types ────────────────────────────────────────────────────────────────────
+// --- Types --------------------------------------------------------------------
 
 interface DisplayOrder {
   id: string;
@@ -31,7 +31,7 @@ interface DisplayOrder {
   updatedAt: string;
 }
 
-// ─── Extra hardcoded orders for display richness ───────────────────────────────
+// --- Extra hardcoded orders for display richness -------------------------------
 
 const EXTRA_ORDERS: DisplayOrder[] = [
   {
@@ -106,7 +106,7 @@ const EXTRA_ORDERS: DisplayOrder[] = [
   },
 ];
 
-// ─── Merge MOCK_ORDERS + EXTRA_ORDERS ────────────────────────────────────────
+// --- Merge MOCK_ORDERS + EXTRA_ORDERS ----------------------------------------
 
 function buildDisplayOrder(o: typeof MOCK_ORDERS[number]): DisplayOrder {
   return {
@@ -127,7 +127,7 @@ function buildDisplayOrder(o: typeof MOCK_ORDERS[number]): DisplayOrder {
 
 const FALLBACK_ORDERS: DisplayOrder[] = [];
 
-// ─── Constants ────────────────────────────────────────────────────────────────
+// --- Constants ----------------------------------------------------------------
 
 const TABS = [
   { id: "all",    label: "All" },
@@ -140,7 +140,7 @@ const DONE_STATUSES: OrderStatus[] = ["delivered", "failed_delivery", "cancelled
 
 const PROGRESS_STEPS: OrderStatus[] = ["confirmed", "picking", "packed", "out_for_delivery"];
 
-// ─── StatusIcon ───────────────────────────────────────────────────────────────
+// --- StatusIcon ---------------------------------------------------------------
 
 function StatusIcon({ status }: { status: OrderStatus }) {
   if (status === "out_for_delivery") return <Truck className="h-5 w-5 text-brand-700 dark:text-brand-400" />;
@@ -163,7 +163,7 @@ function StatusIconBg({ status }: { status: OrderStatus }) {
   );
 }
 
-// ─── ProgressBar ─────────────────────────────────────────────────────────────
+// --- ProgressBar -------------------------------------------------------------
 
 function ActiveProgressBar({ status }: { status: OrderStatus }) {
   const current = PROGRESS_STEPS.indexOf(status);
@@ -191,7 +191,7 @@ function ActiveProgressBar({ status }: { status: OrderStatus }) {
   );
 }
 
-// ─── OrderCard ────────────────────────────────────────────────────────────────
+// --- OrderCard ----------------------------------------------------------------
 
 function OrderCard({ order }: { order: DisplayOrder }) {
   const router = useRouter();
@@ -203,8 +203,8 @@ function OrderCard({ order }: { order: DisplayOrder }) {
   function handleReorder(e: React.MouseEvent) {
     e.preventDefault();
     e.stopPropagation();
-    // DisplayOrder doesn't carry full product objects — redirect to catalog
-    toastSuccess("Redirecting to catalog — pick your items!");
+    // DisplayOrder doesn't carry full product objects � redirect to catalog
+    toastSuccess("Redirecting to catalog � pick your items!");
     router.push("/catalog");
   }
 
@@ -278,7 +278,7 @@ function OrderCard({ order }: { order: DisplayOrder }) {
   );
 }
 
-// ─── Page ─────────────────────────────────────────────────────────────────────
+// --- Page ---------------------------------------------------------------------
 
 export default function OrdersPage() {
   const router = useRouter();
@@ -363,7 +363,7 @@ export default function OrdersPage() {
       <div className="px-4 py-2">
         {loading ? (
           <div className="flex justify-center py-8">
-            <div className="h-8 w-8 animate-spin rounded-full border-2 border-brand-500 border-t-transparent" />
+            <div className="h-8 w-8 animate-spin rounded-full border-2 border-brand-700 border-t-transparent" />
           </div>
         ) : fetchError ? (
           <div className="flex flex-col items-center py-12 gap-3 text-center">

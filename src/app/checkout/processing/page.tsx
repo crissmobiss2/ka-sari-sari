@@ -1,12 +1,12 @@
-﻿"use client";
+"use client";
 import { useEffect, useState } from "react";
 import { useSearchParams, useRouter } from "next/navigation";
 import { Suspense } from "react";
 import { cn } from "@/lib/utils";
 
 const STEPS = [
-  { label: "Placing Order", detail: "Securing your items…" },
-  { label: "Verifying Payment", detail: "Confirming your transfer…" },
+  { label: "Placing Order", detail: "Securing your items�" },
+  { label: "Verifying Payment", detail: "Confirming your transfer�" },
   { label: "Confirmed", detail: "Your order is on its way!" },
 ];
 
@@ -28,7 +28,7 @@ function ProcessingContent() {
 
     // Poll the order status instead of blindly assuming success
     let attempts = 0;
-    const MAX_ATTEMPTS = 20; // 20 × 2s = 40 second timeout
+    const MAX_ATTEMPTS = 20; // 20 � 2s = 40 second timeout
 
     const poll = async () => {
       try {
@@ -43,7 +43,7 @@ function ProcessingContent() {
         } else {
           attempts++;
           if (attempts >= MAX_ATTEMPTS) {
-            // Timeout — treat as failed to avoid stuck UI
+            // Timeout � treat as failed to avoid stuck UI
             router.replace(`/checkout/failed?orderId=${orderId}&reason=timeout`);
           } else {
             setTimeout(poll, 2000);
@@ -65,7 +65,7 @@ function ProcessingContent() {
     return () => { clearTimeout(t1); clearTimeout(t2); clearTimeout(t3); };
   }, [orderId, method, router]);
 
-  const methodIcon = method === "cod" ? "💵" : method === "gcash" ? "📱" : method === "maya" ? "💳" : "🏦";
+  const methodIcon = method === "cod" ? "??" : method === "gcash" ? "??" : method === "maya" ? "??" : "??";
   const methodLabel = method === "cod" ? "Cash on Delivery" : method === "gcash" ? "GCash" : method === "maya" ? "Maya" : "Bank Transfer";
 
   return (
@@ -79,7 +79,7 @@ function ProcessingContent() {
             : "border-success-500 animate-none"
         )} />
         <div className="absolute inset-0 flex items-center justify-center">
-          <span className="text-2xl">{step === 2 ? "✅" : methodIcon}</span>
+          <span className="text-2xl">{step === 2 ? "?" : methodIcon}</span>
         </div>
       </div>
 
@@ -148,7 +148,7 @@ export default function CheckoutProcessingPage() {
   return (
     <Suspense fallback={
       <div className="min-h-screen flex items-center justify-center">
-        <div className="animate-spin h-8 w-8 rounded-full border-4 border-brand-500 border-t-transparent" />
+        <div className="animate-spin h-8 w-8 rounded-full border-4 border-brand-700 border-t-transparent" />
       </div>
     }>
       <ProcessingContent />

@@ -104,7 +104,7 @@ export default function CartPage() {
             </div>
             <div className="w-full h-1.5 bg-muted rounded-full overflow-hidden">
               <div
-                className={cn("h-full rounded-full transition-all duration-500", freeDelivery ? "bg-success-500" : "bg-brand-700")}
+                className={cn("h-full rounded-full transition-all duration-500", freeDelivery ? "bg-success-700 dark:bg-success-600" : "bg-brand-700")}
                 style={{ width: `${progress}%` }}
               />
             </div>

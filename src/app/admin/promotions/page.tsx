@@ -1,4 +1,4 @@
-ï»¿"use client";
+"use client";
 import { useState, useEffect } from "react";
 import {
   Plus, X, Calendar, Tag, Pause, Pencil, Copy, Archive, Ban,
@@ -104,7 +104,7 @@ function PromoCard({ promo, onPause, onEdit, onDuplicate, onArchiveOrCancel }: P
 
         <div className="mt-3 flex items-center gap-1.5 text-xs text-muted-foreground">
           <Calendar className="h-3.5 w-3.5" />
-          <span>{promo.startDate} â€” {promo.endDate}</span>
+          <span>{promo.startDate} — {promo.endDate}</span>
         </div>
 
         <div className="mt-4 space-y-1.5">
@@ -227,8 +227,8 @@ function CreatePromoModal({ onClose, onSave }: CreatePromoModalProps) {
       value: Number(form.value),
       minOrder: form.minOrder ? Number(form.minOrder) : 0,
       category: form.category,
-      startDate: form.startDate || "â€”",
-      endDate: form.endDate || "â€”",
+      startDate: form.startDate || "—",
+      endDate: form.endDate || "—",
       maxUsage: form.maxUsage ? Number(form.maxUsage) : undefined,
     });
     setSaved(true);
@@ -678,7 +678,7 @@ export default function AdminPromotionsPage() {
             className={cn(
               "shrink-0 flex items-center gap-1.5 px-4 py-2.5 text-sm font-medium border-b-2 transition-colors",
               activeTab === tab.id
-                ? "border-brand-500 text-brand-700"
+                ? "border-brand-700 text-brand-700"
                 : "border-transparent text-muted-foreground hover:text-foreground"
             )}
           >

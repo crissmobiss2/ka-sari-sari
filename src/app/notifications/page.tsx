@@ -1,4 +1,4 @@
-﻿"use client";
+"use client";
 
 import { useState, useMemo, useEffect } from "react";
 import {
@@ -20,7 +20,7 @@ import { MOCK_NOTIFICATIONS } from "@/lib/mock-data";
 import type { Notification } from "@/types";
 import { cn } from "@/lib/utils";
 
-// ─── Seed extra realistic notifications so there are at least 8 ───────────────
+// --- Seed extra realistic notifications so there are at least 8 ---------------
 
 const EXTRA_NOTIFICATIONS: Notification[] = [
   {
@@ -28,7 +28,7 @@ const EXTRA_NOTIFICATIONS: Notification[] = [
     userId: "user-1",
     type: "payment_received",
     title: "Payment confirmed",
-    message: "GCash payment of ₱1,920 for order #KSS-2025-00142 has been received.",
+    message: "GCash payment of ?1,920 for order #KSS-2025-00142 has been received.",
     isRead: false,
     orderId: "ord-001",
     createdAt: new Date(Date.now() - 1000 * 60 * 10).toISOString(),
@@ -67,7 +67,7 @@ const EXTRA_NOTIFICATIONS: Notification[] = [
     userId: "user-1",
     type: "system",
     title: "Deal alert: 15% off San Miguel",
-    message: "Limited-time promo on San Miguel Pale Pilsen 330ml — ends midnight tonight.",
+    message: "Limited-time promo on San Miguel Pale Pilsen 330ml � ends midnight tonight.",
     isRead: true,
     createdAt: new Date(Date.now() - 1000 * 60 * 60 * 8).toISOString(),
   },
@@ -77,7 +77,7 @@ const EXTRA_NOTIFICATIONS: Notification[] = [
     type: "order_out_for_delivery",
     title: "Delivery ETA updated",
     message:
-      "Your driver is 3 stops away. Expected arrival: 4:30–5:00 PM today.",
+      "Your driver is 3 stops away. Expected arrival: 4:30�5:00 PM today.",
     isRead: true,
     orderId: "ord-004",
     createdAt: new Date(Date.now() - 1000 * 60 * 60 * 22).toISOString(),
@@ -98,7 +98,7 @@ const EXTRA_NOTIFICATIONS: Notification[] = [
     type: "system",
     title: "System maintenance tonight",
     message:
-      "Ka Sari-Sari will be briefly unavailable on Jul 7 from 1–2 AM for scheduled maintenance.",
+      "Ka Sari-Sari will be briefly unavailable on Jul 7 from 1�2 AM for scheduled maintenance.",
     isRead: true,
     createdAt: new Date(Date.now() - 1000 * 60 * 60 * 48).toISOString(),
   },
@@ -122,7 +122,7 @@ function buildSeedNotifications(): Notification[] {
   );
 }
 
-// ─── Helpers ──────────────────────────────────────────────────────────────────
+// --- Helpers ------------------------------------------------------------------
 
 function timeAgo(date: string) {
   const diff = Date.now() - new Date(date).getTime();
@@ -185,7 +185,7 @@ function iconColors(notif: Notification, unread: boolean) {
   return "bg-brand-100 dark:bg-brand-500/20 text-brand-700 dark:text-foreground";
 }
 
-// ─── Tabs config ──────────────────────────────────────────────────────────────
+// --- Tabs config --------------------------------------------------------------
 
 const TABS: { id: FilterTab; label: string }[] = [
   { id: "all", label: "All" },
@@ -195,7 +195,7 @@ const TABS: { id: FilterTab; label: string }[] = [
   { id: "system", label: "System" },
 ];
 
-// ─── Page ─────────────────────────────────────────────────────────────────────
+// --- Page ---------------------------------------------------------------------
 
 export default function NotificationsPage() {
   const [notifs, setNotifs] = useState<Notification[]>([]);
@@ -331,7 +331,7 @@ export default function NotificationsPage() {
         {/* Notification list */}
         {notifsLoading ? (
           <div className="flex justify-center py-12">
-            <div className="h-6 w-6 rounded-full border-2 border-brand-500 border-t-transparent animate-spin" />
+            <div className="h-6 w-6 rounded-full border-2 border-brand-700 border-t-transparent animate-spin" />
           </div>
         ) : filtered.length === 0 ? (
           <EmptyState
@@ -357,7 +357,7 @@ export default function NotificationsPage() {
   );
 }
 
-// ─── Notification group ───────────────────────────────────────────────────────
+// --- Notification group -------------------------------------------------------
 
 function NotifGroup({
   label,
@@ -382,7 +382,7 @@ function NotifGroup({
   );
 }
 
-// ─── Notification row ─────────────────────────────────────────────────────────
+// --- Notification row ---------------------------------------------------------
 
 function NotifRow({
   notif,

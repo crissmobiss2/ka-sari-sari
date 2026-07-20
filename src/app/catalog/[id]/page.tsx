@@ -434,7 +434,7 @@ export default function ProductDetailPage() {
                 </div>
                 <div className="flex gap-0.5 mb-2">
                   {Array.from({ length: 5 }).map((_, i) => (
-                    <Star key={i} className={cn("h-3.5 w-3.5", i < review.rating ? "fill-amber-600 text-amber-600" : "text-surface-300")} />
+                    <Star key={i} className={cn("h-3.5 w-3.5", i < review.rating ? "fill-amber-600 text-amber-600" : "text-surface-500")} />
                   ))}
                 </div>
                 <p className="text-sm text-muted-foreground">{review.comment}</p>

@@ -1,4 +1,4 @@
-ï»¿"use client";
+"use client";
 import { useState, useMemo, useEffect } from "react";
 import Link from "next/link";
 import { Search, Download, ChevronLeft, ChevronRight } from "lucide-react";
@@ -116,7 +116,7 @@ export default function AdminOrdersPage() {
             className={cn(
               "shrink-0 px-4 py-2.5 text-sm font-medium border-b-2 transition-colors",
               activeTab === tab.id
-                ? "border-brand-500 text-brand-700"
+                ? "border-brand-700 text-brand-700"
                 : "border-transparent text-muted-foreground hover:text-foreground"
             )}
           >
@@ -131,7 +131,7 @@ export default function AdminOrdersPage() {
           <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
           <input
             type="search"
-            placeholder="Search order #, storeâ€¦"
+            placeholder="Search order #, store…"
             value={search}
             onChange={(e) => { setSearch(e.target.value); resetPage(); }}
             className="h-10 w-full rounded-xl border border-input bg-card pl-10 pr-4 text-sm focus:outline-none focus:ring-2 focus:ring-brand-500"
@@ -240,7 +240,7 @@ export default function AdminOrdersPage() {
         {totalPages > 1 && (
           <div className="flex items-center justify-between border-t border-border px-5 py-3 text-sm">
             <p className="text-muted-foreground tabular-nums">
-              {(safePage - 1) * PAGE_SIZE + 1}â€“{Math.min(safePage * PAGE_SIZE, filtered.length)} of {filtered.length}
+              {(safePage - 1) * PAGE_SIZE + 1}–{Math.min(safePage * PAGE_SIZE, filtered.length)} of {filtered.length}
             </p>
             <div className="flex items-center gap-1">
               <button

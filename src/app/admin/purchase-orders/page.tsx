@@ -1,4 +1,4 @@
-﻿"use client";
+"use client";
 import { useState, useEffect } from "react";
 import {
   Plus, X, Send, CheckCheck, Eye, Trash2, FileText,
@@ -74,28 +74,28 @@ type AutoPOEntry = {
 const AUTO_POS: AutoPOEntry[] = [
   {
     supplier: "PhilBev Distribution Inc.",
-    reason: "Coca-Cola (142 units → needs 168 in 14 days)",
+    reason: "Coca-Cola (142 units ? needs 168 in 14 days)",
     items: 2,
     total: 15840,
     urgency: "high",
   },
   {
     supplier: "P&G Philippines",
-    reason: "Safeguard (34 units → needs 67 in 14 days, critically low)",
+    reason: "Safeguard (34 units ? needs 67 in 14 days, critically low)",
     items: 1,
     total: 8640,
     urgency: "critical",
   },
   {
-    supplier: "Nestlé Philippines",
-    reason: "Milo Active Go (23 units → needs 51 in 14 days)",
+    supplier: "Nestl� Philippines",
+    reason: "Milo Active Go (23 units ? needs 51 in 14 days)",
     items: 1,
     total: 11520,
     urgency: "critical",
   },
   {
     supplier: "Lucky Me Foods Corp",
-    reason: "Lucky Me! Pancit Canton (89 units → needs 112 in 14 days)",
+    reason: "Lucky Me! Pancit Canton (89 units ? needs 112 in 14 days)",
     items: 3,
     total: 6720,
     urgency: "medium",
@@ -114,7 +114,7 @@ const URGENCY_LABEL: Record<AutoPOEntry["urgency"], string> = {
   medium:   "Medium",
 };
 
-// ─── Auto-Generate POs Modal ──────────────────────────────────────────────────
+// --- Auto-Generate POs Modal --------------------------------------------------
 
 interface AutoPOModalProps {
   onClose: () => void;
@@ -183,12 +183,12 @@ function AutoPOModal({ onClose, onViewDrafts }: AutoPOModalProps) {
             </div>
             <div>
               <h2 className="font-display text-lg font-bold text-foreground">
-                Analyzing inventory…
+                Analyzing inventory�
               </h2>
               <div className="mt-3 space-y-1.5 text-sm text-muted-foreground">
-                <p>Scanning 122 products across 12 categories…</p>
-                <p>Checking supplier availability…</p>
-                <p>Calculating reorder points…</p>
+                <p>Scanning 122 products across 12 categories�</p>
+                <p>Checking supplier availability�</p>
+                <p>Calculating reorder points�</p>
               </div>
             </div>
           </div>
@@ -240,7 +240,7 @@ function AutoPOModal({ onClose, onViewDrafts }: AutoPOModalProps) {
                     <div className="flex items-center gap-1.5 mt-1.5 text-xs text-muted-foreground">
                       <Package className="h-3 w-3" />
                       <span>{po.items} item{po.items !== 1 ? "s" : ""}</span>
-                      <span className="text-border">·</span>
+                      <span className="text-border">�</span>
                       <span className="font-semibold text-foreground tabular-nums">
                         {formatPHP(po.total)}
                       </span>
@@ -270,7 +270,7 @@ function AutoPOModal({ onClose, onViewDrafts }: AutoPOModalProps) {
               {isCreating ? (
                 <>
                   <Loader2 className="h-4 w-4 animate-spin" />
-                  Creating…
+                  Creating�
                 </>
               ) : (
                 <>
@@ -316,7 +316,7 @@ function AutoPOModal({ onClose, onViewDrafts }: AutoPOModalProps) {
   );
 }
 
-// ─── Create PO Modal ──────────────────────────────────────────────────────────
+// --- Create PO Modal ----------------------------------------------------------
 
 interface CreatePOModalProps {
   onClose: () => void;
@@ -382,7 +382,7 @@ function CreatePOModal({ onClose, onSubmit, initialSupplier = "", initialItems, 
               onChange={(e) => setSupplier(e.target.value)}
               className="h-11 w-full border border-input rounded-xl px-3 py-2 text-sm bg-card text-foreground focus:outline-none focus:ring-2 focus:ring-brand-500"
             >
-              <option value="">Select a supplier…</option>
+              <option value="">Select a supplier�</option>
               {SUPPLIER_OPTIONS.map((s) => <option key={s}>{s}</option>)}
             </select>
           </div>
@@ -488,7 +488,7 @@ function CreatePOModal({ onClose, onSubmit, initialSupplier = "", initialItems, 
   );
 }
 
-// ─── PO Card ──────────────────────────────────────────────────────────────────
+// --- PO Card ------------------------------------------------------------------
 
 interface POCardProps {
   po: PORecord;
@@ -532,7 +532,7 @@ function POCard({ po, onSend, onEdit, onDelete, confirmDeleteId, onConfirmDelete
           <div className="flex items-center gap-1.5 text-muted-foreground">
             <Package className="h-3.5 w-3.5" />
             <span>{po.items} item{po.items !== 1 ? "s" : ""}</span>
-            <span className="mx-1 text-border">·</span>
+            <span className="mx-1 text-border">�</span>
             <span className="font-semibold text-foreground tabular-nums">{formatPHP(po.total)}</span>
           </div>
           <div className="flex items-center gap-1.5 text-muted-foreground">
@@ -606,7 +606,7 @@ function POCard({ po, onSend, onEdit, onDelete, confirmDeleteId, onConfirmDelete
   );
 }
 
-// ─── Page ─────────────────────────────────────────────────────────────────────
+// --- Page ---------------------------------------------------------------------
 
 export default function AdminPurchaseOrdersPage() {
   const [activeTab, setActiveTab] = useState("all");
@@ -782,7 +782,7 @@ export default function AdminPurchaseOrdersPage() {
             className={cn(
               "shrink-0 flex items-center gap-1.5 px-4 py-2.5 text-sm font-medium border-b-2 transition-colors",
               activeTab === tab.id
-                ? "border-brand-500 text-brand-700"
+                ? "border-brand-700 text-brand-700"
                 : "border-transparent text-muted-foreground hover:text-foreground"
             )}
           >
