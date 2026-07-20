@@ -302,7 +302,7 @@ export default function WalletPage() {
                 className={cn(
                   "w-full rounded-xl border py-2.5 text-sm font-semibold transition-colors",
                   isCustomAmount
-                    ? "border-brand-500 bg-brand-50 dark:bg-brand-500/10 text-brand-600"
+                    ? "border-brand-500 bg-brand-50 dark:bg-brand-500/10 text-brand-600 dark:text-foreground"
                     : "border-border bg-card text-muted-foreground hover:border-brand-300 hover:text-foreground"
                 )}
               >

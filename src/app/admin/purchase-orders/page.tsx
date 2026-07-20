@@ -39,9 +39,9 @@ type PORecord = {
 
 const STATUS_STYLE: Record<POStatus, string> = {
   draft:     "bg-surface-100 dark:bg-surface-800 text-muted-foreground border-surface-200",
-  sent:      "bg-warning-50 dark:bg-warning-500/10 text-warning-600 border-warning-500/25",
+  sent:      "bg-warning-50 dark:bg-warning-500/10 text-warning-600 dark:text-foreground border-warning-500/25",
   confirmed: "bg-blue-50 text-blue-600 border-blue-200",
-  received:  "bg-success-50 dark:bg-success-500/10 text-success-600 border-success-500/25",
+  received:  "bg-success-50 dark:bg-success-500/10 text-success-600 dark:text-foreground border-success-500/25",
   partial:   "bg-orange-50 text-orange-600 border-orange-200",
 };
 
@@ -103,9 +103,9 @@ const AUTO_POS: AutoPOEntry[] = [
 ];
 
 const URGENCY_BADGE: Record<AutoPOEntry["urgency"], string> = {
-  critical: "bg-danger-50 dark:bg-danger-500/10 text-danger-600 border-danger-200",
-  high:     "bg-brand-50 dark:bg-brand-500/10 text-brand-600 border-brand-200",
-  medium:   "bg-warning-50 dark:bg-warning-500/10 text-warning-600 border-warning-200",
+  critical: "bg-danger-50 dark:bg-danger-500/10 text-danger-600 dark:text-foreground border-danger-200",
+  high:     "bg-brand-50 dark:bg-brand-500/10 text-brand-600 dark:text-foreground border-brand-200",
+  medium:   "bg-warning-50 dark:bg-warning-500/10 text-warning-600 dark:text-foreground border-warning-200",
 };
 
 const URGENCY_LABEL: Record<AutoPOEntry["urgency"], string> = {
@@ -577,7 +577,7 @@ function POCard({ po, onSend, onEdit, onDelete, confirmDeleteId, onConfirmDelete
                   </button>
                   <button
                     onClick={() => onConfirmDelete(po.id)}
-                    className="flex items-center gap-1.5 rounded-xl border border-danger-200 bg-danger-50 dark:bg-danger-500/10 px-3 py-2 text-xs font-medium text-danger-600 hover:bg-danger-100 transition-colors"
+                    className="flex items-center gap-1.5 rounded-xl border border-danger-200 bg-danger-50 dark:bg-danger-500/10 px-3 py-2 text-xs font-medium text-danger-600 dark:text-foreground hover:bg-danger-100 transition-colors"
                   >
                     <Trash2 className="h-3.5 w-3.5" /> Delete
                   </button>
@@ -760,7 +760,7 @@ export default function AdminPurchaseOrdersPage() {
         <div className="flex items-center gap-2">
           <button
             onClick={() => setShowAutoModal(true)}
-            className="flex items-center gap-2 rounded-xl border border-brand-300 bg-brand-50 dark:bg-brand-500/10 px-4 py-2.5 text-sm font-medium text-brand-600 hover:bg-brand-100 transition-colors"
+            className="flex items-center gap-2 rounded-xl border border-brand-300 bg-brand-50 dark:bg-brand-500/10 px-4 py-2.5 text-sm font-medium text-brand-600 dark:text-foreground hover:bg-brand-100 transition-colors"
           >
             <Zap className="h-4 w-4" /> Auto-Generate POs
           </button>

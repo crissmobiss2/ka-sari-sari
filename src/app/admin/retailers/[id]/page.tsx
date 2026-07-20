@@ -95,7 +95,7 @@ const ORDER_STATUS_LABEL: Record<string, string> = {
 };
 
 const ORDER_STATUS_STYLE: Record<string, string> = {
-  out_for_delivery: "bg-brand-50 dark:bg-brand-500/10 text-brand-600 border-brand-500/25",
+  out_for_delivery: "bg-brand-50 dark:bg-brand-500/10 text-brand-600 dark:text-foreground border-brand-500/25",
   delivered:        "bg-success-50 dark:bg-success-500/10 text-success-700 dark:text-foreground border-success-500/25",
   pending:          "bg-warning-50 dark:bg-warning-500/10 text-warning-700 dark:text-foreground border-warning-500/25",
   confirmed:        "bg-blue-50 text-blue-600 border-blue-200",

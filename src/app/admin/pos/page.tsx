@@ -413,7 +413,7 @@ export default function POSPage() {
                     <input type="text" placeholder="Promo code" value={promoInput} onChange={e => setPromoInput(e.target.value.toUpperCase())}
                       className="h-8 w-full rounded-xl border border-input bg-background pl-7 pr-3 text-xs focus:outline-none focus:ring-2 focus:ring-brand-500" />
                   </div>
-                  <button onClick={applyPromo} className="h-8 px-3 rounded-xl bg-brand-50 dark:bg-brand-500/10 border border-brand-200 text-brand-600 text-xs font-semibold hover:bg-brand-100 active:scale-95 transition-all">Apply</button>
+                  <button onClick={applyPromo} className="h-8 px-3 rounded-xl bg-brand-50 dark:bg-brand-500/10 border border-brand-200 text-brand-600 dark:text-foreground text-xs font-semibold hover:bg-brand-100 active:scale-95 transition-all">Apply</button>
                 </div>
               ) : (
                 <div className="flex items-center justify-between text-xs">

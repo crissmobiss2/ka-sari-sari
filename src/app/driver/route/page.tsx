@@ -453,7 +453,7 @@ export default function RouteMapPage() {
                       </a>
                       <button
                         onClick={() => { if (window.confirm("Mark this stop as failed delivery?")) { markFailed(stop); } }}
-                        className="flex flex-col items-center gap-1 rounded-xl bg-danger-50 dark:bg-danger-500/10 hover:bg-danger-100 px-2 py-2.5 text-xs font-semibold text-danger-600 transition-colors"
+                        className="flex flex-col items-center gap-1 rounded-xl bg-danger-50 dark:bg-danger-500/10 hover:bg-danger-100 px-2 py-2.5 text-xs font-semibold text-danger-600 dark:text-foreground transition-colors"
                       >
                         <XCircle className="h-4 w-4" />
                         Failed

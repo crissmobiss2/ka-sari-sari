@@ -36,7 +36,7 @@ const AVG_ORDER_VALUE = 800;
 
 const STATUS_STYLE: Record<PromoStatus, string> = {
   active:    "bg-success-50 dark:bg-success-500/10 text-success-700 border-success-500/25",
-  scheduled: "bg-warning-50 dark:bg-warning-500/10 text-warning-600 border-warning-500/25",
+  scheduled: "bg-warning-50 dark:bg-warning-500/10 text-warning-600 dark:text-foreground border-warning-500/25",
   ended:     "bg-surface-100 dark:bg-surface-800 text-muted-foreground border-surface-200",
   paused:    "bg-surface-100 dark:bg-surface-800 text-muted-foreground border-surface-200",
   expired:   "bg-surface-100 dark:bg-surface-800 text-muted-foreground border-surface-200",
@@ -93,7 +93,7 @@ function PromoCard({ promo, onPause, onEdit, onDuplicate, onArchiveOrCancel }: P
         <p className="text-sm text-muted-foreground mt-1.5">{promo.description}</p>
 
         <div className="mt-4 flex flex-wrap gap-3 items-center">
-          <span className="inline-flex items-center gap-1.5 rounded-xl bg-brand-50 dark:bg-brand-500/10 border border-brand-200 px-3 py-1.5 text-sm font-bold text-brand-600">
+          <span className="inline-flex items-center gap-1.5 rounded-xl bg-brand-50 dark:bg-brand-500/10 border border-brand-200 px-3 py-1.5 text-sm font-bold text-brand-600 dark:text-foreground">
             <Tag className="h-3.5 w-3.5" /> {discountLabel}
           </span>
           <span className="text-xs text-muted-foreground">
@@ -157,7 +157,7 @@ function PromoCard({ promo, onPause, onEdit, onDuplicate, onArchiveOrCancel }: P
               </button>
               <button
                 onClick={() => onArchiveOrCancel(promo.id)}
-                className="flex items-center gap-1.5 rounded-xl border border-danger-200 bg-danger-50 dark:bg-danger-500/10 px-3 py-2 text-xs font-medium text-danger-600 hover:bg-danger-100 transition-colors"
+                className="flex items-center gap-1.5 rounded-xl border border-danger-200 bg-danger-50 dark:bg-danger-500/10 px-3 py-2 text-xs font-medium text-danger-600 dark:text-foreground hover:bg-danger-100 transition-colors"
               >
                 <Ban className="h-3.5 w-3.5" /> Cancel
               </button>
@@ -655,8 +655,8 @@ export default function AdminPromotionsPage() {
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
         {[
           { icon: Zap, label: "Active Promos", value: activeCount.toString(), color: "text-brand-500", bg: "bg-brand-50 dark:bg-brand-500/10" },
-          { icon: BarChart3, label: "Total Uses", value: totalUses.toString(), color: "text-success-600", bg: "bg-success-50 dark:bg-success-500/10" },
-          { icon: TrendingUp, label: "Revenue Impact", value: revenueImpactLabel, color: "text-warning-600", bg: "bg-warning-50 dark:bg-warning-500/10" },
+          { icon: BarChart3, label: "Total Uses", value: totalUses.toString(), color: "text-success-600 dark:text-foreground", bg: "bg-success-50 dark:bg-success-500/10" },
+          { icon: TrendingUp, label: "Revenue Impact", value: revenueImpactLabel, color: "text-warning-600 dark:text-foreground", bg: "bg-warning-50 dark:bg-warning-500/10" },
         ].map((s) => (
           <Card key={s.label} className="p-4 flex items-center gap-4">
             <div className={cn("flex h-10 w-10 shrink-0 items-center justify-center rounded-xl", s.bg, s.color)}>

@@ -128,7 +128,7 @@ export default function AdminInventoryPage() {
           { label: "Total Products",  value: PRODUCTS.length, icon: Package,      color: "text-foreground",    bg: "" },
           { label: "Low Stock",       value: lowStockCount,   icon: TrendingDown,  color: "text-warning-700 dark:text-foreground",   bg: "bg-warning-50 dark:bg-warning-500/10 dark:bg-card" },
           { label: "Out of Stock",    value: outCount,        icon: AlertTriangle, color: "text-danger-700 dark:text-foreground",    bg: "bg-danger-50 dark:bg-danger-500/10 dark:bg-card" },
-          { label: "Showing",         value: filtered.length, icon: ShoppingCart,  color: "text-brand-600",     bg: "bg-brand-50 dark:bg-brand-500/10 dark:bg-card" },
+          { label: "Showing",         value: filtered.length, icon: ShoppingCart,  color: "text-brand-600 dark:text-foreground",     bg: "bg-brand-50 dark:bg-brand-500/10 dark:bg-card" },
         ].map((s) => (
           <Card key={s.label} className={cn("p-4", s.bg)}>
             <div className="flex items-center gap-3">

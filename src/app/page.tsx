@@ -53,7 +53,7 @@ export default function HomePage() {
       <section className="relative overflow-hidden bg-card px-4 py-20 sm:py-28 text-center">
         <div className="absolute inset-0 bg-gradient-to-b from-brand-50/60 to-transparent dark:from-brand-950/20" />
         <div className="relative mx-auto max-w-4xl">
-          <div className="inline-flex items-center gap-2 rounded-full border border-brand-200 bg-brand-50 dark:bg-brand-500/10 px-3 py-1.5 text-xs font-medium text-brand-600 mb-8">
+          <div className="inline-flex items-center gap-2 rounded-full border border-brand-200 bg-brand-50 dark:bg-brand-500/10 px-3 py-1.5 text-xs font-medium text-brand-600 dark:text-foreground mb-8">
             <Zap className="h-3.5 w-3.5" />
             Built for sari-sari store owners
           </div>
@@ -182,7 +182,7 @@ export default function HomePage() {
                 <p className="font-display text-4xl font-bold text-brand-500">FREE</p>
                 <p className="text-sm text-muted-foreground mt-1">for your first year</p>
               </div>
-              <span className="rounded-full bg-brand-50 dark:bg-brand-500/10 border border-brand-200 px-3 py-1 text-xs font-medium text-brand-600">
+              <span className="rounded-full bg-brand-50 dark:bg-brand-500/10 border border-brand-200 px-3 py-1 text-xs font-medium text-brand-600 dark:text-foreground">
                 No credit card needed
               </span>
             </div>

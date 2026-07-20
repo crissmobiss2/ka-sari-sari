@@ -470,7 +470,7 @@ export default function AdminStaffPage() {
         <div className="grid grid-cols-3 gap-4 px-6 py-4">
           {/* Total Staff */}
           <div className="rounded-2xl border border-border bg-card p-4 flex items-center gap-3">
-            <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-brand-50 dark:bg-brand-500/10 text-brand-600 shrink-0">
+            <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-brand-50 dark:bg-brand-500/10 text-brand-600 dark:text-foreground shrink-0">
               <Users className="h-5 w-5" />
             </div>
             <div>

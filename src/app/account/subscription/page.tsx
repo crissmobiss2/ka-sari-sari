@@ -125,7 +125,7 @@ export default function SubscriptionPage() {
               {sub.paymentHistory.map((h, i) => (
                 <div key={i} className="flex items-center justify-between py-2 first:pt-0">
                   <div className="flex items-center gap-3">
-                    <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-success-50 dark:bg-success-500/10 text-success-600">
+                    <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-success-50 dark:bg-success-500/10 text-success-600 dark:text-foreground">
                       <CreditCard className="h-4 w-4" />
                     </div>
                     <div>

@@ -493,7 +493,7 @@ export default function AccountPage() {
           {!showCreditForm && !creditSubmitted && (
             <button
               onClick={() => { setShowCreditForm(true); setCreditError(""); }}
-              className="w-full rounded-xl border border-brand-200 bg-brand-50 dark:bg-brand-500/10 py-3 text-sm font-semibold text-brand-600 hover:bg-brand-100 transition-colors flex items-center justify-center gap-2"
+              className="w-full rounded-xl border border-brand-200 bg-brand-50 dark:bg-brand-500/10 py-3 text-sm font-semibold text-brand-600 dark:text-foreground hover:bg-brand-100 transition-colors flex items-center justify-center gap-2"
             >
               <DollarSign className="h-4 w-4" />
               Apply for Credit Line
@@ -755,7 +755,7 @@ export default function AccountPage() {
             }
             router.push("/login");
           }}
-          className="flex w-full items-center gap-3 rounded-2xl border border-danger-500/20 bg-danger-50 dark:bg-danger-500/10 px-5 py-4 text-danger-600 hover:bg-danger-100 transition-colors"
+          className="flex w-full items-center gap-3 rounded-2xl border border-danger-500/20 bg-danger-50 dark:bg-danger-500/10 px-5 py-4 text-danger-600 dark:text-foreground hover:bg-danger-100 transition-colors"
         >
           <LogOut className="h-4 w-4" />
           <span className="text-sm font-semibold">Sign out</span>

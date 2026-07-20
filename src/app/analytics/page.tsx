@@ -495,7 +495,7 @@ export default function AnalyticsPage() {
                       <span className={cn(
                         "rounded-full px-2 py-0.5 text-[10px] font-semibold",
                         s.isLowStock
-                          ? "bg-warning-50 dark:bg-warning-500/10 text-warning-600 border border-warning-200"
+                          ? "bg-warning-50 dark:bg-warning-500/10 text-warning-600 dark:text-foreground border border-warning-200"
                           : "bg-surface-100 dark:bg-surface-800 text-muted-foreground border border-border"
                       )}>
                         {s.isLowStock ? "Low stock" : "Frequently ordered"}

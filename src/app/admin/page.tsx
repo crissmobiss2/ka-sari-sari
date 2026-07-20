@@ -140,7 +140,7 @@ export default function AdminDashboardPage() {
       up: true,
       icon: ShoppingCart,
       href: "/admin/orders",
-      color: "text-info-600 bg-info-50 dark:bg-info-500/10",
+      color: "text-info-600 dark:text-foreground bg-info-50 dark:bg-info-500/10",
     },
     {
       label: "Revenue Today",
@@ -158,7 +158,7 @@ export default function AdminDashboardPage() {
       up: true,
       icon: Users,
       href: "/admin/retailers",
-      color: "text-brand-600 bg-brand-50 dark:bg-brand-500/10",
+      color: "text-brand-600 dark:text-foreground bg-brand-50 dark:bg-brand-500/10",
     },
     {
       label: "Low Stock Items",
@@ -250,8 +250,8 @@ export default function AdminDashboardPage() {
           <CardContent className="space-y-3">
             {[
               { label: "Orders to pick", count: stats.pendingOrders, color: "text-warning-700 dark:text-foreground bg-warning-50 dark:bg-warning-500/10", href: "/admin/fulfillment" },
-              { label: "Orders to pack", count: stats.processingOrders, color: "text-info-600 bg-info-50 dark:bg-info-500/10", href: "/admin/fulfillment" },
-              { label: "Out for delivery", count: stats.outForDelivery, color: "text-brand-600 bg-brand-50 dark:bg-brand-500/10", href: "/admin/delivery" },
+              { label: "Orders to pack", count: stats.processingOrders, color: "text-info-600 dark:text-foreground bg-info-50 dark:bg-info-500/10", href: "/admin/fulfillment" },
+              { label: "Out for delivery", count: stats.outForDelivery, color: "text-brand-600 dark:text-foreground bg-brand-50 dark:bg-brand-500/10", href: "/admin/delivery" },
               { label: "Low stock items", count: stats.lowStockItems, color: "text-danger-700 dark:text-foreground bg-danger-50 dark:bg-danger-500/10", href: "/admin/inventory" },
             ].map((item) => (
               <Link key={item.label} href={item.href} className="flex items-center justify-between hover:opacity-80 transition-opacity">

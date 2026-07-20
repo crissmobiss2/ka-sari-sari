@@ -58,12 +58,12 @@ const ROUTES: Route[] = [
 const STATUS_CONFIG: Record<DriverStatus, { label: string; badgeClass: string; avatarClass: string }> = {
   on_route: {
     label: "On Route",
-    badgeClass: "bg-brand-50 dark:bg-brand-500/10 text-brand-600 border border-brand-200",
+    badgeClass: "bg-brand-50 dark:bg-brand-500/10 text-brand-600 dark:text-foreground border border-brand-200",
     avatarClass: "bg-brand-100 text-brand-600",
   },
   active: {
     label: "Available",
-    badgeClass: "bg-success-50 dark:bg-success-500/10 text-success-600 border border-success-200",
+    badgeClass: "bg-success-50 dark:bg-success-500/10 text-success-600 dark:text-foreground border border-success-200",
     avatarClass: "bg-success-100 text-success-600",
   },
   off_duty: {
@@ -595,7 +595,7 @@ export default function AdminDriversPage() {
                         <div className="flex items-center justify-between gap-2">
                           <p className="text-sm font-semibold text-foreground truncate">{route.name}</p>
                           {assignedDriver && (
-                            <span className="text-[10px] text-warning-600 bg-warning-50 dark:bg-warning-500/10 border border-warning-200 rounded-full px-2 py-0.5 shrink-0">
+                            <span className="text-[10px] text-warning-600 dark:text-foreground bg-warning-50 dark:bg-warning-500/10 border border-warning-200 rounded-full px-2 py-0.5 shrink-0">
                               {assignedDriver.initials}
                             </span>
                           )}

@@ -30,7 +30,7 @@ function CityRow({ city }: { city: NexoflowCity }) {
         <span className="text-xs text-muted-foreground ml-2">{city.province}</span>
       </div>
       {count > 0 ? (
-        <span className="text-xs font-semibold text-success-600 bg-success-50 dark:bg-success-500/10 border border-success-200 rounded-full px-2 py-0.5">
+        <span className="text-xs font-semibold text-success-600 dark:text-foreground bg-success-50 dark:bg-success-500/10 border border-success-200 rounded-full px-2 py-0.5">
           {count} retailers
         </span>
       ) : (
@@ -80,10 +80,10 @@ export default function CoveragePage() {
       {/* Top KPIs */}
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
         {[
-          { label: "Partner Cities", value: "137", sub: "Luzon · Visayas · Mindanao", icon: MapPin, color: "text-brand-600 bg-brand-50 dark:bg-brand-500/10" },
-          { label: "Active Cities", value: activeCities.toString(), sub: `${NEXOFLOW_CITIES.length - activeCities} not yet activated`, icon: CheckCircle2, color: "text-success-600 bg-success-50 dark:bg-success-500/10" },
-          { label: "Total Retailers", value: totalRetailers.toString(), sub: "Registered store owners", icon: Users, color: "text-info-600 bg-info-50 dark:bg-info-500/10" },
-          { label: "Delivery Hubs", value: "5", sub: "NCR · N. Luzon · S. Luzon · Visayas · Mindanao", icon: Truck, color: "text-warning-600 bg-warning-50 dark:bg-warning-500/10" },
+          { label: "Partner Cities", value: "137", sub: "Luzon · Visayas · Mindanao", icon: MapPin, color: "text-brand-600 dark:text-foreground bg-brand-50 dark:bg-brand-500/10" },
+          { label: "Active Cities", value: activeCities.toString(), sub: `${NEXOFLOW_CITIES.length - activeCities} not yet activated`, icon: CheckCircle2, color: "text-success-600 dark:text-foreground bg-success-50 dark:bg-success-500/10" },
+          { label: "Total Retailers", value: totalRetailers.toString(), sub: "Registered store owners", icon: Users, color: "text-info-600 dark:text-foreground bg-info-50 dark:bg-info-500/10" },
+          { label: "Delivery Hubs", value: "5", sub: "NCR · N. Luzon · S. Luzon · Visayas · Mindanao", icon: Truck, color: "text-warning-600 dark:text-foreground bg-warning-50 dark:bg-warning-500/10" },
         ].map((s) => (
           <Card key={s.label}>
             <CardContent className="p-5">

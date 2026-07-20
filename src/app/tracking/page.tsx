@@ -335,7 +335,7 @@ function DriverCard({ driver = DRIVER }: { driver?: typeof DRIVER }) {
               "flex flex-col items-center gap-1.5 rounded-xl border py-3 transition-colors",
               called
                 ? "border-success-200 bg-success-50 dark:bg-success-500/10 text-success-700 dark:text-foreground"
-                : "border-brand-200 bg-brand-50 dark:bg-brand-500/10 text-brand-600 hover:bg-brand-100"
+                : "border-brand-200 bg-brand-50 dark:bg-brand-500/10 text-brand-600 dark:text-foreground hover:bg-brand-100"
             )}
           >
             <Phone className="h-4 w-4" />
