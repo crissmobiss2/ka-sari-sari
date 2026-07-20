@@ -306,7 +306,7 @@ function GenerateReportSection() {
             {/* Date range selector */}
             <div className="relative">
               <select
-                className="appearance-none rounded-lg border border-border bg-surface-50 dark:bg-surface-900 pl-3 pr-8 py-2 text-sm font-medium text-surface-900 focus:outline-none focus:ring-2 focus:ring-brand-500 cursor-pointer"
+                className="appearance-none rounded-lg border border-border bg-surface-50 dark:bg-surface-900 pl-3 pr-8 py-2 text-sm font-medium text-surface-900 focus:outline-none focus:ring-2 focus:ring-brand-700 cursor-pointer"
                 value={dateRange}
                 onChange={(e) => setDateRange(e.target.value as DateRange)}
               >

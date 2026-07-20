@@ -1,4 +1,4 @@
-"use client";
+ï»¿"use client";
 import { useState, useEffect } from "react";
 import {
   Plus, X, Calendar, Tag, Pause, Pencil, Copy, Archive, Ban,
@@ -104,7 +104,7 @@ function PromoCard({ promo, onPause, onEdit, onDuplicate, onArchiveOrCancel }: P
 
         <div className="mt-3 flex items-center gap-1.5 text-xs text-muted-foreground">
           <Calendar className="h-3.5 w-3.5" />
-          <span>{promo.startDate} — {promo.endDate}</span>
+          <span>{promo.startDate} ï¿½ {promo.endDate}</span>
         </div>
 
         <div className="mt-4 space-y-1.5">
@@ -227,8 +227,8 @@ function CreatePromoModal({ onClose, onSave }: CreatePromoModalProps) {
       value: Number(form.value),
       minOrder: form.minOrder ? Number(form.minOrder) : 0,
       category: form.category,
-      startDate: form.startDate || "—",
-      endDate: form.endDate || "—",
+      startDate: form.startDate || "ï¿½",
+      endDate: form.endDate || "ï¿½",
       maxUsage: form.maxUsage ? Number(form.maxUsage) : undefined,
     });
     setSaved(true);
@@ -262,7 +262,7 @@ function CreatePromoModal({ onClose, onSave }: CreatePromoModalProps) {
               placeholder="Short description of the promotion"
               value={form.description}
               onChange={set("description")}
-              className="w-full rounded-xl border border-input bg-card px-4 py-3 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-brand-500 resize-none"
+              className="w-full rounded-xl border border-input bg-card px-4 py-3 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-brand-700 resize-none"
             />
           </div>
           <div className="flex flex-col gap-1.5">
@@ -306,7 +306,7 @@ function CreatePromoModal({ onClose, onSave }: CreatePromoModalProps) {
             <select
               value={form.category}
               onChange={set("category")}
-              className="h-11 w-full border border-input rounded-xl px-3 py-2 text-sm bg-card text-foreground focus:outline-none focus:ring-2 focus:ring-brand-500"
+              className="h-11 w-full border border-input rounded-xl px-3 py-2 text-sm bg-card text-foreground focus:outline-none focus:ring-2 focus:ring-brand-700"
             >
               {CATEGORIES.map((c) => <option key={c}>{c}</option>)}
             </select>
@@ -423,7 +423,7 @@ function EditPromoModal({ promo, onClose, onSave }: EditPromoModalProps) {
               placeholder="Short description of the promotion"
               value={form.description}
               onChange={set("description")}
-              className="w-full rounded-xl border border-input bg-card px-4 py-3 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-brand-500 resize-none"
+              className="w-full rounded-xl border border-input bg-card px-4 py-3 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-brand-700 resize-none"
             />
           </div>
           <div className="flex flex-col gap-1.5">
@@ -467,7 +467,7 @@ function EditPromoModal({ promo, onClose, onSave }: EditPromoModalProps) {
             <select
               value={form.category}
               onChange={set("category")}
-              className="h-11 w-full border border-input rounded-xl px-3 py-2 text-sm bg-card text-foreground focus:outline-none focus:ring-2 focus:ring-brand-500"
+              className="h-11 w-full border border-input rounded-xl px-3 py-2 text-sm bg-card text-foreground focus:outline-none focus:ring-2 focus:ring-brand-700"
             >
               {CATEGORIES.map((c) => <option key={c}>{c}</option>)}
             </select>

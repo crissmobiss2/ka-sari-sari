@@ -181,7 +181,7 @@ export default function StoreProfilePage() {
                   <button
                     type="button"
                     onClick={() => setCityOpen((o) => !o)}
-                    className="flex h-11 w-full items-center justify-between rounded-xl border border-input bg-card px-3.5 text-sm focus:outline-none focus:ring-2 focus:ring-brand-500"
+                    className="flex h-11 w-full items-center justify-between rounded-xl border border-input bg-card px-3.5 text-sm focus:outline-none focus:ring-2 focus:ring-brand-700"
                   >
                     <span className={cn("truncate", form.city ? "text-foreground" : "text-muted-foreground")}>
                       {form.city || "Select city…"}
@@ -199,7 +199,7 @@ export default function StoreProfilePage() {
                             value={citySearch}
                             onChange={(e) => setCitySearch(e.target.value)}
                             placeholder="Search cities…"
-                            className="h-9 w-full rounded-lg border border-input bg-background pl-9 pr-3 text-sm focus:outline-none focus:ring-1 focus:ring-brand-500"
+                            className="h-9 w-full rounded-lg border border-input bg-background pl-9 pr-3 text-sm focus:outline-none focus:ring-1 focus:ring-brand-700"
                           />
                         </div>
                       </div>

@@ -106,7 +106,7 @@ export default function AdminCategoriesPage() {
                 <div className="flex-1 min-w-0">
                   {editingId === cat.id ? (
                     <input
-                      className="w-full rounded-md border border-input bg-background px-2 py-1 text-sm font-semibold text-foreground focus:outline-none focus:ring-2 focus:ring-brand-500"
+                      className="w-full rounded-md border border-input bg-background px-2 py-1 text-sm font-semibold text-foreground focus:outline-none focus:ring-2 focus:ring-brand-700"
                       value={editName}
                       onChange={(e) => setEditName(e.target.value)}
                       onKeyDown={(e) => {

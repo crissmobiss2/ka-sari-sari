@@ -310,7 +310,7 @@ export default function RetailerPOSPage() {
                 value={search}
                 onChange={(e) => setSearch(e.target.value)}
                 placeholder="Search product or scan barcode…"
-                className="w-full rounded-xl border border-border bg-surface-50 dark:bg-surface-900 pl-8 pr-10 py-2 text-xs placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-brand-500"
+                className="w-full rounded-xl border border-border bg-surface-50 dark:bg-surface-900 pl-8 pr-10 py-2 text-xs placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-brand-700"
               />
               <button
                 onClick={() => setShowScanner(true)}

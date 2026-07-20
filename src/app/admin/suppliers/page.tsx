@@ -293,7 +293,7 @@ function EditSupplierModal({
               <select
                 value={form.terms}
                 onChange={set("terms")}
-                className="h-11 w-full rounded-xl border border-input bg-card px-3 text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-brand-500"
+                className="h-11 w-full rounded-xl border border-input bg-card px-3 text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-brand-700"
               >
                 <option>COD</option>
                 <option>15 days NET</option>
@@ -402,7 +402,7 @@ function AddSupplierModal({
               <select
                 value={form.terms}
                 onChange={set("terms")}
-                className="h-11 w-full rounded-xl border border-input bg-card px-3 text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-brand-500"
+                className="h-11 w-full rounded-xl border border-input bg-card px-3 text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-brand-700"
               >
                 <option>COD</option>
                 <option>15 days NET</option>
@@ -536,7 +536,7 @@ export default function AdminSuppliersPage() {
               placeholder="Search suppliers…"
               value={search}
               onChange={(e) => setSearch(e.target.value)}
-              className="h-10 w-64 rounded-xl border border-input bg-card pl-10 pr-4 text-sm focus:outline-none focus:ring-2 focus:ring-brand-500"
+              className="h-10 w-64 rounded-xl border border-input bg-card pl-10 pr-4 text-sm focus:outline-none focus:ring-2 focus:ring-brand-700"
             />
           </div>
           <button

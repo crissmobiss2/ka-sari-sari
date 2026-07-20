@@ -317,7 +317,7 @@ export default function WalletPage() {
                     onChange={(e) => { setCustomAmount(e.target.value); setTopUpError(""); }}
                     placeholder="Enter amount (min ₱50)"
                     min={50}
-                    className="h-11 w-full rounded-xl border border-input bg-background pl-7 pr-3 text-sm focus:outline-none focus:ring-2 focus:ring-brand-500"
+                    className="h-11 w-full rounded-xl border border-input bg-background pl-7 pr-3 text-sm focus:outline-none focus:ring-2 focus:ring-brand-700"
                     autoFocus
                   />
                 </div>
@@ -474,7 +474,7 @@ export default function WalletPage() {
                       value={accountNumber}
                       onChange={(e) => setAccountNumber(e.target.value)}
                       placeholder={selectedWithdrawMethod.placeholder}
-                      className="h-11 w-full rounded-xl border border-input bg-background px-3 text-sm focus:outline-none focus:ring-2 focus:ring-brand-500"
+                      className="h-11 w-full rounded-xl border border-input bg-background px-3 text-sm focus:outline-none focus:ring-2 focus:ring-brand-700"
                     />
                     {accountError() ? (
                       <p className="text-[11px] text-danger-600 dark:text-danger-500 mt-1">{accountError()}</p>
@@ -489,7 +489,7 @@ export default function WalletPage() {
                       value={accountName}
                       onChange={(e) => setAccountName(e.target.value)}
                       placeholder="Full name as registered"
-                      className="h-11 w-full rounded-xl border border-input bg-background px-3 text-sm focus:outline-none focus:ring-2 focus:ring-brand-500"
+                      className="h-11 w-full rounded-xl border border-input bg-background px-3 text-sm focus:outline-none focus:ring-2 focus:ring-brand-700"
                     />
                   </div>
                 </div>

@@ -258,7 +258,7 @@ export default function GoodsReceivingPage() {
                                 onChange={(e) => handleQtyChange(receipt.id, item.sku, e.target.value)}
                                 disabled={isSubmitting || isSubmitted}
                                 className="border border-input rounded-xl px-3 py-1.5 text-sm w-20 text-right tabular-nums
-                                  focus:outline-none focus:ring-2 focus:ring-brand-500 focus:border-transparent
+                                  focus:outline-none focus:ring-2 focus:ring-brand-700 focus:border-transparent
                                   bg-card text-foreground disabled:opacity-50 disabled:cursor-not-allowed"
                               />
                             </td>
@@ -339,7 +339,7 @@ export default function GoodsReceivingPage() {
               <Card key={receipt.id} className="overflow-hidden">
                 <button
                   onClick={() => toggleCompleted(receipt.id)}
-                  className="w-full flex items-center justify-between px-5 py-4 text-left hover:bg-muted/30 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-500"
+                  className="w-full flex items-center justify-between px-5 py-4 text-left hover:bg-muted/30 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-700"
                 >
                   <div className="flex items-center gap-3">
                     <div className="flex h-7 w-7 items-center justify-center rounded-lg bg-success-50 dark:bg-success-500/10 text-success-700 dark:text-foreground">

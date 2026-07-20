@@ -773,18 +773,18 @@ export default function AdminRoutesPage() {
                 <label className="text-xs font-semibold text-muted-foreground uppercase tracking-wide">Route Name</label>
                 <input value={newRoute.name} onChange={e => setNewRoute(p => ({ ...p, name: e.target.value }))}
                   placeholder="e.g. Cubao – Quezon City"
-                  className="mt-1 w-full rounded-xl border border-border bg-background px-3 py-2.5 text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-brand-500" />
+                  className="mt-1 w-full rounded-xl border border-border bg-background px-3 py-2.5 text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-brand-700" />
               </div>
               <div>
                 <label className="text-xs font-semibold text-muted-foreground uppercase tracking-wide">Coverage Area</label>
                 <input value={newRoute.area} onChange={e => setNewRoute(p => ({ ...p, area: e.target.value }))}
                   placeholder="e.g. Quezon City North"
-                  className="mt-1 w-full rounded-xl border border-border bg-background px-3 py-2.5 text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-brand-500" />
+                  className="mt-1 w-full rounded-xl border border-border bg-background px-3 py-2.5 text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-brand-700" />
               </div>
               <div>
                 <label className="text-xs font-semibold text-muted-foreground uppercase tracking-wide">Assign Driver (optional)</label>
                 <select value={newRoute.driver} onChange={e => setNewRoute(p => ({ ...p, driver: e.target.value }))}
-                  className="mt-1 w-full rounded-xl border border-border bg-background px-3 py-2.5 text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-brand-500">
+                  className="mt-1 w-full rounded-xl border border-border bg-background px-3 py-2.5 text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-brand-700">
                   <option value="">Unassigned</option>
                   {AVAILABLE_DRIVERS.map(d => <option key={d.id} value={d.name}>{d.name}</option>)}
                 </select>
@@ -869,7 +869,7 @@ export default function AdminRoutesPage() {
                   <input
                     value={editName}
                     onChange={e => setEditName(e.target.value)}
-                    className="mt-1 w-full rounded-xl border border-border bg-background px-3 py-2.5 text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-brand-500"
+                    className="mt-1 w-full rounded-xl border border-border bg-background px-3 py-2.5 text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-brand-700"
                   />
                 </div>
                 <div>
@@ -877,7 +877,7 @@ export default function AdminRoutesPage() {
                   <select
                     value={editDriver}
                     onChange={e => setEditDriver(e.target.value)}
-                    className="mt-1 w-full rounded-xl border border-border bg-background px-3 py-2.5 text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-brand-500"
+                    className="mt-1 w-full rounded-xl border border-border bg-background px-3 py-2.5 text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-brand-700"
                   >
                     <option value="">Unassigned</option>
                     {AVAILABLE_DRIVERS.map(d => <option key={d.id} value={d.name}>{d.name}</option>)}

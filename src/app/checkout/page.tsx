@@ -194,7 +194,7 @@ export default function CheckoutPage() {
                 value={draftAddress}
                 onChange={(e) => setDraftAddress(e.target.value)}
                 rows={3}
-                className="w-full rounded-xl border border-border bg-background px-3 py-2.5 text-sm text-foreground leading-relaxed resize-none focus:outline-none focus:ring-2 focus:ring-brand-500"
+                className="w-full rounded-xl border border-border bg-background px-3 py-2.5 text-sm text-foreground leading-relaxed resize-none focus:outline-none focus:ring-2 focus:ring-brand-700"
               />
               <div className="flex gap-2">
                 <Button

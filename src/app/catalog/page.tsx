@@ -1,4 +1,4 @@
-"use client";
+ï»¿"use client";
 import { useState, useMemo, useEffect, Suspense } from "react";
 import { useSearchParams } from "next/navigation";
 import { Search, X, SlidersHorizontal, AlertCircle } from "lucide-react";
@@ -13,7 +13,7 @@ function CatalogContent() {
   const searchParams = useSearchParams();
   const urlCategorySlug = searchParams.get("category");
 
-  // Product + category data — starts empty; populated from API on mount (falls back to mock on error)
+  // Product + category data ï¿½ starts empty; populated from API on mount (falls back to mock on error)
   const [products, setProducts] = useState<Product[]>([]);
   const [categories, setCategories] = useState<Category[]>([]);
   const [loading, setLoading] = useState(true);
@@ -50,7 +50,7 @@ function CatalogContent() {
         }
       })
       .catch(() => {
-        // API unavailable — fall back to mock data so the catalog still works
+        // API unavailable ï¿½ fall back to mock data so the catalog still works
         setFetchError(true);
         setProducts(PRODUCTS);
         setCategories(CATEGORIES);
@@ -90,7 +90,7 @@ function CatalogContent() {
         {fetchError && (
           <div className="flex items-center gap-2 rounded-xl bg-warning-50 dark:bg-warning-500/10 border border-warning-200 px-4 py-3 text-sm text-warning-700 dark:text-foreground">
             <AlertCircle className="h-4 w-4 shrink-0" />
-            Showing demo catalog — could not load live products.
+            Showing demo catalog ï¿½ could not load live products.
           </div>
         )}
 
@@ -99,10 +99,10 @@ function CatalogContent() {
           <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground pointer-events-none" />
           <input
             type="search"
-            placeholder="Search products, brands…"
+            placeholder="Search products, brandsï¿½"
             value={search}
             onChange={(e) => setSearch(e.target.value)}
-            className="h-11 w-full rounded-xl border border-input bg-card pl-10 pr-10 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-brand-500 transition-shadow"
+            className="h-11 w-full rounded-xl border border-input bg-card pl-10 pr-10 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-brand-700 transition-shadow"
           />
           {search && (
             <button
@@ -147,7 +147,7 @@ function CatalogContent() {
         <div className="flex items-center justify-between">
           <p className="text-sm text-muted-foreground">
             {loading
-              ? "Loading…"
+              ? "Loadingï¿½"
               : (
                 <>
                   {filtered.length} {filtered.length === 1 ? "product" : "products"}
@@ -160,16 +160,16 @@ function CatalogContent() {
           <select
             value={sortBy}
             onChange={(e) => setSortBy(e.target.value as typeof sortBy)}
-            className="rounded-xl border border-input bg-card px-3 py-1.5 text-xs text-foreground focus:outline-none focus:ring-2 focus:ring-brand-500 cursor-pointer"
+            className="rounded-xl border border-input bg-card px-3 py-1.5 text-xs text-foreground focus:outline-none focus:ring-2 focus:ring-brand-700 cursor-pointer"
           >
             <option value="default">Default</option>
             <option value="price_asc">Price: Low ? High</option>
             <option value="price_desc">Price: High ? Low</option>
-            <option value="name">Name A–Z</option>
+            <option value="name">Name Aï¿½Z</option>
           </select>
         </div>
 
-        {/* Product grid — skeleton while loading, empty state, or real grid */}
+        {/* Product grid ï¿½ skeleton while loading, empty state, or real grid */}
         {loading ? (
           <div className="grid grid-cols-2 gap-3">
             {Array.from({ length: 8 }).map((_, i) => (

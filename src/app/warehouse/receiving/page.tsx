@@ -565,7 +565,7 @@ function ReceiptCard({
                               placeholder={`Scan or type SKU — expected: ${item.sku}`}
                               value={form.barcode}
                               onChange={(e) => onBarcodeChange(e.target.value)}
-                              className="w-full bg-background border border-border rounded-xl px-4 py-4 pr-14 text-lg font-mono focus:outline-none focus:ring-2 focus:ring-brand-500 placeholder:text-muted-foreground"
+                              className="w-full bg-background border border-border rounded-xl px-4 py-4 pr-14 text-lg font-mono focus:outline-none focus:ring-2 focus:ring-brand-700 placeholder:text-muted-foreground"
                             />
                             <button
                               type="button"
@@ -605,7 +605,7 @@ function ReceiptCard({
                           placeholder={`Enter quantity (max ${remaining})`}
                           value={form.qty}
                           onChange={(e) => onQtyChange(e.target.value)}
-                          className="w-full bg-background border border-border rounded-xl px-4 py-4 text-2xl font-bold focus:outline-none focus:ring-2 focus:ring-brand-500 placeholder:text-muted-foreground placeholder:text-lg placeholder:font-normal"
+                          className="w-full bg-background border border-border rounded-xl px-4 py-4 text-2xl font-bold focus:outline-none focus:ring-2 focus:ring-brand-700 placeholder:text-muted-foreground placeholder:text-lg placeholder:font-normal"
                         />
                       </div>
 

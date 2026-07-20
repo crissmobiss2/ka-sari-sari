@@ -521,7 +521,7 @@ export default function ChatPage() {
             }}
             placeholder={selectedLang.id === "en" ? "Type your order…" : "I-type ang order…"}
             disabled={isAiLoading}
-            className="flex-1 h-11 rounded-xl border border-input bg-muted px-4 text-sm focus:outline-none focus:ring-2 focus:ring-brand-500 focus:border-transparent disabled:opacity-60 disabled:cursor-not-allowed"
+            className="flex-1 h-11 rounded-xl border border-input bg-muted px-4 text-sm focus:outline-none focus:ring-2 focus:ring-brand-700 focus:border-transparent disabled:opacity-60 disabled:cursor-not-allowed"
           />
 
           {isAiLoading ? (

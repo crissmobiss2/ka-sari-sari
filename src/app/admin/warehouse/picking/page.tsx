@@ -287,7 +287,7 @@ export default function PickingPage() {
             key={key}
             onClick={() => setActiveTab(key)}
             className={cn(
-              "relative flex items-center gap-1.5 px-4 py-2.5 text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-500",
+              "relative flex items-center gap-1.5 px-4 py-2.5 text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-700",
               activeTab === key
                 ? "text-brand-700 after:absolute after:bottom-0 after:left-0 after:right-0 after:h-0.5 after:bg-brand-700 after:rounded-full"
                 : "text-muted-foreground hover:text-foreground"
@@ -466,7 +466,7 @@ export default function PickingPage() {
                               setPartialQty((prev) => ({ ...prev, [item.id]: e.target.value }))
                             }
                             className="border border-input rounded-xl px-3 py-1.5 text-sm w-16 text-right tabular-nums
-                              focus:outline-none focus:ring-2 focus:ring-brand-500 focus:border-transparent bg-card text-foreground"
+                              focus:outline-none focus:ring-2 focus:ring-brand-700 focus:border-transparent bg-card text-foreground"
                           />
                           <button
                             className="rounded-lg bg-brand-700 px-2 py-1.5 text-xs font-semibold text-white hover:bg-brand-800 transition-colors"

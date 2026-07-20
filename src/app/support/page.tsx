@@ -451,7 +451,7 @@ export default function SupportPage() {
               id="ticket-category"
               value={ticketCategory}
               onChange={(e) => setTicketCategory(e.target.value)}
-              className="w-full rounded-xl border border-input bg-background px-4 py-2.5 text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-brand-500 appearance-none"
+              className="w-full rounded-xl border border-input bg-background px-4 py-2.5 text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-brand-700 appearance-none"
             >
               {TICKET_CATEGORIES.map((cat) => (
                 <option key={cat.value} value={cat.value} disabled={cat.value === ""}>
@@ -472,7 +472,7 @@ export default function SupportPage() {
               onChange={(e) => setTicketMessage(e.target.value)}
               placeholder="Ilarawan ang iyong isyu… / Describe your issue…"
               rows={4}
-              className="w-full rounded-xl border border-input bg-background px-4 py-3 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-brand-500 resize-none"
+              className="w-full rounded-xl border border-input bg-background px-4 py-3 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-brand-700 resize-none"
             />
           </div>
 

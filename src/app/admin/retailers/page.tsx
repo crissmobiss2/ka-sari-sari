@@ -101,7 +101,7 @@ export default function AdminRetailersPage() {
                   placeholder="+63 9XX XXX XXXX"
                   value={invitePhone}
                   onChange={(e) => setInvitePhone(e.target.value)}
-                  className="h-10 w-full rounded-xl border border-input bg-background px-3 text-sm focus:outline-none focus:ring-2 focus:ring-brand-500"
+                  className="h-10 w-full rounded-xl border border-input bg-background px-3 text-sm focus:outline-none focus:ring-2 focus:ring-brand-700"
                 />
               </div>
               <div>
@@ -113,7 +113,7 @@ export default function AdminRetailersPage() {
                   placeholder="e.g. Santos Sari-Sari Store"
                   value={inviteStore}
                   onChange={(e) => setInviteStore(e.target.value)}
-                  className="h-10 w-full rounded-xl border border-input bg-background px-3 text-sm focus:outline-none focus:ring-2 focus:ring-brand-500"
+                  className="h-10 w-full rounded-xl border border-input bg-background px-3 text-sm focus:outline-none focus:ring-2 focus:ring-brand-700"
                 />
               </div>
               <button
@@ -207,13 +207,13 @@ export default function AdminRetailersPage() {
             placeholder="Search by name, store, city…"
             value={search}
             onChange={(e) => setSearch(e.target.value)}
-            className="h-10 w-full rounded-xl border border-input bg-card pl-10 pr-4 text-sm focus:outline-none focus:ring-2 focus:ring-brand-500"
+            className="h-10 w-full rounded-xl border border-input bg-card pl-10 pr-4 text-sm focus:outline-none focus:ring-2 focus:ring-brand-700"
           />
         </div>
         <select
           value={status}
           onChange={(e) => setStatus(e.target.value as typeof status)}
-          className="h-10 rounded-xl border border-input bg-card px-3 pr-8 text-sm focus:outline-none focus:ring-2 focus:ring-brand-500"
+          className="h-10 rounded-xl border border-input bg-card px-3 pr-8 text-sm focus:outline-none focus:ring-2 focus:ring-brand-700"
         >
           <option value="all">All Status</option>
           <option value="active">Active only</option>

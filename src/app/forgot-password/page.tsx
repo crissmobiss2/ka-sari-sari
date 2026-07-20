@@ -1,4 +1,4 @@
-"use client";
+ï»¿"use client";
 
 import { useState, useEffect, useRef } from "react";
 import Link from "next/link";
@@ -64,7 +64,7 @@ export default function ForgotPasswordPage() {
         body: JSON.stringify({ phone }),
       });
     } catch {
-      // endpoint may not exist yet — proceed anyway
+      // endpoint may not exist yet ï¿½ proceed anyway
     } finally {
       setLoadingSend(false);
       setStep(2);
@@ -268,7 +268,7 @@ export default function ForgotPasswordPage() {
                       onPaste={handleOtpPaste}
                       className={cn(
                         "w-11 h-12 text-center text-xl font-bold border rounded-xl bg-background text-foreground",
-                        "focus:outline-none focus:border-brand-500 focus:ring-2 focus:ring-brand-500/20",
+                        "focus:outline-none focus:border-brand-700 focus:ring-2 focus:ring-brand-700/20",
                         "transition-all",
                         digit ? "border-brand-700" : "border-border"
                       )}
@@ -320,7 +320,7 @@ export default function ForgotPasswordPage() {
                   </div>
                   <h1 className="font-display text-2xl font-bold text-foreground">Password reset!</h1>
                   <p className="text-sm text-muted-foreground">
-                    Your password has been updated. Redirecting you to sign in…
+                    Your password has been updated. Redirecting you to sign inï¿½
                   </p>
                 </div>
               ) : (

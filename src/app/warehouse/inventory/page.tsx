@@ -178,7 +178,7 @@ export default function InventoryPage() {
             placeholder="Search by name, brand, or SKU…"
             value={search}
             onChange={(e) => setSearch(e.target.value)}
-            className="w-full pl-9 pr-4 py-2.5 text-sm rounded-xl border border-border bg-background text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-brand-500"
+            className="w-full pl-9 pr-4 py-2.5 text-sm rounded-xl border border-border bg-background text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-brand-700"
           />
         </div>
       </div>
@@ -257,7 +257,7 @@ export default function InventoryPage() {
           <select
             value={sortKey}
             onChange={(e) => setSortKey(e.target.value as SortKey)}
-            className="text-xs rounded-lg border border-border bg-background text-foreground px-2 py-1 focus:outline-none focus:ring-2 focus:ring-brand-500 cursor-pointer"
+            className="text-xs rounded-lg border border-border bg-background text-foreground px-2 py-1 focus:outline-none focus:ring-2 focus:ring-brand-700 cursor-pointer"
           >
             {SORT_OPTIONS.map((opt) => (
               <option key={opt.key} value={opt.key}>
@@ -358,7 +358,7 @@ export default function InventoryPage() {
                               }}
                               autoFocus
                               placeholder="±qty"
-                              className="w-16 text-xs rounded-lg border border-border bg-background text-foreground px-2 py-1 text-center focus:outline-none focus:ring-2 focus:ring-brand-500"
+                              className="w-16 text-xs rounded-lg border border-border bg-background text-foreground px-2 py-1 text-center focus:outline-none focus:ring-2 focus:ring-brand-700"
                             />
                             <button
                               onClick={() => confirmAdjust(product.id)}

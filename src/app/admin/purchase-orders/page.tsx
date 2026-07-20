@@ -1,4 +1,4 @@
-"use client";
+ï»¿"use client";
 import { useState, useEffect } from "react";
 import {
   Plus, X, Send, CheckCheck, Eye, Trash2, FileText,
@@ -87,7 +87,7 @@ const AUTO_POS: AutoPOEntry[] = [
     urgency: "critical",
   },
   {
-    supplier: "Nestlé Philippines",
+    supplier: "Nestlï¿½ Philippines",
     reason: "Milo Active Go (23 units ? needs 51 in 14 days)",
     items: 1,
     total: 11520,
@@ -183,12 +183,12 @@ function AutoPOModal({ onClose, onViewDrafts }: AutoPOModalProps) {
             </div>
             <div>
               <h2 className="font-display text-lg font-bold text-foreground">
-                Analyzing inventory…
+                Analyzing inventoryï¿½
               </h2>
               <div className="mt-3 space-y-1.5 text-sm text-muted-foreground">
-                <p>Scanning 122 products across 12 categories…</p>
-                <p>Checking supplier availability…</p>
-                <p>Calculating reorder points…</p>
+                <p>Scanning 122 products across 12 categoriesï¿½</p>
+                <p>Checking supplier availabilityï¿½</p>
+                <p>Calculating reorder pointsï¿½</p>
               </div>
             </div>
           </div>
@@ -240,7 +240,7 @@ function AutoPOModal({ onClose, onViewDrafts }: AutoPOModalProps) {
                     <div className="flex items-center gap-1.5 mt-1.5 text-xs text-muted-foreground">
                       <Package className="h-3 w-3" />
                       <span>{po.items} item{po.items !== 1 ? "s" : ""}</span>
-                      <span className="text-border">·</span>
+                      <span className="text-border">ï¿½</span>
                       <span className="font-semibold text-foreground tabular-nums">
                         {formatPHP(po.total)}
                       </span>
@@ -270,7 +270,7 @@ function AutoPOModal({ onClose, onViewDrafts }: AutoPOModalProps) {
               {isCreating ? (
                 <>
                   <Loader2 className="h-4 w-4 animate-spin" />
-                  Creating…
+                  Creatingï¿½
                 </>
               ) : (
                 <>
@@ -359,7 +359,7 @@ function CreatePOModal({ onClose, onSubmit, initialSupplier = "", initialItems, 
     onSubmit(supplier, items, total);
   };
 
-  const inputCls = "h-10 rounded-xl border border-input bg-card px-3 text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-brand-500 w-full";
+  const inputCls = "h-10 rounded-xl border border-input bg-card px-3 text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-brand-700 w-full";
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/40 backdrop-blur-sm">
@@ -380,9 +380,9 @@ function CreatePOModal({ onClose, onSubmit, initialSupplier = "", initialItems, 
             <select
               value={supplier}
               onChange={(e) => setSupplier(e.target.value)}
-              className="h-11 w-full border border-input rounded-xl px-3 py-2 text-sm bg-card text-foreground focus:outline-none focus:ring-2 focus:ring-brand-500"
+              className="h-11 w-full border border-input rounded-xl px-3 py-2 text-sm bg-card text-foreground focus:outline-none focus:ring-2 focus:ring-brand-700"
             >
-              <option value="">Select a supplier…</option>
+              <option value="">Select a supplierï¿½</option>
               {SUPPLIER_OPTIONS.map((s) => <option key={s}>{s}</option>)}
             </select>
           </div>
@@ -532,7 +532,7 @@ function POCard({ po, onSend, onEdit, onDelete, confirmDeleteId, onConfirmDelete
           <div className="flex items-center gap-1.5 text-muted-foreground">
             <Package className="h-3.5 w-3.5" />
             <span>{po.items} item{po.items !== 1 ? "s" : ""}</span>
-            <span className="mx-1 text-border">·</span>
+            <span className="mx-1 text-border">ï¿½</span>
             <span className="font-semibold text-foreground tabular-nums">{formatPHP(po.total)}</span>
           </div>
           <div className="flex items-center gap-1.5 text-muted-foreground">

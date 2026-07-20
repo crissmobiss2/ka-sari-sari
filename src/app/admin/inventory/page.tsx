@@ -151,7 +151,7 @@ export default function AdminInventoryPage() {
             placeholder="Search products, brand, SKU…"
             value={search}
             onChange={(e) => setSearch(e.target.value)}
-            className="h-10 w-full rounded-xl border border-input bg-card pl-10 pr-4 text-sm focus:outline-none focus:ring-2 focus:ring-brand-500"
+            className="h-10 w-full rounded-xl border border-input bg-card pl-10 pr-4 text-sm focus:outline-none focus:ring-2 focus:ring-brand-700"
           />
         </div>
         <div className="flex gap-1">

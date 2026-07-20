@@ -183,7 +183,7 @@ function AddStaffModal({ onClose, onAdd }: AddStaffModalProps) {
             <select
               value={role}
               onChange={(e) => setRole(e.target.value as Role)}
-              className="h-11 w-full rounded-xl border border-input bg-card px-4 text-sm text-foreground transition-colors focus:outline-none focus:ring-2 focus:ring-brand-500 focus:border-brand-500"
+              className="h-11 w-full rounded-xl border border-input bg-card px-4 text-sm text-foreground transition-colors focus:outline-none focus:ring-2 focus:ring-brand-700 focus:border-brand-700"
             >
               <option value="admin">Admin</option>
               <option value="warehouse">Warehouse</option>
@@ -285,7 +285,7 @@ function EditStaffModal({ member, onClose, onSave }: EditStaffModalProps) {
             <select
               value={role}
               onChange={(e) => setRole(e.target.value as Role)}
-              className="h-11 w-full rounded-xl border border-input bg-card px-4 text-sm text-foreground transition-colors focus:outline-none focus:ring-2 focus:ring-brand-500 focus:border-brand-500"
+              className="h-11 w-full rounded-xl border border-input bg-card px-4 text-sm text-foreground transition-colors focus:outline-none focus:ring-2 focus:ring-brand-700 focus:border-brand-700"
             >
               <option value="admin">Admin</option>
               <option value="warehouse">Warehouse</option>
@@ -298,7 +298,7 @@ function EditStaffModal({ member, onClose, onSave }: EditStaffModalProps) {
             <select
               value={status}
               onChange={(e) => setStatus(e.target.value as Status)}
-              className="h-11 w-full rounded-xl border border-input bg-card px-4 text-sm text-foreground transition-colors focus:outline-none focus:ring-2 focus:ring-brand-500 focus:border-brand-500"
+              className="h-11 w-full rounded-xl border border-input bg-card px-4 text-sm text-foreground transition-colors focus:outline-none focus:ring-2 focus:ring-brand-700 focus:border-brand-700"
             >
               <option value="active">Active</option>
               <option value="inactive">Inactive</option>
