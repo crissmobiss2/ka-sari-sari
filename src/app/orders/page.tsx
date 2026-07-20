@@ -248,7 +248,7 @@ function OrderCard({ order }: { order: DisplayOrder }) {
         "flex items-center justify-between border-t border-border px-4 py-3",
         isCancelled ? "bg-surface-50/50" : ""
       )}>
-        <p className="text-base font-bold text-surface-900">{formatPHP(order.total)}</p>
+        <p className="text-base font-bold text-foreground">{formatPHP(order.total)}</p>
         <div className="flex items-center gap-2">
           {isActive && (
             <Link

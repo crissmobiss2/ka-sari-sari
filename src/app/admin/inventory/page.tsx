@@ -94,8 +94,8 @@ export default function AdminInventoryPage() {
       {/* ── Urgent alert banner (only when there are issues) ── */}
       {(lowStockCount > 0 || outCount > 0) && (
         <div className="rounded-xl border border-warning-500/30 bg-warning-50 dark:bg-surface-800 dark:border-warning-600/40 px-4 py-3 flex flex-col sm:flex-row sm:items-center gap-3">
-          <AlertTriangle className="h-5 w-5 text-warning-600 shrink-0" />
-          <div className="flex-1 text-sm text-warning-600">
+          <AlertTriangle className="h-5 w-5 text-warning-600 dark:text-warning-500 shrink-0" />
+          <div className="flex-1 text-sm text-warning-600 dark:text-warning-500">
             <span className="font-semibold">Stock alert: </span>
             {outCount > 0 && (
               <span>

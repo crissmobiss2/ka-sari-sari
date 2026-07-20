@@ -47,17 +47,17 @@ const AVAILABLE_DRIVERS = [
 const STATUS_CONFIG: Record<RouteStatus, { label: string; badgeClass: string; headerClass: string }> = {
   active: {
     label: "Active",
-    badgeClass: "bg-brand-50 text-brand-600 border border-brand-200",
+    badgeClass: "bg-brand-50 text-brand-700 border border-brand-200 dark:bg-brand-500/20 dark:text-foreground dark:border-brand-500/30",
     headerClass: "border-t-brand-400",
   },
   planned: {
     label: "Planned",
-    badgeClass: "bg-warning-50 text-warning-600 border border-warning-200",
+    badgeClass: "bg-warning-50 text-warning-700 border border-warning-200 dark:bg-warning-500/20 dark:text-foreground dark:border-warning-500/30",
     headerClass: "border-t-warning-400",
   },
   completed: {
     label: "Completed",
-    badgeClass: "bg-success-50 text-success-600 border border-success-200",
+    badgeClass: "bg-success-50 text-success-700 border border-success-200 dark:bg-success-500/20 dark:text-foreground dark:border-success-500/30",
     headerClass: "border-t-success-400",
   },
 };
@@ -593,10 +593,10 @@ export default function AdminRoutesPage() {
       {/* Overview stats */}
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
         {[
-          { icon: Radio, value: activeCount, label: "Active Routes", color: "bg-brand-50 text-brand-500" },
-          { icon: Clock, value: plannedCount, label: "Planned Routes", color: "bg-warning-50 text-warning-500" },
-          { icon: CheckCircle2, value: completedCount, label: "Completed Today", color: "bg-success-50 text-success-500" },
-          { icon: MapPin, value: totalOrders, label: "Orders in Routes", color: "bg-info-50 text-info-500" },
+          { icon: Radio, value: activeCount, label: "Active Routes", color: "bg-brand-50 text-brand-600 dark:bg-brand-500/10 dark:text-foreground" },
+          { icon: Clock, value: plannedCount, label: "Planned Routes", color: "bg-warning-50 text-warning-700 dark:bg-warning-500/10 dark:text-foreground" },
+          { icon: CheckCircle2, value: completedCount, label: "Completed Today", color: "bg-success-50 text-success-600 dark:bg-success-500/10 dark:text-foreground" },
+          { icon: MapPin, value: totalOrders, label: "Orders in Routes", color: "bg-info-50 text-info-600 dark:bg-info-500/10 dark:text-foreground" },
         ].map(({ icon: Icon, value, label, color }) => (
           <Card key={label} className="p-4 flex items-center gap-3">
             <div className={cn("flex h-9 w-9 shrink-0 items-center justify-center rounded-xl", color)}>
@@ -655,7 +655,7 @@ export default function AdminRoutesPage() {
 
                 {/* Warning banner for unassigned */}
                 {unassigned && (
-                  <div className="flex items-center gap-2 rounded-xl border border-warning-200 bg-warning-50 px-3 py-2 text-sm text-warning-700">
+                  <div className="flex items-center gap-2 rounded-xl border border-warning-200 bg-warning-50 dark:bg-surface-800 dark:border-warning-600/40 px-3 py-2 text-sm text-warning-700 dark:text-warning-500">
                     <AlertTriangle className="h-4 w-4 shrink-0" />
                     No driver assigned — route cannot start
                   </div>

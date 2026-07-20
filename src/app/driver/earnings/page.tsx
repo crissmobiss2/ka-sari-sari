@@ -161,7 +161,7 @@ export default function EarningsPage() {
       </div>
 
       {/* Tabs */}
-      <div className="mx-4 flex gap-1 bg-surface-100 rounded-xl p-1">
+      <div className="mx-4 flex gap-1 bg-surface-100 dark:bg-surface-800 rounded-xl p-1">
         {(["overview", "history", "areas"] as Tab[]).map((t) => (
           <button
             key={t}
@@ -207,11 +207,11 @@ export default function EarningsPage() {
             </div>
             <div className="grid grid-cols-3 gap-2">
               {[
-                { label: "Expected",  value: COD_THIS_WEEK.expected,  color: "text-surface-900" },
+                { label: "Expected",  value: COD_THIS_WEEK.expected,  color: "text-foreground" },
                 { label: "Collected", value: COD_THIS_WEEK.collected, color: "text-success-600" },
                 { label: "Pending",   value: COD_THIS_WEEK.pending,   color: "text-warning-600" },
               ].map(({ label, value, color }) => (
-                <div key={label} className="rounded-xl bg-surface-50 border border-border/60 p-2.5 text-center">
+                <div key={label} className="rounded-xl bg-surface-50 dark:bg-surface-800 border border-border/60 p-2.5 text-center">
                   <p className={cn("text-base font-black tabular-nums", color)}>₱{value.toLocaleString()}</p>
                   <p className="text-[10px] text-muted-foreground mt-0.5">{label}</p>
                 </div>
@@ -238,10 +238,10 @@ export default function EarningsPage() {
               Bonuses & Incentives
             </p>
             {BONUSES.map((b, i) => (
-              <div key={i} className={cn("rounded-xl border p-3.5", b.earned ? "border-success-200 bg-success-50" : "border-border bg-card")}>
+              <div key={i} className={cn("rounded-xl border p-3.5", b.earned ? "border-success-200 bg-success-50 dark:bg-card dark:border-success-900/30" : "border-border bg-card")}>
                 <div className="flex items-center justify-between">
                   <div className="flex-1 min-w-0">
-                    <p className={cn("text-xs font-semibold", b.earned ? "text-surface-900" : "text-foreground")}>{b.label}</p>
+                    <p className={cn("text-xs font-semibold", "text-foreground")}>{b.label}</p>
                     {!b.earned && b.progress !== undefined && (
                       <div className="mt-1.5">
                         <div className="flex justify-between text-[10px] mb-1">
@@ -311,7 +311,7 @@ export default function EarningsPage() {
                   <div className="flex items-center gap-2 mt-0.5">
                     <p className="text-[10px] text-muted-foreground">{item.date}</p>
                     {item.cod > 0 && (
-                      <span className="text-[10px] font-medium text-warning-600 bg-warning-50 border border-warning-100 rounded-full px-1.5">
+                      <span className="text-[10px] font-medium text-warning-700 bg-warning-50 dark:bg-warning-500/20 dark:text-foreground dark:border-warning-500/30 border border-warning-100 rounded-full px-1.5">
                         COD ₱{item.cod.toLocaleString()}
                       </span>
                     )}
@@ -365,10 +365,10 @@ export default function EarningsPage() {
             );
           })}
 
-          <div className="rounded-xl border border-brand-100 bg-brand-50 p-4">
+          <div className="rounded-xl border border-brand-100 bg-brand-50 dark:bg-card dark:border-border/50 p-4">
             <div className="flex items-center gap-2 mb-1">
               <Star className="h-4 w-4 text-brand-500" />
-              <p className="text-xs font-semibold text-surface-900">Top Area: Caloocan</p>
+              <p className="text-xs font-semibold text-foreground">Top Area: Caloocan</p>
             </div>
             <p className="text-xs text-muted-foreground leading-relaxed">
               42 deliveries this month — your strongest city. Focus on Caloocan routes to maximize earnings.

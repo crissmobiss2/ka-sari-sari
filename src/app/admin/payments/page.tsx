@@ -732,7 +732,7 @@ export default function PaymentsPage() {
                     reconcile(selected.id);
                     setSelected(null);
                   }}
-                  className="w-full h-10 rounded-xl bg-amber-500 text-white text-sm font-semibold hover:bg-amber-600 transition-colors flex items-center justify-center gap-2"
+                  className="w-full h-10 rounded-xl bg-amber-700 text-white text-sm font-semibold hover:bg-amber-800 transition-colors flex items-center justify-center gap-2"
                 >
                   <CheckCircle2 className="h-4 w-4" />
                   Mark as Reconciled
