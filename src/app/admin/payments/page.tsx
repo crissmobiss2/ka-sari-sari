@@ -448,7 +448,7 @@ export default function PaymentsPage() {
               <p className="text-sm font-semibold text-warning-800">
                 {needsReconcile.length} COD {needsReconcile.length === 1 ? "order needs" : "orders need"} reconciliation
               </p>
-              <p className="text-xs text-amber-700 mt-0.5">
+              <p className="text-xs text-amber-700 dark:text-foreground mt-0.5">
                 {formatPHP(needsReconcile.reduce((s, t) => s + t.amount, 0))} in cash collections awaiting driver confirmation.
               </p>
               <button

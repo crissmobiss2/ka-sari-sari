@@ -532,7 +532,7 @@ export default function POSPage() {
                   <p className="font-bold text-yellow-800">OTC Payment Code</p>
                   <p className="font-mono font-black text-yellow-900 text-lg tracking-widest">{otcCode}</p>
                   <p className="text-yellow-700">Show this code at {payMethod === "palawan" ? "Palawan Express" : payMethod === "cebuana" ? "Cebuana Lhuillier" : "M Lhuillier"}</p>
-                  <p className="text-yellow-600">Amount: {formatPHP(total)}</p>
+                  <p className="text-yellow-700">Amount: {formatPHP(total)}</p>
                 </div>
               )}
 

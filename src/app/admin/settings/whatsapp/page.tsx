@@ -385,8 +385,8 @@ export default function WhatsAppSettingsPage() {
                     </>
                   ) : (
                     <>
-                      <AlertTriangle className="h-3 w-3 text-amber-700" />
-                      <span className="text-xs font-medium text-amber-700">Not Connected</span>
+                      <AlertTriangle className="h-3 w-3 text-amber-700 dark:text-foreground" />
+                      <span className="text-xs font-medium text-amber-700 dark:text-foreground">Not Connected</span>
                     </>
                   )}
                 </div>
