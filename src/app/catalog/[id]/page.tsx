@@ -255,7 +255,7 @@ export default function ProductDetailPage() {
           <div className="flex items-center gap-3 flex-wrap mt-2">
             <StockBadge stock={product.stock} />
             <div className="flex items-center gap-1">
-              <Star className="h-3.5 w-3.5 fill-yellow-400 text-yellow-400" />
+              <Star className="h-3.5 w-3.5 fill-amber-600 text-amber-600" />
               <span className="text-xs font-semibold text-foreground">{avgRating}</span>
               <span className="text-xs text-muted-foreground">({reviews.length} reviews)</span>
             </div>
@@ -434,7 +434,7 @@ export default function ProductDetailPage() {
                 </div>
                 <div className="flex gap-0.5 mb-2">
                   {Array.from({ length: 5 }).map((_, i) => (
-                    <Star key={i} className={cn("h-3.5 w-3.5", i < review.rating ? "fill-yellow-400 text-yellow-400" : "text-surface-300")} />
+                    <Star key={i} className={cn("h-3.5 w-3.5", i < review.rating ? "fill-amber-600 text-amber-600" : "text-surface-300")} />
                   ))}
                 </div>
                 <p className="text-sm text-muted-foreground">{review.comment}</p>
