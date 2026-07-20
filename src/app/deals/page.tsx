@@ -132,7 +132,7 @@ function DealCard({ deal }: { deal: Deal }) {
             <span className="text-4xl select-none" role="img">{display.emoji}</span>
           )}
         </div>
-        <div className="absolute top-2 left-2 rounded-full bg-danger-500 px-2 py-0.5 text-[10px] font-bold text-white">
+        <div className="absolute top-2 left-2 rounded-full bg-danger-700 px-2 py-0.5 text-[10px] font-bold text-white">
           -{deal.discountPct}%
         </div>
         <div className="absolute top-2 right-2 rounded-full bg-card/90 backdrop-blur-sm border border-border px-2 py-0.5 text-[10px] font-medium text-muted-foreground flex items-center gap-1">

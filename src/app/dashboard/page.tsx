@@ -277,7 +277,7 @@ export default function DashboardPage() {
                     ) : (
                       <Package className="h-10 w-10 text-muted-foreground/30" />
                     )}
-                    <span className="absolute top-2 left-2 rounded-full bg-danger-500 text-white text-[10px] font-bold px-1.5 py-0.5 z-10">-{discount}%</span>
+                    <span className="absolute top-2 left-2 rounded-full bg-danger-700 text-white text-[10px] font-bold px-1.5 py-0.5 z-10">-{discount}%</span>
                   </div>
                   <div className="p-2.5">
                     <p className="text-xs font-semibold text-foreground line-clamp-2 leading-tight">{p.name}</p>

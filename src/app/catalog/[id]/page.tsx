@@ -361,7 +361,7 @@ export default function ProductDetailPage() {
                     </span>
                     <span className={cn(
                       "rounded-full px-2 py-0.5 text-[10px] font-bold",
-                      isActive ? "bg-success-600 text-white" : "bg-muted text-muted-foreground",
+                      isActive ? "bg-success-700 text-white" : "bg-muted text-muted-foreground",
                     )}>
                       -{tier.discountPct}%
                     </span>

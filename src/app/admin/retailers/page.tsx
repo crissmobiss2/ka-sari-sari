@@ -76,7 +76,7 @@ export default function AdminRetailersPage() {
     <div className="p-6 space-y-5 max-w-7xl mx-auto">
       {/* Toast */}
       {inviteToast && (
-        <div className="fixed top-5 right-5 z-50 rounded-xl bg-success-600 text-white px-5 py-3 text-sm font-semibold shadow-lg">
+        <div className="fixed top-5 right-5 z-50 rounded-xl bg-success-700 text-white px-5 py-3 text-sm font-semibold shadow-lg">
           {inviteToast}
         </div>
       )}

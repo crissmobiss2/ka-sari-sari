@@ -84,7 +84,7 @@ export function ProductCard({ product, className }: ProductCardProps) {
 
         {/* Savings badge */}
         {hasSavings && (
-          <span className="absolute top-2 right-2 rounded-lg bg-danger-500 px-1.5 py-0.5 text-[10px] font-bold text-white shadow z-10">
+          <span className="absolute top-2 right-2 rounded-lg bg-danger-700 px-1.5 py-0.5 text-[10px] font-bold text-white shadow z-10">
             Save {savingsPct}%
           </span>
         )}
@@ -100,7 +100,7 @@ export function ProductCard({ product, className }: ProductCardProps) {
 
         {/* Low stock badge */}
         {lowStock && !outOfStock && (
-          <span className="absolute top-2 left-2 rounded-lg bg-warning-500 px-2 py-0.5 text-[10px] font-bold text-white shadow z-10">
+          <span className="absolute top-2 left-2 rounded-lg bg-warning-700 px-2 py-0.5 text-[10px] font-bold text-white shadow z-10">
             Low Stock
           </span>
         )}
