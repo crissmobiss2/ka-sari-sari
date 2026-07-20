@@ -402,10 +402,10 @@ export default function AdminAnalyticsPage() {
         {/* Total Revenue */}
         <Card className="p-5">
           <div className="flex items-start justify-between mb-3">
-            <div className="flex h-10 w-10 items-center justify-center rounded-xl text-success-700 bg-success-50 dark:bg-success-500/10 dark:text-success-500">
+            <div className="flex h-10 w-10 items-center justify-center rounded-xl text-success-700 dark:text-foreground bg-success-50 dark:bg-success-500/10">
               <TrendingUp className="h-5 w-5" />
             </div>
-            <span className="inline-flex items-center gap-0.5 text-[11px] font-semibold text-success-700 dark:text-foreground bg-success-50 dark:bg-success-500/20 rounded-full px-2 py-0.5">
+            <span className="inline-flex items-center gap-0.5 text-[11px] font-semibold text-success-700 dark:text-foreground bg-success-50 dark:bg-success-500/10 dark:bg-success-500/20 rounded-full px-2 py-0.5">
               <ArrowUpRight className="h-3 w-3" />12.3%
             </span>
           </div>
@@ -419,10 +419,10 @@ export default function AdminAnalyticsPage() {
         {/* Active Retailers */}
         <Card className="p-5">
           <div className="flex items-start justify-between mb-3">
-            <div className="flex h-10 w-10 items-center justify-center rounded-xl text-brand-600 bg-brand-50 dark:bg-brand-500/10 dark:text-brand-400">
+            <div className="flex h-10 w-10 items-center justify-center rounded-xl text-brand-600 bg-brand-50 dark:bg-brand-500/10">
               <Users className="h-5 w-5" />
             </div>
-            <span className="inline-flex items-center gap-0.5 text-[11px] font-semibold text-success-700 dark:text-foreground bg-success-50 dark:bg-success-500/20 rounded-full px-2 py-0.5">
+            <span className="inline-flex items-center gap-0.5 text-[11px] font-semibold text-success-700 dark:text-foreground bg-success-50 dark:bg-success-500/10 dark:bg-success-500/20 rounded-full px-2 py-0.5">
               <ArrowUpRight className="h-3 w-3" />+{ADMIN_STATS.newRetailersMonth} new
             </span>
           </div>
@@ -456,7 +456,7 @@ export default function AdminAnalyticsPage() {
             <div className="flex h-10 w-10 items-center justify-center rounded-xl text-purple-600 bg-purple-50 dark:bg-purple-500/10 dark:text-purple-400">
               <Package className="h-5 w-5" />
             </div>
-            <span className="inline-flex items-center gap-0.5 text-[11px] font-semibold text-success-700 dark:text-foreground bg-success-50 dark:bg-success-500/20 rounded-full px-2 py-0.5">
+            <span className="inline-flex items-center gap-0.5 text-[11px] font-semibold text-success-700 dark:text-foreground bg-success-50 dark:bg-success-500/10 dark:bg-success-500/20 rounded-full px-2 py-0.5">
               <ArrowUpRight className="h-3 w-3" />4.1%
             </span>
           </div>
@@ -507,7 +507,7 @@ export default function AdminAnalyticsPage() {
               <p className="text-[11px] text-brand-700 dark:text-foreground/70 mt-1">orders / day (Jan 2026)</p>
             </div>
             {/* Today */}
-            <div className="rounded-xl bg-surface-50 border border-border p-4">
+            <div className="rounded-xl bg-surface-50 dark:bg-surface-900 border border-border p-4">
               <p className="text-xs text-muted-foreground font-medium mb-1">Today</p>
               <p className="font-display text-3xl font-bold text-surface-900 leading-none">
                 {ADMIN_STATS.ordersToday}
@@ -515,7 +515,7 @@ export default function AdminAnalyticsPage() {
               <p className="text-[11px] text-muted-foreground mt-1">orders placed today</p>
             </div>
             {/* Sample avg from MOCK_ORDERS */}
-            <div className="rounded-xl bg-surface-50 border border-border p-4">
+            <div className="rounded-xl bg-surface-50 dark:bg-surface-900 border border-border p-4">
               <p className="text-xs text-muted-foreground font-medium mb-1">Recent Sample Avg</p>
               <p className="font-display text-3xl font-bold text-surface-900 leading-none">
                 {salesVelocity.ordersPerDay}
@@ -532,7 +532,7 @@ export default function AdminAnalyticsPage() {
                 {salesVelocity.dayBreakdown.map((d) => (
                   <div
                     key={d.day}
-                    className="flex flex-col items-center gap-1 rounded-lg border border-border bg-surface-50 px-4 py-2.5 min-w-[80px]"
+                    className="flex flex-col items-center gap-1 rounded-lg border border-border bg-surface-50 dark:bg-surface-900 px-4 py-2.5 min-w-[80px]"
                   >
                     <span className="text-[10px] text-muted-foreground">{d.label}</span>
                     <span className="font-display text-xl font-bold text-surface-900">{d.count}</span>
@@ -621,7 +621,7 @@ export default function AdminAnalyticsPage() {
                     <span className="text-sm font-bold text-foreground">{pm.pct}%</span>
                   </div>
                 </div>
-                <div className="h-3 w-full rounded-full bg-surface-100 overflow-hidden">
+                <div className="h-3 w-full rounded-full bg-surface-100 dark:bg-surface-800 overflow-hidden">
                   <div
                     className={cn("h-full rounded-full transition-all", pm.barColor)}
                     style={{ width: `${pm.pct}%` }}
@@ -630,7 +630,7 @@ export default function AdminAnalyticsPage() {
               </div>
             ))}
 
-            <div className="mt-2 rounded-xl bg-surface-50 border border-border p-3 flex items-center justify-between">
+            <div className="mt-2 rounded-xl bg-surface-50 dark:bg-surface-900 border border-border p-3 flex items-center justify-between">
               <span className="text-xs text-muted-foreground">Total Transactions</span>
               <span className="text-sm font-bold text-surface-900">{totalTxns.toLocaleString()}</span>
             </div>
@@ -664,7 +664,7 @@ export default function AdminAnalyticsPage() {
               </thead>
               <tbody>
                 {topRetailers.map((r, i) => (
-                  <tr key={r.name} className="border-b border-border last:border-0 hover:bg-surface-50 transition-colors">
+                  <tr key={r.name} className="border-b border-border last:border-0 hover:bg-surface-50 dark:bg-surface-900 transition-colors">
                     <td className="py-3.5">
                       <span
                         className={cn(
@@ -737,7 +737,7 @@ export default function AdminAnalyticsPage() {
                       <span className="text-sm font-semibold text-foreground shrink-0">{formatPHP(p.revenue)}</span>
                     </div>
                     <div className="flex items-center gap-2">
-                      <div className="flex-1 h-2 rounded-full bg-surface-100 overflow-hidden">
+                      <div className="flex-1 h-2 rounded-full bg-surface-100 dark:bg-surface-800 overflow-hidden">
                         <div
                           className="h-full rounded-full"
                           style={{ width: `${widthPct}%`, background: `rgba(244, 112, 40, ${opacity})` }}
@@ -772,7 +772,7 @@ export default function AdminAnalyticsPage() {
             return (
               <div key={cat.name} className="flex items-center gap-4">
                 <span className="text-sm text-muted-foreground w-36 shrink-0 truncate">{cat.name}</span>
-                <div className="flex-1 h-5 rounded-full bg-surface-100 overflow-hidden">
+                <div className="flex-1 h-5 rounded-full bg-surface-100 dark:bg-surface-800 overflow-hidden">
                   <div
                     className="h-full rounded-full"
                     style={{

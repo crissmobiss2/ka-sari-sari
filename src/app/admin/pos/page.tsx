@@ -185,7 +185,7 @@ export default function POSPage() {
 
   if (done) {
     return (
-      <div className="flex items-center justify-center min-h-screen bg-success-50 p-6">
+      <div className="flex items-center justify-center min-h-screen bg-success-50 dark:bg-success-500/10 p-6">
         <div className="bg-card rounded-3xl shadow-card-md p-8 w-full max-w-md space-y-6">
           <div className="text-center space-y-3">
             <div className="h-20 w-20 rounded-full bg-success-100 flex items-center justify-center mx-auto">
@@ -195,7 +195,7 @@ export default function POSPage() {
             <p className="text-muted-foreground text-sm font-mono">{orderRef}</p>
           </div>
 
-          <div className="rounded-2xl border border-border bg-surface-50 p-4 space-y-2">
+          <div className="rounded-2xl border border-border bg-surface-50 dark:bg-surface-900 p-4 space-y-2">
             <div className="flex justify-between text-sm">
               <span className="text-muted-foreground">Customer</span>
               <span className="font-medium text-surface-900 truncate ml-4 text-right">{customer}</span>
@@ -219,7 +219,7 @@ export default function POSPage() {
               <span className="text-brand-500">{formatPHP(total)}</span>
             </div>
             {payMethod === "cash" && change > 0 && (
-              <div className="flex justify-between text-sm font-semibold text-success-700">
+              <div className="flex justify-between text-sm font-semibold text-success-700 dark:text-foreground">
                 <span>Change</span>
                 <span>{formatPHP(change)}</span>
               </div>
@@ -246,7 +246,7 @@ export default function POSPage() {
                   }}
                   className={cn(
                     "flex flex-col items-center gap-1 rounded-xl border py-3 text-xs font-medium transition-colors",
-                    receiptMode === mode ? "border-brand-500 bg-brand-50 text-brand-600" : "border-border bg-card text-muted-foreground hover:bg-muted"
+                    receiptMode === mode ? "border-brand-500 bg-brand-50 dark:bg-brand-500/10 text-brand-600" : "border-border bg-card text-muted-foreground hover:bg-muted"
                   )}
                 >
                   {icon}
@@ -304,7 +304,7 @@ export default function POSPage() {
                 className="h-10 w-full rounded-xl border border-input bg-card pl-9 pr-12 text-sm focus:outline-none focus:ring-2 focus:ring-brand-500" />
               <button
                 onClick={() => setShowScanner(true)}
-                className="absolute right-2 top-1/2 -translate-y-1/2 flex h-7 w-7 items-center justify-center rounded-lg bg-surface-100 dark:bg-surface-800 text-muted-foreground hover:text-brand-500 hover:bg-brand-50 transition-colors"
+                className="absolute right-2 top-1/2 -translate-y-1/2 flex h-7 w-7 items-center justify-center rounded-lg bg-surface-100 dark:bg-surface-800 text-muted-foreground hover:text-brand-500 hover:bg-brand-50 dark:bg-brand-500/10 transition-colors"
                 title="Scan barcode"
               >
                 <Camera className="h-4 w-4" />
@@ -334,7 +334,7 @@ export default function POSPage() {
                     <div className={cn("h-20 flex items-center justify-center relative bg-gradient-to-br", d.gradient)}>
                       <span className="text-4xl">{d.emoji}</span>
                       {inCart && <span className="absolute top-1.5 right-1.5 h-6 w-6 rounded-full bg-brand-700 text-white text-[11px] font-bold flex items-center justify-center shadow">{inCart.quantity}</span>}
-                      {outOfStock && <div className="absolute inset-0 bg-white/70 flex items-center justify-center"><span className="text-[10px] font-black text-danger-700 dark:text-danger-500 tracking-wide">OUT</span></div>}
+                      {outOfStock && <div className="absolute inset-0 bg-white/70 flex items-center justify-center"><span className="text-[10px] font-black text-danger-700 dark:text-foreground tracking-wide">OUT</span></div>}
                     </div>
                     <div className="p-2.5">
                       <p className="text-[11px] font-semibold text-foreground line-clamp-2 leading-tight min-h-[28px]">{product.name}</p>
@@ -392,7 +392,7 @@ export default function POSPage() {
                       <button onClick={() => qty(product.id, 1)} className="h-6 w-6 rounded-lg border border-border flex items-center justify-center text-muted-foreground hover:bg-muted active:scale-90 transition-all">
                         <Plus className="h-3 w-3" />
                       </button>
-                      <button onClick={() => setCart(c => c.filter(i => i.product.id !== product.id))} className="h-6 w-6 rounded-lg flex items-center justify-center text-danger-400 hover:bg-danger-50 ml-0.5 active:scale-90 transition-all">
+                      <button onClick={() => setCart(c => c.filter(i => i.product.id !== product.id))} className="h-6 w-6 rounded-lg flex items-center justify-center text-danger-400 hover:bg-danger-50 dark:bg-danger-500/10 ml-0.5 active:scale-90 transition-all">
                         <X className="h-3 w-3" />
                       </button>
                     </div>
@@ -413,11 +413,11 @@ export default function POSPage() {
                     <input type="text" placeholder="Promo code" value={promoInput} onChange={e => setPromoInput(e.target.value.toUpperCase())}
                       className="h-8 w-full rounded-xl border border-input bg-background pl-7 pr-3 text-xs focus:outline-none focus:ring-2 focus:ring-brand-500" />
                   </div>
-                  <button onClick={applyPromo} className="h-8 px-3 rounded-xl bg-brand-50 border border-brand-200 text-brand-600 text-xs font-semibold hover:bg-brand-100 active:scale-95 transition-all">Apply</button>
+                  <button onClick={applyPromo} className="h-8 px-3 rounded-xl bg-brand-50 dark:bg-brand-500/10 border border-brand-200 text-brand-600 text-xs font-semibold hover:bg-brand-100 active:scale-95 transition-all">Apply</button>
                 </div>
               ) : (
                 <div className="flex items-center justify-between text-xs">
-                  <span className="text-success-700 font-medium">âœ“ Promo applied: {promoInput}</span>
+                  <span className="text-success-700 dark:text-foreground font-medium">âœ“ Promo applied: {promoInput}</span>
                   <button onClick={() => { setPromoApplied(false); setPromoInput(""); setDiscount(0); }} className="text-muted-foreground hover:text-foreground">Remove</button>
                 </div>
               )}
@@ -425,7 +425,7 @@ export default function POSPage() {
                 <div className="flex justify-between text-xs text-muted-foreground">
                   <span>Subtotal ({cartCount})</span><span>{formatPHP(subtotal)}</span>
                 </div>
-                {discount > 0 && <div className="flex justify-between text-xs text-success-700"><span>Discount</span><span>-{formatPHP(discount)}</span></div>}
+                {discount > 0 && <div className="flex justify-between text-xs text-success-700 dark:text-foreground"><span>Discount</span><span>-{formatPHP(discount)}</span></div>}
                 <div className="flex justify-between text-sm font-bold text-foreground border-t border-border pt-1.5">
                   <span>Total</span><span className="text-brand-500 text-base">{formatPHP(total)}</span>
                 </div>
@@ -453,7 +453,7 @@ export default function POSPage() {
                     {methods.map(pm => (
                       <button key={pm.id} onClick={() => setPayMethod(pm.id)}
                         className={cn("rounded-xl border py-2 px-1 text-center transition-all active:scale-95",
-                          payMethod === pm.id ? "border-brand-500 bg-brand-50 shadow-sm" : "border-border bg-surface-50 hover:bg-muted"
+                          payMethod === pm.id ? "border-brand-500 bg-brand-50 dark:bg-brand-500/10 shadow-sm" : "border-border bg-surface-50 dark:bg-surface-900 hover:bg-muted"
                         )}>
                         <div className="text-sm">{pm.icon}</div>
                         <p className="text-[9px] font-semibold text-surface-900 mt-0.5 leading-tight">{pm.label}</p>
@@ -474,21 +474,21 @@ export default function POSPage() {
                   <div className="grid grid-cols-4 gap-1">
                     {[100, 200, 500, 1000].map(a => (
                       <button key={a} onClick={() => setCashTendered(String(a))}
-                        className="rounded-xl border border-border bg-surface-50 py-2 text-xs font-bold text-surface-900 hover:bg-muted active:scale-95 transition-all">
+                        className="rounded-xl border border-border bg-surface-50 dark:bg-surface-900 py-2 text-xs font-bold text-surface-900 hover:bg-muted active:scale-95 transition-all">
                         â‚±{a >= 1000 ? "1k" : a}
                       </button>
                     ))}
                   </div>
                   {cash >= total && total > 0 && (
-                    <div className="flex justify-between rounded-xl bg-success-50 border border-success-200 px-3 py-2">
-                      <span className="text-sm text-success-700 font-medium">Change</span>
-                      <span className="text-sm font-bold text-success-700">{formatPHP(change)}</span>
+                    <div className="flex justify-between rounded-xl bg-success-50 dark:bg-success-500/10 border border-success-200 px-3 py-2">
+                      <span className="text-sm text-success-700 dark:text-foreground font-medium">Change</span>
+                      <span className="text-sm font-bold text-success-700 dark:text-foreground">{formatPHP(change)}</span>
                     </div>
                   )}
                   {cashTendered && cash < total && (
-                    <div className="flex items-center gap-2 rounded-xl bg-danger-50 border border-danger-200 px-3 py-2">
+                    <div className="flex items-center gap-2 rounded-xl bg-danger-50 dark:bg-danger-500/10 border border-danger-200 px-3 py-2">
                       <AlertCircle className="h-4 w-4 text-danger-500 shrink-0" />
-                      <span className="text-xs text-danger-700 dark:text-danger-500 font-medium">Short by {formatPHP(total - cash)}</span>
+                      <span className="text-xs text-danger-700 dark:text-foreground font-medium">Short by {formatPHP(total - cash)}</span>
                     </div>
                   )}
                 </div>
@@ -496,7 +496,7 @@ export default function POSPage() {
 
               {["gcash", "maya", "shopeepay", "qrph"].includes(payMethod) && (
                 <div className="space-y-2 pt-1">
-                  <div className="rounded-xl bg-surface-50 border border-border p-3 text-center">
+                  <div className="rounded-xl bg-surface-50 dark:bg-surface-900 border border-border p-3 text-center">
                     <div className="h-24 w-24 mx-auto bg-gradient-to-br from-gray-800 to-gray-900 rounded-xl flex items-center justify-center mb-2 shadow">
                       <QrCode className="h-14 w-14 text-white" strokeWidth={1.2} />
                     </div>
@@ -537,7 +537,7 @@ export default function POSPage() {
               )}
 
               {payMethod === "card" && (
-                <div className="rounded-xl bg-surface-50 border border-border p-4 text-center">
+                <div className="rounded-xl bg-surface-50 dark:bg-surface-900 border border-border p-4 text-center">
                   <p className="text-2xl mb-2">ðŸ’³</p>
                   <p className="text-sm font-semibold text-surface-900">Swipe or Tap Card</p>
                   <p className="text-xs text-muted-foreground mt-1">Visa Â· Mastercard Â· JCB Â· UnionPay</p>
@@ -562,7 +562,7 @@ export default function POSPage() {
               )}
 
               {payMethod === "cod" && (
-                <div className="rounded-xl bg-brand-50 border border-brand-200 p-3 text-xs space-y-1 pt-1">
+                <div className="rounded-xl bg-brand-50 dark:bg-brand-500/10 border border-brand-200 p-3 text-xs space-y-1 pt-1">
                   <p className="font-bold text-brand-700">Cash on Delivery</p>
                   <p className="text-brand-600">Driver will collect {formatPHP(total)} upon delivery.</p>
                 </div>

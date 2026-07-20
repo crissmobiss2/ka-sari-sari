@@ -117,7 +117,7 @@ function ProcessingContent() {
           <span key={i} className={cn(
             "text-xs transition-colors duration-300",
             i === step ? "text-brand-500 font-semibold" :
-            i < step ? "text-success-700 font-medium" :
+            i < step ? "text-success-700 dark:text-foreground font-medium" :
             "text-muted-foreground/50"
           )}>
             {s.label}
@@ -131,7 +131,7 @@ function ProcessingContent() {
           <span>{methodLabel}</span>
         </div>
         {orderId && (
-          <p className="text-xs text-muted-foreground font-mono bg-surface-100 rounded-lg px-3 py-1.5">
+          <p className="text-xs text-muted-foreground font-mono bg-surface-100 dark:bg-surface-800 rounded-lg px-3 py-1.5">
             Ref: {orderId}
           </p>
         )}

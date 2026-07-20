@@ -98,7 +98,7 @@ export default function LoginPage() {
             />
 
             {error && (
-              <div className="rounded-xl bg-danger-50 border border-danger-500/25 px-4 py-3 text-sm text-danger-700 dark:text-danger-500">
+              <div className="rounded-xl bg-danger-50 dark:bg-danger-500/10 border border-danger-500/25 px-4 py-3 text-sm text-danger-700 dark:text-foreground">
                 {error}
               </div>
             )}
@@ -125,7 +125,7 @@ export default function LoginPage() {
 
           {/* Demo hint — development only */}
           {process.env.NEXT_PUBLIC_SHOW_DEMO === "true" && (
-          <div className="mt-8 rounded-xl bg-surface-100 border border-border p-4 text-xs text-muted-foreground space-y-1">
+          <div className="mt-8 rounded-xl bg-surface-100 dark:bg-surface-800 border border-border p-4 text-xs text-muted-foreground space-y-1">
             <p className="font-medium text-surface-900 mb-1.5">Demo accounts</p>
             <p><span className="font-mono text-surface-900">09171234567</span> + <span className="font-mono text-surface-900">admin</span> → Admin</p>
             <p><span className="font-mono text-surface-900">09172345678</span> + <span className="font-mono text-surface-900">warehouse</span> → Warehouse</p>

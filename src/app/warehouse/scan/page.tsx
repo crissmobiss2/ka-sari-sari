@@ -125,7 +125,7 @@ export default function ScanPage() {
       {/* Camera scan button */}
       <button
         onClick={() => setShowScanner(true)}
-        className="w-full max-w-sm mx-auto flex flex-col items-center justify-center gap-3 rounded-2xl border-2 border-dashed border-brand-300 bg-brand-50/50 dark:bg-brand-500/5 py-10 hover:bg-brand-50 dark:hover:bg-brand-500/10 transition-colors group"
+        className="w-full max-w-sm mx-auto flex flex-col items-center justify-center gap-3 rounded-2xl border-2 border-dashed border-brand-300 bg-brand-50/50 dark:bg-brand-500/5 py-10 hover:bg-brand-50 dark:bg-brand-500/10 dark:hover:bg-brand-500/10 transition-colors group"
       >
         <div className="h-16 w-16 rounded-2xl bg-brand-500 flex items-center justify-center shadow-lg group-hover:scale-105 transition-transform">
           <Camera className="h-8 w-8 text-white" />
@@ -202,8 +202,8 @@ export default function ScanPage() {
                   (foundProduct.stock ?? 0) === 0
                     ? "text-danger-500"
                     : (foundProduct.stock ?? 0) <= 20
-                    ? "text-warning-700"
-                    : "text-success-700"
+                    ? "text-warning-700 dark:text-foreground"
+                    : "text-success-700 dark:text-foreground"
                 )}
               >
                 {foundProduct.stock ?? 0}
@@ -245,8 +245,8 @@ export default function ScanPage() {
             {/* Success state */}
             {logged && (
               <div className="flex flex-col items-center gap-2 py-2 text-center">
-                <CheckCircle2 className="h-10 w-10 text-success-700" />
-                <p className="font-semibold text-success-700">Receipt logged!</p>
+                <CheckCircle2 className="h-10 w-10 text-success-700 dark:text-foreground" />
+                <p className="font-semibold text-success-700 dark:text-foreground">Receipt logged!</p>
                 <p className="text-sm text-muted-foreground">
                   {quantity} {foundProduct.unit}{quantity !== 1 ? "s" : ""} of {foundProduct.name} recorded.
                 </p>

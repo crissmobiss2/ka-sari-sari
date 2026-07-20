@@ -570,7 +570,7 @@ export default function DeliveryDetailPage() {
   if (failed) {
     return (
       <div className="px-4 py-8 flex flex-col items-center gap-6 min-h-[60vh] justify-center">
-        <div className="w-20 h-20 rounded-full bg-danger-50 border-2 border-danger-500 flex items-center justify-center">
+        <div className="w-20 h-20 rounded-full bg-danger-50 dark:bg-danger-500/10 border-2 border-danger-500 flex items-center justify-center">
           <svg className="w-10 h-10 text-danger-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round">
             <circle cx="12" cy="12" r="10" />
             <line x1="15" y1="9" x2="9" y2="15" />
@@ -581,8 +581,8 @@ export default function DeliveryDetailPage() {
           <h2 className="font-display text-2xl font-bold text-foreground mb-1">Delivery Failed</h2>
           <p className="text-muted-foreground text-sm">{order.orderNumber}</p>
         </div>
-        <div className="w-full bg-danger-50 rounded-2xl p-4 border border-danger-500/20 text-center">
-          <p className="text-sm text-danger-700 font-medium">
+        <div className="w-full bg-danger-50 dark:bg-danger-500/10 rounded-2xl p-4 border border-danger-500/20 text-center">
+          <p className="text-sm text-danger-700 dark:text-foreground font-medium">
             This delivery has been marked as failed. The dispatcher will be notified to arrange a re-delivery.
           </p>
         </div>
@@ -598,17 +598,17 @@ export default function DeliveryDetailPage() {
   if (delivered) {
     return (
       <div className="px-4 py-8 flex flex-col items-center gap-6 min-h-[60vh] justify-center">
-        <div className="w-20 h-20 rounded-full bg-success-50 border-2 border-success-500 flex items-center justify-center">
-          <CheckCircleIcon className="w-10 h-10 text-success-700" />
+        <div className="w-20 h-20 rounded-full bg-success-50 dark:bg-success-500/10 border-2 border-success-500 flex items-center justify-center">
+          <CheckCircleIcon className="w-10 h-10 text-success-700 dark:text-foreground" />
         </div>
         <div className="text-center">
           <h2 className="font-display text-2xl font-bold text-foreground mb-1">Delivered!</h2>
           <p className="text-muted-foreground text-sm">{order.orderNumber}</p>
           <p className="text-muted-foreground text-sm">{deliveredAt}</p>
         </div>
-        <div className="w-full bg-success-50 rounded-2xl p-4 border border-success-500/20 text-center flex flex-col gap-2">
-          <p className="text-sm text-success-700 font-medium">Successfully delivered to {customerName}</p>
-          <div className="flex items-center justify-center gap-1.5 text-xs text-success-700">
+        <div className="w-full bg-success-50 dark:bg-success-500/10 rounded-2xl p-4 border border-success-500/20 text-center flex flex-col gap-2">
+          <p className="text-sm text-success-700 dark:text-foreground font-medium">Successfully delivered to {customerName}</p>
+          <div className="flex items-center justify-center gap-1.5 text-xs text-success-700 dark:text-foreground">
             <svg className="w-3.5 h-3.5 flex-shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2.5} strokeLinecap="round" strokeLinejoin="round">
               <polyline points="20 6 9 17 4 12" />
             </svg>
@@ -641,19 +641,19 @@ export default function DeliveryDetailPage() {
 
         {/* COD prominent banner */}
         {isCOD && (
-          <div className="rounded-2xl bg-warning-50 border-2 border-warning-400 p-4 flex items-center gap-3">
+          <div className="rounded-2xl bg-warning-50 dark:bg-warning-500/10 border-2 border-warning-400 p-4 flex items-center gap-3">
             <div className="w-10 h-10 rounded-full bg-warning-100 flex items-center justify-center flex-shrink-0">
-              <svg className="w-5 h-5 text-warning-700" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round">
+              <svg className="w-5 h-5 text-warning-700 dark:text-foreground" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round">
                 <rect x="2" y="5" width="20" height="14" rx="2" />
                 <line x1="2" y1="10" x2="22" y2="10" />
               </svg>
             </div>
             <div className="min-w-0 flex-1">
-              <p className="text-xs font-semibold text-warning-700 uppercase tracking-wider">COD — Collect from customer</p>
-              <p className="font-display text-2xl font-bold text-warning-700 tabular-nums leading-tight">
+              <p className="text-xs font-semibold text-warning-700 dark:text-foreground uppercase tracking-wider">COD — Collect from customer</p>
+              <p className="font-display text-2xl font-bold text-warning-700 dark:text-foreground tabular-nums leading-tight">
                 {formatPHP(order.total)}
               </p>
-              <p className="text-xs text-warning-700 mt-0.5">in cash</p>
+              <p className="text-xs text-warning-700 dark:text-foreground mt-0.5">in cash</p>
             </div>
           </div>
         )}
@@ -675,7 +675,7 @@ export default function DeliveryDetailPage() {
             {customerPhone ? (
               <a
                 href={`tel:${customerPhone}`}
-                className="flex flex-col items-center gap-1.5 px-2 py-3 rounded-xl bg-brand-50 border border-brand-200 text-brand-700 active:bg-brand-100 transition-colors"
+                className="flex flex-col items-center gap-1.5 px-2 py-3 rounded-xl bg-brand-50 dark:bg-brand-500/10 border border-brand-200 dark:border-brand-500/30 text-brand-700 dark:text-foreground active:bg-brand-100 transition-colors"
               >
                 <PhoneIcon className="w-5 h-5" />
                 <span className="text-xs font-semibold">Call</span>
@@ -730,19 +730,19 @@ export default function DeliveryDetailPage() {
                     {PRODUCT_NAME_MAP[item.productId] ?? item.productId}
                   </p>
                   <div className="flex items-center gap-2 mt-0.5">
-                    <span className="text-xs font-bold text-brand-700 dark:text-brand-500 tabular-nums">
+                    <span className="text-xs font-bold text-brand-700 tabular-nums">
                       × {item.quantity}
                     </span>
                     <span className="text-xs text-muted-foreground">
                       @ {formatPHP(item.unitPrice)} each
                     </span>
                     {item.status === "unavailable" && (
-                      <span className="inline-block px-1.5 py-0.5 rounded text-[10px] font-bold bg-danger-100 text-danger-700 dark:text-danger-500">
+                      <span className="inline-block px-1.5 py-0.5 rounded text-[10px] font-bold bg-danger-100 text-danger-700 dark:text-foreground">
                         Unavailable
                       </span>
                     )}
                     {item.status === "partial" && (
-                      <span className="inline-block px-1.5 py-0.5 rounded text-[10px] font-bold bg-warning-100 text-warning-700">
+                      <span className="inline-block px-1.5 py-0.5 rounded text-[10px] font-bold bg-warning-100 text-warning-700 dark:text-foreground">
                         Partial ({item.fulfilledQty}/{item.quantity})
                       </span>
                     )}
@@ -787,8 +787,8 @@ export default function DeliveryDetailPage() {
             className={cn(
               "w-full flex items-center gap-3 px-4 py-4 rounded-2xl border-2 transition-all font-semibold text-sm",
               cashCollected
-                ? "border-success-500 bg-success-50 text-success-700"
-                : "border-warning-400 bg-warning-50 text-warning-700"
+                ? "border-success-500 bg-success-50 dark:bg-success-500/10 text-success-700 dark:text-foreground"
+                : "border-warning-400 bg-warning-50 dark:bg-warning-500/10 text-warning-700 dark:text-foreground"
             )}
           >
             <div className={cn(
@@ -817,12 +817,12 @@ export default function DeliveryDetailPage() {
               <Badge variant="info">{order.paymentMethod.toUpperCase()}</Badge>
             </div>
             <div className="flex items-center gap-2">
-              <div className="w-8 h-8 rounded-full bg-success-50 flex items-center justify-center">
-                <svg className="w-4 h-4 text-success-700" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round">
+              <div className="w-8 h-8 rounded-full bg-success-50 dark:bg-success-500/10 flex items-center justify-center">
+                <svg className="w-4 h-4 text-success-700 dark:text-foreground" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round">
                   <polyline points="20 6 9 17 4 12" />
                 </svg>
               </div>
-              <p className="text-sm text-success-700 font-medium">
+              <p className="text-sm text-success-700 dark:text-foreground font-medium">
                 Payment already received — {order.paymentMethod.toUpperCase()}
               </p>
             </div>
@@ -831,8 +831,8 @@ export default function DeliveryDetailPage() {
 
         {/* Notes from customer */}
         {order.notes && (
-          <div className="px-4 py-3 rounded-xl bg-warning-50 border border-warning-500/25">
-            <p className="text-xs font-semibold text-warning-700 uppercase tracking-wider mb-1">Note from customer</p>
+          <div className="px-4 py-3 rounded-xl bg-warning-50 dark:bg-warning-500/10 border border-warning-500/25">
+            <p className="text-xs font-semibold text-warning-700 dark:text-foreground uppercase tracking-wider mb-1">Note from customer</p>
             <p className="text-sm text-foreground">{order.notes}</p>
           </div>
         )}
@@ -932,9 +932,9 @@ export default function DeliveryDetailPage() {
 
           {/* Digital Signature */}
           {signatureData ? (
-            <div className="mt-3 rounded-xl border border-success-300 bg-success-50 overflow-hidden">
+            <div className="mt-3 rounded-xl border border-success-300 bg-success-50 dark:bg-success-500/10 overflow-hidden">
               <div className="flex items-center justify-between px-3 py-2 border-b border-success-200">
-                <span className="text-xs font-semibold text-success-700 flex items-center gap-1.5">
+                <span className="text-xs font-semibold text-success-700 dark:text-foreground flex items-center gap-1.5">
                   <CheckCircleIcon className="w-3.5 h-3.5" /> Signature captured
                 </span>
                 <button onClick={() => setSignatureData(null)} className="text-xs text-muted-foreground hover:text-foreground">Redo</button>
@@ -986,7 +986,7 @@ export default function DeliveryDetailPage() {
           <button
             type="button"
             onClick={() => setShowFailPicker(true)}
-            className="w-full h-13 py-3.5 rounded-2xl border-2 border-danger-300 text-danger-700 dark:text-danger-500 bg-background hover:bg-danger-50 active:bg-danger-100 font-semibold text-sm transition-colors"
+            className="w-full h-13 py-3.5 rounded-2xl border-2 border-danger-300 text-danger-700 dark:text-foreground bg-background hover:bg-danger-50 dark:bg-danger-500/10 active:bg-danger-100 font-semibold text-sm transition-colors"
           >
             Report Failed Delivery
           </button>
@@ -1004,15 +1004,15 @@ export default function DeliveryDetailPage() {
             onClick={(e) => e.stopPropagation()}
           >
             <div className="flex flex-col items-center gap-2 text-center">
-              <div className="w-12 h-12 rounded-full bg-success-50 border-2 border-success-500 flex items-center justify-center">
-                <CheckCircleIcon className="w-6 h-6 text-success-700" />
+              <div className="w-12 h-12 rounded-full bg-success-50 dark:bg-success-500/10 border-2 border-success-500 flex items-center justify-center">
+                <CheckCircleIcon className="w-6 h-6 text-success-700 dark:text-foreground" />
               </div>
               <h3 className="font-display text-base font-bold text-foreground">Confirm Delivery</h3>
               <p className="text-sm text-muted-foreground">
                 Mark <span className="font-semibold text-foreground">{order.orderNumber}</span> as delivered to {customerName}?
               </p>
               {isCOD && cashCollected && (
-                <div className="px-3 py-2 rounded-lg bg-success-50 border border-success-200 text-xs text-success-700 font-medium">
+                <div className="px-3 py-2 rounded-lg bg-success-50 dark:bg-success-500/10 border border-success-200 text-xs text-success-700 dark:text-foreground font-medium">
                   Cash of {formatPHP(order.total)} confirmed collected
                 </div>
               )}
@@ -1045,7 +1045,7 @@ export default function DeliveryDetailPage() {
         >
           <div className="bg-card rounded-t-2xl p-6 space-y-4" onClick={(e) => e.stopPropagation()}>
             <div className="flex flex-col items-center gap-1 text-center mb-1">
-              <div className="w-10 h-10 rounded-full bg-danger-50 border-2 border-danger-400 flex items-center justify-center mb-1">
+              <div className="w-10 h-10 rounded-full bg-danger-50 dark:bg-danger-500/10 border-2 border-danger-400 flex items-center justify-center mb-1">
                 <svg className="w-5 h-5 text-danger-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2.5} strokeLinecap="round" strokeLinejoin="round">
                   <circle cx="12" cy="12" r="10" />
                   <line x1="15" y1="9" x2="9" y2="15" />
@@ -1063,7 +1063,7 @@ export default function DeliveryDetailPage() {
                   className={cn(
                     "w-full flex items-center gap-3 rounded-xl border px-4 py-3 text-sm font-medium text-left transition-colors",
                     selectedFailReason === reason
-                      ? "border-danger-400 bg-danger-50 text-danger-700"
+                      ? "border-danger-400 bg-danger-50 dark:bg-danger-500/10 text-danger-700 dark:text-foreground"
                       : "border-border bg-background text-foreground"
                   )}
                 >

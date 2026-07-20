@@ -169,7 +169,7 @@ export default function RegisterPage() {
                 leftIcon={<Phone className="h-4 w-4" />}
               />
               {error && (
-                <p className="text-sm text-danger-700 dark:text-danger-500">{error}</p>
+                <p className="text-sm text-danger-700 dark:text-foreground">{error}</p>
               )}
               <Button
                 size="lg"
@@ -203,7 +203,7 @@ export default function RegisterPage() {
                 leftIcon={<CheckCircle2 className="h-4 w-4" />}
               />
               {error && (
-                <p className="text-sm text-danger-700 dark:text-danger-500">{error}</p>
+                <p className="text-sm text-danger-700 dark:text-foreground">{error}</p>
               )}
               <Button
                 size="lg"
@@ -266,7 +266,7 @@ export default function RegisterPage() {
                 <div className="flex items-center justify-between">
                   <label className="block text-xs font-semibold text-foreground">City / Municipality</label>
                   {covered && form.city && (
-                    <span className="flex items-center gap-1 text-[11px] font-semibold text-success-700">
+                    <span className="flex items-center gap-1 text-[11px] font-semibold text-success-700 dark:text-foreground">
                       <CheckCircle2 className="h-3 w-3" /> Delivery available
                     </span>
                   )}
@@ -300,7 +300,7 @@ export default function RegisterPage() {
                               <p className="font-medium text-foreground">{c.city}</p>
                               <p className="text-[11px] text-muted-foreground">{c.province}</p>
                             </div>
-                            <span className="text-[10px] font-semibold text-brand-500 bg-brand-50 border border-brand-100 rounded-full px-1.5 py-0.5 shrink-0">
+                            <span className="text-[10px] font-semibold text-brand-500 bg-brand-50 dark:bg-brand-500/10 border border-brand-100 rounded-full px-1.5 py-0.5 shrink-0">
                               {c.hub}
                             </span>
                           </button>
@@ -340,7 +340,7 @@ export default function RegisterPage() {
                     <p className="font-display text-3xl font-bold text-brand-500">FREE</p>
                     <p className="text-sm text-muted-foreground">First year on us</p>
                   </div>
-                  <span className="rounded-full bg-success-50 border border-success-500/25 px-2.5 py-1 text-xs font-medium text-success-700">
+                  <span className="rounded-full bg-success-50 dark:bg-success-500/10 border border-success-500/25 px-2.5 py-1 text-xs font-medium text-success-700 dark:text-foreground">
                     No credit card
                   </span>
                 </div>
@@ -354,7 +354,7 @@ export default function RegisterPage() {
               </div>
 
               {error && (
-                <div className="rounded-xl bg-danger-50 border border-danger-500/25 px-4 py-3 text-sm text-danger-700 dark:text-danger-500">
+                <div className="rounded-xl bg-danger-50 dark:bg-danger-500/10 border border-danger-500/25 px-4 py-3 text-sm text-danger-700 dark:text-foreground">
                   {error}
                 </div>
               )}

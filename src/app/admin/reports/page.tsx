@@ -26,9 +26,9 @@ const TOP_CATEGORIES = [
 ];
 
 const KEY_METRICS = [
-  { label: "Order Fulfillment Rate",  value: "96.8%", icon: CheckCircle2, color: "text-success-700 bg-success-50" },
-  { label: "Avg. Delivery Time",      value: "1.8 days", icon: Clock,      color: "text-info-600 bg-info-50" },
-  { label: "Customer Retention",      value: "87%",   icon: RefreshCw,   color: "text-brand-600 bg-brand-50" },
+  { label: "Order Fulfillment Rate",  value: "96.8%", icon: CheckCircle2, color: "text-success-700 dark:text-foreground bg-success-50 dark:bg-success-500/10" },
+  { label: "Avg. Delivery Time",      value: "1.8 days", icon: Clock,      color: "text-info-600 bg-info-50 dark:bg-info-500/10" },
+  { label: "Customer Retention",      value: "87%",   icon: RefreshCw,   color: "text-brand-600 bg-brand-50 dark:bg-brand-500/10" },
   { label: "New Retailer Conversion", value: "68%",   icon: UserPlus,    color: "text-purple-600 bg-purple-50" },
   { label: "Payment Collection Rate", value: "98.2%", icon: Wallet,      color: "text-emerald-600 bg-emerald-50" },
 ];
@@ -42,7 +42,7 @@ const TOP_RETAILERS = [
 ];
 
 const STATUS_COLORS: Record<string, string> = {
-  Active:   "bg-success-50 text-success-700",
+  Active:   "bg-success-50 dark:bg-success-500/10 text-success-700 dark:text-foreground",
   Inactive: "bg-surface-100 dark:bg-surface-800 text-muted-foreground",
 };
 
@@ -203,7 +203,7 @@ function StatusPill({ status }: { status: string }) {
       ? "bg-red-50 text-red-700"
       : status === "Low Stock"
       ? "bg-yellow-50 text-yellow-700"
-      : "bg-success-50 text-success-700";
+      : "bg-success-50 dark:bg-success-500/10 text-success-700 dark:text-foreground";
   return (
     <span className={`inline-block rounded-full px-2 py-0.5 text-[11px] font-medium ${cls}`}>
       {status}
@@ -220,7 +220,7 @@ function OrderStatusPill({ status }: { status: string }) {
   };
   const cls =
     status === "delivered"
-      ? "bg-success-50 text-success-700"
+      ? "bg-success-50 dark:bg-success-500/10 text-success-700 dark:text-foreground"
       : status === "failed_delivery" || status === "cancelled"
       ? "bg-red-50 text-red-700"
       : status === "out_for_delivery"
@@ -306,7 +306,7 @@ function GenerateReportSection() {
             {/* Date range selector */}
             <div className="relative">
               <select
-                className="appearance-none rounded-lg border border-border bg-surface-50 pl-3 pr-8 py-2 text-sm font-medium text-surface-900 focus:outline-none focus:ring-2 focus:ring-brand-500 cursor-pointer"
+                className="appearance-none rounded-lg border border-border bg-surface-50 dark:bg-surface-900 pl-3 pr-8 py-2 text-sm font-medium text-surface-900 focus:outline-none focus:ring-2 focus:ring-brand-500 cursor-pointer"
                 value={dateRange}
                 onChange={(e) => setDateRange(e.target.value as DateRange)}
               >
@@ -338,8 +338,8 @@ function GenerateReportSection() {
                 onClick={() => setReportType(selected ? null : opt.value)}
                 className={`flex items-center gap-2 rounded-xl border px-4 py-3 text-sm font-medium transition-all text-left
                   ${selected
-                    ? "border-brand-500 bg-brand-50 text-brand-700 shadow-sm"
-                    : "border-border bg-surface-50 text-surface-900 hover:border-brand-300 hover:bg-brand-50/50"
+                    ? "border-brand-500 bg-brand-50 dark:bg-brand-500/10 text-brand-700 dark:text-foreground shadow-sm"
+                    : "border-border bg-surface-50 dark:bg-surface-900 text-surface-900 hover:border-brand-300 hover:bg-brand-50/50"
                   }`}
               >
                 <Icon className={`h-4 w-4 shrink-0 ${selected ? "text-brand-600" : "text-muted-foreground"}`} />
@@ -358,7 +358,7 @@ function GenerateReportSection() {
                 { label: "Total Revenue",   value: formatPHP(salesData.totalRevenue) },
                 { label: "Avg Order Value", value: formatPHP(Math.round(salesData.avgOrderValue)) },
               ].map((kpi) => (
-                <div key={kpi.label} className="rounded-xl border border-border bg-surface-50 px-4 py-3">
+                <div key={kpi.label} className="rounded-xl border border-border bg-surface-50 dark:bg-surface-900 px-4 py-3">
                   <p className="text-xs text-muted-foreground">{kpi.label}</p>
                   <p className="font-display text-xl font-bold text-surface-900 mt-0.5">{kpi.value}</p>
                 </div>
@@ -377,7 +377,7 @@ function GenerateReportSection() {
                 <div className="overflow-x-auto rounded-xl border border-border">
                   <table className="w-full text-sm">
                     <thead>
-                      <tr className="border-b border-border bg-surface-50">
+                      <tr className="border-b border-border bg-surface-50 dark:bg-surface-900">
                         <th className="px-4 py-2 text-left text-xs font-semibold text-muted-foreground">#</th>
                         <th className="px-4 py-2 text-left text-xs font-semibold text-muted-foreground">Product</th>
                         <th className="px-4 py-2 text-left text-xs font-semibold text-muted-foreground">SKU</th>
@@ -411,7 +411,7 @@ function GenerateReportSection() {
                 { label: "Low Stock",       value: invData.lowStock.toString() },
                 { label: "Needs Reorder",   value: invData.needReorder.toString() },
               ].map((kpi) => (
-                <div key={kpi.label} className="rounded-xl border border-border bg-surface-50 px-4 py-3">
+                <div key={kpi.label} className="rounded-xl border border-border bg-surface-50 dark:bg-surface-900 px-4 py-3">
                   <p className="text-xs text-muted-foreground">{kpi.label}</p>
                   <p className="font-display text-xl font-bold text-surface-900 mt-0.5">{kpi.value}</p>
                 </div>
@@ -424,7 +424,7 @@ function GenerateReportSection() {
             <div className="overflow-x-auto rounded-xl border border-border">
               <table className="w-full text-sm">
                 <thead>
-                  <tr className="border-b border-border bg-surface-50">
+                  <tr className="border-b border-border bg-surface-50 dark:bg-surface-900">
                     <th className="px-4 py-2 text-left text-xs font-semibold text-muted-foreground">Product</th>
                     <th className="px-4 py-2 text-left text-xs font-semibold text-muted-foreground">SKU</th>
                     <th className="px-4 py-2 text-right text-xs font-semibold text-muted-foreground">Stock</th>
@@ -458,7 +458,7 @@ function GenerateReportSection() {
                 { label: "Avg Delivery",    value: `${delivData.avgDeliveryTime} days` },
                 { label: "Failed Rate",     value: `${delivData.failedRate.toFixed(1)}%` },
               ].map((kpi) => (
-                <div key={kpi.label} className="rounded-xl border border-border bg-surface-50 px-4 py-3">
+                <div key={kpi.label} className="rounded-xl border border-border bg-surface-50 dark:bg-surface-900 px-4 py-3">
                   <p className="text-xs text-muted-foreground">{kpi.label}</p>
                   <p className="font-display text-xl font-bold text-surface-900 mt-0.5">{kpi.value}</p>
                 </div>
@@ -476,7 +476,7 @@ function GenerateReportSection() {
               <div className="overflow-x-auto rounded-xl border border-border">
                 <table className="w-full text-sm">
                   <thead>
-                    <tr className="border-b border-border bg-surface-50">
+                    <tr className="border-b border-border bg-surface-50 dark:bg-surface-900">
                       <th className="px-4 py-2 text-left text-xs font-semibold text-muted-foreground">Order #</th>
                       <th className="px-4 py-2 text-left text-xs font-semibold text-muted-foreground">Status</th>
                       <th className="px-4 py-2 text-right text-xs font-semibold text-muted-foreground">Total</th>
@@ -507,7 +507,7 @@ function GenerateReportSection() {
                 { label: "Active Retailers",       value: retailData.activeRetailers.toString() },
                 { label: "Avg Orders / Retailer",  value: retailData.avgOrdersPerRetailer.toFixed(1) },
               ].map((kpi) => (
-                <div key={kpi.label} className="rounded-xl border border-border bg-surface-50 px-4 py-3">
+                <div key={kpi.label} className="rounded-xl border border-border bg-surface-50 dark:bg-surface-900 px-4 py-3">
                   <p className="text-xs text-muted-foreground">{kpi.label}</p>
                   <p className="font-display text-xl font-bold text-surface-900 mt-0.5">{kpi.value}</p>
                 </div>
@@ -525,7 +525,7 @@ function GenerateReportSection() {
               <div className="overflow-x-auto rounded-xl border border-border">
                 <table className="w-full text-sm">
                   <thead>
-                    <tr className="border-b border-border bg-surface-50">
+                    <tr className="border-b border-border bg-surface-50 dark:bg-surface-900">
                       <th className="px-4 py-2 text-left text-xs font-semibold text-muted-foreground">#</th>
                       <th className="px-4 py-2 text-left text-xs font-semibold text-muted-foreground">Store ID</th>
                       <th className="px-4 py-2 text-right text-xs font-semibold text-muted-foreground">Orders</th>
@@ -581,9 +581,9 @@ export default function AdminReportsPage() {
       {/* KPI cards */}
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
         {[
-          { label: "Monthly Revenue",  value: formatPHP(ADMIN_STATS.revenueMonth),     icon: TrendingUp,   color: "text-success-700 bg-success-50",  delta: "+12.4%" },
-          { label: "Total Orders",     value: formatNumber(ADMIN_STATS.totalOrders),   icon: ShoppingCart, color: "text-info-600 bg-info-50",        delta: "+8.1%" },
-          { label: "Active Retailers", value: ADMIN_STATS.activeRetailers.toString(),  icon: Users,        color: "text-brand-600 bg-brand-50",       delta: "+5" },
+          { label: "Monthly Revenue",  value: formatPHP(ADMIN_STATS.revenueMonth),     icon: TrendingUp,   color: "text-success-700 dark:text-foreground bg-success-50 dark:bg-success-500/10",  delta: "+12.4%" },
+          { label: "Total Orders",     value: formatNumber(ADMIN_STATS.totalOrders),   icon: ShoppingCart, color: "text-info-600 bg-info-50 dark:bg-info-500/10",        delta: "+8.1%" },
+          { label: "Active Retailers", value: ADMIN_STATS.activeRetailers.toString(),  icon: Users,        color: "text-brand-600 bg-brand-50 dark:bg-brand-500/10",       delta: "+5" },
           { label: "New Retailers",    value: ADMIN_STATS.newRetailersMonth.toString(),icon: Package,      color: "text-purple-600 bg-purple-50",     delta: "This month" },
         ].map((s) => (
           <Card key={s.label} className="p-5 h-28 flex flex-col justify-between">
@@ -591,7 +591,7 @@ export default function AdminReportsPage() {
               <div className={`flex h-10 w-10 items-center justify-center rounded-xl ${s.color}`}>
                 <s.icon className="h-5 w-5" />
               </div>
-              <span className="text-[11px] font-medium text-success-700 bg-success-50 rounded-full px-2 py-0.5">{s.delta}</span>
+              <span className="text-[11px] font-medium text-success-700 dark:text-foreground bg-success-50 dark:bg-success-500/10 rounded-full px-2 py-0.5">{s.delta}</span>
             </div>
             <div>
               <p className="font-display text-2xl font-bold text-foreground leading-none">{s.value}</p>
@@ -618,7 +618,7 @@ export default function AdminReportsPage() {
               return (
                 <div key={i} className="flex items-center gap-3">
                   <span className="text-xs text-muted-foreground w-14 shrink-0">{MONTHS[i]}</span>
-                  <div className="flex-1 h-8 bg-surface-100 rounded-lg overflow-hidden relative">
+                  <div className="flex-1 h-8 bg-surface-100 dark:bg-surface-800 rounded-lg overflow-hidden relative">
                     <div
                       className="h-full bg-brand-700 rounded-lg flex items-center px-2 transition-all"
                       style={{ width: `${pct}%` }}
@@ -659,7 +659,7 @@ export default function AdminReportsPage() {
                     <span className="text-xs font-semibold text-foreground">{formatPHP(cat.revenue)}</span>
                   </div>
                 </div>
-                <div className="h-2 rounded-full bg-surface-100">
+                <div className="h-2 rounded-full bg-surface-100 dark:bg-surface-800">
                   <div className={`h-2 rounded-full ${cat.color}`} style={{ width: `${cat.pct}%` }} />
                 </div>
               </div>

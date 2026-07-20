@@ -14,7 +14,7 @@ export default function AdminError({
 
   return (
     <div className="min-h-[60vh] flex flex-col items-center justify-center px-6 text-center">
-      <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-danger-50 mb-4">
+      <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-danger-50 dark:bg-danger-500/10 mb-4">
         <AlertTriangle className="h-7 w-7 text-danger-500" />
       </div>
       <h2 className="font-display text-lg font-bold text-foreground mb-1">Admin panel error</h2>

@@ -39,9 +39,9 @@ type PORecord = {
 
 const STATUS_STYLE: Record<POStatus, string> = {
   draft:     "bg-surface-100 dark:bg-surface-800 text-muted-foreground border-surface-200",
-  sent:      "bg-warning-50 text-warning-700 border-warning-500/25",
+  sent:      "bg-warning-50 dark:bg-warning-500/10 text-warning-700 dark:text-foreground border-warning-500/25",
   confirmed: "bg-blue-50 text-blue-600 border-blue-200",
-  received:  "bg-success-50 text-success-700 border-success-500/25",
+  received:  "bg-success-50 dark:bg-success-500/10 text-success-700 dark:text-foreground border-success-500/25",
   partial:   "bg-orange-50 text-orange-600 border-orange-200",
 };
 
@@ -103,9 +103,9 @@ const AUTO_POS: AutoPOEntry[] = [
 ];
 
 const URGENCY_BADGE: Record<AutoPOEntry["urgency"], string> = {
-  critical: "bg-danger-50 text-danger-700 dark:text-danger-500 border-danger-200",
-  high:     "bg-brand-50 text-brand-600 border-brand-200",
-  medium:   "bg-warning-50 text-warning-700 border-warning-200",
+  critical: "bg-danger-50 dark:bg-danger-500/10 text-danger-700 dark:text-foreground border-danger-200",
+  high:     "bg-brand-50 dark:bg-brand-500/10 text-brand-600 border-brand-200",
+  medium:   "bg-warning-50 dark:bg-warning-500/10 text-warning-700 dark:text-foreground border-warning-200",
 };
 
 const URGENCY_LABEL: Record<AutoPOEntry["urgency"], string> = {
@@ -178,7 +178,7 @@ function AutoPOModal({ onClose, onViewDrafts }: AutoPOModalProps) {
 
         {step === 1 && (
           <div className="flex flex-col items-center py-8 gap-5 text-center">
-            <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-brand-50 text-brand-500">
+            <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-brand-50 dark:bg-brand-500/10 text-brand-500">
               <Loader2 className="h-7 w-7 animate-spin" />
             </div>
             <div>
@@ -250,7 +250,7 @@ function AutoPOModal({ onClose, onViewDrafts }: AutoPOModalProps) {
               ))}
             </div>
 
-            <div className="flex items-center justify-between rounded-xl bg-surface-50 border border-border px-4 py-3 text-sm">
+            <div className="flex items-center justify-between rounded-xl bg-surface-50 dark:bg-surface-900 border border-border px-4 py-3 text-sm">
               <span className="text-muted-foreground">
                 <span className="font-semibold text-surface-900">{selectedCount} PO{selectedCount !== 1 ? "s" : ""}</span> selected
               </span>
@@ -284,7 +284,7 @@ function AutoPOModal({ onClose, onViewDrafts }: AutoPOModalProps) {
 
         {step === 3 && (
           <div className="flex flex-col items-center py-8 gap-5 text-center">
-            <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-success-50 text-success-500">
+            <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-success-50 dark:bg-success-500/10 text-success-500">
               <CheckCircle2 className="h-8 w-8" />
             </div>
             <div>
@@ -461,7 +461,7 @@ function CreatePOModal({ onClose, onSubmit, initialSupplier = "", initialItems, 
           </div>
 
           {validationError && (
-            <p className="text-xs text-danger-700 dark:text-danger-500">{validationError}</p>
+            <p className="text-xs text-danger-700 dark:text-foreground">{validationError}</p>
           )}
 
           <div className="flex justify-end items-center gap-2 pt-2 border-t border-border">
@@ -509,7 +509,7 @@ function POCard({ po, onSend, onEdit, onDelete, confirmDeleteId, onConfirmDelete
       <div className="flex-1 p-5">
         <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-3">
           <div className="flex items-start gap-3">
-            <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-surface-100 text-surface-600">
+            <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-surface-100 dark:bg-surface-800 text-surface-600">
               <FileText className="h-5 w-5" />
             </div>
             <div>
@@ -547,7 +547,7 @@ function POCard({ po, onSend, onEdit, onDelete, confirmDeleteId, onConfirmDelete
             <>
               {isConfirmingDelete ? (
                 <>
-                  <span className="flex items-center text-xs text-danger-700 dark:text-danger-500 font-medium">Delete this PO?</span>
+                  <span className="flex items-center text-xs text-danger-700 dark:text-foreground font-medium">Delete this PO?</span>
                   <button
                     onClick={() => onDelete(po.id)}
                     className="flex items-center gap-1.5 rounded-xl bg-danger-500 px-3 py-2 text-xs font-medium text-white hover:bg-danger-600 transition-colors"
@@ -577,7 +577,7 @@ function POCard({ po, onSend, onEdit, onDelete, confirmDeleteId, onConfirmDelete
                   </button>
                   <button
                     onClick={() => onConfirmDelete(po.id)}
-                    className="flex items-center gap-1.5 rounded-xl border border-danger-200 bg-danger-50 px-3 py-2 text-xs font-medium text-danger-700 dark:text-danger-500 hover:bg-danger-100 transition-colors"
+                    className="flex items-center gap-1.5 rounded-xl border border-danger-200 bg-danger-50 dark:bg-danger-500/10 px-3 py-2 text-xs font-medium text-danger-700 dark:text-foreground hover:bg-danger-100 transition-colors"
                   >
                     <Trash2 className="h-3.5 w-3.5" /> Delete
                   </button>
@@ -760,7 +760,7 @@ export default function AdminPurchaseOrdersPage() {
         <div className="flex items-center gap-2">
           <button
             onClick={() => setShowAutoModal(true)}
-            className="flex items-center gap-2 rounded-xl border border-brand-300 bg-brand-50 px-4 py-2.5 text-sm font-medium text-brand-600 hover:bg-brand-100 transition-colors"
+            className="flex items-center gap-2 rounded-xl border border-brand-300 bg-brand-50 dark:bg-brand-500/10 px-4 py-2.5 text-sm font-medium text-brand-600 hover:bg-brand-100 transition-colors"
           >
             <Zap className="h-4 w-4" /> Auto-Generate POs
           </button>

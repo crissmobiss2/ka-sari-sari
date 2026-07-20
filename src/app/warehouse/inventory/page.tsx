@@ -163,7 +163,7 @@ export default function InventoryPage() {
           <h1 className="font-display text-2xl font-bold text-foreground">Inventory</h1>
           <button
             onClick={() => downloadInventoryCSV(filtered, currentStock)}
-            className="flex items-center gap-1.5 rounded-xl border border-border bg-card px-3 py-2 text-sm font-medium text-foreground hover:bg-surface-100 hover:text-surface-900 transition-colors"
+            className="flex items-center gap-1.5 rounded-xl border border-border bg-card px-3 py-2 text-sm font-medium text-foreground hover:bg-surface-100 dark:bg-surface-800 hover:text-surface-900 transition-colors"
           >
             <Download className="h-4 w-4" />
             Export CSV
@@ -202,13 +202,13 @@ export default function InventoryPage() {
                 <span className="text-[10px] text-muted-foreground text-center leading-tight">Out of Stock</span>
               </div>
               <div className="flex flex-col items-center gap-1">
-                <AlertTriangle className="h-4 w-4 text-warning-700" />
-                <span className="font-display text-xl font-bold text-warning-700">{lowStockCount}</span>
+                <AlertTriangle className="h-4 w-4 text-warning-700 dark:text-foreground" />
+                <span className="font-display text-xl font-bold text-warning-700 dark:text-foreground">{lowStockCount}</span>
                 <span className="text-[10px] text-muted-foreground text-center leading-tight">Low Stock</span>
               </div>
               <div className="flex flex-col items-center gap-1">
-                <CheckCircle2 className="h-4 w-4 text-success-700" />
-                <span className="font-display text-xl font-bold text-success-700">
+                <CheckCircle2 className="h-4 w-4 text-success-700 dark:text-foreground" />
+                <span className="font-display text-xl font-bold text-success-700 dark:text-foreground">
                   {totalUnits.toLocaleString()}
                 </span>
                 <span className="text-[10px] text-muted-foreground text-center leading-tight">Total Units</span>
@@ -271,9 +271,9 @@ export default function InventoryPage() {
       {/* ── Low-stock alert banner ─────────────────────────────────────────── */}
       <div className="px-4">
         {lowStockFiltered.length > 0 && (
-          <div className="bg-warning-50 border border-warning-300 rounded-xl p-3 mb-3 flex items-start gap-2">
-            <AlertTriangle className="h-4 w-4 text-warning-700 shrink-0 mt-0.5" />
-            <p className="text-sm text-warning-700 font-medium">
+          <div className="bg-warning-50 dark:bg-warning-500/10 border border-warning-300 rounded-xl p-3 mb-3 flex items-start gap-2">
+            <AlertTriangle className="h-4 w-4 text-warning-700 dark:text-foreground shrink-0 mt-0.5" />
+            <p className="text-sm text-warning-700 dark:text-foreground font-medium">
               {lowStockFiltered.length} product{lowStockFiltered.length !== 1 ? "s are" : " is"} running low on
               stock. Review and reorder soon.
             </p>
@@ -331,7 +331,7 @@ export default function InventoryPage() {
 
                       {/* Right: stock value + badge + adjust */}
                       <div className="flex flex-col items-end gap-1 shrink-0">
-                        <span className={cn("font-bold text-lg leading-none", isOut ? "text-danger-500" : isLow ? "text-warning-700" : "text-success-700")}>
+                        <span className={cn("font-bold text-lg leading-none", isOut ? "text-danger-500" : isLow ? "text-warning-700 dark:text-foreground" : "text-success-700 dark:text-foreground")}>
                           {stock.toLocaleString()}
                         </span>
                         <Badge variant={isOut ? "danger" : isLow ? "warning" : "success"} className="text-xs">

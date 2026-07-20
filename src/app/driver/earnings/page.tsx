@@ -208,10 +208,10 @@ export default function EarningsPage() {
             <div className="grid grid-cols-3 gap-2">
               {[
                 { label: "Expected",  value: COD_THIS_WEEK.expected,  color: "text-foreground" },
-                { label: "Collected", value: COD_THIS_WEEK.collected, color: "text-success-700" },
-                { label: "Pending",   value: COD_THIS_WEEK.pending,   color: "text-warning-700" },
+                { label: "Collected", value: COD_THIS_WEEK.collected, color: "text-success-700 dark:text-foreground" },
+                { label: "Pending",   value: COD_THIS_WEEK.pending,   color: "text-warning-700 dark:text-foreground" },
               ].map(({ label, value, color }) => (
-                <div key={label} className="rounded-xl bg-surface-50 dark:bg-surface-800 border border-border/60 p-2.5 text-center">
+                <div key={label} className="rounded-xl bg-surface-50 dark:bg-surface-900 dark:bg-surface-800 border border-border/60 p-2.5 text-center">
                   <p className={cn("text-base font-black tabular-nums", color)}>₱{value.toLocaleString()}</p>
                   <p className="text-[10px] text-muted-foreground mt-0.5">{label}</p>
                 </div>
@@ -220,9 +220,9 @@ export default function EarningsPage() {
             <div>
               <div className="flex justify-between text-xs mb-1">
                 <span className="text-muted-foreground">Collection rate</span>
-                <span className="font-semibold text-success-700">{Math.round((COD_THIS_WEEK.collected / COD_THIS_WEEK.expected) * 100)}%</span>
+                <span className="font-semibold text-success-700 dark:text-foreground">{Math.round((COD_THIS_WEEK.collected / COD_THIS_WEEK.expected) * 100)}%</span>
               </div>
-              <div className="h-2 bg-surface-100 rounded-full overflow-hidden">
+              <div className="h-2 bg-surface-100 dark:bg-surface-800 rounded-full overflow-hidden">
                 <div
                   className="h-full bg-success-500 rounded-full"
                   style={{ width: `${(COD_THIS_WEEK.collected / COD_THIS_WEEK.expected) * 100}%` }}
@@ -238,7 +238,7 @@ export default function EarningsPage() {
               Bonuses & Incentives
             </p>
             {BONUSES.map((b, i) => (
-              <div key={i} className={cn("rounded-xl border p-3.5", b.earned ? "border-success-200 bg-success-50 dark:bg-card dark:border-success-900/30" : "border-border bg-card")}>
+              <div key={i} className={cn("rounded-xl border p-3.5", b.earned ? "border-success-200 bg-success-50 dark:bg-success-500/10 dark:bg-card dark:border-success-900/30" : "border-border bg-card")}>
                 <div className="flex items-center justify-between">
                   <div className="flex-1 min-w-0">
                     <p className={cn("text-xs font-semibold", "text-foreground")}>{b.label}</p>
@@ -250,17 +250,17 @@ export default function EarningsPage() {
                           </span>
                           <span className="font-medium text-foreground">{Math.round(((b.progress as number) / (b.target as number)) * 100)}%</span>
                         </div>
-                        <div className="h-1.5 bg-surface-100 rounded-full overflow-hidden">
+                        <div className="h-1.5 bg-surface-100 dark:bg-surface-800 rounded-full overflow-hidden">
                           <div className="h-full bg-brand-400 rounded-full" style={{ width: `${((b.progress as number) / (b.target as number)) * 100}%` }} />
                         </div>
                       </div>
                     )}
                   </div>
                   <div className="ml-3 text-right shrink-0">
-                    <p className={cn("text-sm font-black tabular-nums", b.earned ? "text-success-700" : "text-foreground")}>
+                    <p className={cn("text-sm font-black tabular-nums", b.earned ? "text-success-700 dark:text-foreground" : "text-foreground")}>
                       +₱{b.amount}
                     </p>
-                    {b.earned && <p className="text-[10px] text-success-700 mt-0.5 font-medium">Earned ✓</p>}
+                    {b.earned && <p className="text-[10px] text-success-700 dark:text-foreground mt-0.5 font-medium">Earned ✓</p>}
                   </div>
                 </div>
               </div>
@@ -287,7 +287,7 @@ export default function EarningsPage() {
                 <span className="text-xs text-muted-foreground">Next payment</span>
                 <div className="flex items-center gap-1.5">
                   <CheckCircle2 className="w-3.5 h-3.5 text-success-500" />
-                  <span className="text-xs font-semibold text-success-700">Fri, Jul 11, 2026</span>
+                  <span className="text-xs font-semibold text-success-700 dark:text-foreground">Fri, Jul 11, 2026</span>
                 </div>
               </div>
             </div>
@@ -311,7 +311,7 @@ export default function EarningsPage() {
                   <div className="flex items-center gap-2 mt-0.5">
                     <p className="text-[10px] text-muted-foreground">{item.date}</p>
                     {item.cod > 0 && (
-                      <span className="text-[10px] font-medium text-warning-700 bg-warning-50 dark:bg-warning-500/20 dark:text-foreground dark:border-warning-500/30 border border-warning-100 rounded-full px-1.5">
+                      <span className="text-[10px] font-medium text-warning-700 dark:text-foreground bg-warning-50 dark:bg-warning-500/10 dark:bg-warning-500/20 dark:text-foreground dark:border-warning-500/30 border border-warning-100 rounded-full px-1.5">
                         COD ₱{item.cod.toLocaleString()}
                       </span>
                     )}
@@ -348,7 +348,7 @@ export default function EarningsPage() {
                   <div className="flex items-center gap-2">
                     <span className={cn(
                       "text-xs",
-                      c.trend === "up" ? "text-success-700" : c.trend === "down" ? "text-danger-700 dark:text-danger-500" : "text-muted-foreground"
+                      c.trend === "up" ? "text-success-700 dark:text-foreground" : c.trend === "down" ? "text-danger-700 dark:text-foreground" : "text-muted-foreground"
                     )}>
                       {c.trend === "up" ? "↑" : c.trend === "down" ? "↓" : "→"}
                     </span>
@@ -356,7 +356,7 @@ export default function EarningsPage() {
                   </div>
                 </div>
                 <div className="flex items-center gap-2 mb-1.5">
-                  <div className="flex-1 h-1.5 bg-surface-100 rounded-full overflow-hidden">
+                  <div className="flex-1 h-1.5 bg-surface-100 dark:bg-surface-800 rounded-full overflow-hidden">
                     <div className="h-full bg-brand-400 rounded-full" style={{ width: `${pct}%` }} />
                   </div>
                   <span className="text-[11px] text-muted-foreground shrink-0 tabular-nums">{c.deliveries} drops</span>
@@ -365,7 +365,7 @@ export default function EarningsPage() {
             );
           })}
 
-          <div className="rounded-xl border border-brand-100 bg-brand-50 dark:bg-card dark:border-border/50 p-4">
+          <div className="rounded-xl border border-brand-100 bg-brand-50 dark:bg-brand-500/10 dark:bg-card dark:border-border/50 p-4">
             <div className="flex items-center gap-2 mb-1">
               <Star className="h-4 w-4 text-brand-500" />
               <p className="text-xs font-semibold text-foreground">Top Area: Caloocan</p>

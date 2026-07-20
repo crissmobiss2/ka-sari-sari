@@ -45,7 +45,7 @@ function Field({ label, error, children }: { label: string; error?: string; chil
     <div className="space-y-1.5">
       <label className="block text-xs font-semibold text-foreground">{label}</label>
       {children}
-      {error && <p className="text-xs text-danger-700 dark:text-danger-500">{error}</p>}
+      {error && <p className="text-xs text-danger-700 dark:text-foreground">{error}</p>}
     </div>
   );
 }
@@ -220,9 +220,9 @@ export default function AdminProductsPage() {
       <div className="flex gap-3 flex-wrap">
         {[
           { label: "Total", value: stats.total, color: "text-foreground" },
-          { label: "Active", value: stats.active, color: "text-success-700" },
-          { label: "Out of Stock", value: stats.outOfStock, color: "text-danger-700 dark:text-danger-500" },
-          { label: "Low Stock", value: stats.lowStock, color: "text-warning-700" },
+          { label: "Active", value: stats.active, color: "text-success-700 dark:text-foreground" },
+          { label: "Out of Stock", value: stats.outOfStock, color: "text-danger-700 dark:text-foreground" },
+          { label: "Low Stock", value: stats.lowStock, color: "text-warning-700 dark:text-foreground" },
         ].map(s => (
           <div key={s.label} className="flex items-center gap-2 rounded-xl border border-border bg-card px-3 py-2">
             <span className={`font-display text-xl font-bold ${s.color}`}>{s.value}</span>
@@ -276,7 +276,7 @@ export default function AdminProductsPage() {
                   <tr key={product.id} className={cn("hover:bg-muted/30 transition-colors", !product.isActive && "opacity-50")}>
                     <td className="px-5 py-3.5">
                       <div className="flex items-center gap-3">
-                        <div className="h-9 w-9 rounded-xl bg-surface-100 overflow-hidden shrink-0">
+                        <div className="h-9 w-9 rounded-xl bg-surface-100 dark:bg-surface-800 overflow-hidden shrink-0">
                           {product.imageUrl ? (
                             // eslint-disable-next-line @next/next/no-img-element
                             <img src={product.imageUrl} alt={product.name} className="h-full w-full object-cover" />
@@ -299,8 +299,8 @@ export default function AdminProductsPage() {
                     <td className="px-5 py-3.5 text-right font-semibold text-foreground">{formatPHP(product.price)}</td>
                     <td className="px-5 py-3.5 text-right">
                       <span className={cn("font-medium tabular-nums",
-                        product.stock === 0 ? "text-danger-700 dark:text-danger-500" :
-                        product.stock <= product.lowStockThreshold ? "text-warning-700" : "text-foreground"
+                        product.stock === 0 ? "text-danger-700 dark:text-foreground" :
+                        product.stock <= product.lowStockThreshold ? "text-warning-700 dark:text-foreground" : "text-foreground"
                       )}>
                         {product.stock}
                       </span>
@@ -338,7 +338,7 @@ export default function AdminProductsPage() {
                 {modal === "add" ? "Add New Product" : "Edit Product"}
               </h2>
               <button onClick={closeModal}
-                className="rounded-xl p-2 hover:bg-surface-100 transition-colors">
+                className="rounded-xl p-2 hover:bg-surface-100 dark:bg-surface-800 transition-colors">
                 <X className="h-5 w-5 text-muted-foreground" />
               </button>
             </div>

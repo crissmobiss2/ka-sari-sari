@@ -230,11 +230,11 @@ function StatCard({
   return (
     <div className="rounded-2xl border border-border bg-card shadow-card px-4 py-4">
       <p className="text-[11px] font-semibold uppercase tracking-wide text-muted-foreground mb-1">{label}</p>
-      <p className={cn("font-display text-xl font-black leading-tight", accent ? "text-success-700" : "text-foreground")}>
+      <p className={cn("font-display text-xl font-black leading-tight", accent ? "text-success-700 dark:text-foreground" : "text-foreground")}>
         {value}
       </p>
       {sub && (
-        <p className={cn("text-xs mt-1 flex items-center gap-1", accent ? "text-success-700" : "text-muted-foreground")}>
+        <p className={cn("text-xs mt-1 flex items-center gap-1", accent ? "text-success-700 dark:text-foreground" : "text-muted-foreground")}>
           {accent && <TrendingUp className="h-3 w-3" />}
           {sub}
         </p>
@@ -357,7 +357,7 @@ export default function AnalyticsPage() {
           <div className="flex items-start gap-2 mt-1.5">
             {stats.monthlyData.map((d) => (
               <div key={d.month} className="flex-1 text-center">
-                <span className={cn("text-[10px] font-medium", d.current ? "text-brand-700 dark:text-brand-500 font-bold" : "text-muted-foreground")}>
+                <span className={cn("text-[10px] font-medium", d.current ? "text-brand-700 font-bold" : "text-muted-foreground")}>
                   {d.month}
                 </span>
               </div>
@@ -393,7 +393,7 @@ export default function AnalyticsPage() {
                     <span className="text-xs font-bold text-foreground tabular-nums">{formatPHP(cat.total)}</span>
                   </div>
                   <div className="flex items-center gap-2">
-                    <div className="flex-1 h-2.5 rounded-full bg-surface-100 overflow-hidden">
+                    <div className="flex-1 h-2.5 rounded-full bg-surface-100 dark:bg-surface-800 overflow-hidden">
                       <div
                         className={cn("h-full rounded-full transition-all", CATEGORY_BAR_CLASSES[i])}
                         style={{ width: `${cat.pct}%` }}
@@ -495,7 +495,7 @@ export default function AnalyticsPage() {
                       <span className={cn(
                         "rounded-full px-2 py-0.5 text-[10px] font-semibold",
                         s.isLowStock
-                          ? "bg-warning-50 text-warning-700 border border-warning-200"
+                          ? "bg-warning-50 dark:bg-warning-500/10 text-warning-700 dark:text-foreground border border-warning-200"
                           : "bg-surface-100 dark:bg-surface-800 text-muted-foreground border border-border"
                       )}>
                         {s.isLowStock ? "Low stock" : "Frequently ordered"}
@@ -533,7 +533,7 @@ export default function AnalyticsPage() {
                 <div className="w-20 shrink-0 text-right text-xs font-bold text-brand-500">
                   {formatPHP(stats.totalSpent)}
                 </div>
-                <div className="flex-1 h-3 rounded-full bg-surface-100 overflow-hidden">
+                <div className="flex-1 h-3 rounded-full bg-surface-100 dark:bg-surface-800 overflow-hidden">
                   <div
                     className="h-full bg-brand-500 rounded-full"
                     style={{ width: `${stats.srpTotal > 0 ? Math.round((stats.totalSpent / stats.srpTotal) * 100) : 0}%` }}
@@ -547,21 +547,21 @@ export default function AnalyticsPage() {
                 <div className="w-20 shrink-0 text-right text-xs font-medium text-muted-foreground">
                   {formatPHP(stats.srpTotal)}
                 </div>
-                <div className="flex-1 h-3 rounded-full bg-surface-100 overflow-hidden">
+                <div className="flex-1 h-3 rounded-full bg-surface-100 dark:bg-surface-800 overflow-hidden">
                   <div className="h-full bg-surface-200 rounded-full" style={{ width: "100%" }} />
                 </div>
                 <div className="w-8 shrink-0 text-[9px] text-muted-foreground">SRP</div>
               </div>
             </div>
 
-            <div className="mt-3 rounded-xl bg-success-50 border border-success-200 px-4 py-3 flex items-center justify-between">
+            <div className="mt-3 rounded-xl bg-success-50 dark:bg-success-500/10 border border-success-200 px-4 py-3 flex items-center justify-between">
               <div>
-                <p className="text-xs font-semibold text-success-700">Total savings this year</p>
-                <p className="text-[11px] text-success-700 mt-0.5">Buying through Ka Sari-Sari</p>
+                <p className="text-xs font-semibold text-success-700 dark:text-foreground">Total savings this year</p>
+                <p className="text-[11px] text-success-700 dark:text-foreground mt-0.5">Buying through Ka Sari-Sari</p>
               </div>
               <div className="text-right">
-                <p className="font-display text-lg font-black text-success-700">{formatPHP(stats.savings)}</p>
-                <p className="text-xs text-success-700 font-semibold">{stats.savingsPct}% saved</p>
+                <p className="font-display text-lg font-black text-success-700 dark:text-foreground">{formatPHP(stats.savings)}</p>
+                <p className="text-xs text-success-700 dark:text-foreground font-semibold">{stats.savingsPct}% saved</p>
               </div>
             </div>
           </div>

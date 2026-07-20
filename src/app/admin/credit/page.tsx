@@ -46,16 +46,16 @@ interface CreditApplication {
 }
 
 const APPLICATION_STATUS_CONFIG = {
-  pending:  { label: "Pending",   variant: "warning",  class: "bg-warning-50 text-warning-700 border border-warning-200"  },
-  approved: { label: "Approved",  variant: "success",  class: "bg-success-50 text-success-700 border border-success-200"  },
-  rejected: { label: "Rejected",  variant: "danger",   class: "bg-danger-50 text-danger-700 border border-danger-200"     },
+  pending:  { label: "Pending",   variant: "warning",  class: "bg-warning-50 dark:bg-warning-500/10 text-warning-700 dark:text-foreground border border-warning-200 dark:border-warning-500/30"  },
+  approved: { label: "Approved",  variant: "success",  class: "bg-success-50 dark:bg-success-500/10 text-success-700 dark:text-foreground border border-success-200 dark:border-success-500/30"  },
+  rejected: { label: "Rejected",  variant: "danger",   class: "bg-danger-50 dark:bg-danger-500/10 text-danger-700 dark:text-foreground border border-danger-200 dark:border-danger-500/30"     },
 } as const;
 
 const STATUS_CONFIG: Record<CreditStatus, { label: string; color: string; badge: string; icon: typeof CheckCircle2 }> = {
-  good:      { label: "Good Standing",  color: "text-success-700 bg-success-50 border-success-200",  badge: "success",  icon: CheckCircle2 },
-  overdue:   { label: "Overdue",        color: "text-danger-700 dark:text-danger-500 bg-danger-50 border-danger-200",      badge: "danger",   icon: AlertTriangle },
-  at_limit:  { label: "At Limit",       color: "text-warning-700 bg-warning-50 border-warning-200",   badge: "warning",  icon: TrendingUp },
-  suspended: { label: "Suspended",      color: "text-muted-foreground bg-surface-100 border-border",  badge: "neutral",  icon: Clock },
+  good:      { label: "Good Standing",  color: "text-success-700 dark:text-foreground bg-success-50 dark:bg-success-500/10 border-success-200 dark:border-success-500/30",  badge: "success",  icon: CheckCircle2 },
+  overdue:   { label: "Overdue",        color: "text-danger-700 dark:text-foreground bg-danger-50 dark:bg-danger-500/10 border-danger-200",      badge: "danger",   icon: AlertTriangle },
+  at_limit:  { label: "At Limit",       color: "text-warning-700 dark:text-foreground bg-warning-50 dark:bg-warning-500/10 border-warning-200 dark:border-warning-500/30",   badge: "warning",  icon: TrendingUp },
+  suspended: { label: "Suspended",      color: "text-muted-foreground bg-surface-100 dark:bg-surface-800 border-border",  badge: "neutral",  icon: Clock },
 };
 
 function UtilizationBar({ used, limit }: { used: number; limit: number }) {
@@ -63,7 +63,7 @@ function UtilizationBar({ used, limit }: { used: number; limit: number }) {
   const color = pct >= 100 ? "bg-danger-500" : pct >= 80 ? "bg-warning-400" : "bg-success-500";
   return (
     <div className="flex items-center gap-2">
-      <div className="flex-1 h-1.5 bg-surface-100 rounded-full overflow-hidden">
+      <div className="flex-1 h-1.5 bg-surface-100 dark:bg-surface-800 rounded-full overflow-hidden">
         <div className={cn("h-full rounded-full transition-all", color)} style={{ width: `${pct}%` }} />
       </div>
       <span className="text-[11px] tabular-nums text-muted-foreground shrink-0">{pct}%</span>
@@ -505,7 +505,7 @@ export default function AdminCreditPage() {
         </div>
         <button
           onClick={() => setCreateModal(true)}
-          className="flex items-center gap-2 rounded-xl border border-brand-200 bg-brand-50 px-4 py-2 text-sm font-semibold text-brand-600 hover:bg-brand-100 transition-colors"
+          className="flex items-center gap-2 rounded-xl border border-brand-200 dark:border-brand-500/30 bg-brand-50 dark:bg-brand-500/10 px-4 py-2 text-sm font-semibold text-brand-700 dark:text-foreground hover:bg-brand-100 dark:hover:bg-brand-500/20 transition-colors"
         >
           + New Credit Line
         </button>
@@ -519,7 +519,7 @@ export default function AdminCreditPage() {
               <FileText className="h-4 w-4 text-muted-foreground" />
               <CardTitle className="text-sm font-semibold text-foreground">Credit Applications</CardTitle>
               {applications.filter((a) => a.status === "pending").length > 0 && (
-                <span className="rounded-full bg-warning-100 text-warning-700 px-2 py-0.5 text-xs font-bold">
+                <span className="rounded-full bg-warning-100 text-warning-700 dark:text-foreground px-2 py-0.5 text-xs font-bold">
                   {applications.filter((a) => a.status === "pending").length} pending
                 </span>
               )}
@@ -575,7 +575,7 @@ export default function AdminCreditPage() {
                         </button>
                         <button
                           onClick={() => { setRejectApp(app); setRejectReason(""); }}
-                          className="rounded-lg border border-danger-200 text-danger-700 dark:text-danger-500 px-3 py-1.5 text-xs font-semibold hover:bg-danger-50 transition-colors"
+                          className="rounded-lg border border-danger-200 text-danger-700 dark:text-foreground px-3 py-1.5 text-xs font-semibold hover:bg-danger-50 dark:bg-danger-500/10 transition-colors"
                         >
                           Reject
                         </button>
@@ -592,10 +592,10 @@ export default function AdminCreditPage() {
       {/* KPI strip */}
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
         {[
-          { label: "Total Outstanding",  value: formatPHP(totalOutstanding), sub: `of ${formatPHP(totalLimit)} limit`, color: "text-brand-600 bg-brand-50", icon: CreditCard },
-          { label: "Utilization Rate",   value: `${Math.round((totalOutstanding / totalLimit) * 100)}%`, sub: "across all accounts", color: "text-info-600 bg-info-50", icon: TrendingUp },
-          { label: "Overdue Accounts",   value: overdueCount.toString(), sub: `${formatPHP(atRiskAmount)} at risk`, color: overdueCount > 0 ? "text-danger-700 dark:text-danger-500 bg-danger-50" : "text-success-700 bg-success-50", icon: AlertTriangle },
-          { label: "Avg Terms",          value: "30 days", sub: "payment window", color: "text-muted-foreground bg-surface-100", icon: Clock },
+          { label: "Total Outstanding",  value: formatPHP(totalOutstanding), sub: `of ${formatPHP(totalLimit)} limit`, color: "text-brand-700 bg-brand-50 dark:bg-brand-500/10 dark:text-foreground", icon: CreditCard },
+          { label: "Utilization Rate",   value: `${Math.round((totalOutstanding / totalLimit) * 100)}%`, sub: "across all accounts", color: "text-info-700 bg-info-50 dark:bg-info-500/10 dark:text-foreground", icon: TrendingUp },
+          { label: "Overdue Accounts",   value: overdueCount.toString(), sub: `${formatPHP(atRiskAmount)} at risk`, color: overdueCount > 0 ? "text-danger-700 dark:text-foreground bg-danger-50 dark:bg-danger-500/10" : "text-success-700 dark:text-foreground bg-success-50 dark:bg-success-500/10", icon: AlertTriangle },
+          { label: "Avg Terms",          value: "30 days", sub: "payment window", color: "text-muted-foreground bg-surface-100 dark:bg-surface-800", icon: Clock },
         ].map((s) => (
           <Card key={s.label} className="p-4">
             <div className={cn("flex h-9 w-9 items-center justify-center rounded-xl mb-3", s.color)}>
@@ -654,7 +654,7 @@ export default function AdminCreditPage() {
                   <div
                     key={a.id}
                     onClick={() => setSelected(isSelected ? null : a.id)}
-                    className={cn("px-5 py-4 cursor-pointer transition-colors", isSelected ? "bg-brand-50" : "hover:bg-muted/30")}
+                    className={cn("px-5 py-4 cursor-pointer transition-colors", isSelected ? "bg-brand-50 dark:bg-brand-500/10" : "hover:bg-muted/30")}
                   >
                     <div className="flex items-start justify-between gap-3">
                       <div className="flex items-center gap-3 flex-1 min-w-0">
@@ -731,14 +731,14 @@ export default function AdminCreditPage() {
                 {selectedAccount.status !== "suspended" ? (
                   <button
                     onClick={() => handleSuspend(selectedAccount)}
-                    className="w-full rounded-xl border border-danger-200 text-danger-700 dark:text-danger-500 py-2.5 text-sm font-semibold hover:bg-danger-50 transition-colors"
+                    className="w-full rounded-xl border border-danger-200 text-danger-700 dark:text-foreground py-2.5 text-sm font-semibold hover:bg-danger-50 dark:bg-danger-500/10 transition-colors"
                   >
                     Suspend Account
                   </button>
                 ) : (
                   <button
                     onClick={() => handleReactivate(selectedAccount)}
-                    className="w-full rounded-xl border border-success-200 text-success-700 py-2.5 text-sm font-semibold hover:bg-success-50 transition-colors"
+                    className="w-full rounded-xl border border-success-200 text-success-700 dark:text-foreground py-2.5 text-sm font-semibold hover:bg-success-50 dark:bg-success-500/10 transition-colors"
                   >
                     Reactivate Account
                   </button>

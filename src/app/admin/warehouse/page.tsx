@@ -60,9 +60,9 @@ const CATEGORY_AISLES: Record<string, { aisle: string; items: number; pct: numbe
 
 function PickStatusBadge({ status }: { status: string }) {
   const map: Record<string, string> = {
-    open: "bg-warning-50 text-warning-700 border-warning-300/50",
+    open: "bg-warning-50 dark:bg-warning-500/10 text-warning-700 dark:text-foreground border-warning-300/50",
     in_progress: "bg-purple-50 text-purple-700 border-purple-300/50",
-    completed: "bg-success-50 text-success-700 border-success-300/50",
+    completed: "bg-success-50 dark:bg-success-500/10 text-success-700 dark:text-foreground border-success-300/50",
   };
   const label: Record<string, string> = {
     open: "Open",
@@ -178,7 +178,7 @@ export default function WarehouseDashboardPage() {
           value={`${incomingToday} delivery`}
           label="Incoming Today"
           sub="Confirmed POs"
-          iconBg="bg-info-50 text-info-600"
+          iconBg="bg-info-50 dark:bg-info-500/10 text-info-600"
           accent="text-info-600"
         />
       </div>
@@ -215,7 +215,7 @@ export default function WarehouseDashboardPage() {
                     </div>
                     <div className="text-right shrink-0">
                       <p className="text-xs text-muted-foreground">
-                        {pl.assignedTo ?? <span className="text-warning-700 font-medium">Unassigned</span>}
+                        {pl.assignedTo ?? <span className="text-warning-700 dark:text-foreground font-medium">Unassigned</span>}
                       </p>
                       <p className="text-xs text-muted-foreground mt-0.5">{totalItems} items</p>
                     </div>
@@ -245,9 +245,9 @@ export default function WarehouseDashboardPage() {
                         key={item.id}
                         className={cn(
                           "rounded-lg border px-2 py-0.5 text-[11px] font-medium",
-                          item.status === "picked"   && "bg-success-50 text-success-700 border-success-300/50",
-                          item.status === "partial"  && "bg-warning-50 text-warning-700 border-warning-300/50",
-                          item.status === "pending"  && "bg-surface-50 text-muted-foreground border-border"
+                          item.status === "picked"   && "bg-success-50 dark:bg-success-500/10 text-success-700 dark:text-foreground border-success-300/50",
+                          item.status === "partial"  && "bg-warning-50 dark:bg-warning-500/10 text-warning-700 dark:text-foreground border-warning-300/50",
+                          item.status === "pending"  && "bg-surface-50 dark:bg-surface-900 text-muted-foreground border-border"
                         )}
                       >
                         {item.productName.split(" ").slice(0, 2).join(" ")}
@@ -305,7 +305,7 @@ export default function WarehouseDashboardPage() {
                       <p className="text-sm font-semibold text-foreground">{gr.poNumber}</p>
                       <p className="text-xs text-muted-foreground">{supplier?.name ?? gr.supplierName}</p>
                     </div>
-                    <span className="text-xs rounded-full bg-warning-50 text-warning-700 border border-warning-300/50 px-2.5 py-0.5 font-medium shrink-0">
+                    <span className="text-xs rounded-full bg-warning-50 dark:bg-warning-500/10 text-warning-700 dark:text-foreground border border-warning-300/50 px-2.5 py-0.5 font-medium shrink-0">
                       Tomorrow
                     </span>
                   </div>
@@ -352,7 +352,7 @@ export default function WarehouseDashboardPage() {
                   </div>
                   <div className="flex-1 min-w-0">
                     <p className="text-xs font-medium text-foreground truncate">{alert.name}</p>
-                    <p className={cn("text-[11px] font-semibold", alert.level === "out" ? "text-danger-700" : "text-warning-700")}>
+                    <p className={cn("text-[11px] font-semibold", alert.level === "out" ? "text-danger-700 dark:text-foreground" : "text-warning-700 dark:text-foreground")}>
                       {alert.level === "out" ? "Out of Stock" : `Low — ${alert.stock} units`}
                     </p>
                   </div>
@@ -360,7 +360,7 @@ export default function WarehouseDashboardPage() {
                     href="/admin/purchase-orders"
                     size="sm"
                     variant="ghost"
-                    className="text-[11px] h-7 px-2 text-brand-700 hover:bg-brand-50 shrink-0"
+                    className="text-[11px] h-7 px-2 text-brand-700 dark:text-foreground hover:bg-brand-50 dark:bg-brand-500/10 shrink-0"
                   >
                     Replenish
                   </ButtonLink>

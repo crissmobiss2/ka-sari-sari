@@ -319,8 +319,8 @@ export default function PickingPage() {
             <span className={cn(
               "text-sm font-semibold px-3 py-1.5 rounded-xl",
               scanFeedback.ok
-                ? "bg-success-50 text-success-700 border border-success-200"
-                : "bg-danger-50 text-danger-700 border border-danger-200"
+                ? "bg-success-50 dark:bg-success-500/10 text-success-700 dark:text-foreground border border-success-200"
+                : "bg-danger-50 dark:bg-danger-500/10 text-danger-700 dark:text-foreground border border-danger-200"
             )}>
               {scanFeedback.text}
             </span>
@@ -356,9 +356,9 @@ export default function PickingPage() {
                     <span
                       className={cn(
                         "inline-flex items-center gap-1.5 rounded-full border px-2.5 py-0.5 text-xs font-medium",
-                        isCompleted  && "bg-success-50 text-success-700 border-success-300/50",
+                        isCompleted  && "bg-success-50 dark:bg-success-500/10 text-success-700 dark:text-foreground border-success-300/50",
                         list.status === "in_progress" && "bg-purple-50 text-purple-700 border-purple-300/50",
-                        isOpen       && "bg-warning-50 text-warning-700 border-warning-300/50"
+                        isOpen       && "bg-warning-50 dark:bg-warning-500/10 text-warning-700 dark:text-foreground border-warning-300/50"
                       )}
                     >
                       <span className="h-1.5 w-1.5 rounded-full bg-current" />
@@ -479,7 +479,7 @@ export default function PickingPage() {
 
                       {/* Picked badge */}
                       {isItemPicked && !isCompleted && (
-                        <span className="text-xs font-medium text-success-700 shrink-0">Picked</span>
+                        <span className="text-xs font-medium text-success-700 dark:text-foreground shrink-0">Picked</span>
                       )}
 
                       {/* Completed checkmark */}
@@ -540,8 +540,8 @@ export default function PickingPage() {
               {/* Completed footer */}
               {isCompleted && (
                 <div className="flex items-center gap-2 border-t border-border px-5 py-3 bg-success-50/40">
-                  <CheckCircle2 className="h-4 w-4 text-success-700 shrink-0" />
-                  <p className="text-xs font-medium text-success-700">
+                  <CheckCircle2 className="h-4 w-4 text-success-700 dark:text-foreground shrink-0" />
+                  <p className="text-xs font-medium text-success-700 dark:text-foreground">
                     All {totalCount} items picked — ready to pack
                   </p>
                 </div>

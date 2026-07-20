@@ -284,9 +284,9 @@ export default function ReceivingPage() {
   const completed = receipts.filter((gr) => gr.status === "completed");
 
   const sections = [
-    { label: "Pending Receipt", items: pending, accent: "text-warning-700" },
+    { label: "Pending Receipt", items: pending, accent: "text-warning-700 dark:text-foreground" },
     { label: "In Progress", items: inProgress, accent: "text-blue-600" },
-    { label: "Completed", items: completed, accent: "text-success-700" },
+    { label: "Completed", items: completed, accent: "text-success-700 dark:text-foreground" },
   ];
 
   if (loading) {
@@ -313,9 +313,9 @@ export default function ReceivingPage() {
       {/* Fix #5: Today's Receipts summary chips */}
       <div className="flex gap-2 flex-wrap">
         {[
-          { label: "Pending", count: pending.length, chipClass: "bg-warning-50 text-warning-700 border-warning-200" },
+          { label: "Pending", count: pending.length, chipClass: "bg-warning-50 dark:bg-warning-500/10 text-warning-700 dark:text-foreground border-warning-200" },
           { label: "In Progress", count: inProgress.length, chipClass: "bg-blue-50 text-blue-700 border-blue-200" },
-          { label: "Completed", count: completed.length, chipClass: "bg-success-50 text-success-700 border-success-200" },
+          { label: "Completed", count: completed.length, chipClass: "bg-success-50 dark:bg-success-500/10 text-success-700 dark:text-foreground border-success-200" },
         ].map(({ label, count, chipClass }) => (
           <span
             key={label}
@@ -363,7 +363,7 @@ export default function ReceivingPage() {
       {receipts.length === 0 && (
         <Card>
           <CardContent className="p-10 text-center">
-            <CheckCircle2 className="h-12 w-12 text-success-700 mx-auto mb-3" />
+            <CheckCircle2 className="h-12 w-12 text-success-700 dark:text-foreground mx-auto mb-3" />
             <p className="text-lg font-semibold text-foreground">No pending deliveries</p>
             <p className="text-muted-foreground mt-1">No purchase orders are awaiting receipt.</p>
           </CardContent>
@@ -492,14 +492,14 @@ function ReceiptCard({
                           <span
                             className={cn(
                               "font-semibold",
-                              isDone ? "text-success-700" : "text-foreground"
+                              isDone ? "text-success-700 dark:text-foreground" : "text-foreground"
                             )}
                           >
                             {item.receivedQty}
                           </span>
                         </span>
                         {isDone && (
-                          <CheckCircle2 className="h-4 w-4 text-success-700" />
+                          <CheckCircle2 className="h-4 w-4 text-success-700 dark:text-foreground" />
                         )}
                       </div>
                     </div>
@@ -577,12 +577,12 @@ function ReceiptCard({
                             </button>
                           </div>
                           {form.barcode && form.barcode !== item.sku && (
-                            <p className="text-xs text-warning-700 font-medium">
+                            <p className="text-xs text-warning-700 dark:text-foreground font-medium">
                               SKU mismatch — expected {item.sku}
                             </p>
                           )}
                           {form.barcode === item.sku && (
-                            <p className="text-xs text-success-700 font-medium flex items-center gap-1">
+                            <p className="text-xs text-success-700 dark:text-foreground font-medium flex items-center gap-1">
                               <CheckCircle2 className="h-3.5 w-3.5" /> SKU matched
                             </p>
                           )}
@@ -629,14 +629,14 @@ function ReceiptCard({
 
                       {/* Error */}
                       {form.error && (
-                        <p className="text-sm text-danger-500 font-medium bg-danger-50 rounded-xl px-3 py-2">
+                        <p className="text-sm text-danger-500 font-medium bg-danger-50 dark:bg-danger-500/10 rounded-xl px-3 py-2">
                           {form.error}
                         </p>
                       )}
 
                       {/* Confirm button */}
                       {form.confirmed ? (
-                        <div className="flex items-center justify-center gap-2 py-3 bg-success-50 rounded-xl text-success-700 font-semibold text-base">
+                        <div className="flex items-center justify-center gap-2 py-3 bg-success-50 dark:bg-success-500/10 rounded-xl text-success-700 dark:text-foreground font-semibold text-base">
                           <CheckCircle2 className="h-5 w-5" />
                           Received successfully!
                         </div>
@@ -676,7 +676,7 @@ function ReceiptCard({
               <Button
                 variant="outline"
                 size="sm"
-                className="border-danger-400 text-danger-700 dark:text-danger-500 hover:bg-danger-50 hover:border-danger-500"
+                className="border-danger-400 text-danger-700 dark:text-foreground hover:bg-danger-50 dark:bg-danger-500/10 hover:border-danger-500"
                 onClick={handleReject}
               >
                 Reject Shipment

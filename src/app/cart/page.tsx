@@ -27,7 +27,7 @@ function ProductThumb({ product }: { product: { imageUrl?: string; categoryId: s
 
   if (product.imageUrl && !err) {
     return (
-      <div className="relative h-14 w-14 rounded-xl overflow-hidden shrink-0 bg-surface-100">
+      <div className="relative h-14 w-14 rounded-xl overflow-hidden shrink-0 bg-surface-100 dark:bg-surface-800">
         <Image
           src={product.imageUrl}
           alt={product.name}
@@ -95,8 +95,8 @@ export default function CartPage() {
           )}>
             <div className="flex items-center justify-between text-sm">
               <div className="flex items-center gap-2">
-                <Truck className={cn("h-4 w-4", freeDelivery ? "text-success-700" : "text-muted-foreground")} />
-                <span className={cn("font-medium", freeDelivery ? "text-success-700 dark:text-success-400" : "text-foreground")}>
+                <Truck className={cn("h-4 w-4", freeDelivery ? "text-success-700 dark:text-foreground" : "text-muted-foreground")} />
+                <span className={cn("font-medium", freeDelivery ? "text-success-700 dark:text-foreground" : "text-foreground")}>
                   {freeDelivery ? "Free delivery unlocked!" : `Add ${formatPHP(toFree)} for free delivery`}
                 </span>
               </div>
@@ -157,9 +157,9 @@ export default function CartPage() {
               <div className="flex justify-between text-muted-foreground">
                 <span>Delivery fee</span>
                 {freeDelivery ? (
-                  <span className="text-success-700 font-medium line-through-none flex items-center gap-1">
+                  <span className="text-success-700 dark:text-foreground font-medium line-through-none flex items-center gap-1">
                     <span className="line-through text-muted-foreground/60">{formatPHP(DELIVERY_FEE)}</span>
-                    <span className="text-success-700">FREE</span>
+                    <span className="text-success-700 dark:text-foreground">FREE</span>
                   </span>
                 ) : (
                   <span>{formatPHP(DELIVERY_FEE)}</span>

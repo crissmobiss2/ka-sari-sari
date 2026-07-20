@@ -309,9 +309,9 @@ export default function CheckoutPage() {
 
           {/* COD info box */}
           {selectedPayment === "cod" && (
-            <div className="flex items-start gap-2.5 rounded-xl bg-warning-50 border border-warning-300 p-3">
-              <AlertTriangle className="h-4 w-4 text-warning-700 shrink-0 mt-0.5" />
-              <p className="text-xs text-warning-700 leading-relaxed">
+            <div className="flex items-start gap-2.5 rounded-xl bg-warning-50 dark:bg-warning-500/10 border border-warning-300 p-3">
+              <AlertTriangle className="h-4 w-4 text-warning-700 dark:text-foreground shrink-0 mt-0.5" />
+              <p className="text-xs text-warning-700 dark:text-foreground leading-relaxed">
                 Please prepare exact change. Our driver will collect payment upon delivery.
               </p>
             </div>
@@ -345,7 +345,7 @@ export default function CheckoutPage() {
         </div>
 
         {error && (
-          <div className="flex items-center gap-2 rounded-xl bg-danger-50 border border-danger-200 px-4 py-3 text-sm text-danger-700">
+          <div className="flex items-center gap-2 rounded-xl bg-danger-50 dark:bg-danger-500/10 border border-danger-200 px-4 py-3 text-sm text-danger-700 dark:text-foreground">
             <AlertCircle className="h-4 w-4 shrink-0" />
             {error}
           </div>

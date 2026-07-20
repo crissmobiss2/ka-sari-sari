@@ -62,7 +62,7 @@ function StatusBanner({ status }: { status: PickList["status"] }) {
   }
   return (
     <div className="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-muted text-muted-foreground text-sm font-semibold w-fit">
-      <CheckCircle2 className="h-4 w-4 text-success-700" />
+      <CheckCircle2 className="h-4 w-4 text-success-700 dark:text-foreground" />
       Completed
     </div>
   );
@@ -152,7 +152,7 @@ function PickListCard({
                   "text-xs font-bold",
                   pl.status === "in_progress"
                     ? "border-blue-400 text-blue-600 bg-blue-50 dark:bg-blue-950/20"
-                    : "border-brand-400 text-brand-600 bg-brand-50 dark:bg-brand-950/20"
+                    : "border-brand-400 text-brand-600 bg-brand-50 dark:bg-brand-500/10 dark:bg-brand-950/20"
                 )}
               >
                 {remainingCount} item{remainingCount !== 1 ? "s" : ""} remaining
@@ -186,8 +186,8 @@ function PickListCard({
               <div className={cn(
                 "rounded-xl px-3 py-2.5 text-sm font-semibold",
                 scanFeedback.ok
-                  ? "bg-success-50 text-success-700 border border-success-200"
-                  : "bg-danger-50 text-danger-700 border border-danger-200"
+                  ? "bg-success-50 dark:bg-success-500/10 text-success-700 dark:text-foreground border border-success-200"
+                  : "bg-danger-50 dark:bg-danger-500/10 text-danger-700 dark:text-foreground border border-danger-200"
               )}>
                 {scanFeedback.text}
               </div>
@@ -201,7 +201,7 @@ function PickListCard({
                   className={cn(
                     "flex items-start gap-3 p-3 rounded-xl border cursor-pointer transition-colors",
                     isChecked
-                      ? "bg-success-50 border-success-200 dark:bg-success-950/20 dark:border-success-800"
+                      ? "bg-success-50 dark:bg-success-500/10 border-success-200 dark:bg-success-950/20 dark:border-success-800"
                       : "bg-muted/40 border-border hover:bg-muted/70"
                   )}
                 >
@@ -231,7 +231,7 @@ function PickListCard({
                     </div>
                   </div>
                   {isChecked && (
-                    <CheckCircle2 className="h-5 w-5 text-success-700 shrink-0 mt-0.5" />
+                    <CheckCircle2 className="h-5 w-5 text-success-700 dark:text-foreground shrink-0 mt-0.5" />
                   )}
                 </label>
               );
@@ -270,7 +270,7 @@ function PickListCard({
                     {item.pickedQty}/{item.quantity}
                   </span>
                   {item.status === "picked" && (
-                    <CheckCircle2 className="h-4 w-4 text-success-700" />
+                    <CheckCircle2 className="h-4 w-4 text-success-700 dark:text-foreground" />
                   )}
                   {item.status === "partial" && (
                     <div className="h-4 w-4 rounded-full border-2 border-blue-500 flex items-center justify-center">
@@ -311,7 +311,7 @@ function PickListCard({
         {pl.status === "completed" && (
           <div className="flex items-center justify-between text-sm text-muted-foreground pt-1 border-t border-border">
             <span className="flex items-center gap-1.5">
-              <CheckCircle2 className="h-4 w-4 text-success-700" />
+              <CheckCircle2 className="h-4 w-4 text-success-700 dark:text-foreground" />
               All items picked
             </span>
             {pl.completedAt && (
@@ -335,7 +335,7 @@ function EmptyState({ filter }: { filter: FilterTab }) {
   return (
     <Card>
       <CardContent className="p-8 text-center">
-        <CheckCircle2 className="h-12 w-12 text-success-700 mx-auto mb-3" />
+        <CheckCircle2 className="h-12 w-12 text-success-700 dark:text-foreground mx-auto mb-3" />
         <p className="text-lg font-semibold text-foreground">{title}</p>
         <p className="text-muted-foreground mt-1">{detail}</p>
       </CardContent>

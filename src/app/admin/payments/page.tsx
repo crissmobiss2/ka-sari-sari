@@ -130,7 +130,7 @@ const METHOD_CONFIG: Record<TxPaymentMethod, { label: string; icon: React.ReactN
   palawan:   { label: "Palawan",      icon: <Banknote className="h-3 w-3" />,   badgeClass: "bg-teal-50 text-teal-700 border-teal-200" },
   cebuana:   { label: "Cebuana",      icon: <Banknote className="h-3 w-3" />,   badgeClass: "bg-yellow-50 text-yellow-800 border-yellow-300" },
   terms:     { label: "Credit Terms", icon: <Banknote className="h-3 w-3" />,   badgeClass: "bg-gray-50 text-gray-700 border-gray-200" },
-  wallet:    { label: "KSS Wallet",   icon: <Wallet className="h-3 w-3" />,     badgeClass: "bg-brand-50 text-brand-700 border-brand-200" },
+  wallet:    { label: "KSS Wallet",   icon: <Wallet className="h-3 w-3" />,     badgeClass: "bg-brand-50 dark:bg-brand-500/10 text-brand-700 dark:text-foreground border-brand-200 dark:border-brand-500/30" },
   credit:    { label: "Credit",       icon: <Banknote className="h-3 w-3" />,   badgeClass: "bg-gray-50 text-gray-700 border-gray-200" },
 };
 
@@ -339,7 +339,7 @@ export default function PaymentsPage() {
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">
         <Card>
           <CardContent className="p-4">
-            <div className="h-8 w-8 rounded-xl flex items-center justify-center mb-3 bg-success-50 text-success-700">
+            <div className="h-8 w-8 rounded-xl flex items-center justify-center mb-3 bg-success-50 dark:bg-success-500/10 text-success-700 dark:text-foreground">
               <TrendingUp className="h-4 w-4" />
             </div>
             <p className="font-display text-lg font-bold text-foreground">{formatPHP(collected)}</p>
@@ -350,7 +350,7 @@ export default function PaymentsPage() {
 
         <Card>
           <CardContent className="p-4">
-            <div className="h-8 w-8 rounded-xl flex items-center justify-center mb-3 bg-warning-50 text-warning-700">
+            <div className="h-8 w-8 rounded-xl flex items-center justify-center mb-3 bg-warning-50 dark:bg-warning-500/10 text-warning-700 dark:text-foreground">
               <Clock className="h-4 w-4" />
             </div>
             <p className="font-display text-lg font-bold text-foreground">{formatPHP(totalPending)}</p>
@@ -374,7 +374,7 @@ export default function PaymentsPage() {
 
         <Card>
           <CardContent className="p-4">
-            <div className="h-8 w-8 rounded-xl flex items-center justify-center mb-3 bg-danger-50 text-danger-700 dark:text-danger-500">
+            <div className="h-8 w-8 rounded-xl flex items-center justify-center mb-3 bg-danger-50 dark:bg-danger-500/10 text-danger-700 dark:text-foreground">
               <TrendingDown className="h-4 w-4" />
             </div>
             <p className="font-display text-lg font-bold text-foreground">{formatPHP(failedTotal)}</p>
@@ -416,7 +416,7 @@ export default function PaymentsPage() {
             <div className="mt-2 space-y-1">
               <div className="flex justify-between text-xs">
                 <span className="text-muted-foreground">Collected</span>
-                <span className="font-semibold text-success-700">{formatPHP(stats.completed)}</span>
+                <span className="font-semibold text-success-700 dark:text-foreground">{formatPHP(stats.completed)}</span>
               </div>
               <div className="flex justify-between text-xs">
                 <span className="text-muted-foreground">Pending</span>
@@ -441,9 +441,9 @@ export default function PaymentsPage() {
 
       {/* ── COD reconciliation alert ─────────────────────────────────────── */}
       {needsReconcile.length > 0 && (
-        <div className="rounded-2xl border border-warning-200 bg-warning-50 dark:bg-surface-800 dark:border-warning-600/40 p-4">
+        <div className="rounded-2xl border border-warning-200 bg-warning-50 dark:bg-warning-500/10 dark:bg-surface-800 dark:border-warning-600/40 p-4">
           <div className="flex items-start gap-3">
-            <AlertCircle className="h-4 w-4 text-warning-700 shrink-0 mt-0.5" />
+            <AlertCircle className="h-4 w-4 text-warning-700 dark:text-foreground shrink-0 mt-0.5" />
             <div className="flex-1 min-w-0">
               <p className="text-sm font-semibold text-warning-800">
                 {needsReconcile.length} COD {needsReconcile.length === 1 ? "order needs" : "orders need"} reconciliation
@@ -465,7 +465,7 @@ export default function PaymentsPage() {
       {/* ── Filters ─────────────────────────────────────────────────────── */}
       <div className="space-y-3">
         {/* Method tabs */}
-        <div className="flex gap-1 bg-surface-100 rounded-xl p-1 w-full sm:w-auto sm:inline-flex">
+        <div className="flex gap-1 bg-surface-100 dark:bg-surface-800 rounded-xl p-1 w-full sm:w-auto sm:inline-flex">
           {METHOD_TABS.map((tab) => (
             <button
               key={tab.id}
@@ -522,7 +522,7 @@ export default function PaymentsPage() {
         <div className="overflow-x-auto">
           <table className="w-full text-sm">
             <thead>
-              <tr className="border-b border-border bg-surface-50">
+              <tr className="border-b border-border bg-surface-50 dark:bg-surface-900">
                 {["Order #", "Retailer", "Method", "Amount", "Status", "Date", "Action"].map((h) => (
                   <th
                     key={h}
@@ -663,7 +663,7 @@ export default function PaymentsPage() {
               </button>
             </div>
 
-            <div className="rounded-2xl bg-surface-50 border border-border p-4 space-y-3">
+            <div className="rounded-2xl bg-surface-50 dark:bg-surface-900 border border-border p-4 space-y-3">
               {[
                 {
                   label: "Amount",
@@ -750,7 +750,7 @@ export default function PaymentsPage() {
                   </button>
                   <button
                     onClick={() => { handleMarkFailed(selected.id); }}
-                    className="flex-1 h-10 rounded-xl border border-danger-200 text-danger-700 dark:text-danger-500 text-sm font-semibold hover:bg-danger-50 transition-colors"
+                    className="flex-1 h-10 rounded-xl border border-danger-200 text-danger-700 dark:text-foreground text-sm font-semibold hover:bg-danger-50 dark:bg-danger-500/10 transition-colors"
                   >
                     Mark Failed
                   </button>

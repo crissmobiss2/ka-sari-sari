@@ -347,15 +347,15 @@ export default function ChatPage() {
         {cart.length > 0 && (
           <div
             onClick={() => setShowCart(!showCart)}
-            className="mx-4 mb-2.5 flex items-center justify-between rounded-xl border border-success-200 bg-success-50 px-3 py-2 cursor-pointer hover:bg-success-100 transition-colors"
+            className="mx-4 mb-2.5 flex items-center justify-between rounded-xl border border-success-200 bg-success-50 dark:bg-success-500/10 px-3 py-2 cursor-pointer hover:bg-success-100 transition-colors"
           >
             <div className="flex items-center gap-2">
-              <ShoppingCart className="h-3.5 w-3.5 text-success-700" />
-              <span className="text-xs font-semibold text-success-700">
+              <ShoppingCart className="h-3.5 w-3.5 text-success-700 dark:text-foreground" />
+              <span className="text-xs font-semibold text-success-700 dark:text-foreground">
                 {cart.length} item{cart.length !== 1 ? "s" : ""} · ₱{cartTotal.toLocaleString()}
               </span>
             </div>
-            <span className="text-xs text-success-700 font-semibold">{showCart ? "Isara ▲" : "Tingnan ▼"}</span>
+            <span className="text-xs text-success-700 dark:text-foreground font-semibold">{showCart ? "Isara ▲" : "Tingnan ▼"}</span>
           </div>
         )}
 
@@ -379,7 +379,7 @@ export default function ChatPage() {
                 </div>
               </div>
             ))}
-            <div className="px-3 py-2 border-t border-border flex justify-between bg-surface-50">
+            <div className="px-3 py-2 border-t border-border flex justify-between bg-surface-50 dark:bg-surface-900">
               <span className="text-sm font-bold">Total</span>
               <span className="text-sm font-bold text-brand-500">₱{cartTotal.toLocaleString()}</span>
             </div>
@@ -414,9 +414,9 @@ export default function ChatPage() {
 
         {/* AI Order Summary card — appears below the last AI response */}
         {aiParsedOrder && aiParsedOrder.items.length > 0 && !isAiLoading && (
-          <div className="rounded-2xl border border-success-200 bg-success-50 p-4 space-y-3">
+          <div className="rounded-2xl border border-success-200 bg-success-50 dark:bg-success-500/10 p-4 space-y-3">
             <div className="flex items-center justify-between">
-              <h3 className="text-sm font-bold text-success-700">Order Summary</h3>
+              <h3 className="text-sm font-bold text-success-700 dark:text-foreground">Order Summary</h3>
               <button
                 onClick={() => setAiParsedOrder(null)}
                 className="text-muted-foreground hover:text-foreground transition-colors"
@@ -434,9 +434,9 @@ export default function ChatPage() {
                   <span className={cn(
                     "text-[10px] rounded-full px-1.5 py-0.5 font-semibold",
                     item.confidence === "high"
-                      ? "bg-success-100 text-success-700"
+                      ? "bg-success-100 text-success-700 dark:text-foreground"
                       : item.confidence === "medium"
-                        ? "bg-warning-100 text-warning-700"
+                        ? "bg-warning-100 text-warning-700 dark:text-foreground"
                         : "bg-surface-200 dark:bg-surface-800 text-muted-foreground"
                   )}>
                     {item.confidence}
@@ -455,10 +455,10 @@ export default function ChatPage() {
             )}
 
             {aiParsedOrder.clarifications.length > 0 && (
-              <div className="rounded-lg bg-warning-50 border border-warning-200 px-3 py-2 space-y-0.5">
-                <p className="text-xs font-medium text-warning-700">Needs clarification:</p>
+              <div className="rounded-lg bg-warning-50 dark:bg-warning-500/10 border border-warning-200 px-3 py-2 space-y-0.5">
+                <p className="text-xs font-medium text-warning-700 dark:text-foreground">Needs clarification:</p>
                 {aiParsedOrder.clarifications.map((c, i) => (
-                  <p key={i} className="text-xs text-warning-700">• {c}</p>
+                  <p key={i} className="text-xs text-warning-700 dark:text-foreground">• {c}</p>
                 ))}
               </div>
             )}

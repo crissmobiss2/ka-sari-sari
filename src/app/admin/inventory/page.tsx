@@ -81,7 +81,7 @@ export default function AdminInventoryPage() {
           <div className="flex items-center gap-3">
             <h1 className="font-display text-2xl font-bold text-foreground">Inventory</h1>
             {alertCount > 0 && (
-              <span className="inline-flex items-center gap-1.5 rounded-full bg-danger-50 px-3 py-1 text-xs font-semibold text-danger-700 dark:text-danger-500 ring-1 ring-danger-500/20">
+              <span className="inline-flex items-center gap-1.5 rounded-full bg-danger-50 dark:bg-danger-500/10 px-3 py-1 text-xs font-semibold text-danger-700 dark:text-foreground ring-1 ring-danger-500/20">
                 <AlertTriangle className="h-3.5 w-3.5" />
                 {alertCount} alert{alertCount !== 1 ? "s" : ""}
               </span>
@@ -93,13 +93,13 @@ export default function AdminInventoryPage() {
 
       {/* ── Urgent alert banner (only when there are issues) ── */}
       {(lowStockCount > 0 || outCount > 0) && (
-        <div className="rounded-xl border border-warning-500/30 bg-warning-50 dark:bg-surface-800 dark:border-warning-600/40 px-4 py-3 flex flex-col sm:flex-row sm:items-center gap-3">
-          <AlertTriangle className="h-5 w-5 text-warning-700 dark:text-warning-500 shrink-0" />
-          <div className="flex-1 text-sm text-warning-700 dark:text-warning-500">
+        <div className="rounded-xl border border-warning-500/30 bg-warning-50 dark:bg-warning-500/10 dark:bg-surface-800 dark:border-warning-600/40 px-4 py-3 flex flex-col sm:flex-row sm:items-center gap-3">
+          <AlertTriangle className="h-5 w-5 text-warning-700 dark:text-foreground shrink-0" />
+          <div className="flex-1 text-sm text-warning-700 dark:text-foreground">
             <span className="font-semibold">Stock alert: </span>
             {outCount > 0 && (
               <span>
-                <span className="font-semibold text-danger-700 dark:text-danger-500">{outCount}</span> product{outCount !== 1 ? "s" : ""} out of stock
+                <span className="font-semibold text-danger-700 dark:text-foreground">{outCount}</span> product{outCount !== 1 ? "s" : ""} out of stock
                 {lowStockCount > 0 ? ", " : ""}
               </span>
             )}
@@ -116,7 +116,7 @@ export default function AdminInventoryPage() {
               View critical items
             </button>
           </div>
-          <span className="text-xs text-warning-700 font-medium shrink-0">
+          <span className="text-xs text-warning-700 dark:text-foreground font-medium shrink-0">
             Est. restock: {formatPHP(totalRestockValue)}
           </span>
         </div>
@@ -126,9 +126,9 @@ export default function AdminInventoryPage() {
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
         {[
           { label: "Total Products",  value: PRODUCTS.length, icon: Package,      color: "text-foreground",    bg: "" },
-          { label: "Low Stock",       value: lowStockCount,   icon: TrendingDown,  color: "text-warning-700",   bg: "bg-warning-50 dark:bg-card" },
-          { label: "Out of Stock",    value: outCount,        icon: AlertTriangle, color: "text-danger-700 dark:text-danger-500",    bg: "bg-danger-50 dark:bg-card" },
-          { label: "Showing",         value: filtered.length, icon: ShoppingCart,  color: "text-brand-600",     bg: "bg-brand-50 dark:bg-card" },
+          { label: "Low Stock",       value: lowStockCount,   icon: TrendingDown,  color: "text-warning-700 dark:text-foreground",   bg: "bg-warning-50 dark:bg-warning-500/10 dark:bg-card" },
+          { label: "Out of Stock",    value: outCount,        icon: AlertTriangle, color: "text-danger-700 dark:text-foreground",    bg: "bg-danger-50 dark:bg-danger-500/10 dark:bg-card" },
+          { label: "Showing",         value: filtered.length, icon: ShoppingCart,  color: "text-brand-600",     bg: "bg-brand-50 dark:bg-brand-500/10 dark:bg-card" },
         ].map((s) => (
           <Card key={s.label} className={cn("p-4", s.bg)}>
             <div className="flex items-center gap-3">
@@ -260,7 +260,7 @@ export default function AdminInventoryPage() {
                         <div className="flex items-baseline gap-1">
                           <span className={cn(
                             "font-semibold tabular-nums",
-                            isOut ? "text-danger-700 dark:text-danger-500" : isLow ? "text-warning-700" : "text-foreground"
+                            isOut ? "text-danger-700 dark:text-foreground" : isLow ? "text-warning-700 dark:text-foreground" : "text-foreground"
                           )}>
                             {formatNumber(product.stock)}
                           </span>

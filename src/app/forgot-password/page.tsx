@@ -315,7 +315,7 @@ export default function ForgotPasswordPage() {
 
               {success ? (
                 <div className="text-center space-y-4">
-                  <div className="flex h-16 w-16 items-center justify-center rounded-full bg-success-50 border border-success-500/25 mx-auto">
+                  <div className="flex h-16 w-16 items-center justify-center rounded-full bg-success-50 dark:bg-success-500/10 border border-success-500/25 mx-auto">
                     <CheckCircle2 className="h-8 w-8 text-success-500" />
                   </div>
                   <h1 className="font-display text-2xl font-bold text-foreground">Password reset!</h1>
@@ -376,7 +376,7 @@ export default function ForgotPasswordPage() {
                     </div>
 
                     {passwordError && (
-                      <p className="text-sm text-danger-700 dark:text-danger-500 font-medium">{passwordError}</p>
+                      <p className="text-sm text-danger-700 dark:text-foreground font-medium">{passwordError}</p>
                     )}
 
                     <Button

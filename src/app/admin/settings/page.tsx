@@ -166,7 +166,7 @@ function AiFeatureRow({ feature }: { feature: AiFeature }) {
           )}
 
           {!enabled && (
-            <div className="rounded-lg bg-surface-100 border border-dashed border-border px-3 py-2.5 text-xs text-muted-foreground">
+            <div className="rounded-lg bg-surface-100 dark:bg-surface-800 border border-dashed border-border px-3 py-2.5 text-xs text-muted-foreground">
               Enable this feature to configure its settings.
             </div>
           )}
@@ -238,7 +238,7 @@ export default function AdminSettingsPage() {
               />
             ))}
             {saveErrors[section.title] && (
-              <p className="text-sm text-danger-700">{saveErrors[section.title]}</p>
+              <p className="text-sm text-danger-700 dark:text-foreground">{saveErrors[section.title]}</p>
             )}
             <Button size="md" onClick={() => handleSaveSection(section.title)} className="flex items-center gap-1.5">
               {savedSections[section.title] ? <><Check className="h-4 w-4" /> Saved!</> : `Save ${section.title}`}

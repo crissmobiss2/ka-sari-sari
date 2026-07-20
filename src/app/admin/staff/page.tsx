@@ -64,7 +64,7 @@ const ROLE_CONFIG: Record<Role, { label: string; avatarClass: string; badgeClass
   driver: {
     label: "Driver",
     avatarClass: "bg-brand-700",
-    badgeClass: "bg-brand-50 dark:bg-brand-500/20 text-brand-700 dark:text-foreground border border-brand-200 dark:border-brand-500/30",
+    badgeClass: "bg-brand-50 dark:bg-brand-500/10 dark:bg-brand-500/20 text-brand-700 dark:text-foreground border border-brand-200 dark:border-brand-500/30",
   },
 };
 
@@ -203,7 +203,7 @@ function AddStaffModal({ onClose, onAdd }: AddStaffModalProps) {
 
           {/* API error */}
           {apiError && (
-            <p className="text-sm text-danger-700 dark:text-danger-500 font-medium">{apiError}</p>
+            <p className="text-sm text-danger-700 dark:text-foreground font-medium">{apiError}</p>
           )}
 
           {/* Actions */}
@@ -365,7 +365,7 @@ function StaffCard({ member, onToggleStatus, onEdit }: StaffCardProps) {
         <span
           className={`inline-block w-2 h-2 rounded-full shrink-0 ${isActive ? "bg-success-500" : "bg-surface-300"}`}
         />
-        <span className={`text-xs font-medium ${isActive ? "text-success-700" : "text-muted-foreground"}`}>
+        <span className={`text-xs font-medium ${isActive ? "text-success-700 dark:text-foreground" : "text-muted-foreground"}`}>
           {isActive ? "Active" : "Inactive"}
         </span>
         <span className="text-xs text-muted-foreground">· Last active: {member.lastActive}</span>
@@ -388,8 +388,8 @@ function StaffCard({ member, onToggleStatus, onEdit }: StaffCardProps) {
           onClick={() => onToggleStatus(member.id)}
           className={`flex-1 text-xs ${
             isActive
-              ? "border-danger-200 dark:border-danger-500/40 text-danger-700 dark:text-danger-500 dark:text-danger-500 hover:bg-danger-50 dark:hover:bg-danger-500/10"
-              : "border-success-200 dark:border-success-500/40 text-success-700 dark:text-success-500 hover:bg-success-50 dark:hover:bg-success-500/10"
+              ? "border-danger-200 dark:border-danger-500/40 text-danger-700 dark:text-foreground hover:bg-danger-50 dark:bg-danger-500/10 dark:hover:bg-danger-500/10"
+              : "border-success-200 dark:border-success-500/40 text-success-700 dark:text-foreground hover:bg-success-50 dark:bg-success-500/10 dark:hover:bg-success-500/10"
           }`}
         >
           {isActive ? <Slash className="h-3 w-3" /> : <Check className="h-3 w-3" />}
@@ -470,7 +470,7 @@ export default function AdminStaffPage() {
         <div className="grid grid-cols-3 gap-4 px-6 py-4">
           {/* Total Staff */}
           <div className="rounded-2xl border border-border bg-card p-4 flex items-center gap-3">
-            <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-brand-50 dark:bg-brand-500/10 text-brand-600 dark:text-brand-400 shrink-0">
+            <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-brand-50 dark:bg-brand-500/10 text-brand-600 shrink-0">
               <Users className="h-5 w-5" />
             </div>
             <div>

@@ -223,17 +223,17 @@ export default function WalletPage() {
 
         {/* Payment pending notice */}
         {paymentPending && (
-          <div className="flex items-start gap-3 rounded-2xl border border-warning-200 bg-warning-50 px-4 py-3.5">
-            <Clock className="h-4 w-4 text-warning-700 shrink-0 mt-0.5" />
+          <div className="flex items-start gap-3 rounded-2xl border border-warning-200 bg-warning-50 dark:bg-warning-500/10 px-4 py-3.5">
+            <Clock className="h-4 w-4 text-warning-700 dark:text-foreground shrink-0 mt-0.5" />
             <div className="flex-1">
-              <p className="text-sm font-semibold text-warning-700">Waiting for payment confirmation…</p>
-              <p className="text-xs text-warning-700 mt-0.5">
+              <p className="text-sm font-semibold text-warning-700 dark:text-foreground">Waiting for payment confirmation…</p>
+              <p className="text-xs text-warning-700 dark:text-foreground mt-0.5">
                 Complete your payment in the checkout page. Your wallet balance will update automatically once confirmed.
               </p>
             </div>
             <button
               onClick={() => setPaymentPending(false)}
-              className="text-warning-500 hover:text-warning-700 transition-colors shrink-0"
+              className="text-warning-500 hover:text-warning-700 dark:text-foreground transition-colors shrink-0"
             >
               <X className="h-4 w-4" />
             </button>
@@ -246,7 +246,7 @@ export default function WalletPage() {
             onClick={() => { setShowTopUp(true); setTopUpError(""); setIsCustomAmount(false); setCustomAmount(""); }}
             className="flex items-center gap-3 rounded-2xl border border-border bg-card shadow-card px-4 py-4 hover:border-brand-300 transition-colors active:scale-95"
           >
-            <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-brand-50 text-brand-500">
+            <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-brand-50 dark:bg-brand-500/10 text-brand-500">
               <Plus className="h-5 w-5" />
             </div>
             <div className="text-left">
@@ -258,7 +258,7 @@ export default function WalletPage() {
             onClick={openWithdraw}
             className="flex items-center gap-3 rounded-2xl border border-border bg-card shadow-card px-4 py-4 hover:border-brand-300 transition-colors active:scale-95"
           >
-            <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-surface-100 text-surface-900">
+            <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-surface-100 dark:bg-surface-800 text-surface-900">
               <CreditCard className="h-5 w-5" />
             </div>
             <div className="text-left">
@@ -270,7 +270,7 @@ export default function WalletPage() {
 
         {/* Top-up modal inline */}
         {showTopUp && (
-          <div className="rounded-2xl border border-brand-200 bg-brand-50 p-5 space-y-4">
+          <div className="rounded-2xl border border-brand-200 bg-brand-50 dark:bg-brand-500/10 p-5 space-y-4">
             <div className="flex items-center justify-between">
               <h3 className="font-display text-sm font-bold text-foreground">Add Money to Wallet</h3>
               <button onClick={() => setShowTopUp(false)} className="text-muted-foreground hover:text-foreground">
@@ -302,7 +302,7 @@ export default function WalletPage() {
                 className={cn(
                   "w-full rounded-xl border py-2.5 text-sm font-semibold transition-colors",
                   isCustomAmount
-                    ? "border-brand-500 bg-brand-50 text-brand-600"
+                    ? "border-brand-500 bg-brand-50 dark:bg-brand-500/10 text-brand-600"
                     : "border-border bg-card text-muted-foreground hover:border-brand-300 hover:text-foreground"
                 )}
               >
@@ -347,9 +347,9 @@ export default function WalletPage() {
             </div>
 
             {topUpError && (
-              <div className="flex items-center gap-2 rounded-xl bg-danger-50 border border-danger-200 px-3 py-2.5">
+              <div className="flex items-center gap-2 rounded-xl bg-danger-50 dark:bg-danger-500/10 border border-danger-200 px-3 py-2.5">
                 <AlertCircle className="h-4 w-4 text-danger-500 shrink-0" />
-                <p className="text-xs text-danger-700">{topUpError}</p>
+                <p className="text-xs text-danger-700 dark:text-foreground">{topUpError}</p>
               </div>
             )}
 
@@ -402,7 +402,7 @@ export default function WalletPage() {
                         onClick={() => setWithdrawMethod(m.id)}
                         className={cn(
                           "flex w-full items-center gap-3 rounded-xl border px-4 py-3 transition-colors",
-                          withdrawMethod === m.id ? "border-brand-500 bg-brand-50" : "border-border bg-card hover:border-brand-200"
+                          withdrawMethod === m.id ? "border-brand-500 bg-brand-50 dark:bg-brand-500/10" : "border-border bg-card hover:border-brand-200"
                         )}
                       >
                         <span className="text-base">{m.icon}</span>
@@ -439,9 +439,9 @@ export default function WalletPage() {
                 </div>
 
                 {withdrawAmountError && (
-                  <div className="flex items-center gap-2 rounded-xl bg-danger-50 border border-danger-200 px-3 py-2.5">
+                  <div className="flex items-center gap-2 rounded-xl bg-danger-50 dark:bg-danger-500/10 border border-danger-200 px-3 py-2.5">
                     <AlertCircle className="h-4 w-4 text-danger-500 shrink-0" />
-                    <p className="text-xs text-danger-700">{withdrawAmountError}</p>
+                    <p className="text-xs text-danger-700 dark:text-foreground">{withdrawAmountError}</p>
                   </div>
                 )}
 
@@ -458,7 +458,7 @@ export default function WalletPage() {
             {/* Step: Account number */}
             {withdrawStep === "account" && (
               <>
-                <div className="rounded-xl bg-surface-100 px-4 py-3 flex items-center gap-3">
+                <div className="rounded-xl bg-surface-100 dark:bg-surface-800 px-4 py-3 flex items-center gap-3">
                   <span className="text-lg">{selectedWithdrawMethod.icon}</span>
                   <div>
                     <p className="text-sm font-semibold text-surface-900">{selectedWithdrawMethod.label}</p>
@@ -532,9 +532,9 @@ export default function WalletPage() {
                 </div>
 
                 {withdrawError && (
-                  <div className="flex items-center gap-2 rounded-xl bg-danger-50 border border-danger-200 px-3 py-2.5">
+                  <div className="flex items-center gap-2 rounded-xl bg-danger-50 dark:bg-danger-500/10 border border-danger-200 px-3 py-2.5">
                     <AlertCircle className="h-4 w-4 text-danger-500 shrink-0" />
-                    <p className="text-xs text-danger-700">{withdrawError}</p>
+                    <p className="text-xs text-danger-700 dark:text-foreground">{withdrawError}</p>
                   </div>
                 )}
 
@@ -556,7 +556,7 @@ export default function WalletPage() {
             {withdrawStep === "done" && (
               <div className="text-center py-4 space-y-3">
                 <div className="flex h-16 w-16 items-center justify-center rounded-full bg-success-100 mx-auto">
-                  <CheckCircle2 className="h-8 w-8 text-success-700" />
+                  <CheckCircle2 className="h-8 w-8 text-success-700 dark:text-foreground" />
                 </div>
                 <div>
                   <p className="font-display text-base font-bold text-foreground">{formatPHP(withdrawAmount)} on its way!</p>
@@ -581,7 +581,7 @@ export default function WalletPage() {
                 <div key={txn.id} className="flex items-center gap-3 px-4 py-3.5">
                   <div className={cn(
                     "flex h-10 w-10 items-center justify-center rounded-xl shrink-0",
-                    txn.type === "credit" ? "bg-success-50 text-success-700" : "bg-danger-50 text-danger-500"
+                    txn.type === "credit" ? "bg-success-50 dark:bg-success-500/10 text-success-700 dark:text-foreground" : "bg-danger-50 dark:bg-danger-500/10 text-danger-500"
                   )}>
                     {txn.type === "credit"
                       ? <ArrowDownLeft className="h-5 w-5" />
@@ -596,7 +596,7 @@ export default function WalletPage() {
                   </div>
                   <span className={cn(
                     "text-sm font-bold shrink-0",
-                    txn.type === "credit" ? "text-success-700" : "text-foreground"
+                    txn.type === "credit" ? "text-success-700 dark:text-foreground" : "text-foreground"
                   )}>
                     {txn.type === "credit" ? "+" : "−"}{formatPHP(txn.amount)}
                   </span>

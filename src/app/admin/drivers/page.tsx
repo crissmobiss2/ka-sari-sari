@@ -58,13 +58,13 @@ const ROUTES: Route[] = [
 const STATUS_CONFIG: Record<DriverStatus, { label: string; badgeClass: string; avatarClass: string }> = {
   on_route: {
     label: "On Route",
-    badgeClass: "bg-brand-50 text-brand-600 border border-brand-200",
+    badgeClass: "bg-brand-50 dark:bg-brand-500/10 text-brand-700 dark:text-foreground border border-brand-200 dark:border-brand-500/30",
     avatarClass: "bg-brand-100 dark:bg-brand-700 text-brand-600 dark:text-white",
   },
   active: {
     label: "Available",
-    badgeClass: "bg-success-50 text-success-700 border border-success-200",
-    avatarClass: "bg-success-100 text-success-700",
+    badgeClass: "bg-success-50 dark:bg-success-500/10 text-success-700 dark:text-foreground border border-success-200 dark:border-success-500/30",
+    avatarClass: "bg-success-100 text-success-700 dark:text-foreground",
   },
   off_duty: {
     label: "Off Duty",
@@ -248,10 +248,10 @@ export default function AdminDriversPage() {
 
       {/* Stats */}
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
-        <StatCard icon={Truck} value={onRoute} label="On Route" color="bg-brand-50 text-brand-500" />
-        <StatCard icon={CheckCircle2} value={available} label="Available" color="bg-success-50 text-success-500" />
+        <StatCard icon={Truck} value={onRoute} label="On Route" color="bg-brand-50 dark:bg-brand-500/10 text-brand-700 dark:text-foreground" />
+        <StatCard icon={CheckCircle2} value={available} label="Available" color="bg-success-50 dark:bg-success-500/10 text-success-700 dark:text-foreground" />
         <StatCard icon={Clock} value={offDuty} label="Off Duty" color="bg-surface-100 dark:bg-surface-800 text-muted-foreground" />
-        <StatCard icon={TrendingUp} value={deliveriesToday} label="Deliveries Today" color="bg-info-50 text-info-500" />
+        <StatCard icon={TrendingUp} value={deliveriesToday} label="Deliveries Today" color="bg-info-50 dark:bg-info-500/10 text-info-700 dark:text-foreground" />
       </div>
 
       {/* Driver Cards Grid */}
@@ -309,19 +309,19 @@ export default function AdminDriversPage() {
 
               {/* Assigned route */}
               {assignedRoute && (
-                <div className="flex items-center gap-1.5 rounded-lg bg-brand-50 border border-brand-100 px-2.5 py-1.5">
+                <div className="flex items-center gap-1.5 rounded-lg bg-brand-50 dark:bg-brand-500/10 border border-brand-100 px-2.5 py-1.5">
                   <Navigation className="h-3 w-3 text-brand-500 shrink-0" />
-                  <span className="text-xs text-brand-700 font-medium truncate">{assignedRoute.name}</span>
+                  <span className="text-xs text-brand-700 dark:text-foreground font-medium truncate">{assignedRoute.name}</span>
                 </div>
               )}
 
               {/* Delivery stats */}
               <div className="grid grid-cols-2 gap-3">
-                <div className="rounded-xl bg-surface-50 p-2.5 text-center">
+                <div className="rounded-xl bg-surface-50 dark:bg-surface-900 p-2.5 text-center">
                   <p className="text-lg font-bold text-surface-900 tabular-nums">{driver.deliveriesToday}</p>
                   <p className="text-[11px] text-muted-foreground">Today</p>
                 </div>
-                <div className="rounded-xl bg-surface-50 p-2.5 text-center">
+                <div className="rounded-xl bg-surface-50 dark:bg-surface-900 p-2.5 text-center">
                   <p className="text-lg font-bold text-surface-900 tabular-nums">{driver.deliveriesTotal.toLocaleString("en-PH")}</p>
                   <p className="text-[11px] text-muted-foreground">All Time</p>
                 </div>
@@ -496,7 +496,7 @@ export default function AdminDriversPage() {
                 { label: "Service Area", value: viewDriver.area ?? "â€”" },
                 { label: "Member Since", value: viewDriver.joined ?? "â€”" },
               ].map(({ label, value }) => (
-                <div key={label} className="rounded-xl bg-surface-50 px-3 py-3">
+                <div key={label} className="rounded-xl bg-surface-50 dark:bg-surface-900 px-3 py-3">
                   <p className="text-[10px] text-muted-foreground uppercase tracking-wide font-medium">{label}</p>
                   <p className="text-sm font-semibold text-surface-900 mt-0.5">{value}</p>
                 </div>
@@ -512,7 +512,7 @@ export default function AdminDriversPage() {
                   { label: "This Month", value: viewDriver.deliveriesMonth },
                   { label: "All Time", value: viewDriver.deliveriesTotal.toLocaleString("en-PH") },
                 ].map(({ label, value }) => (
-                  <div key={label} className="rounded-xl bg-surface-50 py-3 text-center">
+                  <div key={label} className="rounded-xl bg-surface-50 dark:bg-surface-900 py-3 text-center">
                     <p className="text-xl font-black text-surface-900 tabular-nums">{value}</p>
                     <p className="text-[10px] text-muted-foreground">{label}</p>
                   </div>
@@ -524,15 +524,15 @@ export default function AdminDriversPage() {
             {(() => {
               const assignedRoute = routes.find((r) => r.assignedTo === viewDriver.id);
               return assignedRoute ? (
-                <div className="flex items-center gap-2 rounded-xl bg-brand-50 border border-brand-100 px-4 py-3">
+                <div className="flex items-center gap-2 rounded-xl bg-brand-50 dark:bg-brand-500/10 border border-brand-100 px-4 py-3">
                   <Navigation className="h-4 w-4 text-brand-500 shrink-0" />
                   <div>
-                    <p className="text-sm font-semibold text-brand-700">{assignedRoute.name}</p>
+                    <p className="text-sm font-semibold text-brand-700 dark:text-foreground">{assignedRoute.name}</p>
                     <p className="text-xs text-brand-500">{assignedRoute.stops} stops Â· ~{assignedRoute.estimatedHours}h</p>
                   </div>
                 </div>
               ) : (
-                <div className="flex items-center gap-2 rounded-xl bg-surface-100 border border-dashed border-border px-4 py-3">
+                <div className="flex items-center gap-2 rounded-xl bg-surface-100 dark:bg-surface-800 border border-dashed border-border px-4 py-3">
                   <AlertCircle className="h-4 w-4 text-muted-foreground shrink-0" />
                   <p className="text-sm text-muted-foreground">No route assigned</p>
                 </div>
@@ -563,7 +563,7 @@ export default function AdminDriversPage() {
               <button onClick={() => setRouteDriver(null)} className="text-muted-foreground hover:text-foreground"><X className="h-5 w-5" /></button>
             </div>
 
-            <div className="flex items-center gap-3 rounded-xl bg-surface-100 px-4 py-3">
+            <div className="flex items-center gap-3 rounded-xl bg-surface-100 dark:bg-surface-800 px-4 py-3">
               <div className={cn("flex h-9 w-9 items-center justify-center rounded-xl text-sm font-bold", STATUS_CONFIG[routeDriver.status].avatarClass)}>
                 {routeDriver.initials}
               </div>
@@ -585,7 +585,7 @@ export default function AdminDriversPage() {
                       onClick={() => setSelectedRoute(isSelected ? "" : route.id)}
                       className={cn(
                         "w-full flex items-start gap-3 rounded-xl border px-4 py-3 text-left transition-colors",
-                        isSelected ? "border-brand-500 bg-brand-50" : "border-border bg-card hover:border-brand-200"
+                        isSelected ? "border-brand-500 bg-brand-50 dark:bg-brand-500/10" : "border-border bg-card hover:border-brand-200"
                       )}
                     >
                       <div className={cn("mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-full border-2", isSelected ? "border-brand-500 bg-brand-500" : "border-border")}>
@@ -595,7 +595,7 @@ export default function AdminDriversPage() {
                         <div className="flex items-center justify-between gap-2">
                           <p className="text-sm font-semibold text-foreground truncate">{route.name}</p>
                           {assignedDriver && (
-                            <span className="text-[10px] text-warning-700 bg-warning-50 border border-warning-200 rounded-full px-2 py-0.5 shrink-0">
+                            <span className="text-[10px] text-warning-700 dark:text-foreground bg-warning-50 dark:bg-warning-500/10 border border-warning-200 rounded-full px-2 py-0.5 shrink-0">
                               {assignedDriver.initials}
                             </span>
                           )}

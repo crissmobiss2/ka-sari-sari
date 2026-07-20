@@ -203,8 +203,8 @@ export default function AdminOrdersPage() {
                     <span
                       className={`rounded-full px-2 py-0.5 text-xs font-medium ${
                         order.paymentStatus === "paid"
-                          ? "bg-success-50 text-success-700"
-                          : "bg-warning-50 text-warning-700"
+                          ? "bg-success-50 dark:bg-success-500/10 text-success-700 dark:text-foreground"
+                          : "bg-warning-50 dark:bg-warning-500/10 text-warning-700 dark:text-foreground"
                       }`}
                     >
                       {order.paymentStatus}

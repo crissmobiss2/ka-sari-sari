@@ -165,7 +165,7 @@ export default function DriverHomePage() {
         variant={onDuty ? "outline" : "default"}
         className={`w-full h-14 text-base font-semibold rounded-2xl ${
           onDuty
-            ? "border-danger-500 text-danger-700 dark:text-danger-500 hover:bg-danger-50"
+            ? "border-danger-500 text-danger-700 dark:text-foreground hover:bg-danger-50 dark:bg-danger-500/10"
             : "bg-brand-700 text-white"
         }`}
         onClick={handleDutyToggle}
@@ -201,7 +201,7 @@ export default function DriverHomePage() {
           <SummaryCard
             label="Est. Earnings"
             value={formatPHP(estEarnings)}
-            valueClass="text-success-700"
+            valueClass="text-success-700 dark:text-foreground"
             badge="today"
             badgeVariant="success"
           />
@@ -216,7 +216,7 @@ export default function DriverHomePage() {
           <StatCell
             label="Success"
             value={displayTotal > 0 ? `${Math.round((displayDelivered / displayTotal) * 100)}%` : "—"}
-            valueClass="text-success-700"
+            valueClass="text-success-700 dark:text-foreground"
           />
         </div>
       </Card>
@@ -225,7 +225,7 @@ export default function DriverHomePage() {
       <Card className="p-4 border-brand-200 bg-brand-50/40">
         <div className="flex items-start justify-between mb-3">
           <div>
-            <p className="text-xs font-semibold text-brand-700 dark:text-brand-500 uppercase tracking-wider mb-0.5">
+            <p className="text-xs font-semibold text-brand-700 uppercase tracking-wider mb-0.5">
               Active Route
             </p>
             <h2 className="font-display text-base font-bold text-foreground">{route.name}</h2>
@@ -260,7 +260,7 @@ export default function DriverHomePage() {
         {nextStop ? (
           <div className="flex items-center gap-3">
             <div className="w-10 h-10 rounded-full bg-brand-100 flex items-center justify-center flex-shrink-0">
-              <span className="font-display text-sm font-bold text-brand-700 dark:text-brand-500">
+              <span className="font-display text-sm font-bold text-brand-700">
                 {pendingDeliveries.indexOf(nextStop) + 1}
               </span>
             </div>

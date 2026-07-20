@@ -350,7 +350,7 @@ export default function WhatsAppSettingsPage() {
           {saveMessage && (
             <span className={cn(
               "text-sm font-medium",
-              saveMessage === "Settings saved" ? "text-success-700" : "text-amber-700"
+              saveMessage === "Settings saved" ? "text-success-700 dark:text-foreground" : "text-amber-700"
             )}>
               {saveMessage}
             </span>
@@ -368,10 +368,10 @@ export default function WhatsAppSettingsPage() {
             <div className="flex items-center gap-2.5">
               <div className={cn(
                 "flex h-8 w-8 items-center justify-center rounded-xl",
-                isConnected ? "bg-success-50" : "bg-amber-50"
+                isConnected ? "bg-success-50 dark:bg-success-500/10" : "bg-amber-50"
               )}>
                 {isConnected
-                  ? <Wifi className="h-4 w-4 text-success-700" />
+                  ? <Wifi className="h-4 w-4 text-success-700 dark:text-foreground" />
                   : <WifiOff className="h-4 w-4 text-amber-700" />
                 }
               </div>
@@ -380,8 +380,8 @@ export default function WhatsAppSettingsPage() {
                 <div className="flex items-center gap-1.5 mt-0.5">
                   {isConnected ? (
                     <>
-                      <CheckCircle2 className="h-3 w-3 text-success-700" />
-                      <span className="text-xs font-medium text-success-700">Connected</span>
+                      <CheckCircle2 className="h-3 w-3 text-success-700 dark:text-foreground" />
+                      <span className="text-xs font-medium text-success-700 dark:text-foreground">Connected</span>
                     </>
                   ) : (
                     <>
@@ -459,7 +459,7 @@ export default function WhatsAppSettingsPage() {
               )}
             </Button>
             {testMessage && (
-              <span className="text-sm font-medium text-success-700">{testMessage}</span>
+              <span className="text-sm font-medium text-success-700 dark:text-foreground">{testMessage}</span>
             )}
             {!isConnected && (
               <Button size="sm" onClick={handleConnect} disabled={isConnecting}>
@@ -467,7 +467,7 @@ export default function WhatsAppSettingsPage() {
               </Button>
             )}
             {connectMessage && (
-              <span className="text-sm font-medium text-success-700">{connectMessage}</span>
+              <span className="text-sm font-medium text-success-700 dark:text-foreground">{connectMessage}</span>
             )}
           </div>
         </CardContent>
@@ -508,7 +508,7 @@ export default function WhatsAppSettingsPage() {
                   </div>
 
                   {/* Preview box */}
-                  <div className="rounded-xl bg-surface-50 border border-border/60 px-3.5 py-3">
+                  <div className="rounded-xl bg-surface-50 dark:bg-surface-900 border border-border/60 px-3.5 py-3">
                     <p className="text-[10px] font-semibold uppercase tracking-wider text-muted-foreground mb-1.5">
                       Message Preview
                     </p>
@@ -579,7 +579,7 @@ export default function WhatsAppSettingsPage() {
                 </div>
 
                 {isReEnabled ? (
-                  <span className="inline-flex items-center gap-1 rounded-full bg-success-50 border border-success-500/20 px-2.5 py-0.5 text-xs font-medium text-success-700">
+                  <span className="inline-flex items-center gap-1 rounded-full bg-success-50 dark:bg-success-500/10 border border-success-500/20 px-2.5 py-0.5 text-xs font-medium text-success-700 dark:text-foreground">
                     <CheckCircle2 className="h-3 w-3" />
                     Re-enabled
                   </span>
@@ -587,7 +587,7 @@ export default function WhatsAppSettingsPage() {
                   <button
                     type="button"
                     onClick={() => handleReEnable(retailer.id)}
-                    className="inline-flex items-center gap-1.5 rounded-lg border border-border bg-surface-50 px-3 py-1.5 text-xs font-medium text-surface-900 hover:bg-surface-100 transition-colors"
+                    className="inline-flex items-center gap-1.5 rounded-lg border border-border bg-surface-50 dark:bg-surface-900 px-3 py-1.5 text-xs font-medium text-surface-900 hover:bg-surface-100 dark:bg-surface-800 transition-colors"
                   >
                     <RotateCcw className="h-3 w-3" />
                     Re-enable

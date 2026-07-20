@@ -47,17 +47,17 @@ const AVAILABLE_DRIVERS = [
 const STATUS_CONFIG: Record<RouteStatus, { label: string; badgeClass: string; headerClass: string }> = {
   active: {
     label: "Active",
-    badgeClass: "bg-brand-50 text-brand-700 border border-brand-200 dark:bg-brand-500/20 dark:text-foreground dark:border-brand-500/30",
+    badgeClass: "bg-brand-50 dark:bg-brand-500/10 text-brand-700 border border-brand-200 dark:bg-brand-500/20 dark:text-foreground dark:border-brand-500/30",
     headerClass: "border-t-brand-400",
   },
   planned: {
     label: "Planned",
-    badgeClass: "bg-warning-50 text-warning-700 border border-warning-200 dark:bg-warning-500/20 dark:text-foreground dark:border-warning-500/30",
+    badgeClass: "bg-warning-50 dark:bg-warning-500/10 text-warning-700 dark:text-foreground border border-warning-200 dark:bg-warning-500/20 dark:text-foreground dark:border-warning-500/30",
     headerClass: "border-t-warning-400",
   },
   completed: {
     label: "Completed",
-    badgeClass: "bg-success-50 text-success-700 border border-success-200 dark:bg-success-500/20 dark:text-foreground dark:border-success-500/30",
+    badgeClass: "bg-success-50 dark:bg-success-500/10 text-success-700 dark:text-foreground border border-success-200 dark:bg-success-500/20 dark:text-foreground dark:border-success-500/30",
     headerClass: "border-t-success-400",
   },
 };
@@ -223,7 +223,7 @@ function OptimizeModal({
         {/* Step 1 — Running */}
         {step === 1 && (
           <div className="p-8 flex flex-col items-center gap-6 text-center">
-            <div className="flex h-16 w-16 items-center justify-center rounded-2xl bg-brand-50">
+            <div className="flex h-16 w-16 items-center justify-center rounded-2xl bg-brand-50 dark:bg-brand-500/10">
               <Loader2 className="h-8 w-8 text-brand-500 animate-spin" />
             </div>
             <div>
@@ -237,7 +237,7 @@ function OptimizeModal({
                   className={cn(
                     "text-sm transition-all duration-300",
                     i < visibleLines
-                      ? "text-success-700 opacity-100 translate-y-0"
+                      ? "text-success-700 dark:text-foreground opacity-100 translate-y-0"
                       : "text-muted-foreground opacity-0 translate-y-1"
                   )}
                 >
@@ -254,7 +254,7 @@ function OptimizeModal({
             {/* Modal header */}
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-2">
-                <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-brand-50">
+                <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-brand-50 dark:bg-brand-500/10">
                   <Zap className="h-4 w-4 text-brand-500" />
                 </div>
                 <h2 className="font-display text-lg font-bold text-foreground">Optimization Results</h2>
@@ -284,15 +284,15 @@ function OptimizeModal({
                       <p className="text-sm font-semibold text-foreground">{result.before.distance}</p>
                       <p className="text-xs text-muted-foreground">{result.before.time}</p>
                     </div>
-                    <div className="rounded-lg bg-success-50 px-3 py-2.5 space-y-1">
-                      <p className="text-[10px] font-semibold uppercase tracking-wide text-success-700">After</p>
-                      <p className="text-sm font-semibold text-success-700">{result.after.distance}</p>
-                      <p className="text-xs text-success-700">{result.after.time}</p>
+                    <div className="rounded-lg bg-success-50 dark:bg-success-500/10 px-3 py-2.5 space-y-1">
+                      <p className="text-[10px] font-semibold uppercase tracking-wide text-success-700 dark:text-foreground">After</p>
+                      <p className="text-sm font-semibold text-success-700 dark:text-foreground">{result.after.distance}</p>
+                      <p className="text-xs text-success-700 dark:text-foreground">{result.after.time}</p>
                     </div>
                   </div>
 
                   {/* Savings row */}
-                  <div className="flex items-center gap-1.5 text-xs text-success-700 font-medium">
+                  <div className="flex items-center gap-1.5 text-xs text-success-700 dark:text-foreground font-medium">
                     <TrendingDown className="h-3.5 w-3.5 shrink-0" />
                     <span>
                       -{result.savings.distance} · -{result.savings.time} · Saves {result.savings.fuel} in fuel
@@ -303,9 +303,9 @@ function OptimizeModal({
                   <div className="space-y-1.5">
                     <div className="flex items-center justify-between text-[10px] text-muted-foreground">
                       <span>Route efficiency</span>
-                      <span className="text-success-700 font-semibold">65% → 82%</span>
+                      <span className="text-success-700 dark:text-foreground font-semibold">65% → 82%</span>
                     </div>
-                    <div className="relative h-2 rounded-full bg-surface-100 overflow-hidden">
+                    <div className="relative h-2 rounded-full bg-surface-100 dark:bg-surface-800 overflow-hidden">
                       {/* Before bar (gray, underneath) */}
                       <div className="absolute inset-y-0 left-0 rounded-full bg-surface-300" style={{ width: "65%" }} />
                       {/* After bar (success, on top, animated) */}
@@ -320,9 +320,9 @@ function OptimizeModal({
             </div>
 
             {/* Total savings banner */}
-            <div className="rounded-xl border border-success-200 bg-success-50 px-4 py-3 flex items-center gap-3">
+            <div className="rounded-xl border border-success-200 bg-success-50 dark:bg-success-500/10 px-4 py-3 flex items-center gap-3">
               <CheckCircle2 className="h-5 w-5 text-success-500 shrink-0" />
-              <p className="text-sm font-medium text-success-700">
+              <p className="text-sm font-medium text-success-700 dark:text-foreground">
                 Total savings: 20 km less · 2h 24min saved · ₱260 fuel saved
               </p>
             </div>
@@ -361,7 +361,7 @@ function OptimizeModal({
         {/* Step 3 — Success */}
         {step === 3 && (
           <div className="p-8 flex flex-col items-center gap-5 text-center">
-            <div className="flex h-16 w-16 items-center justify-center rounded-2xl bg-success-50">
+            <div className="flex h-16 w-16 items-center justify-center rounded-2xl bg-success-50 dark:bg-success-500/10">
               <CheckCircle2 className="h-8 w-8 text-success-500" />
             </div>
             <div className="space-y-1.5">
@@ -515,7 +515,7 @@ export default function AdminRoutesPage() {
                   className={cn(
                     "flex items-center gap-3 rounded-xl border p-3 cursor-pointer transition-colors",
                     selectedDriver === driver.id
-                      ? "border-brand-400 bg-brand-50"
+                      ? "border-brand-400 bg-brand-50 dark:bg-brand-500/10"
                       : "border-border hover:bg-muted"
                   )}
                 >
@@ -527,7 +527,7 @@ export default function AdminRoutesPage() {
                     onChange={() => setSelectedDriver(driver.id)}
                     className="accent-brand-500"
                   />
-                  <div className="flex h-7 w-7 items-center justify-center rounded-lg bg-success-100 text-success-700 text-xs font-bold">
+                  <div className="flex h-7 w-7 items-center justify-center rounded-lg bg-success-100 text-success-700 dark:text-foreground text-xs font-bold">
                     {driver.name.split(" ").map((n) => n[0]).slice(0, 2).join("")}
                   </div>
                   <span className="text-sm font-medium text-foreground">{driver.name}</span>
@@ -593,10 +593,10 @@ export default function AdminRoutesPage() {
       {/* Overview stats */}
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
         {[
-          { icon: Radio, value: activeCount, label: "Active Routes", color: "bg-brand-50 text-brand-600 dark:bg-brand-500/10 dark:text-foreground" },
-          { icon: Clock, value: plannedCount, label: "Planned Routes", color: "bg-warning-50 text-warning-700 dark:bg-warning-500/10 dark:text-foreground" },
-          { icon: CheckCircle2, value: completedCount, label: "Completed Today", color: "bg-success-50 text-success-700 dark:bg-success-500/10 dark:text-foreground" },
-          { icon: MapPin, value: totalOrders, label: "Orders in Routes", color: "bg-info-50 text-info-600 dark:bg-info-500/10 dark:text-foreground" },
+          { icon: Radio, value: activeCount, label: "Active Routes", color: "bg-brand-50 dark:bg-brand-500/10 text-brand-600 dark:bg-brand-500/10 dark:text-foreground" },
+          { icon: Clock, value: plannedCount, label: "Planned Routes", color: "bg-warning-50 dark:bg-warning-500/10 text-warning-700 dark:text-foreground dark:bg-warning-500/10 dark:text-foreground" },
+          { icon: CheckCircle2, value: completedCount, label: "Completed Today", color: "bg-success-50 dark:bg-success-500/10 text-success-700 dark:text-foreground dark:bg-success-500/10 dark:text-foreground" },
+          { icon: MapPin, value: totalOrders, label: "Orders in Routes", color: "bg-info-50 dark:bg-info-500/10 text-info-600 dark:bg-info-500/10 dark:text-foreground" },
         ].map(({ icon: Icon, value, label, color }) => (
           <Card key={label} className="p-4 flex items-center gap-3">
             <div className={cn("flex h-9 w-9 shrink-0 items-center justify-center rounded-xl", color)}>
@@ -631,7 +631,7 @@ export default function AdminRoutesPage() {
                     </div>
                     <div className="flex items-center gap-3 mt-1 text-xs text-muted-foreground flex-wrap">
                       {unassigned ? (
-                        <span className="flex items-center gap-1 text-warning-700 font-medium">
+                        <span className="flex items-center gap-1 text-warning-700 dark:text-foreground font-medium">
                           <AlertTriangle className="h-3 w-3" />
                           Unassigned
                         </span>
@@ -655,7 +655,7 @@ export default function AdminRoutesPage() {
 
                 {/* Warning banner for unassigned */}
                 {unassigned && (
-                  <div className="flex items-center gap-2 rounded-xl border border-warning-200 bg-warning-50 dark:bg-surface-800 dark:border-warning-600/40 px-3 py-2 text-sm text-warning-700 dark:text-warning-500">
+                  <div className="flex items-center gap-2 rounded-xl border border-warning-200 bg-warning-50 dark:bg-warning-500/10 dark:bg-surface-800 dark:border-warning-600/40 px-3 py-2 text-sm text-warning-700 dark:text-foreground">
                     <AlertTriangle className="h-4 w-4 shrink-0" />
                     No driver assigned — route cannot start
                   </div>
@@ -669,7 +669,7 @@ export default function AdminRoutesPage() {
                     </span>
                     <span className="font-semibold tabular-nums text-foreground">{pct}%</span>
                   </div>
-                  <div className="h-2 rounded-full bg-surface-100 overflow-hidden">
+                  <div className="h-2 rounded-full bg-surface-100 dark:bg-surface-800 overflow-hidden">
                     <div
                       className={cn(
                         "h-full rounded-full transition-all",
@@ -911,9 +911,9 @@ export default function AdminRoutesPage() {
                 <h3 className="font-display font-semibold text-base text-foreground">Route Summary</h3>
                 <button onClick={() => setSummaryModal(null)} className="rounded-lg p-1 hover:bg-muted text-muted-foreground"><X className="h-4 w-4" /></button>
               </div>
-              <div className="rounded-xl bg-success-50 border border-success-200 p-4 flex items-center gap-3">
+              <div className="rounded-xl bg-success-50 dark:bg-success-500/10 border border-success-200 p-4 flex items-center gap-3">
                 <CheckCircle2 className="h-8 w-8 text-success-500 shrink-0" />
-                <div><p className="font-semibold text-success-700 text-sm">Route Completed</p><p className="text-xs text-success-700">{r.name} · {r.driver}</p></div>
+                <div><p className="font-semibold text-success-700 dark:text-foreground text-sm">Route Completed</p><p className="text-xs text-success-700 dark:text-foreground">{r.name} · {r.driver}</p></div>
               </div>
               <div className="grid grid-cols-2 gap-3">
                 {[

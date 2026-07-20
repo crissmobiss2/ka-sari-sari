@@ -18,9 +18,9 @@ const INITIAL_SUPPLIERS = [
 ];
 
 const TERMS_COLORS: Record<string, string> = {
-  "COD":         "bg-success-50 dark:bg-success-500/20 text-success-700 dark:text-foreground border-success-500/25 dark:border-success-500/30",
+  "COD":         "bg-success-50 dark:bg-success-500/10 dark:bg-success-500/20 text-success-700 dark:text-foreground border-success-500/25 dark:border-success-500/30",
   "15 days NET": "bg-blue-50 dark:bg-blue-500/20 text-blue-700 dark:text-foreground border-blue-200 dark:border-blue-500/30",
-  "30 days NET": "bg-warning-50 dark:bg-warning-500/20 text-warning-700 dark:text-foreground border-warning-500/25 dark:border-warning-500/30",
+  "30 days NET": "bg-warning-50 dark:bg-warning-500/10 dark:bg-warning-500/20 text-warning-700 dark:text-foreground border-warning-500/25 dark:border-warning-500/30",
   "45 days NET": "bg-purple-50 dark:bg-purple-500/20 text-purple-700 dark:text-foreground border-purple-200 dark:border-purple-500/30",
 };
 
@@ -77,7 +77,7 @@ function SupplierCard({ s, onView, onNewPO, onEdit }: { s: Supplier } & CardHand
       <div className="flex flex-wrap gap-2 items-center border-t border-border pt-3">
         <span className={cn(
           "inline-flex items-center rounded-full border px-2.5 py-0.5 text-xs font-medium",
-          TERMS_COLORS[s.terms] ?? "bg-surface-100 text-surface-600 border-surface-200"
+          TERMS_COLORS[s.terms] ?? "bg-surface-100 dark:bg-surface-800 text-surface-600 border-surface-200"
         )}>
           {s.terms}
         </span>
@@ -100,7 +100,7 @@ function SupplierCard({ s, onView, onNewPO, onEdit }: { s: Supplier } & CardHand
 
       <div className="flex flex-wrap gap-1.5">
         {s.categories.map((c) => (
-          <span key={c} className="rounded-full bg-surface-100 px-2 py-0.5 text-xs text-surface-600">
+          <span key={c} className="rounded-full bg-surface-100 dark:bg-surface-800 px-2 py-0.5 text-xs text-surface-600">
             {c}
           </span>
         ))}
@@ -183,7 +183,7 @@ function ViewSupplierModal({ s, onClose }: { s: Supplier; onClose: () => void })
               <p className="text-xs text-muted-foreground">Payment Terms</p>
               <span className={cn(
                 "inline-flex items-center rounded-full border px-2.5 py-0.5 text-xs font-medium mt-1",
-                TERMS_COLORS[s.terms] ?? "bg-surface-100 text-surface-600 border-surface-200"
+                TERMS_COLORS[s.terms] ?? "bg-surface-100 dark:bg-surface-800 text-surface-600 border-surface-200"
               )}>
                 {s.terms}
               </span>
@@ -201,7 +201,7 @@ function ViewSupplierModal({ s, onClose }: { s: Supplier; onClose: () => void })
             <p className="text-xs text-muted-foreground mb-2">Categories</p>
             <div className="flex flex-wrap gap-1.5">
               {s.categories.map((c) => (
-                <span key={c} className="rounded-full bg-surface-100 px-2 py-0.5 text-xs text-surface-600">
+                <span key={c} className="rounded-full bg-surface-100 dark:bg-surface-800 px-2 py-0.5 text-xs text-surface-600">
                   {c}
                 </span>
               ))}
@@ -524,7 +524,7 @@ export default function AdminSuppliersPage() {
       <div className="flex items-center justify-between gap-4">
         <div className="flex items-center gap-3">
           <h1 className="font-display text-2xl font-bold text-foreground">Suppliers</h1>
-          <span className="rounded-full bg-brand-50 dark:bg-brand-500/20 border border-brand-200 dark:border-brand-500/30 px-2.5 py-0.5 text-xs font-semibold text-brand-700 dark:text-foreground">
+          <span className="rounded-full bg-brand-50 dark:bg-brand-500/10 dark:bg-brand-500/20 border border-brand-200 dark:border-brand-500/30 px-2.5 py-0.5 text-xs font-semibold text-brand-700 dark:text-foreground">
             {suppliers.length}
           </span>
         </div>
@@ -644,7 +644,7 @@ export default function AdminSuppliersPage() {
                     <td className="px-5 py-3.5 hidden lg:table-cell">
                       <span className={cn(
                         "inline-flex items-center rounded-full border px-2.5 py-0.5 text-xs font-medium",
-                        TERMS_COLORS[s.terms] ?? "bg-surface-100 text-surface-600 border-surface-200"
+                        TERMS_COLORS[s.terms] ?? "bg-surface-100 dark:bg-surface-800 text-surface-600 border-surface-200"
                       )}>
                         {s.terms}
                       </span>

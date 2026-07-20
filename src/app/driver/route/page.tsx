@@ -316,11 +316,11 @@ export default function RouteMapPage() {
 
       {/* EOD reconciliation banner */}
       {allDone && (
-        <div className="mx-4 mt-4 rounded-2xl border border-success-200 bg-success-50 p-4 flex items-center gap-3">
-          <CheckCircle2 className="h-6 w-6 text-success-700 shrink-0" />
+        <div className="mx-4 mt-4 rounded-2xl border border-success-200 bg-success-50 dark:bg-success-500/10 p-4 flex items-center gap-3">
+          <CheckCircle2 className="h-6 w-6 text-success-700 dark:text-foreground shrink-0" />
           <div className="flex-1">
-            <p className="text-sm font-bold text-success-700">Route Complete!</p>
-            <p className="text-xs text-success-700 mt-0.5">Remit {formatPHP(collectedCOD)} COD to dispatch</p>
+            <p className="text-sm font-bold text-success-700 dark:text-foreground">Route Complete!</p>
+            <p className="text-xs text-success-700 dark:text-foreground mt-0.5">Remit {formatPHP(collectedCOD)} COD to dispatch</p>
           </div>
           <button
             onClick={() => setShowReconcile(true)}
@@ -357,8 +357,8 @@ export default function RouteMapPage() {
                 {/* Status indicator */}
                 <div className={cn(
                   "flex h-8 w-8 shrink-0 items-center justify-center rounded-full font-bold text-sm",
-                  isDone ? "bg-success-100 text-success-700"
-                  : isFailed ? "bg-danger-100 text-danger-700 dark:text-danger-500"
+                  isDone ? "bg-success-100 text-success-700 dark:text-foreground"
+                  : isFailed ? "bg-danger-100 text-danger-700 dark:text-foreground"
                   : isNext ? "bg-brand-700 text-white"
                   : "bg-surface-100 dark:bg-surface-800 text-muted-foreground"
                 )}>
@@ -379,7 +379,7 @@ export default function RouteMapPage() {
                   <p className="text-sm font-black text-foreground">{formatPHP(stop.total)}</p>
                   <div className={cn(
                     "flex items-center gap-0.5 justify-end text-[10px] font-semibold mt-0.5",
-                    stop.paymentMethod === "cod" ? "text-warning-700" : "text-info-600"
+                    stop.paymentMethod === "cod" ? "text-warning-700 dark:text-foreground" : "text-info-600"
                   )}>
                     {payIcon(stop.paymentMethod)}
                     {payLabel(stop.paymentMethod)}
@@ -393,7 +393,7 @@ export default function RouteMapPage() {
 
               {/* Expanded details */}
               {isExpanded && (
-                <div className="border-t border-border bg-surface-50/50 px-4 py-4 space-y-4">
+                <div className="border-t border-border bg-surface-50/50 dark:bg-surface-900/50 px-4 py-4 space-y-4">
                   {/* Customer info */}
                   <div className="grid grid-cols-2 gap-3 text-sm">
                     <div>
@@ -410,7 +410,7 @@ export default function RouteMapPage() {
                     </div>
                     <div>
                       <p className="text-xs text-muted-foreground uppercase tracking-wide font-medium">Payment</p>
-                      <p className={cn("font-bold mt-0.5", stop.paymentMethod === "cod" ? "text-warning-700" : "text-info-600")}>
+                      <p className={cn("font-bold mt-0.5", stop.paymentMethod === "cod" ? "text-warning-700 dark:text-foreground" : "text-info-600")}>
                         {payLabel(stop.paymentMethod)} Â· {formatPHP(stop.total)}
                       </p>
                     </div>
@@ -424,9 +424,9 @@ export default function RouteMapPage() {
 
                   {/* COD collection indicator */}
                   {stop.paymentMethod === "cod" && isDone && (
-                    <div className="flex items-center gap-2 rounded-xl bg-success-50 border border-success-200 px-3 py-2">
-                      <Banknote className="h-4 w-4 text-success-700" />
-                      <p className="text-xs font-semibold text-success-700">
+                    <div className="flex items-center gap-2 rounded-xl bg-success-50 dark:bg-success-500/10 border border-success-200 px-3 py-2">
+                      <Banknote className="h-4 w-4 text-success-700 dark:text-foreground" />
+                      <p className="text-xs font-semibold text-success-700 dark:text-foreground">
                         COD collected: {formatPHP(stop.collectedCOD ?? stop.total)}
                       </p>
                     </div>
@@ -439,21 +439,21 @@ export default function RouteMapPage() {
                         href={`https://maps.google.com/?q=${encodeURIComponent(stop.address)}`}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="flex flex-col items-center gap-1 rounded-xl bg-surface-100 hover:bg-surface-200 px-2 py-2.5 text-xs font-semibold text-surface-900 transition-colors"
+                        className="flex flex-col items-center gap-1 rounded-xl bg-surface-100 dark:bg-surface-800 hover:bg-surface-200 px-2 py-2.5 text-xs font-semibold text-surface-900 transition-colors"
                       >
                         <Navigation className="h-4 w-4 text-brand-500" />
                         Navigate
                       </a>
                       <a
                         href={`tel:${stop.phone}`}
-                        className="flex flex-col items-center gap-1 rounded-xl bg-surface-100 hover:bg-surface-200 px-2 py-2.5 text-xs font-semibold text-surface-900 transition-colors"
+                        className="flex flex-col items-center gap-1 rounded-xl bg-surface-100 dark:bg-surface-800 hover:bg-surface-200 px-2 py-2.5 text-xs font-semibold text-surface-900 transition-colors"
                       >
                         <Phone className="h-4 w-4 text-brand-500" />
                         Call
                       </a>
                       <button
                         onClick={() => { if (window.confirm("Mark this stop as failed delivery?")) { markFailed(stop); } }}
-                        className="flex flex-col items-center gap-1 rounded-xl bg-danger-50 hover:bg-danger-100 px-2 py-2.5 text-xs font-semibold text-danger-700 dark:text-danger-500 transition-colors"
+                        className="flex flex-col items-center gap-1 rounded-xl bg-danger-50 dark:bg-danger-500/10 hover:bg-danger-100 px-2 py-2.5 text-xs font-semibold text-danger-700 dark:text-foreground transition-colors"
                       >
                         <XCircle className="h-4 w-4" />
                         Failed
@@ -472,14 +472,14 @@ export default function RouteMapPage() {
                   )}
 
                   {isDone && (
-                    <div className="flex items-center gap-2 text-sm text-success-700 font-medium">
+                    <div className="flex items-center gap-2 text-sm text-success-700 dark:text-foreground font-medium">
                       <CheckCircle2 className="h-4 w-4" />
                       Delivered successfully
                     </div>
                   )}
 
                   {isFailed && (
-                    <div className="flex items-center gap-2 text-sm text-danger-700 dark:text-danger-500 font-medium">
+                    <div className="flex items-center gap-2 text-sm text-danger-700 dark:text-foreground font-medium">
                       <AlertTriangle className="h-4 w-4" />
                       Delivery failed â€” reported to dispatch
                     </div>
@@ -504,7 +504,7 @@ export default function RouteMapPage() {
                   <p className="font-semibold">{s.storeName}</p>
                   <p className="text-xs text-muted-foreground">{s.orderNumber}</p>
                 </div>
-                <div className={cn("text-right font-bold", s.status === "done" ? "text-success-700" : "text-muted-foreground")}>
+                <div className={cn("text-right font-bold", s.status === "done" ? "text-success-700 dark:text-foreground" : "text-muted-foreground")}>
                   {s.status === "done" ? formatPHP(s.total) : "â€”"}
                 </div>
               </div>

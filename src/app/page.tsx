@@ -53,7 +53,7 @@ export default function HomePage() {
       <section className="relative overflow-hidden bg-card px-4 py-20 sm:py-28 text-center">
         <div className="absolute inset-0 bg-gradient-to-b from-brand-50/60 to-transparent dark:from-brand-950/20" />
         <div className="relative mx-auto max-w-4xl">
-          <div className="inline-flex items-center gap-2 rounded-full border border-brand-200 bg-brand-50 px-3 py-1.5 text-xs font-medium text-brand-600 mb-8">
+          <div className="inline-flex items-center gap-2 rounded-full border border-brand-200 bg-brand-50 dark:bg-brand-500/10 px-3 py-1.5 text-xs font-medium text-brand-600 mb-8">
             <Zap className="h-3.5 w-3.5" />
             Built for sari-sari store owners
           </div>
@@ -105,7 +105,7 @@ export default function HomePage() {
             {HOW_IT_WORKS.map((step) => (
               <div key={step.step} className="relative flex flex-col items-start p-6 rounded-2xl border border-border bg-card shadow-card">
                 <div className="flex items-center gap-3 mb-4">
-                  <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-brand-50 text-brand-500">
+                  <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-brand-50 dark:bg-brand-500/10 text-brand-500">
                     <step.icon className="h-5 w-5" />
                   </div>
                   <span className="font-display text-2xl font-bold text-surface-200 leading-none">{step.step}</span>
@@ -119,7 +119,7 @@ export default function HomePage() {
       </section>
 
       {/* Categories preview */}
-      <section className="py-16 px-4 bg-surface-50">
+      <section className="py-16 px-4 bg-surface-50 dark:bg-surface-900">
         <div className="mx-auto max-w-6xl">
           <div className="flex items-end justify-between mb-8">
             <div>
@@ -133,7 +133,7 @@ export default function HomePage() {
           <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
             {CATEGORIES.slice(0, 8).map((cat) => (
               <div key={cat.id} className="flex items-center gap-3 rounded-2xl border border-border bg-card px-4 py-3.5 shadow-card hover:shadow-card-md transition-shadow cursor-pointer">
-                <div className="h-9 w-9 rounded-xl bg-brand-50 flex items-center justify-center shrink-0">
+                <div className="h-9 w-9 rounded-xl bg-brand-50 dark:bg-brand-500/10 flex items-center justify-center shrink-0">
                   <Package className="h-4.5 w-4.5 text-brand-500" />
                 </div>
                 <div>
@@ -158,7 +158,7 @@ export default function HomePage() {
           <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
             {BENEFITS.map((b) => (
               <div key={b.title} className="flex gap-4 p-5 rounded-2xl border border-border bg-card shadow-card">
-                <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-brand-50 text-brand-500">
+                <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-brand-50 dark:bg-brand-500/10 text-brand-500">
                   <b.icon className="h-5 w-5" />
                 </div>
                 <div>
@@ -172,7 +172,7 @@ export default function HomePage() {
       </section>
 
       {/* Pricing */}
-      <section id="pricing" className="py-20 px-4 bg-surface-50">
+      <section id="pricing" className="py-20 px-4 bg-surface-50 dark:bg-surface-900">
         <div className="mx-auto max-w-xl text-center">
           <p className="text-xs font-semibold uppercase tracking-widest text-brand-500 mb-2">Simple pricing</p>
           <h2 className="font-display text-3xl font-bold text-surface-900 mb-4">Simple pricing. No surprises.</h2>
@@ -182,7 +182,7 @@ export default function HomePage() {
                 <p className="font-display text-4xl font-bold text-brand-500">FREE</p>
                 <p className="text-sm text-muted-foreground mt-1">for your first year</p>
               </div>
-              <span className="rounded-full bg-brand-50 border border-brand-200 px-3 py-1 text-xs font-medium text-brand-600">
+              <span className="rounded-full bg-brand-50 dark:bg-brand-500/10 border border-brand-200 px-3 py-1 text-xs font-medium text-brand-600">
                 No credit card needed
               </span>
             </div>

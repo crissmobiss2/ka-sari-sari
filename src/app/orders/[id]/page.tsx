@@ -103,11 +103,11 @@ function ConfirmBanner() {
   const params = useSearchParams();
   if (!params.get("confirmed")) return null;
   return (
-    <div className="mx-4 mb-4 rounded-2xl bg-success-50 border border-success-500/25 p-4 flex items-start gap-3 animate-fade-in">
+    <div className="mx-4 mb-4 rounded-2xl bg-success-50 dark:bg-success-500/10 border border-success-500/25 p-4 flex items-start gap-3 animate-fade-in">
       <CheckCircle2 className="h-5 w-5 text-success-500 shrink-0 mt-0.5" />
       <div>
-        <p className="text-sm font-semibold text-success-700">Order placed successfully!</p>
-        <p className="text-xs text-success-700 mt-0.5">We&apos;ll notify you when it&apos;s being prepared.</p>
+        <p className="text-sm font-semibold text-success-700 dark:text-foreground">Order placed successfully!</p>
+        <p className="text-xs text-success-700 dark:text-foreground mt-0.5">We&apos;ll notify you when it&apos;s being prepared.</p>
       </div>
     </div>
   );
@@ -126,8 +126,8 @@ function StatusHero({ status, createdAt }: { status: OrderStatus; createdAt: str
     : isDelivered
     ? "bg-gradient-to-r from-success-500 to-success-400 text-white"
     : isCancelled
-    ? "bg-danger-50 text-danger-700"
-    : "bg-warning-50 text-warning-700";
+    ? "bg-danger-50 dark:bg-danger-500/10 text-danger-700 dark:text-foreground"
+    : "bg-warning-50 dark:bg-warning-500/10 text-warning-700 dark:text-foreground";
 
   const label = ORDER_STATUS_LABELS[status] ?? status;
 
@@ -168,7 +168,7 @@ function StatusHero({ status, createdAt }: { status: OrderStatus; createdAt: str
         </p>
         <p className={cn(
           "text-sm mt-1 font-medium",
-          isOutForDelivery ? "text-white/80" : isDelivered ? "text-white/80" : isCancelled ? "text-danger-700" : "text-warning-700"
+          isOutForDelivery ? "text-white/80" : isDelivered ? "text-white/80" : isCancelled ? "text-danger-700 dark:text-foreground" : "text-warning-700 dark:text-foreground"
         )}>{subtext}</p>
       </div>
     </div>
@@ -212,7 +212,7 @@ function DeliveryTimeline({
           <AlertCircle className="h-4 w-4 text-danger-500" />
           <h3 className="font-display text-sm font-semibold text-foreground">Order Status</h3>
         </div>
-        <p className="text-sm text-danger-700 dark:text-danger-500 mt-1">
+        <p className="text-sm text-danger-700 dark:text-foreground mt-1">
           This order was {ORDER_STATUS_LABELS[status]?.toLowerCase() ?? status.replace(/_/g, " ")}.
         </p>
       </div>
@@ -265,7 +265,7 @@ function DeliveryTimeline({
                       </div>
                     </div>
                   ) : (
-                    <div className="h-8 w-8 rounded-full border-2 border-surface-200 bg-surface-50 flex items-center justify-center">
+                    <div className="h-8 w-8 rounded-full border-2 border-surface-200 bg-surface-50 dark:bg-surface-900 flex items-center justify-center">
                       <Circle className="h-2.5 w-2.5 text-surface-300" />
                     </div>
                   )}
@@ -332,9 +332,9 @@ function DeliveryAddress({ address, notes }: { address: string; notes?: string }
       </div>
       <p className="text-sm font-medium text-foreground leading-relaxed">{address}</p>
       {notes && (
-        <div className="mt-3 flex items-start gap-2 rounded-xl bg-warning-50 border border-warning-200 p-3">
-          <AlertCircle className="h-3.5 w-3.5 text-warning-700 mt-0.5 shrink-0" />
-          <p className="text-xs text-warning-700">{notes}</p>
+        <div className="mt-3 flex items-start gap-2 rounded-xl bg-warning-50 dark:bg-warning-500/10 border border-warning-200 p-3">
+          <AlertCircle className="h-3.5 w-3.5 text-warning-700 dark:text-foreground mt-0.5 shrink-0" />
+          <p className="text-xs text-warning-700 dark:text-foreground">{notes}</p>
         </div>
       )}
     </div>
@@ -360,8 +360,8 @@ function PaymentBadge({ method, paymentStatus }: { method: string; paymentStatus
       <span className={cn(
         "inline-flex items-center rounded-full px-2.5 py-1 text-xs font-semibold",
         isPaid
-          ? "bg-success-100 text-success-700"
-          : "bg-warning-100 text-warning-700"
+          ? "bg-success-100 text-success-700 dark:text-foreground"
+          : "bg-warning-100 text-warning-700 dark:text-foreground"
       )}>
         {isPaid ? "Paid" : "Payment Pending"}
       </span>
@@ -422,7 +422,7 @@ function OrderItems({
             return (
               <div key={orderItem.id} className="flex items-center gap-3 px-5 py-3.5">
                 {/* Thumbnail */}
-                <div className="h-14 w-14 shrink-0 rounded-xl overflow-hidden bg-surface-100 border border-border">
+                <div className="h-14 w-14 shrink-0 rounded-xl overflow-hidden bg-surface-100 dark:bg-surface-800 border border-border">
                   <Image
                     src={picsumUrl(imgSeed)}
                     alt={name}
@@ -441,7 +441,7 @@ function OrderItems({
                     {unitLabel !== "pc" ? "s" : "s"} &times; {formatPHP(orderItem.unitPrice)}
                   </p>
                   {orderItem.status === "partial" && (
-                    <p className="text-xs text-warning-700 mt-0.5">
+                    <p className="text-xs text-warning-700 dark:text-foreground mt-0.5">
                       Partial: {orderItem.fulfilledQty ?? "?"} fulfilled
                     </p>
                   )}
@@ -466,7 +466,7 @@ function OrderItems({
       </div>
 
       {/* Totals */}
-      <div className="border-t border-border bg-surface-50 px-5 py-4 space-y-2">
+      <div className="border-t border-border bg-surface-50 dark:bg-surface-900 px-5 py-4 space-y-2">
         <div className="flex justify-between text-sm text-muted-foreground">
           <span>Subtotal</span>
           <span>{formatPHP(subtotal)}</span>
@@ -574,7 +574,7 @@ function DriverCard({ onAction, driver }: { onAction: (msg: string) => void; dri
         {phone ? (
           <a
             href={`tel:${phone}`}
-            className="flex items-center justify-center gap-2 rounded-xl border border-border bg-surface-50 py-2.5 text-sm font-medium text-surface-900 hover:bg-surface-100 active:scale-95 transition-all"
+            className="flex items-center justify-center gap-2 rounded-xl border border-border bg-surface-50 dark:bg-surface-900 py-2.5 text-sm font-medium text-surface-900 hover:bg-surface-100 dark:bg-surface-800 active:scale-95 transition-all"
           >
             <Phone className="h-4 w-4 text-brand-500" />
             Call Driver
@@ -582,7 +582,7 @@ function DriverCard({ onAction, driver }: { onAction: (msg: string) => void; dri
         ) : (
           <button
             disabled
-            className="flex items-center justify-center gap-2 rounded-xl border border-border bg-surface-50 py-2.5 text-sm font-medium text-muted-foreground opacity-40 cursor-not-allowed"
+            className="flex items-center justify-center gap-2 rounded-xl border border-border bg-surface-50 dark:bg-surface-900 py-2.5 text-sm font-medium text-muted-foreground opacity-40 cursor-not-allowed"
           >
             <Phone className="h-4 w-4" />
             Call Driver
@@ -673,10 +673,10 @@ function RatingSection({ orderId }: { orderId: string }) {
 
   if (submitted) {
     return (
-      <div className="mx-4 rounded-2xl bg-success-50 border border-success-500/25 p-5 text-center">
+      <div className="mx-4 rounded-2xl bg-success-50 dark:bg-success-500/10 border border-success-500/25 p-5 text-center">
         <CheckCircle2 className="h-8 w-8 text-success-500 mx-auto mb-2" />
-        <p className="font-display font-semibold text-success-700">Thanks for your feedback!</p>
-        <p className="text-xs text-success-700 mt-1">Your rating helps us improve our service.</p>
+        <p className="font-display font-semibold text-success-700 dark:text-foreground">Thanks for your feedback!</p>
+        <p className="text-xs text-success-700 dark:text-foreground mt-1">Your rating helps us improve our service.</p>
       </div>
     );
   }
@@ -892,7 +892,7 @@ export default function OrderDetailPage() {
             href={`/api/orders/${id}/receipt`}
             target="_blank"
             rel="noopener noreferrer"
-            className="w-full flex items-center justify-center gap-2 rounded-2xl border border-border bg-surface-50 py-3.5 text-sm font-semibold text-surface-900 hover:bg-surface-100 active:scale-[0.98] transition-all"
+            className="w-full flex items-center justify-center gap-2 rounded-2xl border border-border bg-surface-50 dark:bg-surface-900 py-3.5 text-sm font-semibold text-surface-900 hover:bg-surface-100 dark:bg-surface-800 active:scale-[0.98] transition-all"
           >
             <Download className="h-4 w-4" />
             Download Receipt (OR)

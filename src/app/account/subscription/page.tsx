@@ -64,16 +64,16 @@ export default function SubscriptionPage() {
             <Loader2 className="h-6 w-6 animate-spin text-muted-foreground" />
           </div>
         ) : (
-          <div className={`rounded-2xl border p-6 space-y-4 ${isActive ? "border-success-500/25 bg-success-50" : "border-border bg-card"}`}>
+          <div className={`rounded-2xl border p-6 space-y-4 ${isActive ? "border-success-500/25 bg-success-50 dark:bg-success-500/10" : "border-border bg-card"}`}>
             <div className="flex items-center gap-3">
-              <div className={`flex h-12 w-12 items-center justify-center rounded-2xl ${isActive ? "bg-success-100 text-success-700" : "bg-surface-100 dark:bg-surface-800 text-muted-foreground"}`}>
+              <div className={`flex h-12 w-12 items-center justify-center rounded-2xl ${isActive ? "bg-success-100 dark:bg-success-500/20 text-success-700 dark:text-foreground" : "bg-surface-100 dark:bg-surface-800 text-muted-foreground"}`}>
                 <Shield className="h-6 w-6" />
               </div>
               <div>
-                <p className={`font-display text-lg font-bold ${isActive ? "text-success-700" : "text-foreground"}`}>
+                <p className={`font-display text-lg font-bold ${isActive ? "text-success-700 dark:text-foreground" : "text-foreground"}`}>
                   {sub ? (isActive ? "Active" : "Inactive") : "No Subscription"}
                 </p>
-                <p className={`text-sm ${isActive ? "text-success-700" : "text-muted-foreground"}`}>
+                <p className={`text-sm ${isActive ? "text-success-700 dark:text-foreground" : "text-muted-foreground"}`}>
                   Ka Sari-Sari Platform Access
                 </p>
               </div>
@@ -81,23 +81,23 @@ export default function SubscriptionPage() {
 
             {sub && (
               <div className="grid grid-cols-2 gap-3">
-                <div className={`rounded-xl p-3 ${isActive ? "bg-white/60" : "bg-surface-50"}`}>
-                  <p className={`text-xs mb-0.5 ${isActive ? "text-success-700" : "text-muted-foreground"}`}>Plan</p>
-                  <p className={`text-sm font-bold ${isActive ? "text-success-700" : "text-surface-900"}`}>
+                <div className={`rounded-xl p-3 ${isActive ? "bg-white/60 dark:bg-success-500/10" : "bg-surface-50 dark:bg-surface-900"}`}>
+                  <p className={`text-xs mb-0.5 ${isActive ? "text-success-700 dark:text-foreground/70" : "text-muted-foreground"}`}>Plan</p>
+                  <p className={`text-sm font-bold ${isActive ? "text-success-700 dark:text-foreground" : "text-surface-900 dark:text-foreground"}`}>
                     {sub.plan === "free_trial" ? "Free Trial (Year 1)" : sub.plan.charAt(0).toUpperCase() + sub.plan.slice(1)}
                   </p>
                 </div>
-                <div className={`rounded-xl p-3 ${isActive ? "bg-white/60" : "bg-surface-50"}`}>
-                  <p className={`text-xs mb-0.5 ${isActive ? "text-success-700" : "text-muted-foreground"}`}>Amount paid</p>
-                  <p className={`text-sm font-bold ${isActive ? "text-success-700" : "text-surface-900"}`}>{sub.amount === 0 ? "Free" : formatPHP(sub.amount)}</p>
+                <div className={`rounded-xl p-3 ${isActive ? "bg-white/60 dark:bg-success-500/10" : "bg-surface-50 dark:bg-surface-900"}`}>
+                  <p className={`text-xs mb-0.5 ${isActive ? "text-success-700 dark:text-foreground/70" : "text-muted-foreground"}`}>Amount paid</p>
+                  <p className={`text-sm font-bold ${isActive ? "text-success-700 dark:text-foreground" : "text-surface-900 dark:text-foreground"}`}>{sub.amount === 0 ? "Free" : formatPHP(sub.amount)}</p>
                 </div>
-                <div className={`rounded-xl p-3 ${isActive ? "bg-white/60" : "bg-surface-50"}`}>
-                  <p className={`text-xs mb-0.5 ${isActive ? "text-success-700" : "text-muted-foreground"}`}>Renews on</p>
-                  <p className={`text-sm font-bold ${isActive ? "text-success-700" : "text-surface-900"}`}>{sub.renewalDate}</p>
+                <div className={`rounded-xl p-3 ${isActive ? "bg-white/60 dark:bg-success-500/10" : "bg-surface-50 dark:bg-surface-900"}`}>
+                  <p className={`text-xs mb-0.5 ${isActive ? "text-success-700 dark:text-foreground/70" : "text-muted-foreground"}`}>Renews on</p>
+                  <p className={`text-sm font-bold ${isActive ? "text-success-700 dark:text-foreground" : "text-surface-900 dark:text-foreground"}`}>{sub.renewalDate}</p>
                 </div>
-                <div className={`rounded-xl p-3 ${isActive ? "bg-white/60" : "bg-surface-50"}`}>
-                  <p className={`text-xs mb-0.5 ${isActive ? "text-success-700" : "text-muted-foreground"}`}>Days remaining</p>
-                  <p className={`text-sm font-bold ${isActive ? "text-success-700" : "text-surface-900"}`}>{sub.daysLeft} days</p>
+                <div className={`rounded-xl p-3 ${isActive ? "bg-white/60 dark:bg-success-500/10" : "bg-surface-50 dark:bg-surface-900"}`}>
+                  <p className={`text-xs mb-0.5 ${isActive ? "text-success-700 dark:text-foreground/70" : "text-muted-foreground"}`}>Days remaining</p>
+                  <p className={`text-sm font-bold ${isActive ? "text-success-700 dark:text-foreground" : "text-surface-900 dark:text-foreground"}`}>{sub.daysLeft} days</p>
                 </div>
               </div>
             )}
@@ -125,7 +125,7 @@ export default function SubscriptionPage() {
               {sub.paymentHistory.map((h, i) => (
                 <div key={i} className="flex items-center justify-between py-2 first:pt-0">
                   <div className="flex items-center gap-3">
-                    <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-success-50 text-success-700">
+                    <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-success-50 dark:bg-success-500/10 text-success-700 dark:text-foreground">
                       <CreditCard className="h-4 w-4" />
                     </div>
                     <div>
@@ -142,10 +142,10 @@ export default function SubscriptionPage() {
 
         {/* Renew CTA â€” shown only after free trial (monthly subscribers) */}
         {!loading && sub && sub.plan !== "free_trial" && (
-          <div className="rounded-2xl border border-brand-200 bg-brand-50 p-5 space-y-3">
+          <div className="rounded-2xl border border-brand-200 dark:border-brand-500/30 bg-brand-50 dark:bg-brand-500/10 p-5 space-y-3">
             <div className="flex items-start gap-2">
               <Clock className="h-4 w-4 text-brand-500 mt-0.5 shrink-0" />
-              <p className="text-sm text-brand-700">
+              <p className="text-sm text-brand-700 dark:text-foreground">
                 Your subscription renews on <span className="font-semibold">{sub.renewalDate}</span>.
                 Renew early to avoid any interruption.
               </p>
@@ -158,10 +158,10 @@ export default function SubscriptionPage() {
 
         {/* Free trial info */}
         {!loading && sub && sub.plan === "free_trial" && (
-          <div className="rounded-2xl border border-brand-200 bg-brand-50 p-5 space-y-2">
+          <div className="rounded-2xl border border-brand-200 dark:border-brand-500/30 bg-brand-50 dark:bg-brand-500/10 p-5 space-y-2">
             <div className="flex items-start gap-2">
               <Clock className="h-4 w-4 text-brand-500 mt-0.5 shrink-0" />
-              <p className="text-sm text-brand-700">
+              <p className="text-sm text-brand-700 dark:text-foreground">
                 Your free trial runs until <span className="font-semibold">{sub.renewalDate}</span>.
                 After that, â‚±200/month keeps your store active.
               </p>

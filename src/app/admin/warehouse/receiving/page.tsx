@@ -298,7 +298,7 @@ export default function GoodsReceivingPage() {
 
                 {/* Success banner */}
                 {isSubmitted && (
-                  <div className="mx-5 mb-5 flex items-center gap-2 rounded-xl bg-success-50 border border-success-200 px-4 py-3 text-sm text-success-700">
+                  <div className="mx-5 mb-5 flex items-center gap-2 rounded-xl bg-success-50 dark:bg-success-500/10 border border-success-200 px-4 py-3 text-sm text-success-700 dark:text-foreground">
                     <CheckCircle2 className="h-4 w-4 shrink-0" />
                     Goods receipt recorded. Stock updated successfully.
                   </div>
@@ -306,7 +306,7 @@ export default function GoodsReceivingPage() {
 
                 {/* Error banner */}
                 {receiveErrors[receipt.id] && (
-                  <div className="mx-5 mb-5 flex items-center gap-2 rounded-xl bg-danger-50 border border-danger-200 px-4 py-3 text-sm text-danger-700">
+                  <div className="mx-5 mb-5 flex items-center gap-2 rounded-xl bg-danger-50 dark:bg-danger-500/10 border border-danger-200 px-4 py-3 text-sm text-danger-700 dark:text-foreground">
                     <Package className="h-4 w-4 shrink-0" />
                     {receiveErrors[receipt.id]}
                   </div>
@@ -342,7 +342,7 @@ export default function GoodsReceivingPage() {
                   className="w-full flex items-center justify-between px-5 py-4 text-left hover:bg-muted/30 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-500"
                 >
                   <div className="flex items-center gap-3">
-                    <div className="flex h-7 w-7 items-center justify-center rounded-lg bg-success-50 text-success-700">
+                    <div className="flex h-7 w-7 items-center justify-center rounded-lg bg-success-50 dark:bg-success-500/10 text-success-700 dark:text-foreground">
                       <CheckCircle2 className="h-4 w-4" />
                     </div>
                     <div>
@@ -356,7 +356,7 @@ export default function GoodsReceivingPage() {
                     </div>
                   </div>
                   <div className="flex items-center gap-3">
-                    <span className="text-xs rounded-full bg-success-50 text-success-700 border border-success-300/50 px-2.5 py-0.5 font-medium">
+                    <span className="text-xs rounded-full bg-success-50 dark:bg-success-500/10 text-success-700 dark:text-foreground border border-success-300/50 px-2.5 py-0.5 font-medium">
                       Received
                     </span>
                     {expanded ? (
@@ -386,7 +386,7 @@ export default function GoodsReceivingPage() {
                                 {item.sku}
                               </span>
                             </td>
-                            <td className="px-5 py-3 text-right tabular-nums font-medium text-success-700">
+                            <td className="px-5 py-3 text-right tabular-nums font-medium text-success-700 dark:text-foreground">
                               {item.expectedQty.toLocaleString()}
                             </td>
                           </tr>

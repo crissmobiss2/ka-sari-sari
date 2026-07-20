@@ -35,7 +35,7 @@ const HUBS: Record<HubKey, HubConfig> = {
     label: "NCR Hub",
     location: "Valenzuela, Metro Manila",
     color: "bg-brand-500",
-    accent: "text-brand-600 bg-brand-50 border-brand-200",
+    accent: "text-brand-600 bg-brand-50 dark:bg-brand-500/10 border-brand-200",
     cities: getCitiesByHub("NCR").length,
     capacity: 1200, used: 847, pickers: 8, driversActive: 12,
   },
@@ -51,7 +51,7 @@ const HUBS: Record<HubKey, HubConfig> = {
     label: "South Luzon Hub",
     location: "Calamba, Laguna",
     color: "bg-info-500",
-    accent: "text-info-600 bg-info-50 border-info-200",
+    accent: "text-info-600 bg-info-50 dark:bg-info-500/10 border-info-200",
     cities: getCitiesByHub("South Luzon").length,
     capacity: 500, used: 210, pickers: 3, driversActive: 5,
   },
@@ -59,7 +59,7 @@ const HUBS: Record<HubKey, HubConfig> = {
     label: "Visayas Hub",
     location: "Mandaue, Cebu",
     color: "bg-success-500",
-    accent: "text-success-700 bg-success-50 border-success-200",
+    accent: "text-success-700 dark:text-foreground bg-success-50 dark:bg-success-500/10 border-success-200",
     cities: getCitiesByHub("Visayas").length,
     capacity: 400, used: 180, pickers: 2, driversActive: 4,
   },
@@ -67,7 +67,7 @@ const HUBS: Record<HubKey, HubConfig> = {
     label: "Mindanao Hub",
     location: "Davao City",
     color: "bg-warning-500",
-    accent: "text-warning-700 bg-warning-50 border-warning-200",
+    accent: "text-warning-700 dark:text-foreground bg-warning-50 dark:bg-warning-500/10 border-warning-200",
     cities: getCitiesByHub("Mindanao").length,
     capacity: 350, used: 95, pickers: 2, driversActive: 3,
   },
@@ -194,11 +194,11 @@ export default function WarehouseDashboard() {
           <div>
             <div className="flex items-center justify-between text-xs mb-1">
               <span className="text-muted-foreground">Storage capacity</span>
-              <span className={cn("font-semibold", capacityPct > 80 ? "text-danger-700 dark:text-danger-500" : capacityPct > 60 ? "text-warning-700" : "text-success-700")}>
+              <span className={cn("font-semibold", capacityPct > 80 ? "text-danger-700 dark:text-foreground" : capacityPct > 60 ? "text-warning-700 dark:text-foreground" : "text-success-700 dark:text-foreground")}>
                 {hub.used}/{hub.capacity} pallets ({capacityPct}%)
               </span>
             </div>
-            <div className="h-2 bg-surface-100 rounded-full overflow-hidden">
+            <div className="h-2 bg-surface-100 dark:bg-surface-800 rounded-full overflow-hidden">
               <div
                 className={cn("h-full rounded-full transition-all", capacityPct > 80 ? "bg-danger-500" : capacityPct > 60 ? "bg-warning-400" : "bg-success-500")}
                 style={{ width: `${capacityPct}%` }}
@@ -229,8 +229,8 @@ export default function WarehouseDashboard() {
         {[
           { label: "Open Pick Lists", value: openPickLists, icon: ClipboardList, color: "text-brand-500", bg: "bg-brand-500/10" },
           { label: "Items to Pick",   value: itemsToPick,   icon: ScanLine,       color: "text-blue-500",  bg: "bg-blue-500/10" },
-          { label: "Receiving Queue", value: receivingQueue, icon: PackageCheck,  color: "text-warning-700",bg: "bg-warning-50" },
-          { label: "Completed Today", value: completedToday, icon: CheckCircle2,  color: "text-success-700",bg: "bg-success-50" },
+          { label: "Receiving Queue", value: receivingQueue, icon: PackageCheck,  color: "text-warning-700 dark:text-foreground",bg: "bg-warning-50 dark:bg-warning-500/10" },
+          { label: "Completed Today", value: completedToday, icon: CheckCircle2,  color: "text-success-700 dark:text-foreground",bg: "bg-success-50 dark:bg-success-500/10" },
           { label: "Packed & Ready",  value: packedCount,    icon: PackageCheck,  color: "text-amber-600",  bg: "bg-amber-50" },
         ].map(({ label, value, icon: Icon, color, bg }) => (
           <Card key={label}>
@@ -287,8 +287,8 @@ export default function WarehouseDashboard() {
             return (
               <Card key={i} className={cn(t.urgent && "border-warning-200")}>
                 <CardContent className="p-3.5 flex items-center gap-3">
-                  <div className={cn("flex h-8 w-8 shrink-0 items-center justify-center rounded-xl", t.urgent ? "bg-warning-100" : "bg-surface-100")}>
-                    <Truck className={cn("h-4 w-4", t.urgent ? "text-warning-700" : "text-muted-foreground")} />
+                  <div className={cn("flex h-8 w-8 shrink-0 items-center justify-center rounded-xl", t.urgent ? "bg-warning-100" : "bg-surface-100 dark:bg-surface-800")}>
+                    <Truck className={cn("h-4 w-4", t.urgent ? "text-warning-700 dark:text-foreground" : "text-muted-foreground")} />
                   </div>
                   <div className="flex-1 min-w-0">
                     <div className="flex items-center gap-1.5 mb-0.5">
@@ -315,7 +315,7 @@ export default function WarehouseDashboard() {
                     className={cn(
                       "shrink-0 rounded-lg text-xs font-semibold px-2.5 py-1.5 transition-colors",
                       isPrepped
-                        ? "bg-success-100 text-success-700 cursor-default"
+                        ? "bg-success-100 text-success-700 dark:text-foreground cursor-default"
                         : "bg-brand-700 text-white"
                     )}
                   >
@@ -337,10 +337,10 @@ export default function WarehouseDashboard() {
               <div key={pl.id} className="flex items-center gap-3 px-4 py-3">
                 <div className={cn(
                   "flex h-8 w-8 shrink-0 items-center justify-center rounded-xl",
-                  pl.status === "completed" ? "bg-success-50" : pl.status === "in_progress" ? "bg-brand-50" : "bg-surface-100"
+                  pl.status === "completed" ? "bg-success-50 dark:bg-success-500/10" : pl.status === "in_progress" ? "bg-brand-50 dark:bg-brand-500/10" : "bg-surface-100 dark:bg-surface-800"
                 )}>
                   {pl.status === "completed"
-                    ? <CheckCircle2 className="h-4 w-4 text-success-700" />
+                    ? <CheckCircle2 className="h-4 w-4 text-success-700 dark:text-foreground" />
                     : pl.status === "in_progress"
                     ? <ScanLine className="h-4 w-4 text-brand-500" />
                     : <ClipboardList className="h-4 w-4 text-muted-foreground" />}

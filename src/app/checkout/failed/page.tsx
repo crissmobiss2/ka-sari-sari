@@ -11,7 +11,7 @@ function FailedContent() {
 
   return (
     <div className="min-h-screen bg-background flex flex-col items-center justify-center px-4 py-12 text-center">
-      <div className="flex h-24 w-24 items-center justify-center rounded-full bg-danger-50 border-2 border-danger-200 mb-8">
+      <div className="flex h-24 w-24 items-center justify-center rounded-full bg-danger-50 dark:bg-danger-500/10 border-2 border-danger-200 mb-8">
         <XCircle className="h-12 w-12 text-danger-500" strokeWidth={1.5} />
       </div>
 

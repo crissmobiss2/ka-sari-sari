@@ -87,7 +87,7 @@ function LiveLocationSection({ location }: { location: DriverLocation | null }) 
             <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-success-500 opacity-75" />
             <span className="relative inline-flex rounded-full h-2 w-2 bg-success-500" />
           </span>
-          <span className="text-[11px] text-success-700 font-semibold">Live</span>
+          <span className="text-[11px] text-success-700 dark:text-foreground font-semibold">Live</span>
         </div>
       </div>
 
@@ -104,7 +104,7 @@ function LiveLocationSection({ location }: { location: DriverLocation | null }) 
         />
       ) : (
         <div className="p-4 space-y-3">
-          <div className="flex items-start gap-3 rounded-xl bg-surface-50 border border-border px-4 py-3">
+          <div className="flex items-start gap-3 rounded-xl bg-surface-50 dark:bg-surface-900 border border-border px-4 py-3">
             <MapPin className="h-4 w-4 text-brand-500 shrink-0 mt-0.5" />
             <div className="min-w-0">
               <p className="text-xs font-semibold text-surface-900">Current GPS Coordinates</p>
@@ -149,7 +149,7 @@ function RouteMap() {
             <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-success-500 opacity-75" />
             <span className="relative inline-flex rounded-full h-2 w-2 bg-success-500" />
           </span>
-          <span className="text-[11px] text-success-700 font-semibold">Tracking Active</span>
+          <span className="text-[11px] text-success-700 dark:text-foreground font-semibold">Tracking Active</span>
         </div>
       </div>
 
@@ -334,8 +334,8 @@ function DriverCard({ driver = DRIVER }: { driver?: typeof DRIVER }) {
             className={cn(
               "flex flex-col items-center gap-1.5 rounded-xl border py-3 transition-colors",
               called
-                ? "border-success-200 bg-success-50 text-success-700"
-                : "border-brand-200 bg-brand-50 text-brand-600 hover:bg-brand-100"
+                ? "border-success-200 bg-success-50 dark:bg-success-500/10 text-success-700 dark:text-foreground"
+                : "border-brand-200 bg-brand-50 dark:bg-brand-500/10 text-brand-600 hover:bg-brand-100"
             )}
           >
             <Phone className="h-4 w-4" />
@@ -345,7 +345,7 @@ function DriverCard({ driver = DRIVER }: { driver?: typeof DRIVER }) {
             href={waLink}
             target="_blank"
             rel="noreferrer"
-            className="flex flex-col items-center gap-1.5 rounded-xl border border-success-200 bg-success-50 py-3 text-success-700 hover:bg-success-100 transition-colors"
+            className="flex flex-col items-center gap-1.5 rounded-xl border border-success-200 bg-success-50 dark:bg-success-500/10 py-3 text-success-700 dark:text-foreground hover:bg-success-100 transition-colors"
           >
             <MessageCircle className="h-4 w-4" />
             <span className="text-[11px] font-semibold">WhatsApp</span>
@@ -392,7 +392,7 @@ function StopsBreakdown() {
                 "flex h-6 w-6 shrink-0 items-center justify-center rounded-full text-[11px] font-bold",
                 stop.status === "done"    ? "bg-success-700 text-white" :
                 stop.status === "current" ? "bg-brand-700 text-white" :
-                stop.status === "yours"   ? "border-2 border-brand-500 bg-white text-brand-500" :
+                stop.status === "yours"   ? "border-2 border-brand-500 bg-white text-brand-700" :
                 "bg-surface-200 dark:bg-surface-800 text-muted-foreground"
               )}>
                 {stop.status === "done" ? "✓" : stop.status === "current" ? "●" : stop.status === "yours" ? "★" : "○"}
@@ -410,7 +410,7 @@ function StopsBreakdown() {
                   {stop.label}
                 </p>
                 <span className={cn("text-[11px] shrink-0 tabular-nums font-medium",
-                  stop.status === "done"    ? "text-success-700" :
+                  stop.status === "done"    ? "text-success-700 dark:text-foreground" :
                   stop.status === "current" ? "text-brand-500" : "text-muted-foreground"
                 )}>
                   {stop.eta}
@@ -463,7 +463,7 @@ function LiveUpdates({ extraUpdates = [] }: { extraUpdates?: typeof INITIAL_UPDA
             <span className="text-[11px] text-muted-foreground shrink-0 w-16 tabular-nums pt-0.5">{u.time}</span>
             <p className={cn("text-[11px] flex-1 leading-relaxed",
               u.type === "highlight" ? "text-brand-600 font-semibold" :
-              u.type === "success"   ? "text-success-700 font-medium" :
+              u.type === "success"   ? "text-success-700 dark:text-foreground font-medium" :
               "text-foreground"
             )}>
               {u.text}
@@ -699,11 +699,11 @@ export default function TrackingPage() {
 
         {/* COD notice */}
         {(orderData ?? ORDER).paymentMethod.toLowerCase() === "cod" && (
-          <div className="mx-4 rounded-xl border border-warning-200 bg-warning-50 px-4 py-3 flex items-start gap-3">
-            <Clock className="h-4 w-4 text-warning-700 shrink-0 mt-0.5" />
+          <div className="mx-4 rounded-xl border border-warning-200 bg-warning-50 dark:bg-warning-500/10 px-4 py-3 flex items-start gap-3">
+            <Clock className="h-4 w-4 text-warning-700 dark:text-foreground shrink-0 mt-0.5" />
             <div>
-              <p className="text-xs font-bold text-warning-700 mb-0.5">Prepare Cash on Delivery</p>
-              <p className="text-xs text-warning-700 leading-relaxed">
+              <p className="text-xs font-bold text-warning-700 dark:text-foreground mb-0.5">Prepare Cash on Delivery</p>
+              <p className="text-xs text-warning-700 dark:text-foreground leading-relaxed">
                 Have <strong>₱{(orderData ?? ORDER).total.toLocaleString()} cash</strong> ready when the driver arrives.
                 Payment is collected on delivery.
               </p>

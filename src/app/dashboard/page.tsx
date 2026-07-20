@@ -199,7 +199,7 @@ export default function DashboardPage() {
         {activeOrder && (
           <div className="px-4">
             <Link href={`/orders/${activeOrder.id}`} className="block">
-              <div className="rounded-2xl border border-brand-200 bg-brand-50 px-4 py-4">
+              <div className="rounded-2xl border border-brand-200 bg-brand-50 dark:bg-brand-500/10 px-4 py-4">
                 <div className="flex items-center justify-between mb-2">
                   <div className="flex items-center gap-2">
                     <span className="relative flex h-2.5 w-2.5">
@@ -210,7 +210,7 @@ export default function DashboardPage() {
                   </div>
                   <ChevronRight className="h-4 w-4 text-brand-400" />
                 </div>
-                <p className="text-xs text-brand-700 dark:text-brand-500">{activeOrder.orderNumber} · {activeOrder.eta ? `Expected by ${activeOrder.eta}` : "Estimated delivery by today"}</p>
+                <p className="text-xs text-brand-700">{activeOrder.orderNumber} · {activeOrder.eta ? `Expected by ${activeOrder.eta}` : "Estimated delivery by today"}</p>
                 <div className="mt-3 flex gap-1">
                   {(["confirmed", "picking", "packed", "out_for_delivery"] as OrderStatus[]).map((s, i) => {
                     const steps = ["confirmed", "picking", "packed", "out_for_delivery"];
@@ -236,7 +236,7 @@ export default function DashboardPage() {
           <div className="rounded-2xl border border-border bg-card shadow-card divide-y divide-border overflow-hidden">
             {recentOrders.map((order) => (
               <Link key={order.id} href={`/orders/${order.id}`} className="flex items-center gap-4 px-4 py-3.5 hover:bg-muted transition-colors">
-                <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-surface-100">
+                <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-surface-100 dark:bg-surface-800">
                   <Package className="h-5 w-5 text-muted-foreground" />
                 </div>
                 <div className="flex-1 min-w-0">
@@ -365,7 +365,7 @@ export default function DashboardPage() {
                         </div>
                         <span className="text-[10px] text-muted-foreground">{p.stock} left</span>
                       </div>
-                      <p className="text-xs text-brand-700 dark:text-brand-500 font-bold mt-0.5">{formatPHP(p.price)} · min {p.minOrderQty} {p.unit}s</p>
+                      <p className="text-xs text-brand-700 font-bold mt-0.5">{formatPHP(p.price)} · min {p.minOrderQty} {p.unit}s</p>
                     </div>
                     <button
                       onClick={() => addItem(p)}

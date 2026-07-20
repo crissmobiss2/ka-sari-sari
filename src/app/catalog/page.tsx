@@ -88,7 +88,7 @@ function CatalogContent() {
       <div className="px-4 py-4 space-y-4">
         {/* Non-blocking error notice when API failed and mock data is shown */}
         {fetchError && (
-          <div className="flex items-center gap-2 rounded-xl bg-warning-50 border border-warning-200 px-4 py-3 text-sm text-warning-700">
+          <div className="flex items-center gap-2 rounded-xl bg-warning-50 dark:bg-warning-500/10 border border-warning-200 px-4 py-3 text-sm text-warning-700 dark:text-foreground">
             <AlertCircle className="h-4 w-4 shrink-0" />
             Showing demo catalog — could not load live products.
           </div>

@@ -116,18 +116,18 @@ const MAX_ABS_PCT = Math.max(...CATEGORY_FORECASTS.map((c) => Math.abs(c.changeP
 
 function actionStyles(action: ActionType): string {
   switch (action) {
-    case "URGENT":  return "bg-danger-50 text-danger-700 dark:text-danger-500 border border-danger-200";
-    case "Reorder": return "bg-brand-50 text-brand-600 border border-brand-200";
-    case "Watch":   return "bg-warning-50 text-warning-700 border border-warning-200";
+    case "URGENT":  return "bg-danger-50 dark:bg-danger-500/10 text-danger-700 dark:text-foreground border border-danger-200";
+    case "Reorder": return "bg-brand-50 dark:bg-brand-500/10 text-brand-600 border border-brand-200";
+    case "Watch":   return "bg-warning-50 dark:bg-warning-500/10 text-warning-700 dark:text-foreground border border-warning-200";
     case "OK":      return "bg-surface-100 dark:bg-surface-800 text-muted-foreground";
   }
 }
 
 function urgencyBadgeClass(urgency: AiReorder["urgency"]): string {
   switch (urgency) {
-    case "critical": return "bg-danger-50 text-danger-700 dark:text-danger-500 border border-danger-200";
-    case "high":     return "bg-warning-50 text-warning-700 border border-warning-200";
-    case "medium":   return "bg-info-50 text-info-600 border border-info-200";
+    case "critical": return "bg-danger-50 dark:bg-danger-500/10 text-danger-700 dark:text-foreground border border-danger-200";
+    case "high":     return "bg-warning-50 dark:bg-warning-500/10 text-warning-700 dark:text-foreground border border-warning-200";
+    case "medium":   return "bg-info-50 dark:bg-info-500/10 text-info-600 border border-info-200";
   }
 }
 
@@ -193,7 +193,7 @@ function SummaryCard({
 function ConfidenceBar({ pct }: { pct: number }) {
   return (
     <div className="flex items-center gap-2">
-      <div className="w-16 h-1.5 rounded-full bg-surface-100 overflow-hidden">
+      <div className="w-16 h-1.5 rounded-full bg-surface-100 dark:bg-surface-800 overflow-hidden">
         <div
           className={cn("h-full rounded-full", confidenceBarColor(pct))}
           style={{ width: `${pct}%` }}
@@ -300,7 +300,7 @@ export default function AdminForecastPage() {
       bgColor: "bg-danger-50/60",
     },
     {
-      icon: <ShieldAlert className="h-4 w-4 text-warning-700 shrink-0 mt-0.5" />,
+      icon: <ShieldAlert className="h-4 w-4 text-warning-700 dark:text-foreground shrink-0 mt-0.5" />,
       text: "Restock alert: 3 products may stockout within 7 days based on current order velocity and forecast trajectory.",
       borderColor: "border-warning-400",
       bgColor: "bg-warning-50/60",
@@ -358,7 +358,7 @@ export default function AdminForecastPage() {
           value={`${highVelocityItems.length} products`}
           sub="most frequently ordered"
           icon={<TrendingUp className="h-5 w-5" />}
-          iconBg="bg-brand-50"
+          iconBg="bg-brand-50 dark:bg-brand-500/10"
           iconColor="text-brand-500"
         />
         <SummaryCard
@@ -366,15 +366,15 @@ export default function AdminForecastPage() {
           value="94.2%"
           sub="based on 90-day backtest"
           icon={<CheckCircle2 className="h-5 w-5" />}
-          iconBg="bg-success-50"
-          iconColor="text-success-700"
+          iconBg="bg-success-50 dark:bg-success-500/10"
+          iconColor="text-success-700 dark:text-foreground"
         />
         <SummaryCard
           label="Forecast Period"
           value="Next 14 days"
           sub="Jan 22 â€“ Feb 4, 2026"
           icon={<Calendar className="h-5 w-5" />}
-          iconBg="bg-surface-100"
+          iconBg="bg-surface-100 dark:bg-surface-800"
           iconColor="text-muted-foreground"
         />
       </div>
@@ -384,7 +384,7 @@ export default function AdminForecastPage() {
         <CardHeader className="pb-3">
           <div className="flex items-center justify-between gap-3 flex-wrap">
             <div className="flex items-center gap-2">
-              <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-brand-50">
+              <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-brand-50 dark:bg-brand-500/10">
                 <Sparkles className="h-4 w-4 text-brand-500" />
               </div>
               <div>
@@ -424,7 +424,7 @@ export default function AdminForecastPage() {
                         <span className={cn("inline-block text-xs font-semibold rounded-full px-2 py-0.5 capitalize", urgencyBadgeClass(item.urgency))}>
                           {item.urgency}
                         </span>
-                        <p className="text-xs font-bold text-success-700 tabular-nums">+{item.suggestedQty} units</p>
+                        <p className="text-xs font-bold text-success-700 dark:text-foreground tabular-nums">+{item.suggestedQty} units</p>
                       </div>
                     </div>
                   ))}
@@ -439,7 +439,7 @@ export default function AdminForecastPage() {
                     {aiData.seasonalAlerts.map((alert, i) => (
                       <div key={i} className="rounded-xl bg-warning-50/60 border border-warning-200 p-3.5">
                         <div className="flex items-start gap-2">
-                          <TriangleAlert className="h-4 w-4 text-warning-700 shrink-0 mt-0.5" />
+                          <TriangleAlert className="h-4 w-4 text-warning-700 dark:text-foreground shrink-0 mt-0.5" />
                           <div>
                             <p className="text-sm font-medium text-foreground">{alert.alert}</p>
                             {alert.affectedProducts.length > 0 && (
@@ -478,7 +478,7 @@ export default function AdminForecastPage() {
         <Card>
           <CardHeader className="pb-2">
             <div className="flex items-center gap-2">
-              <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-brand-50">
+              <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-brand-50 dark:bg-brand-500/10">
                 <Zap className="h-4 w-4 text-brand-500" />
               </div>
               <div>
@@ -528,7 +528,7 @@ export default function AdminForecastPage() {
           <CardContent className="pt-0 space-y-2.5">
             {stockoutItems.length === 0 ? (
               <div className="flex items-center gap-2 py-4 justify-center">
-                <CheckCircle2 className="h-4 w-4 text-success-700" />
+                <CheckCircle2 className="h-4 w-4 text-success-700 dark:text-foreground" />
                 <p className="text-sm text-muted-foreground">All products have sufficient stock</p>
               </div>
             ) : (
@@ -564,8 +564,8 @@ export default function AdminForecastPage() {
         <Card>
           <CardHeader className="pb-2">
             <div className="flex items-center gap-2">
-              <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-success-50">
-                <ShoppingCart className="h-4 w-4 text-success-700" />
+              <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-success-50 dark:bg-success-500/10">
+                <ShoppingCart className="h-4 w-4 text-success-700 dark:text-foreground" />
               </div>
               <div>
                 <CardTitle className="text-base">Recommended Reorders</CardTitle>
@@ -587,7 +587,7 @@ export default function AdminForecastPage() {
                     <p className="text-[11px] text-muted-foreground mt-0.5">{item.stock} in stock</p>
                   </div>
                   <div className="shrink-0 text-right">
-                    <p className="text-sm font-bold text-success-700 tabular-nums">+{item.suggestedQty}</p>
+                    <p className="text-sm font-bold text-success-700 dark:text-foreground tabular-nums">+{item.suggestedQty}</p>
                     <p className="text-[11px] text-muted-foreground">units to order</p>
                   </div>
                 </div>
@@ -645,7 +645,7 @@ export default function AdminForecastPage() {
                         "border-b border-border last:border-0 transition-colors",
                         row.action === "URGENT"
                           ? "bg-danger-50/30 hover:bg-danger-50/50"
-                          : "hover:bg-surface-50"
+                          : "hover:bg-surface-50 dark:bg-surface-900"
                       )}
                     >
                       {/* Product name */}
@@ -655,7 +655,7 @@ export default function AdminForecastPage() {
 
                       {/* Category */}
                       <td className="py-3.5 pl-2 pr-3">
-                        <span className="inline-block text-xs text-muted-foreground bg-surface-100 rounded-md px-2 py-0.5 whitespace-nowrap">
+                        <span className="inline-block text-xs text-muted-foreground bg-surface-100 dark:bg-surface-800 rounded-md px-2 py-0.5 whitespace-nowrap">
                           {row.category}
                         </span>
                       </td>
@@ -675,7 +675,7 @@ export default function AdminForecastPage() {
                         <span
                           className={cn(
                             "text-xs font-semibold tabular-nums",
-                            isUp ? "text-success-700" : "text-danger-700 dark:text-danger-500"
+                            isUp ? "text-success-700 dark:text-foreground" : "text-danger-700 dark:text-foreground"
                           )}
                         >
                           {isUp ? "â–²" : "â–¼"} {isUp ? "+" : ""}{row.trendPct}%
@@ -728,7 +728,7 @@ export default function AdminForecastPage() {
                   <span className="text-sm text-muted-foreground w-36 shrink-0 truncate">{cat.name}</span>
 
                   {/* Bar track */}
-                  <div className="flex-1 h-6 rounded-lg bg-surface-100 overflow-hidden relative">
+                  <div className="flex-1 h-6 rounded-lg bg-surface-100 dark:bg-surface-800 overflow-hidden relative">
                     <div
                       className={cn(
                         "h-full rounded-lg transition-all",
@@ -744,7 +744,7 @@ export default function AdminForecastPage() {
                   <span
                     className={cn(
                       "text-sm font-bold w-14 text-right shrink-0 tabular-nums",
-                      isPos ? "text-brand-600" : "text-danger-700 dark:text-danger-500"
+                      isPos ? "text-brand-600" : "text-danger-700 dark:text-foreground"
                     )}
                   >
                     {isPos ? "+" : ""}{cat.changePct}%

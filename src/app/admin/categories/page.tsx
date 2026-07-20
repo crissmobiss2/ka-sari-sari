@@ -100,7 +100,7 @@ export default function AdminCategoriesPage() {
           <Card key={cat.id} className="p-5 hover:shadow-card-md transition-shadow">
             <div className="flex items-start justify-between">
               <div className="flex items-center gap-3 flex-1 min-w-0">
-                <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-brand-50 text-brand-500 shrink-0">
+                <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-brand-50 dark:bg-brand-500/10 text-brand-700 dark:text-foreground shrink-0">
                   <Tag className="h-5 w-5" />
                 </div>
                 <div className="flex-1 min-w-0">

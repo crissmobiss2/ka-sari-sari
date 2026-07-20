@@ -30,7 +30,7 @@ function CityRow({ city }: { city: NexoflowCity }) {
         <span className="text-xs text-muted-foreground ml-2">{city.province}</span>
       </div>
       {count > 0 ? (
-        <span className="text-xs font-semibold text-success-700 bg-success-50 border border-success-200 rounded-full px-2 py-0.5">
+        <span className="text-xs font-semibold text-success-700 dark:text-foreground bg-success-50 dark:bg-success-500/10 border border-success-200 rounded-full px-2 py-0.5">
           {count} retailers
         </span>
       ) : (
@@ -72,7 +72,7 @@ export default function CoveragePage() {
             Powered by <span className="font-semibold text-foreground">Pacific Nexus Global</span> â€” 137 partner cities across the Philippines
           </p>
         </div>
-        <div className="flex items-center gap-2 rounded-xl border border-surface-200 bg-surface-50 px-3 py-2 text-xs font-semibold text-muted-foreground">
+        <div className="flex items-center gap-2 rounded-xl border border-surface-200 bg-surface-50 dark:bg-surface-900 px-3 py-2 text-xs font-semibold text-muted-foreground">
           Static Coverage
         </div>
       </div>
@@ -80,10 +80,10 @@ export default function CoveragePage() {
       {/* Top KPIs */}
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
         {[
-          { label: "Partner Cities", value: "137", sub: "Luzon Â· Visayas Â· Mindanao", icon: MapPin, color: "text-brand-600 bg-brand-50" },
-          { label: "Active Cities", value: activeCities.toString(), sub: `${NEXOFLOW_CITIES.length - activeCities} not yet activated`, icon: CheckCircle2, color: "text-success-700 bg-success-50" },
-          { label: "Total Retailers", value: totalRetailers.toString(), sub: "Registered store owners", icon: Users, color: "text-info-600 bg-info-50" },
-          { label: "Delivery Hubs", value: "5", sub: "NCR Â· N. Luzon Â· S. Luzon Â· Visayas Â· Mindanao", icon: Truck, color: "text-warning-700 bg-warning-50" },
+          { label: "Partner Cities", value: "137", sub: "Luzon Â· Visayas Â· Mindanao", icon: MapPin, color: "text-brand-700 bg-brand-50 dark:bg-brand-500/10 dark:text-foreground" },
+          { label: "Active Cities", value: activeCities.toString(), sub: `${NEXOFLOW_CITIES.length - activeCities} not yet activated`, icon: CheckCircle2, color: "text-success-700 dark:text-foreground bg-success-50 dark:bg-success-500/10" },
+          { label: "Total Retailers", value: totalRetailers.toString(), sub: "Registered store owners", icon: Users, color: "text-info-700 bg-info-50 dark:bg-info-500/10 dark:text-foreground" },
+          { label: "Delivery Hubs", value: "5", sub: "NCR Â· N. Luzon Â· S. Luzon Â· Visayas Â· Mindanao", icon: Truck, color: "text-warning-700 dark:text-foreground bg-warning-50 dark:bg-warning-500/10" },
         ].map((s) => (
           <Card key={s.label}>
             <CardContent className="p-5">

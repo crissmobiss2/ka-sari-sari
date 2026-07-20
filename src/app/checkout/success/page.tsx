@@ -238,7 +238,7 @@ function SuccessContent() {
 
       {/* ── loyalty points banner ── */}
       {ptsEarned > 0 && (
-        <div className="kss-points-in w-full max-w-sm rounded-2xl border border-brand-200 bg-brand-50 p-4 flex items-center gap-3 text-left mb-6">
+        <div className="kss-points-in w-full max-w-sm rounded-2xl border border-brand-200 bg-brand-50 dark:bg-brand-500/10 p-4 flex items-center gap-3 text-left mb-6">
           <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-brand-100">
             <Star className="h-5 w-5 text-brand-500 fill-brand-400" />
           </div>
@@ -246,7 +246,7 @@ function SuccessContent() {
             <p className="text-sm font-bold text-brand-700">
               You earned {ptsEarned} loyalty points!
             </p>
-            <p className="text-xs text-brand-700 dark:text-brand-500 mt-0.5">
+            <p className="text-xs text-brand-700 mt-0.5">
               Visit your Rewards page to see your balance.
             </p>
           </div>

@@ -95,15 +95,15 @@ const ORDER_STATUS_LABEL: Record<string, string> = {
 };
 
 const ORDER_STATUS_STYLE: Record<string, string> = {
-  out_for_delivery: "bg-brand-50 text-brand-600 border-brand-500/25",
-  delivered:        "bg-success-50 text-success-700 border-success-500/25",
-  pending:          "bg-warning-50 text-warning-700 border-warning-500/25",
+  out_for_delivery: "bg-brand-50 dark:bg-brand-500/10 text-brand-600 border-brand-500/25",
+  delivered:        "bg-success-50 dark:bg-success-500/10 text-success-700 dark:text-foreground border-success-500/25",
+  pending:          "bg-warning-50 dark:bg-warning-500/10 text-warning-700 dark:text-foreground border-warning-500/25",
   confirmed:        "bg-blue-50 text-blue-600 border-blue-200",
 };
 
 const PAYMENT_CHIP: Record<string, string> = {
   GCash: "bg-blue-50 text-blue-700",
-  COD:   "bg-surface-100 text-surface-700",
+  COD:   "bg-surface-100 dark:bg-surface-800 text-surface-700",
   Maya:  "bg-green-50 text-green-700",
 };
 
@@ -221,7 +221,7 @@ export default function AdminRetailerProfilePage() {
           </button>
           <button
             onClick={() => setSuspendConfirm(true)}
-            className="flex items-center gap-1.5 rounded-xl border border-danger-200 bg-danger-50 px-4 py-2 text-sm font-medium text-danger-700 dark:text-danger-500 hover:bg-danger-100 transition-colors"
+            className="flex items-center gap-1.5 rounded-xl border border-danger-200 bg-danger-50 dark:bg-danger-500/10 px-4 py-2 text-sm font-medium text-danger-700 dark:text-foreground hover:bg-danger-100 transition-colors"
           >
             <AlertTriangle className="h-3.5 w-3.5" /> Suspend Account
           </button>
@@ -229,15 +229,15 @@ export default function AdminRetailerProfilePage() {
 
         {/* Inline suspend confirmation */}
         {suspendConfirm && (
-          <div className="mt-4 rounded-xl border border-danger-200 bg-danger-50 p-4">
-            <p className="text-sm font-semibold text-danger-700 mb-1">
+          <div className="mt-4 rounded-xl border border-danger-200 bg-danger-50 dark:bg-danger-500/10 p-4">
+            <p className="text-sm font-semibold text-danger-700 dark:text-foreground mb-1">
               Suspend {retailer.name}?
             </p>
-            <p className="text-sm text-danger-700 dark:text-danger-500">
+            <p className="text-sm text-danger-700 dark:text-foreground">
               The retailer will lose app access and cannot place orders. This action can be reversed.
             </p>
             {suspendError && (
-              <p className="text-xs text-danger-700 mt-2 font-medium">{suspendError}</p>
+              <p className="text-xs text-danger-700 dark:text-foreground mt-2 font-medium">{suspendError}</p>
             )}
             <div className="flex gap-2 mt-3">
               <button
@@ -307,7 +307,7 @@ export default function AdminRetailerProfilePage() {
                   <td className="px-5 py-3.5 hidden md:table-cell">
                     <span className={cn(
                       "inline-flex items-center rounded-full border px-2.5 py-0.5 text-xs font-medium",
-                      ORDER_STATUS_STYLE[order.status] ?? "bg-surface-100 text-muted-foreground border-surface-200"
+                      ORDER_STATUS_STYLE[order.status] ?? "bg-surface-100 dark:bg-surface-800 text-muted-foreground border-surface-200"
                     )}>
                       {ORDER_STATUS_LABEL[order.status] ?? order.status}
                     </span>
@@ -315,7 +315,7 @@ export default function AdminRetailerProfilePage() {
                   <td className="px-5 py-3.5 hidden md:table-cell">
                     <span className={cn(
                       "rounded-full px-2 py-0.5 text-xs font-medium",
-                      PAYMENT_CHIP[order.payment] ?? "bg-surface-100 text-surface-700"
+                      PAYMENT_CHIP[order.payment] ?? "bg-surface-100 dark:bg-surface-800 text-surface-700"
                     )}>
                       {order.payment}
                     </span>
@@ -398,7 +398,7 @@ export default function AdminRetailerProfilePage() {
           </button>
           <button
             onClick={() => setSuspendConfirm(true)}
-            className="flex items-center gap-2 rounded-xl border border-danger-200 px-4 py-2.5 text-sm font-medium text-danger-700 dark:text-danger-500 hover:bg-danger-50 transition-colors"
+            className="flex items-center gap-2 rounded-xl border border-danger-200 px-4 py-2.5 text-sm font-medium text-danger-700 dark:text-foreground hover:bg-danger-50 dark:bg-danger-500/10 transition-colors"
           >
             <AlertTriangle className="h-4 w-4" />
             Suspend Account

@@ -103,14 +103,14 @@ export default function StoreProfilePage() {
         </button>
 
         {saved && (
-          <div className="flex items-center gap-2 rounded-xl bg-success-50 border border-success-500/25 px-4 py-3 text-sm text-success-700">
+          <div className="flex items-center gap-2 rounded-xl bg-success-50 dark:bg-success-500/10 border border-success-500/25 dark:border-success-500/30 px-4 py-3 text-sm text-success-700 dark:text-foreground">
             <CheckCircle2 className="h-4 w-4 shrink-0" />
             Store profile updated successfully.
           </div>
         )}
 
         {saveError && (
-          <div className="flex items-center gap-2 rounded-xl bg-danger-50 border border-danger-500/25 px-4 py-3 text-sm text-danger-700">
+          <div className="flex items-center gap-2 rounded-xl bg-danger-50 dark:bg-danger-500/10 border border-danger-500/25 dark:border-danger-500/30 px-4 py-3 text-sm text-danger-700 dark:text-foreground">
             <AlertCircle className="h-4 w-4 shrink-0" />
             {saveError}
           </div>
@@ -157,11 +157,11 @@ export default function StoreProfilePage() {
                   <h3 className="font-display text-sm font-semibold text-foreground">Delivery Address</h3>
                 </div>
                 {covered ? (
-                  <span className="flex items-center gap-1 text-[11px] font-semibold text-success-700 bg-success-50 border border-success-200 rounded-full px-2 py-0.5">
+                  <span className="flex items-center gap-1 text-[11px] font-semibold text-success-700 dark:text-foreground bg-success-50 dark:bg-success-500/10 border border-success-200 dark:border-success-500/30 rounded-full px-2 py-0.5">
                     <CheckCircle2 className="h-3 w-3" /> Nexoflow Covered
                   </span>
                 ) : form.city ? (
-                  <span className="flex items-center gap-1 text-[11px] font-semibold text-warning-700 bg-warning-50 border border-warning-200 rounded-full px-2 py-0.5">
+                  <span className="flex items-center gap-1 text-[11px] font-semibold text-warning-700 dark:text-foreground bg-warning-50 dark:bg-warning-500/10 border border-warning-200 dark:border-warning-500/30 rounded-full px-2 py-0.5">
                     <AlertCircle className="h-3 w-3" /> Not covered yet
                   </span>
                 ) : null}
@@ -218,7 +218,7 @@ export default function StoreProfilePage() {
                               <p className="font-medium text-foreground">{c.city}</p>
                               <p className="text-[11px] text-muted-foreground">{c.province}</p>
                             </div>
-                            <span className="text-[10px] font-semibold text-brand-500 bg-brand-50 border border-brand-100 rounded-full px-1.5 py-0.5 shrink-0">
+                            <span className="text-[10px] font-semibold text-brand-700 dark:text-foreground bg-brand-50 dark:bg-brand-500/10 border border-brand-100 dark:border-brand-500/30 rounded-full px-1.5 py-0.5 shrink-0">
                               {c.hub}
                             </span>
                           </button>
@@ -248,11 +248,11 @@ export default function StoreProfilePage() {
             </div>
 
             {/* Nexoflow coverage note */}
-            <div className="rounded-xl border border-brand-100 bg-brand-50 p-4 flex items-start gap-3">
-              <MapPin className="h-4 w-4 text-brand-500 shrink-0 mt-0.5" />
+            <div className="rounded-xl border border-brand-100 dark:border-brand-500/30 bg-brand-50 dark:bg-brand-500/10 p-4 flex items-start gap-3">
+              <MapPin className="h-4 w-4 text-brand-700 dark:text-foreground shrink-0 mt-0.5" />
               <div>
-                <p className="text-xs font-semibold text-brand-900">Nexoflow Delivery Network</p>
-                <p className="text-xs text-brand-700 mt-0.5 leading-relaxed">
+                <p className="text-xs font-semibold text-brand-900 dark:text-foreground">Nexoflow Delivery Network</p>
+                <p className="text-xs text-brand-700 dark:text-foreground mt-0.5 leading-relaxed">
                   Ka Sari-Sari uses Nexoflow's network to deliver to 137 cities across the Philippines.
                   Select your city to confirm delivery coverage and estimated lead times.
                 </p>

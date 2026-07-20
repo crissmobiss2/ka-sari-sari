@@ -117,7 +117,7 @@ function resolveProduct(productId: string): Product | undefined {
 function EmptyState() {
   return (
     <div className="flex flex-col items-center justify-center py-16 px-6 text-center">
-      <div className="flex h-16 w-16 items-center justify-center rounded-2xl bg-surface-100 mb-4">
+      <div className="flex h-16 w-16 items-center justify-center rounded-2xl bg-surface-100 dark:bg-surface-800 mb-4">
         <ClipboardList className="h-8 w-8 text-muted-foreground/50" />
       </div>
       <h2 className="text-lg font-bold text-foreground">No past orders yet</h2>
@@ -156,7 +156,7 @@ function FrequentlyReordered({
   return (
     <div className="rounded-2xl border border-border bg-card shadow-card overflow-hidden">
       {/* Header */}
-      <div className="flex items-center gap-2 px-4 py-3 border-b border-border bg-surface-50 dark:bg-surface-800">
+      <div className="flex items-center gap-2 px-4 py-3 border-b border-border bg-surface-50 dark:bg-surface-900 dark:bg-surface-800">
         <Star className="h-4 w-4 text-brand-500 fill-brand-500" />
         <span className="text-sm font-bold text-foreground">Frequently Reordered</span>
         <span className="ml-auto text-[11px] text-muted-foreground">{items.length} items</span>
@@ -165,7 +165,7 @@ function FrequentlyReordered({
       <div className="divide-y divide-border">
         {items.map((item) => (
           <div key={item.productId} className="flex items-center gap-3 px-4 py-3">
-            <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-brand-50">
+            <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-brand-50 dark:bg-brand-500/10">
               <Package className="h-4 w-4 text-brand-400" />
             </div>
             <div className="flex-1 min-w-0">
@@ -176,7 +176,7 @@ function FrequentlyReordered({
             </div>
             <button
               onClick={() => onAdd(item.productId, item.defaultQty, item.name)}
-              className="flex h-8 w-8 shrink-0 items-center justify-center rounded-xl border border-brand-200 bg-brand-50 text-brand-500 hover:bg-brand-100 active:scale-90 transition-all"
+              className="flex h-8 w-8 shrink-0 items-center justify-center rounded-xl border border-brand-200 bg-brand-50 dark:bg-brand-500/10 text-brand-500 hover:bg-brand-100 active:scale-90 transition-all"
               aria-label={`Add ${item.name} to cart`}
             >
               <Plus className="h-4 w-4" />
@@ -222,7 +222,7 @@ function OrderCard({
   return (
     <div className="rounded-2xl border border-border bg-card shadow-card overflow-hidden">
       {/* Order header */}
-      <div className="flex items-center justify-between px-4 py-3.5 border-b border-border bg-surface-50 dark:bg-surface-800">
+      <div className="flex items-center justify-between px-4 py-3.5 border-b border-border bg-surface-50 dark:bg-surface-900 dark:bg-surface-800">
         <div>
           <p className="text-xs font-bold text-foreground font-mono">{order.orderNumber}</p>
           <p className="text-[11px] text-muted-foreground mt-0.5">{formatDate(order.createdAt)}</p>
@@ -258,7 +258,7 @@ function OrderCard({
                 </button>
               )}
 
-              <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-surface-100">
+              <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-surface-100 dark:bg-surface-800">
                 <Package className="h-4 w-4 text-muted-foreground/60" />
               </div>
 
@@ -276,7 +276,7 @@ function OrderCard({
                       addItem(product, item.qty);
                     }
                   }}
-                  className="flex h-8 w-8 shrink-0 items-center justify-center rounded-xl border border-brand-200 bg-brand-50 text-brand-500 hover:bg-brand-100 active:scale-90 transition-all"
+                  className="flex h-8 w-8 shrink-0 items-center justify-center rounded-xl border border-brand-200 bg-brand-50 dark:bg-brand-500/10 text-brand-500 hover:bg-brand-100 active:scale-90 transition-all"
                   aria-label={`Add ${item.name} to cart`}
                 >
                   <Plus className="h-4 w-4" />
@@ -289,7 +289,7 @@ function OrderCard({
 
       {/* Reorder all button (hidden in selection mode) */}
       {!selectionMode && (
-        <div className="px-4 py-3.5 border-t border-border bg-surface-50">
+        <div className="px-4 py-3.5 border-t border-border bg-surface-50 dark:bg-surface-900">
           <button
             onClick={handleReorderAll}
             className="flex w-full items-center justify-center gap-2 rounded-xl bg-brand-700 py-3 text-sm font-bold text-white hover:bg-brand-800 active:scale-[0.98] transition-all"
@@ -320,7 +320,7 @@ function CartStickyFooter() {
         <div className="flex items-center gap-2.5">
           <div className="relative">
             <ShoppingCart className="h-5 w-5 text-white" />
-            <span className="absolute -top-1.5 -right-1.5 flex h-4 w-4 items-center justify-center rounded-full bg-white text-[10px] font-black text-brand-500 leading-none">
+            <span className="absolute -top-1.5 -right-1.5 flex h-4 w-4 items-center justify-center rounded-full bg-white dark:bg-brand-700 text-[10px] font-black text-brand-700 dark:text-white leading-none">
               {count > 99 ? "99+" : count}
             </span>
           </div>
@@ -570,7 +570,7 @@ export default function ReorderPage() {
               "flex items-center gap-1.5 rounded-xl px-3 py-2 text-xs font-bold transition-all active:scale-95",
               selectionMode
                 ? "bg-surface-100 dark:bg-surface-800 text-foreground border border-border"
-                : "bg-brand-50 text-brand-600 border border-brand-200 hover:bg-brand-100"
+                : "bg-brand-50 dark:bg-brand-500/10 text-brand-600 border border-brand-200 hover:bg-brand-100"
             )}
           >
             <ListChecks className="h-3.5 w-3.5" />
@@ -580,7 +580,7 @@ export default function ReorderPage() {
 
         {/* Tip banner */}
         {!selectionMode && (
-          <div className="rounded-xl border border-brand-200 bg-brand-50 px-4 py-3 flex items-center gap-3">
+          <div className="rounded-xl border border-brand-200 bg-brand-50 dark:bg-brand-500/10 px-4 py-3 flex items-center gap-3">
             <span className="text-brand-500 shrink-0">
               <ShoppingCart className="h-4 w-4" />
             </span>
@@ -639,7 +639,7 @@ export default function ReorderPage() {
             className="flex items-center justify-between rounded-2xl border border-border bg-card shadow-card px-5 py-4 hover:border-brand-300 active:scale-[0.99] transition-all"
           >
             <div className="flex items-center gap-3">
-              <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-brand-50 text-brand-500">
+              <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-brand-50 dark:bg-brand-500/10 text-brand-500">
                 <ShoppingCart className="h-5 w-5" />
               </div>
               <div>

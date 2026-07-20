@@ -152,10 +152,10 @@ function StatusIcon({ status }: { status: OrderStatus }) {
 
 function StatusIconBg({ status }: { status: OrderStatus }) {
   const bgClass =
-    status === "out_for_delivery" ? "bg-brand-50"
-    : status === "delivered" ? "bg-success-50"
-    : ["cancelled", "failed_delivery", "returned"].includes(status) ? "bg-danger-50"
-    : "bg-warning-50";
+    status === "out_for_delivery" ? "bg-brand-50 dark:bg-brand-500/10"
+    : status === "delivered" ? "bg-success-50 dark:bg-success-500/10"
+    : ["cancelled", "failed_delivery", "returned"].includes(status) ? "bg-danger-50 dark:bg-danger-500/10"
+    : "bg-warning-50 dark:bg-warning-500/10";
   return (
     <div className={cn("flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl", bgClass)}>
       <StatusIcon status={status} />
@@ -246,7 +246,7 @@ function OrderCard({ order }: { order: DisplayOrder }) {
       {/* Bottom row */}
       <div className={cn(
         "flex items-center justify-between border-t border-border px-4 py-3",
-        isCancelled ? "bg-surface-50/50" : ""
+        isCancelled ? "bg-surface-50/50 dark:bg-surface-900/50" : ""
       )}>
         <p className="text-base font-bold text-foreground">{formatPHP(order.total)}</p>
         <div className="flex items-center gap-2">
@@ -265,7 +265,7 @@ function OrderCard({ order }: { order: DisplayOrder }) {
             <button
               type="button"
               onClick={handleReorder}
-              className="rounded-lg bg-surface-100 px-3 py-1.5 text-xs font-semibold text-surface-900 flex items-center gap-1.5 hover:bg-surface-200 transition-colors"
+              className="rounded-lg bg-surface-100 dark:bg-surface-800 px-3 py-1.5 text-xs font-semibold text-surface-900 flex items-center gap-1.5 hover:bg-surface-200 transition-colors"
             >
               <RotateCcw className="h-3 w-3" />
               Reorder

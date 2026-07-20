@@ -44,9 +44,9 @@ function Numpad({ value, onChange }: { value: string; onChange: (v: string) => v
           onClick={() => press(k)}
           className={cn(
             "rounded-xl h-12 text-base font-semibold transition-colors active:scale-95",
-            k === "C" ? "bg-danger-100 text-danger-700 hover:bg-danger-200"
+            k === "C" ? "bg-danger-100 text-danger-700 dark:text-foreground hover:bg-danger-200"
             : k === "âŒ«" ? "bg-surface-200 text-surface-900 hover:bg-surface-300"
-            : "bg-surface-100 text-surface-900 hover:bg-surface-200"
+            : "bg-surface-100 dark:bg-surface-800 text-surface-900 hover:bg-surface-200"
           )}
         >
           {k}
@@ -187,7 +187,7 @@ export default function RetailerPOSPage() {
         </header>
         <div className="flex-1 flex flex-col items-center justify-center p-6 text-center gap-4">
           <div className="flex h-16 w-16 items-center justify-center rounded-full bg-success-100">
-            <CheckCircle2 className="h-8 w-8 text-success-700" />
+            <CheckCircle2 className="h-8 w-8 text-success-700 dark:text-foreground" />
           </div>
           <div>
             <p className="font-display text-xl font-bold text-foreground">Payment received!</p>
@@ -223,7 +223,7 @@ export default function RetailerPOSPage() {
               <RefreshCcw className="h-4 w-4" />
               New Sale
             </button>
-            <button className="w-full rounded-xl bg-surface-100 hover:bg-surface-200 text-surface-900 text-sm font-medium h-9 transition-colors flex items-center justify-center gap-2">
+            <button className="w-full rounded-xl bg-surface-100 dark:bg-surface-800 hover:bg-surface-200 text-surface-900 text-sm font-medium h-9 transition-colors flex items-center justify-center gap-2">
               <Printer className="h-4 w-4" />
               Print Receipt
             </button>
@@ -310,7 +310,7 @@ export default function RetailerPOSPage() {
                 value={search}
                 onChange={(e) => setSearch(e.target.value)}
                 placeholder="Search product or scan barcodeâ€¦"
-                className="w-full rounded-xl border border-border bg-surface-50 pl-8 pr-10 py-2 text-xs placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-brand-500"
+                className="w-full rounded-xl border border-border bg-surface-50 dark:bg-surface-900 pl-8 pr-10 py-2 text-xs placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-brand-500"
               />
               <button
                 onClick={() => setShowScanner(true)}
@@ -361,7 +361,7 @@ export default function RetailerPOSPage() {
                     onClick={() => addToCart(p)}
                     className={cn(
                       "relative rounded-xl border text-left overflow-hidden transition-all active:scale-95",
-                      inCart ? "border-brand-300 bg-brand-50 ring-1 ring-brand-300" : "border-border bg-card hover:border-brand-200 hover:shadow-sm"
+                      inCart ? "border-brand-300 bg-brand-50 dark:bg-brand-500/10 ring-1 ring-brand-300" : "border-border bg-card hover:border-brand-200 hover:shadow-sm"
                     )}
                   >
                     {inCart && (
@@ -369,7 +369,7 @@ export default function RetailerPOSPage() {
                         {inCart.quantity}
                       </span>
                     )}
-                    <div className="h-20 bg-surface-100 flex items-center justify-center overflow-hidden">
+                    <div className="h-20 bg-surface-100 dark:bg-surface-800 flex items-center justify-center overflow-hidden">
                       {p.imageUrl ? (
                         <img src={p.imageUrl} alt={p.name} className="h-full w-full object-cover" />
                       ) : (
@@ -423,8 +423,8 @@ export default function RetailerPOSPage() {
                         className={cn(
                           "flex flex-col items-center gap-1 rounded-xl border p-2 text-xs font-medium transition-colors",
                           method === m.id
-                            ? "border-brand-300 bg-brand-50 text-brand-700"
-                            : "border-border bg-surface-50 text-muted-foreground hover:text-foreground"
+                            ? "border-brand-300 bg-brand-50 dark:bg-brand-500/10 text-brand-700 dark:text-foreground"
+                            : "border-border bg-surface-50 dark:bg-surface-900 text-muted-foreground hover:text-foreground"
                         )}
                       >
                         <span className="text-base">{m.icon}</span>
@@ -436,7 +436,7 @@ export default function RetailerPOSPage() {
 
                 {method === "cash" && (
                   <div className="space-y-3">
-                    <div className="rounded-xl bg-surface-100 p-3 text-center">
+                    <div className="rounded-xl bg-surface-100 dark:bg-surface-800 p-3 text-center">
                       <p className="text-xs text-muted-foreground mb-1">Cash received</p>
                       <p className="font-display text-2xl font-black text-surface-900">{formatPHP(parseInt(tendered) || 0)}</p>
                     </div>
@@ -445,7 +445,7 @@ export default function RetailerPOSPage() {
                         <button
                           key={amt}
                           onClick={() => setTendered(String(amt))}
-                          className="rounded-lg bg-surface-100 hover:bg-surface-200 text-xs font-semibold py-1.5 transition-colors text-surface-900"
+                          className="rounded-lg bg-surface-100 dark:bg-surface-800 hover:bg-surface-200 text-xs font-semibold py-1.5 transition-colors text-surface-900"
                         >
                           â‚±{amt}
                         </button>
@@ -453,7 +453,7 @@ export default function RetailerPOSPage() {
                     </div>
                     <Numpad value={tendered} onChange={setTendered} />
                     {tenderedNum > 0 && (
-                      <div className={cn("rounded-xl p-2.5 text-center text-sm font-bold", tenderedNum >= total ? "bg-success-100 text-success-700" : "bg-danger-100 text-danger-700")}>
+                      <div className={cn("rounded-xl p-2.5 text-center text-sm font-bold", tenderedNum >= total ? "bg-success-100 text-success-700 dark:text-foreground" : "bg-danger-100 text-danger-700 dark:text-foreground")}>
                         {tenderedNum >= total ? `Change: ${formatPHP(change)}` : `Short by ${formatPHP(total - tenderedNum)}`}
                       </div>
                     )}
@@ -463,7 +463,7 @@ export default function RetailerPOSPage() {
 
               <div className="p-4 border-t border-border space-y-2">
                 {txnError && (
-                  <div className="rounded-xl bg-danger-50 border border-danger-200 px-3 py-2 text-xs text-danger-700">
+                  <div className="rounded-xl bg-danger-50 dark:bg-danger-500/10 border border-danger-200 px-3 py-2 text-xs text-danger-700 dark:text-foreground">
                     {txnError}
                   </div>
                 )}
@@ -525,7 +525,7 @@ export default function RetailerPOSPage() {
                       <div className="flex items-center gap-1 shrink-0">
                         <button
                           onClick={() => updateQty(item.product.id, -1)}
-                          className="flex h-6 w-6 items-center justify-center rounded-lg bg-surface-100 hover:bg-surface-200 text-surface-900 transition-colors"
+                          className="flex h-6 w-6 items-center justify-center rounded-lg bg-surface-100 dark:bg-surface-800 hover:bg-surface-200 text-surface-900 transition-colors"
                         >
                           <Minus className="h-3 w-3" />
                         </button>

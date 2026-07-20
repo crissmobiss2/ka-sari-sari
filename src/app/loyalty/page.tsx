@@ -232,7 +232,7 @@ export default function LoyaltyPage() {
                 key={tier.name}
                 className={cn(
                   "rounded-2xl border px-4 py-4 dark:bg-card dark:border-border/50",
-                  tier.current ? "border-brand-300 bg-brand-50" : tier.color
+                  tier.current ? "border-brand-300 bg-brand-50 dark:bg-brand-500/10" : tier.color
                 )}
               >
                 <div className="flex items-center justify-between mb-2.5">
@@ -281,10 +281,10 @@ export default function LoyaltyPage() {
               <div key={entry.id} className="flex items-center gap-3 px-4 py-3.5">
                 <div className={cn(
                   "flex h-9 w-9 shrink-0 items-center justify-center rounded-xl",
-                  entry.type === "earn" ? "bg-success-50" : "bg-brand-50"
+                  entry.type === "earn" ? "bg-success-50 dark:bg-success-500/10" : "bg-brand-50 dark:bg-brand-500/10"
                 )}>
                   {entry.type === "earn"
-                    ? <Star className="h-4 w-4 text-success-700" />
+                    ? <Star className="h-4 w-4 text-success-700 dark:text-foreground" />
                     : <Gift className="h-4 w-4 text-brand-500" />}
                 </div>
                 <div className="flex-1 min-w-0">
@@ -293,7 +293,7 @@ export default function LoyaltyPage() {
                 </div>
                 <span className={cn(
                   "text-sm font-black tabular-nums shrink-0",
-                  entry.type === "earn" ? "text-success-700" : "text-brand-500"
+                  entry.type === "earn" ? "text-success-700 dark:text-foreground" : "text-brand-500"
                 )}>
                   {entry.type === "earn" ? "+" : "−"}{entry.pts} pts
                 </span>
@@ -311,7 +311,7 @@ export default function LoyaltyPage() {
           <div className="rounded-2xl border border-border bg-card shadow-card divide-y divide-border overflow-hidden">
             {HOW_TO_EARN.map(({ icon: Icon, text }) => (
               <div key={text} className="flex items-center gap-3 px-4 py-3.5">
-                <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-brand-50 text-brand-500">
+                <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-brand-50 dark:bg-brand-500/10 text-brand-500">
                   <Icon className="h-4 w-4" />
                 </div>
                 <p className="text-sm text-foreground">{text}</p>
@@ -331,7 +331,7 @@ export default function LoyaltyPage() {
           </p>
 
           {/* Code display */}
-          <div className="flex items-center gap-2 rounded-xl border border-dashed border-brand-300 bg-brand-50 dark:bg-card dark:border-brand-700/50 px-4 py-3 mb-3">
+          <div className="flex items-center gap-2 rounded-xl border border-dashed border-brand-300 bg-brand-50 dark:bg-brand-500/10 dark:bg-card dark:border-brand-700/50 px-4 py-3 mb-3">
             <span className="flex-1 font-mono text-sm font-bold text-brand-700 tracking-wider">
               {referralCode}
             </span>

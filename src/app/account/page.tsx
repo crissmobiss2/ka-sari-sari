@@ -305,9 +305,9 @@ export default function AccountPage() {
 
   function statusBadge(status: CreditApplication["status"]) {
     const styles = {
-      pending: "bg-warning-50 border-warning-200 text-warning-700",
-      approved: "bg-success-50 border-success-200 text-success-700",
-      rejected: "bg-danger-50 border-danger-200 text-danger-700",
+      pending: "bg-warning-50 dark:bg-warning-500/10 border-warning-200 dark:border-warning-500/30 text-warning-700 dark:text-foreground",
+      approved: "bg-success-50 dark:bg-success-500/10 border-success-200 dark:border-success-500/30 text-success-700 dark:text-foreground",
+      rejected: "bg-danger-50 dark:bg-danger-500/10 border-danger-200 dark:border-danger-500/30 text-danger-700 dark:text-foreground",
     };
     return (
       <span className={cn("rounded-full border px-2.5 py-0.5 text-xs font-bold capitalize", styles[status])}>
@@ -364,15 +364,15 @@ export default function AccountPage() {
           {/* Header */}
           <div className="flex items-center justify-between mb-4">
             <div className="flex items-center gap-2">
-              <div className="flex h-8 w-8 items-center justify-center rounded-xl bg-brand-50">
-                <ShieldCheck className="h-4 w-4 text-brand-500" />
+              <div className="flex h-8 w-8 items-center justify-center rounded-xl bg-brand-50 dark:bg-brand-500/10">
+                <ShieldCheck className="h-4 w-4 text-brand-700 dark:text-brand-400" />
               </div>
               <div>
                 <p className="text-sm font-bold text-foreground">Credit Standing</p>
                 <p className="text-xs text-muted-foreground">Ka Sari-Sari Credit Score</p>
               </div>
             </div>
-            <span className="rounded-full bg-success-50 border border-success-200 px-2.5 py-0.5 text-xs font-bold text-success-700">
+            <span className="rounded-full bg-success-50 dark:bg-success-500/10 border border-success-200 dark:border-success-500/30 px-2.5 py-0.5 text-xs font-bold text-success-700 dark:text-foreground">
               Good Standing
             </span>
           </div>
@@ -389,7 +389,7 @@ export default function AccountPage() {
                 / {CREDIT_SCORE_MAX}
               </text>
             </svg>
-            <p className="text-xs font-black tracking-widest text-success-700 -mt-1">GOOD</p>
+            <p className="text-xs font-black tracking-widest text-success-700 dark:text-foreground -mt-1">GOOD</p>
           </div>
 
           {/* Score breakdown */}
@@ -408,7 +408,7 @@ export default function AccountPage() {
           </div>
 
           {/* Credit limit row */}
-          <div className="rounded-xl bg-surface-50 border border-border px-4 py-3 flex justify-between items-center">
+          <div className="rounded-xl bg-surface-50 dark:bg-surface-900 border border-border px-4 py-3 flex justify-between items-center">
             <div>
               <p className="text-xs text-muted-foreground">Credit Limit</p>
               <p className="text-lg font-black text-surface-900">â‚±{creditData.limit.toLocaleString()}</p>
@@ -419,7 +419,7 @@ export default function AccountPage() {
             </div>
             <div className="text-right">
               <p className="text-xs text-muted-foreground">Available</p>
-              <p className="text-base font-bold text-success-700">â‚±{creditData.available.toLocaleString()}</p>
+              <p className="text-base font-bold text-success-700 dark:text-foreground">â‚±{creditData.available.toLocaleString()}</p>
             </div>
           </div>
 
@@ -442,8 +442,8 @@ export default function AccountPage() {
         {/* â”€â”€ Credit Application Section â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */}
         <div className="rounded-2xl border border-border bg-card shadow-card p-5 space-y-4">
           <div className="flex items-center gap-2">
-            <div className="flex h-8 w-8 items-center justify-center rounded-xl bg-brand-50">
-              <TrendingUp className="h-4 w-4 text-brand-500" />
+            <div className="flex h-8 w-8 items-center justify-center rounded-xl bg-brand-50 dark:bg-brand-500/10">
+              <TrendingUp className="h-4 w-4 text-brand-700 dark:text-brand-400" />
             </div>
             <div>
               <p className="text-sm font-bold text-foreground">Credit Line</p>
@@ -455,7 +455,7 @@ export default function AccountPage() {
           {creditApplications.length > 0 && (
             <div className="space-y-2">
               {creditApplications.map((app) => (
-                <div key={app.id} className="rounded-xl border border-border bg-surface-50 px-4 py-3">
+                <div key={app.id} className="rounded-xl border border-border bg-surface-50 dark:bg-surface-900 px-4 py-3">
                   <div className="flex items-center justify-between mb-1">
                     <p className="text-sm font-semibold text-surface-900">
                       â‚±{app.requested_limit.toLocaleString()} requested
@@ -466,12 +466,12 @@ export default function AccountPage() {
                     Submitted {new Date(app.created_at).toLocaleDateString("en-PH", { month: "short", day: "numeric", year: "numeric" })}
                   </p>
                   {app.status === "approved" && app.approved_limit && (
-                    <p className="text-xs text-success-700 font-medium mt-0.5">
+                    <p className="text-xs text-success-700 dark:text-foreground font-medium mt-0.5">
                       Approved: â‚±{app.approved_limit.toLocaleString()} Â· {app.requested_terms ?? 7}-day terms
                     </p>
                   )}
                   {app.status === "rejected" && app.rejection_reason && (
-                    <p className="text-xs text-danger-700 dark:text-danger-500 mt-0.5">{app.rejection_reason}</p>
+                    <p className="text-xs text-danger-700 dark:text-foreground mt-0.5">{app.rejection_reason}</p>
                   )}
                 </div>
               ))}
@@ -480,11 +480,11 @@ export default function AccountPage() {
 
           {/* Success after submission */}
           {creditSubmitted && (
-            <div className="flex items-start gap-3 rounded-xl bg-success-50 border border-success-200 px-4 py-3">
-              <CheckCircle2 className="h-4 w-4 text-success-700 shrink-0 mt-0.5" />
+            <div className="flex items-start gap-3 rounded-xl bg-success-50 dark:bg-success-500/10 border border-success-200 dark:border-success-500/30 px-4 py-3">
+              <CheckCircle2 className="h-4 w-4 text-success-700 dark:text-foreground shrink-0 mt-0.5" />
               <div>
-                <p className="text-sm font-semibold text-success-700">Application submitted!</p>
-                <p className="text-xs text-success-700 mt-0.5">We'll review within 24 hours and notify you of the decision.</p>
+                <p className="text-sm font-semibold text-success-700 dark:text-foreground">Application submitted!</p>
+                <p className="text-xs text-success-700 dark:text-foreground mt-0.5">We'll review within 24 hours and notify you of the decision.</p>
               </div>
             </div>
           )}
@@ -493,7 +493,7 @@ export default function AccountPage() {
           {!showCreditForm && !creditSubmitted && (
             <button
               onClick={() => { setShowCreditForm(true); setCreditError(""); }}
-              className="w-full rounded-xl border border-brand-200 bg-brand-50 py-3 text-sm font-semibold text-brand-600 hover:bg-brand-100 transition-colors flex items-center justify-center gap-2"
+              className="w-full rounded-xl border border-brand-200 bg-brand-50 dark:bg-brand-500/10 py-3 text-sm font-semibold text-brand-600 hover:bg-brand-100 transition-colors flex items-center justify-center gap-2"
             >
               <DollarSign className="h-4 w-4" />
               Apply for Credit Line
@@ -568,9 +568,9 @@ export default function AccountPage() {
               </div>
 
               {creditError && (
-                <div className="flex items-center gap-2 rounded-xl bg-danger-50 border border-danger-200 px-3 py-2.5">
+                <div className="flex items-center gap-2 rounded-xl bg-danger-50 dark:bg-danger-500/10 border border-danger-200 dark:border-danger-500/30 px-3 py-2.5">
                   <AlertCircle className="h-4 w-4 text-danger-500 shrink-0" />
-                  <p className="text-xs text-danger-700">{creditError}</p>
+                  <p className="text-xs text-danger-700 dark:text-foreground">{creditError}</p>
                 </div>
               )}
 
@@ -600,20 +600,20 @@ export default function AccountPage() {
 
         {/* Subscription status */}
         {subIsActive ? (
-          <div className="rounded-2xl border border-success-500/25 bg-success-50 p-5">
-            <div className="flex items-start gap-3">
-              <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-success-100 text-success-700">
-                <Shield className="h-4 w-4" />
+          <div className=”rounded-2xl border border-success-500/25 bg-success-50 dark:bg-success-500/10 p-5”>
+            <div className=”flex items-start gap-3”>
+              <div className=”flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-success-100 dark:bg-success-500/20 text-success-700 dark:text-foreground”>
+                <Shield className=”h-4 w-4” />
               </div>
-              <div className="flex-1">
-                <p className="text-sm font-semibold text-success-700">Active Subscription</p>
-                <p className="text-xs text-success-700 mt-0.5">Platform access Â· Free Trial Â· Year 1</p>
-                <div className="flex items-center gap-2 mt-2">
-                  <Check className="h-3.5 w-3.5 text-success-500" />
-                  <span className="text-xs text-success-700">Unlimited orders</span>
-                  <span className="text-success-300">Â·</span>
-                  <Clock className="h-3 w-3 text-success-500" />
-                  <span className="text-xs text-success-700">{subDaysLeft !== null ? subDaysLeft : 'â€”'} days left</span>
+              <div className=”flex-1”>
+                <p className=”text-sm font-semibold text-success-700 dark:text-foreground”>Active Subscription</p>
+                <p className=”text-xs text-success-700 dark:text-foreground mt-0.5”>Platform access · Free Trial · Year 1</p>
+                <div className=”flex items-center gap-2 mt-2”>
+                  <Check className=”h-3.5 w-3.5 text-success-500” />
+                  <span className=”text-xs text-success-700 dark:text-foreground”>Unlimited orders</span>
+                  <span className=”text-success-300 dark:text-foreground/50”>·</span>
+                  <Clock className=”h-3 w-3 text-success-500” />
+                  <span className=”text-xs text-success-700 dark:text-foreground”>{subDaysLeft !== null ? subDaysLeft : '—'} days left</span>
                 </div>
               </div>
             </div>
@@ -621,7 +621,7 @@ export default function AccountPage() {
         ) : subIsActive === false ? (
           <div className="rounded-2xl border border-border bg-card p-5">
             <div className="flex items-start gap-3">
-              <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-surface-100">
+              <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-surface-100 dark:bg-surface-800">
                 <Shield className="h-4 w-4 text-muted-foreground" />
               </div>
               <div className="flex-1">
@@ -635,8 +635,8 @@ export default function AccountPage() {
         {/* â”€â”€ Push Notifications Section â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */}
         <div className="rounded-2xl border border-border bg-card shadow-card p-5 space-y-4">
           <div className="flex items-center gap-2">
-            <div className="flex h-8 w-8 items-center justify-center rounded-xl bg-brand-50">
-              <BellRing className="h-4 w-4 text-brand-500" />
+            <div className="flex h-8 w-8 items-center justify-center rounded-xl bg-brand-50 dark:bg-brand-500/10">
+              <BellRing className="h-4 w-4 text-brand-700 dark:text-brand-400" />
             </div>
             <div>
               <p className="text-sm font-bold text-foreground">Push Notifications</p>
@@ -645,7 +645,7 @@ export default function AccountPage() {
           </div>
 
           {!pushSupported ? (
-            <div className="flex items-start gap-2 rounded-xl bg-surface-100 border border-border px-3 py-3">
+            <div className="flex items-start gap-2 rounded-xl bg-surface-100 dark:bg-surface-800 border border-border px-3 py-3">
               <BellOff className="h-4 w-4 text-muted-foreground shrink-0 mt-0.5" />
               <p className="text-xs text-muted-foreground">
                 Push notifications are not supported in your browser. Use Chrome on Android or iOS for the best experience.
@@ -654,14 +654,14 @@ export default function AccountPage() {
           ) : (
             <>
               {/* Permission status */}
-              <div className="flex items-center justify-between rounded-xl bg-surface-50 border border-border px-4 py-3">
+              <div className="flex items-center justify-between rounded-xl bg-surface-50 dark:bg-surface-900 border border-border px-4 py-3">
                 <div>
                   <p className="text-sm font-medium text-surface-900">
                     {isPushEnabled ? "Notifications enabled" : "Notifications disabled"}
                   </p>
                   <p className="text-xs text-muted-foreground mt-0.5">
                     Browser permission: <span className={cn("font-semibold capitalize",
-                      pushPermission === "granted" ? "text-success-700" :
+                      pushPermission === "granted" ? "text-success-700 dark:text-foreground" :
                       pushPermission === "denied" ? "text-danger-500" : "text-muted-foreground"
                     )}>{pushPermission}</span>
                   </p>
@@ -694,16 +694,16 @@ export default function AccountPage() {
               )}
 
               {pushError && (
-                <div className="flex items-center gap-2 rounded-xl bg-danger-50 border border-danger-200 px-3 py-2.5">
+                <div className="flex items-center gap-2 rounded-xl bg-danger-50 dark:bg-danger-500/10 border border-danger-200 dark:border-danger-500/30 px-3 py-2.5">
                   <AlertCircle className="h-4 w-4 text-danger-500 shrink-0" />
-                  <p className="text-xs text-danger-700">{pushError}</p>
+                  <p className="text-xs text-danger-700 dark:text-foreground">{pushError}</p>
                 </div>
               )}
 
               {pushSuccess && (
-                <div className="flex items-center gap-2 rounded-xl bg-success-50 border border-success-200 px-3 py-2.5">
-                  <CheckCircle2 className="h-4 w-4 text-success-700 shrink-0" />
-                  <p className="text-xs text-success-700">{pushSuccess}</p>
+                <div className="flex items-center gap-2 rounded-xl bg-success-50 dark:bg-success-500/10 border border-success-200 dark:border-success-500/30 px-3 py-2.5">
+                  <CheckCircle2 className="h-4 w-4 text-success-700 dark:text-foreground shrink-0" />
+                  <p className="text-xs text-success-700 dark:text-foreground">{pushSuccess}</p>
                 </div>
               )}
 
@@ -755,7 +755,7 @@ export default function AccountPage() {
             }
             router.push("/login");
           }}
-          className="flex w-full items-center gap-3 rounded-2xl border border-danger-500/20 bg-danger-50 px-5 py-4 text-danger-700 dark:text-danger-500 hover:bg-danger-100 transition-colors"
+          className="flex w-full items-center gap-3 rounded-2xl border border-danger-500/20 bg-danger-50 dark:bg-danger-500/10 px-5 py-4 text-danger-700 dark:text-foreground hover:bg-danger-100 transition-colors"
         >
           <LogOut className="h-4 w-4" />
           <span className="text-sm font-semibold">Sign out</span>
