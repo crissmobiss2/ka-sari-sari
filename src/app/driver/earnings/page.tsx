@@ -286,7 +286,7 @@ export default function EarningsPage() {
               <div className="flex justify-between items-center">
                 <span className="text-xs text-muted-foreground">Next payment</span>
                 <div className="flex items-center gap-1.5">
-                  <CheckCircle2 className="w-3.5 h-3.5 text-success-500" />
+                  <CheckCircle2 className="w-3.5 h-3.5 text-success-700 dark:text-success-500" />
                   <span className="text-xs font-semibold text-success-700 dark:text-foreground">Fri, Jul 11, 2026</span>
                 </div>
               </div>

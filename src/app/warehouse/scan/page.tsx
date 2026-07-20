@@ -168,7 +168,7 @@ export default function ScanPage() {
       {notFound && (
         <Card>
           <CardContent className="p-6 flex flex-col items-center gap-2 text-center">
-            <XCircle className="h-10 w-10 text-danger-500" />
+            <XCircle className="h-10 w-10 text-danger-600 dark:text-danger-500" />
             <p className="font-semibold text-foreground">Product not found</p>
             <p className="text-sm text-muted-foreground">
               No match for &ldquo;{searchedValue}&rdquo;. Check the SKU or barcode and try again.
@@ -200,7 +200,7 @@ export default function ScanPage() {
                 className={cn(
                   "font-bold text-lg",
                   (foundProduct.stock ?? 0) === 0
-                    ? "text-danger-500"
+                    ? "text-danger-600 dark:text-danger-500"
                     : (foundProduct.stock ?? 0) <= 20
                     ? "text-warning-700 dark:text-foreground"
                     : "text-success-700 dark:text-foreground"

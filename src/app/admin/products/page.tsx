@@ -61,7 +61,7 @@ function ToggleField({ label, checked, onChange }: { label: string; checked: boo
   return (
     <button type="button" onClick={() => onChange(!checked)}
       className="flex items-center gap-2 text-sm font-medium text-foreground">
-      {checked ? <ToggleRight className="h-6 w-6 text-success-500" /> : <ToggleLeft className="h-6 w-6 text-muted-foreground" />}
+      {checked ? <ToggleRight className="h-6 w-6 text-success-700 dark:text-success-500" /> : <ToggleLeft className="h-6 w-6 text-muted-foreground" />}
       {label}
     </button>
   );
@@ -308,7 +308,7 @@ export default function AdminProductsPage() {
                     <td className="px-5 py-3.5 text-center">
                       <button onClick={() => toggleActive(product.id)}>
                         {product.isActive
-                          ? <ToggleRight className="h-5 w-5 text-success-500 inline" />
+                          ? <ToggleRight className="h-5 w-5 text-success-700 dark:text-success-500 inline" />
                           : <ToggleLeft className="h-5 w-5 text-muted-foreground inline" />}
                       </button>
                     </td>

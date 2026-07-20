@@ -197,8 +197,8 @@ export default function InventoryPage() {
                 <span className="text-[10px] text-muted-foreground text-center leading-tight">Total SKUs</span>
               </div>
               <div className="flex flex-col items-center gap-1">
-                <XCircle className="h-4 w-4 text-danger-500" />
-                <span className="font-display text-xl font-bold text-danger-500">{outOfStockCount}</span>
+                <XCircle className="h-4 w-4 text-danger-600 dark:text-danger-500" />
+                <span className="font-display text-xl font-bold text-danger-600 dark:text-danger-500">{outOfStockCount}</span>
                 <span className="text-[10px] text-muted-foreground text-center leading-tight">Out of Stock</span>
               </div>
               <div className="flex flex-col items-center gap-1">
@@ -331,7 +331,7 @@ export default function InventoryPage() {
 
                       {/* Right: stock value + badge + adjust */}
                       <div className="flex flex-col items-end gap-1 shrink-0">
-                        <span className={cn("font-bold text-lg leading-none", isOut ? "text-danger-500" : isLow ? "text-warning-700 dark:text-foreground" : "text-success-700 dark:text-foreground")}>
+                        <span className={cn("font-bold text-lg leading-none", isOut ? "text-danger-600 dark:text-danger-500" : isLow ? "text-warning-700 dark:text-foreground" : "text-success-700 dark:text-foreground")}>
                           {stock.toLocaleString()}
                         </span>
                         <Badge variant={isOut ? "danger" : isLow ? "warning" : "success"} className="text-xs">

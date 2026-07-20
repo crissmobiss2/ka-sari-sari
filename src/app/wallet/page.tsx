@@ -233,7 +233,7 @@ export default function WalletPage() {
             </div>
             <button
               onClick={() => setPaymentPending(false)}
-              className="text-warning-500 hover:text-warning-700 dark:text-foreground transition-colors shrink-0"
+              className="text-warning-700 dark:text-warning-500 hover:text-warning-700 dark:text-foreground transition-colors shrink-0"
             >
               <X className="h-4 w-4" />
             </button>
@@ -348,7 +348,7 @@ export default function WalletPage() {
 
             {topUpError && (
               <div className="flex items-center gap-2 rounded-xl bg-danger-50 dark:bg-danger-500/10 border border-danger-200 px-3 py-2.5">
-                <AlertCircle className="h-4 w-4 text-danger-500 shrink-0" />
+                <AlertCircle className="h-4 w-4 text-danger-600 dark:text-danger-500 shrink-0" />
                 <p className="text-xs text-danger-700 dark:text-foreground">{topUpError}</p>
               </div>
             )}
@@ -440,7 +440,7 @@ export default function WalletPage() {
 
                 {withdrawAmountError && (
                   <div className="flex items-center gap-2 rounded-xl bg-danger-50 dark:bg-danger-500/10 border border-danger-200 px-3 py-2.5">
-                    <AlertCircle className="h-4 w-4 text-danger-500 shrink-0" />
+                    <AlertCircle className="h-4 w-4 text-danger-600 dark:text-danger-500 shrink-0" />
                     <p className="text-xs text-danger-700 dark:text-foreground">{withdrawAmountError}</p>
                   </div>
                 )}
@@ -477,7 +477,7 @@ export default function WalletPage() {
                       className="h-11 w-full rounded-xl border border-input bg-background px-3 text-sm focus:outline-none focus:ring-2 focus:ring-brand-500"
                     />
                     {accountError() ? (
-                      <p className="text-[11px] text-danger-500 mt-1">{accountError()}</p>
+                      <p className="text-[11px] text-danger-600 dark:text-danger-500 mt-1">{accountError()}</p>
                     ) : (
                       <p className="text-[11px] text-muted-foreground mt-1">{selectedWithdrawMethod.hint}</p>
                     )}
@@ -533,7 +533,7 @@ export default function WalletPage() {
 
                 {withdrawError && (
                   <div className="flex items-center gap-2 rounded-xl bg-danger-50 dark:bg-danger-500/10 border border-danger-200 px-3 py-2.5">
-                    <AlertCircle className="h-4 w-4 text-danger-500 shrink-0" />
+                    <AlertCircle className="h-4 w-4 text-danger-600 dark:text-danger-500 shrink-0" />
                     <p className="text-xs text-danger-700 dark:text-foreground">{withdrawError}</p>
                   </div>
                 )}
@@ -581,7 +581,7 @@ export default function WalletPage() {
                 <div key={txn.id} className="flex items-center gap-3 px-4 py-3.5">
                   <div className={cn(
                     "flex h-10 w-10 items-center justify-center rounded-xl shrink-0",
-                    txn.type === "credit" ? "bg-success-50 dark:bg-success-500/10 text-success-700 dark:text-foreground" : "bg-danger-50 dark:bg-danger-500/10 text-danger-500"
+                    txn.type === "credit" ? "bg-success-50 dark:bg-success-500/10 text-success-700 dark:text-foreground" : "bg-danger-50 dark:bg-danger-500/10 text-danger-600 dark:text-danger-500"
                   )}>
                     {txn.type === "credit"
                       ? <ArrowDownLeft className="h-5 w-5" />

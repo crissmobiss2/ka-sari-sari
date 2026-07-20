@@ -26,7 +26,7 @@ const TOP_CATEGORIES = [
 ];
 
 const KEY_METRICS = [
-  { label: "Order Fulfillment Rate",  value: "96.8%", icon: CheckCircle2, color: "text-success-600 dark:text-foreground bg-success-50 dark:bg-success-500/10" },
+  { label: "Order Fulfillment Rate",  value: "96.8%", icon: CheckCircle2, color: "text-success-700 dark:text-foreground bg-success-50 dark:bg-success-500/10" },
   { label: "Avg. Delivery Time",      value: "1.8 days", icon: Clock,      color: "text-info-600 dark:text-foreground bg-info-50 dark:bg-info-500/10" },
   { label: "Customer Retention",      value: "87%",   icon: RefreshCw,   color: "text-brand-600 dark:text-foreground bg-brand-50 dark:bg-brand-500/10" },
   { label: "New Retailer Conversion", value: "68%",   icon: UserPlus,    color: "text-purple-600 bg-purple-50" },
@@ -581,7 +581,7 @@ export default function AdminReportsPage() {
       {/* KPI cards */}
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
         {[
-          { label: "Monthly Revenue",  value: formatPHP(ADMIN_STATS.revenueMonth),     icon: TrendingUp,   color: "text-success-600 dark:text-foreground bg-success-50 dark:bg-success-500/10",  delta: "+12.4%" },
+          { label: "Monthly Revenue",  value: formatPHP(ADMIN_STATS.revenueMonth),     icon: TrendingUp,   color: "text-success-700 dark:text-foreground bg-success-50 dark:bg-success-500/10",  delta: "+12.4%" },
           { label: "Total Orders",     value: formatNumber(ADMIN_STATS.totalOrders),   icon: ShoppingCart, color: "text-info-600 dark:text-foreground bg-info-50 dark:bg-info-500/10",        delta: "+8.1%" },
           { label: "Active Retailers", value: ADMIN_STATS.activeRetailers.toString(),  icon: Users,        color: "text-brand-600 dark:text-foreground bg-brand-50 dark:bg-brand-500/10",       delta: "+5" },
           { label: "New Retailers",    value: ADMIN_STATS.newRetailersMonth.toString(),icon: Package,      color: "text-purple-600 bg-purple-50",     delta: "This month" },
@@ -591,7 +591,7 @@ export default function AdminReportsPage() {
               <div className={`flex h-10 w-10 items-center justify-center rounded-xl ${s.color}`}>
                 <s.icon className="h-5 w-5" />
               </div>
-              <span className="text-[11px] font-medium text-success-600 dark:text-foreground bg-success-50 dark:bg-success-500/10 rounded-full px-2 py-0.5">{s.delta}</span>
+              <span className="text-[11px] font-medium text-success-700 dark:text-foreground bg-success-50 dark:bg-success-500/10 rounded-full px-2 py-0.5">{s.delta}</span>
             </div>
             <div>
               <p className="font-display text-2xl font-bold text-foreground leading-none">{s.value}</p>

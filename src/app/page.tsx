@@ -199,7 +199,7 @@ export default function HomePage() {
                 "Price transparency, no hidden fees",
               ].map((f) => (
                 <li key={f} className="flex items-center gap-2.5 text-sm text-foreground">
-                  <CheckCircle2 className="h-4 w-4 text-success-500 shrink-0" />
+                  <CheckCircle2 className="h-4 w-4 text-success-700 dark:text-success-500 shrink-0" />
                   {f}
                 </li>
               ))}

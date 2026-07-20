@@ -347,7 +347,7 @@ export default function RegisterPage() {
                 <ul className="space-y-2 text-sm text-foreground">
                   {["Unlimited warehouse orders", "Live stock visibility", "Order tracking", "Priority support"].map((f) => (
                     <li key={f} className="flex items-center gap-2">
-                      <Check className="h-4 w-4 text-success-500 shrink-0" /> {f}
+                      <Check className="h-4 w-4 text-success-700 dark:text-success-500 shrink-0" /> {f}
                     </li>
                   ))}
                 </ul>

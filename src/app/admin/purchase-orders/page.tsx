@@ -41,7 +41,7 @@ const STATUS_STYLE: Record<POStatus, string> = {
   draft:     "bg-surface-100 dark:bg-surface-800 text-muted-foreground border-surface-200",
   sent:      "bg-warning-50 dark:bg-warning-500/10 text-warning-600 dark:text-foreground border-warning-500/25",
   confirmed: "bg-blue-50 text-blue-600 border-blue-200",
-  received:  "bg-success-50 dark:bg-success-500/10 text-success-600 dark:text-foreground border-success-500/25",
+  received:  "bg-success-50 dark:bg-success-500/10 text-success-700 dark:text-foreground border-success-500/25",
   partial:   "bg-orange-50 dark:bg-orange-500/20 text-orange-700 dark:text-foreground border-orange-200",
 };
 
@@ -284,7 +284,7 @@ function AutoPOModal({ onClose, onViewDrafts }: AutoPOModalProps) {
 
         {step === 3 && (
           <div className="flex flex-col items-center py-8 gap-5 text-center">
-            <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-success-50 dark:bg-success-500/10 text-success-500">
+            <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-success-50 dark:bg-success-500/10 text-success-700 dark:text-success-500">
               <CheckCircle2 className="h-8 w-8" />
             </div>
             <div>
@@ -448,7 +448,7 @@ function CreatePOModal({ onClose, onSubmit, initialSupplier = "", initialItems, 
                     {items.length > 1 && (
                       <button
                         onClick={() => removeItem(i)}
-                        className="text-muted-foreground hover:text-danger-500 transition-colors"
+                        className="text-muted-foreground hover:text-danger-600 transition-colors"
                         aria-label="Remove item"
                       >
                         <X className="h-4 w-4" />

@@ -402,10 +402,10 @@ export default function AdminAnalyticsPage() {
         {/* Total Revenue */}
         <Card className="p-5">
           <div className="flex items-start justify-between mb-3">
-            <div className="flex h-10 w-10 items-center justify-center rounded-xl text-success-600 dark:text-foreground bg-success-50 dark:bg-success-500/10">
+            <div className="flex h-10 w-10 items-center justify-center rounded-xl text-success-700 dark:text-foreground bg-success-50 dark:bg-success-500/10">
               <TrendingUp className="h-5 w-5" />
             </div>
-            <span className="inline-flex items-center gap-0.5 text-[11px] font-semibold text-success-600 dark:text-foreground bg-success-50 dark:bg-success-500/10 rounded-full px-2 py-0.5">
+            <span className="inline-flex items-center gap-0.5 text-[11px] font-semibold text-success-700 dark:text-foreground bg-success-50 dark:bg-success-500/10 rounded-full px-2 py-0.5">
               <ArrowUpRight className="h-3 w-3" />12.3%
             </span>
           </div>
@@ -422,7 +422,7 @@ export default function AdminAnalyticsPage() {
             <div className="flex h-10 w-10 items-center justify-center rounded-xl text-brand-600 dark:text-foreground bg-brand-50 dark:bg-brand-500/10">
               <Users className="h-5 w-5" />
             </div>
-            <span className="inline-flex items-center gap-0.5 text-[11px] font-semibold text-success-600 dark:text-foreground bg-success-50 dark:bg-success-500/10 rounded-full px-2 py-0.5">
+            <span className="inline-flex items-center gap-0.5 text-[11px] font-semibold text-success-700 dark:text-foreground bg-success-50 dark:bg-success-500/10 rounded-full px-2 py-0.5">
               <ArrowUpRight className="h-3 w-3" />+{ADMIN_STATS.newRetailersMonth} new
             </span>
           </div>
@@ -456,7 +456,7 @@ export default function AdminAnalyticsPage() {
             <div className="flex h-10 w-10 items-center justify-center rounded-xl text-purple-600 bg-purple-50">
               <Package className="h-5 w-5" />
             </div>
-            <span className="inline-flex items-center gap-0.5 text-[11px] font-semibold text-success-600 dark:text-foreground bg-success-50 dark:bg-success-500/10 rounded-full px-2 py-0.5">
+            <span className="inline-flex items-center gap-0.5 text-[11px] font-semibold text-success-700 dark:text-foreground bg-success-50 dark:bg-success-500/10 rounded-full px-2 py-0.5">
               <ArrowUpRight className="h-3 w-3" />4.1%
             </span>
           </div>

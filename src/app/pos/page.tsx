@@ -187,7 +187,7 @@ export default function RetailerPOSPage() {
         </header>
         <div className="flex-1 flex flex-col items-center justify-center p-6 text-center gap-4">
           <div className="flex h-16 w-16 items-center justify-center rounded-full bg-success-100 dark:bg-success-500/20">
-            <CheckCircle2 className="h-8 w-8 text-success-600 dark:text-success-500" />
+            <CheckCircle2 className="h-8 w-8 text-success-700 dark:text-success-500" />
           </div>
           <div>
             <p className="font-display text-xl font-bold text-foreground">Payment received!</p>
@@ -494,7 +494,7 @@ export default function RetailerPOSPage() {
                 <div className="flex items-center justify-between">
                   <p className="text-sm font-semibold text-foreground">Current Sale</p>
                   {cart.length > 0 && (
-                    <button onClick={() => setCart([])} className="text-xs text-danger-500 hover:text-danger-600 dark:text-danger-500">
+                    <button onClick={() => setCart([])} className="text-xs text-danger-600 dark:text-danger-500 hover:text-danger-600 dark:text-danger-500">
                       Clear all
                     </button>
                   )}
@@ -542,7 +542,7 @@ export default function RetailerPOSPage() {
                       </div>
                       <button
                         onClick={() => removeFromCart(item.product.id)}
-                        className="text-muted-foreground/40 hover:text-danger-500 transition-colors"
+                        className="text-muted-foreground/40 hover:text-danger-600 transition-colors"
                       >
                         <X className="h-3.5 w-3.5" />
                       </button>

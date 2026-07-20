@@ -372,7 +372,7 @@ export default function AdminOrderDetailPage() {
                   ) : (
                     <>
                       <p className="text-xs font-semibold text-muted-foreground flex items-center gap-1.5">
-                        <XCircle className="h-3.5 w-3.5 text-danger-500" /> Cancellation Reason
+                        <XCircle className="h-3.5 w-3.5 text-danger-600 dark:text-danger-500" /> Cancellation Reason
                       </p>
                       <input
                         type="text"

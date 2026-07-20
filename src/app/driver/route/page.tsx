@@ -317,10 +317,10 @@ export default function RouteMapPage() {
       {/* EOD reconciliation banner */}
       {allDone && (
         <div className="mx-4 mt-4 rounded-2xl border border-success-200 bg-success-50 dark:bg-success-500/10 p-4 flex items-center gap-3">
-          <CheckCircle2 className="h-6 w-6 text-success-600 dark:text-success-500 shrink-0" />
+          <CheckCircle2 className="h-6 w-6 text-success-700 dark:text-success-500 shrink-0" />
           <div className="flex-1">
             <p className="text-sm font-bold text-success-700 dark:text-foreground">Route Complete!</p>
-            <p className="text-xs text-success-600 dark:text-success-500 mt-0.5">Remit {formatPHP(collectedCOD)} COD to dispatch</p>
+            <p className="text-xs text-success-700 dark:text-success-500 mt-0.5">Remit {formatPHP(collectedCOD)} COD to dispatch</p>
           </div>
           <button
             onClick={() => setShowReconcile(true)}
@@ -357,7 +357,7 @@ export default function RouteMapPage() {
                 {/* Status indicator */}
                 <div className={cn(
                   "flex h-8 w-8 shrink-0 items-center justify-center rounded-full font-bold text-sm",
-                  isDone ? "bg-success-100 dark:bg-success-500/20 text-success-600 dark:text-success-500"
+                  isDone ? "bg-success-100 dark:bg-success-500/20 text-success-700 dark:text-success-500"
                   : isFailed ? "bg-danger-100 dark:bg-danger-500/20 text-danger-600 dark:text-danger-500"
                   : isNext ? "bg-brand-50 dark:bg-brand-500/100 text-white"
                   : "bg-surface-100 dark:bg-surface-800 text-muted-foreground"
@@ -425,7 +425,7 @@ export default function RouteMapPage() {
                   {/* COD collection indicator */}
                   {stop.paymentMethod === "cod" && isDone && (
                     <div className="flex items-center gap-2 rounded-xl bg-success-50 dark:bg-success-500/10 border border-success-200 px-3 py-2">
-                      <Banknote className="h-4 w-4 text-success-600 dark:text-success-500" />
+                      <Banknote className="h-4 w-4 text-success-700 dark:text-success-500" />
                       <p className="text-xs font-semibold text-success-700 dark:text-foreground">
                         COD collected: {formatPHP(stop.collectedCOD ?? stop.total)}
                       </p>
@@ -472,7 +472,7 @@ export default function RouteMapPage() {
                   )}
 
                   {isDone && (
-                    <div className="flex items-center gap-2 text-sm text-success-600 dark:text-success-500 font-medium">
+                    <div className="flex items-center gap-2 text-sm text-success-700 dark:text-success-500 font-medium">
                       <CheckCircle2 className="h-4 w-4" />
                       Delivered successfully
                     </div>
@@ -504,7 +504,7 @@ export default function RouteMapPage() {
                   <p className="font-semibold">{s.storeName}</p>
                   <p className="text-xs text-muted-foreground">{s.orderNumber}</p>
                 </div>
-                <div className={cn("text-right font-bold", s.status === "done" ? "text-success-600 dark:text-success-500" : "text-muted-foreground")}>
+                <div className={cn("text-right font-bold", s.status === "done" ? "text-success-700 dark:text-success-500" : "text-muted-foreground")}>
                   {s.status === "done" ? formatPHP(s.total) : "—"}
                 </div>
               </div>

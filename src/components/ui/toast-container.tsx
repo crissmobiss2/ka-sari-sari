@@ -9,12 +9,12 @@ const CONFIG = {
   success: {
     icon: CheckCircle2,
     borderColor: "bg-success-500",
-    iconColor: "text-success-500",
+    iconColor: "text-success-700 dark:text-success-500",
   },
   error: {
     icon: XCircle,
     borderColor: "bg-danger-500",
-    iconColor: "text-danger-500",
+    iconColor: "text-danger-600 dark:text-danger-500",
   },
   info: {
     icon: Info,
@@ -24,7 +24,7 @@ const CONFIG = {
   warning: {
     icon: AlertTriangle,
     borderColor: "bg-warning-500",
-    iconColor: "text-warning-500",
+    iconColor: "text-warning-700 dark:text-warning-500",
   },
 } as const;
 

@@ -277,7 +277,7 @@ export default function DriverDeliveriesPage() {
                     </>
                   )}
                   {delivery.deliveryStatus === "delivered" && (
-                    <div className="flex items-center gap-1.5 text-xs text-success-600 dark:text-success-500 font-medium">
+                    <div className="flex items-center gap-1.5 text-xs text-success-700 dark:text-success-500 font-medium">
                       <CheckCircle2 className="h-4 w-4" />
                       Delivered successfully
                     </div>

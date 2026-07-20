@@ -18,7 +18,7 @@ export default function Error({
   return (
     <div className="min-h-screen bg-background flex flex-col items-center justify-center px-6 text-center">
       <div className="flex h-16 w-16 items-center justify-center rounded-2xl bg-danger-50 dark:bg-danger-500/10 mb-5">
-        <AlertTriangle className="h-8 w-8 text-danger-500" />
+        <AlertTriangle className="h-8 w-8 text-danger-600 dark:text-danger-500" />
       </div>
 
       <h1 className="font-display text-xl font-bold text-foreground mb-2">Something went wrong</h1>

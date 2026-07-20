@@ -100,7 +100,7 @@ export default function CartPage() {
                   {freeDelivery ? "Free delivery unlocked!" : `Add ${formatPHP(toFree)} for free delivery`}
                 </span>
               </div>
-              {freeDelivery && <Gift className="h-4 w-4 text-success-500" />}
+              {freeDelivery && <Gift className="h-4 w-4 text-success-700 dark:text-success-500" />}
             </div>
             <div className="w-full h-1.5 bg-muted rounded-full overflow-hidden">
               <div
@@ -138,7 +138,7 @@ export default function CartPage() {
                 </div>
                 <div className="flex flex-col items-end gap-2 shrink-0">
                   <p className="text-sm font-bold text-foreground">{formatPHP(product.price * quantity)}</p>
-                  <button onClick={() => removeItem(product.id)} className="text-muted-foreground hover:text-danger-500 transition-colors">
+                  <button onClick={() => removeItem(product.id)} className="text-muted-foreground hover:text-danger-600 transition-colors">
                     <Trash2 className="h-4 w-4" />
                   </button>
                 </div>
@@ -177,7 +177,7 @@ export default function CartPage() {
             <ArrowRight className="h-4 w-4" />
           </ButtonLink>
 
-          <button onClick={clearCart} className="w-full text-center text-sm text-muted-foreground hover:text-danger-500 transition-colors py-2">
+          <button onClick={clearCart} className="w-full text-center text-sm text-muted-foreground hover:text-danger-600 transition-colors py-2">
             Clear cart
           </button>
         </div>

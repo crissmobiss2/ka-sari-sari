@@ -151,7 +151,7 @@ export default function FulfillmentPage() {
                         <div className="flex items-center justify-between text-xs text-muted-foreground">
                           <div className={cn("flex items-center gap-1", overdue && "text-warning-700 dark:text-foreground font-medium")}>
                             {overdue
-                              ? <AlertTriangle className="h-3 w-3 text-warning-500" aria-label="Waiting over 2 hours" />
+                              ? <AlertTriangle className="h-3 w-3 text-warning-700 dark:text-warning-500" aria-label="Waiting over 2 hours" />
                               : <Clock className="h-3 w-3" />
                             }
                             <span>{waitLabel}</span>

@@ -83,7 +83,7 @@ function Countdown({ seconds }: { seconds: number }) {
   }, [seconds]);
 
   if (remaining === null) return <span className="font-mono font-bold tabular-nums">--:--:--</span>;
-  if (remaining === 0) return <span className="font-mono font-bold tabular-nums text-danger-500">Expired</span>;
+  if (remaining === 0) return <span className="font-mono font-bold tabular-nums text-danger-600 dark:text-danger-500">Expired</span>;
 
   const h = Math.floor(remaining / 3600);
   const m = Math.floor((remaining % 3600) / 60);
@@ -214,7 +214,7 @@ export default function DealsPage() {
         {/* Flash deals horizontal scroll */}
         <div>
           <div className="flex items-center gap-2 mb-3">
-            <Zap className="h-4 w-4 text-danger-500" />
+            <Zap className="h-4 w-4 text-danger-600 dark:text-danger-500" />
             <h2 className="font-display text-base font-bold text-foreground">Flash Deals</h2>
           </div>
           <div className="flex gap-3 overflow-x-auto pb-2 scrollbar-hide -mx-4 px-4">

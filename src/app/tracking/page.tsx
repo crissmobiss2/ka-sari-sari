@@ -321,7 +321,7 @@ function DriverCard({ driver = DRIVER }: { driver?: typeof DRIVER }) {
             <p className="font-semibold text-foreground">{driver.name}</p>
             <p className="text-xs text-muted-foreground">{driver.vehicle}</p>
             <div className="flex items-center gap-2 mt-0.5">
-              <span className="text-xs text-warning-500 font-medium">★ {driver.rating}</span>
+              <span className="text-xs text-warning-700 dark:text-warning-500 font-medium">★ {driver.rating}</span>
               <span className="text-[11px] text-muted-foreground">{driver.deliveries} deliveries</span>
             </div>
           </div>

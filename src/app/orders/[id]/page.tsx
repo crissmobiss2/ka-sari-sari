@@ -104,7 +104,7 @@ function ConfirmBanner() {
   if (!params.get("confirmed")) return null;
   return (
     <div className="mx-4 mb-4 rounded-2xl bg-success-50 dark:bg-success-500/10 border border-success-500/25 p-4 flex items-start gap-3 animate-fade-in">
-      <CheckCircle2 className="h-5 w-5 text-success-500 shrink-0 mt-0.5" />
+      <CheckCircle2 className="h-5 w-5 text-success-700 dark:text-success-500 shrink-0 mt-0.5" />
       <div>
         <p className="text-sm font-semibold text-success-700 dark:text-foreground">Order placed successfully!</p>
         <p className="text-xs text-success-700 dark:text-foreground mt-0.5">We&apos;ll notify you when it&apos;s being prepared.</p>
@@ -209,7 +209,7 @@ function DeliveryTimeline({
     return (
       <div className="rounded-2xl border border-border bg-card shadow-card p-5 mx-4">
         <div className="flex items-center gap-2 mb-1">
-          <AlertCircle className="h-4 w-4 text-danger-500" />
+          <AlertCircle className="h-4 w-4 text-danger-600 dark:text-danger-500" />
           <h3 className="font-display text-sm font-semibold text-foreground">Order Status</h3>
         </div>
         <p className="text-sm text-danger-700 dark:text-foreground mt-1">
@@ -446,7 +446,7 @@ function OrderItems({
                     </p>
                   )}
                   {orderItem.status === "unavailable" && (
-                    <p className="text-xs text-danger-500 mt-0.5">Unavailable</p>
+                    <p className="text-xs text-danger-600 dark:text-danger-500 mt-0.5">Unavailable</p>
                   )}
                 </div>
 
@@ -637,7 +637,7 @@ function MapPlaceholder() {
         </div>
         <div className="absolute right-8 top-1/2 -translate-y-1/2 flex flex-col items-center">
           <div className="h-8 w-8 rounded-full bg-white shadow-lg flex items-center justify-center border-2 border-success-500">
-            <MapPin className="h-4 w-4 text-success-500" />
+            <MapPin className="h-4 w-4 text-success-700 dark:text-success-500" />
           </div>
           <div className="mt-1 rounded-md bg-success-700 px-2 py-0.5 text-[10px] font-semibold text-white whitespace-nowrap shadow">
             Your Store
@@ -674,7 +674,7 @@ function RatingSection({ orderId }: { orderId: string }) {
   if (submitted) {
     return (
       <div className="mx-4 rounded-2xl bg-success-50 dark:bg-success-500/10 border border-success-500/25 p-5 text-center">
-        <CheckCircle2 className="h-8 w-8 text-success-500 mx-auto mb-2" />
+        <CheckCircle2 className="h-8 w-8 text-success-700 dark:text-success-500 mx-auto mb-2" />
         <p className="font-display font-semibold text-success-700 dark:text-foreground">Thanks for your feedback!</p>
         <p className="text-xs text-success-700 dark:text-foreground mt-1">Your rating helps us improve our service.</p>
       </div>
@@ -728,7 +728,7 @@ function RatingSection({ orderId }: { orderId: string }) {
         ))}
       </div>
       {ratingError && (
-        <p className="text-xs text-danger-500 text-center mb-2">{ratingError}</p>
+        <p className="text-xs text-danger-600 dark:text-danger-500 text-center mb-2">{ratingError}</p>
       )}
       {rating > 0 && (
         <Button size="sm" className="w-full" onClick={handleSubmitRating} loading={ratingLoading} disabled={ratingLoading}>

@@ -15,7 +15,7 @@ export default function DriverError({
   return (
     <div className="min-h-screen bg-background flex flex-col items-center justify-center px-6 text-center">
       <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-danger-50 dark:bg-danger-500/10 mb-4">
-        <AlertTriangle className="h-7 w-7 text-danger-500" />
+        <AlertTriangle className="h-7 w-7 text-danger-600 dark:text-danger-500" />
       </div>
       <h2 className="font-display text-lg font-bold text-foreground mb-2">Something went wrong</h2>
       <p className="text-muted-foreground text-sm max-w-xs mb-6">

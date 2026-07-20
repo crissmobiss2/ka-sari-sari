@@ -144,10 +144,10 @@ const PROGRESS_STEPS: OrderStatus[] = ["confirmed", "picking", "packed", "out_fo
 
 function StatusIcon({ status }: { status: OrderStatus }) {
   if (status === "out_for_delivery") return <Truck className="h-5 w-5 text-brand-700 dark:text-brand-400" />;
-  if (status === "delivered") return <CheckCheck className="h-5 w-5 text-success-500" />;
+  if (status === "delivered") return <CheckCheck className="h-5 w-5 text-success-700 dark:text-success-500" />;
   if (status === "cancelled" || status === "failed_delivery" || status === "returned")
     return <AlertCircle className="h-5 w-5 text-danger-400" />;
-  return <Clock className="h-5 w-5 text-warning-500" />;
+  return <Clock className="h-5 w-5 text-warning-700 dark:text-warning-500" />;
 }
 
 function StatusIconBg({ status }: { status: OrderStatus }) {

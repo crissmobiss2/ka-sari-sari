@@ -63,8 +63,8 @@ const STATUS_CONFIG: Record<DriverStatus, { label: string; badgeClass: string; a
   },
   active: {
     label: "Available",
-    badgeClass: "bg-success-50 dark:bg-success-500/10 text-success-600 dark:text-foreground border border-success-200",
-    avatarClass: "bg-success-100 dark:bg-success-500/20 text-success-600 dark:text-success-500",
+    badgeClass: "bg-success-50 dark:bg-success-500/10 text-success-700 dark:text-foreground border border-success-200",
+    avatarClass: "bg-success-100 dark:bg-success-500/20 text-success-700 dark:text-success-500",
   },
   off_duty: {
     label: "Off Duty",
@@ -249,9 +249,9 @@ export default function AdminDriversPage() {
       {/* Stats */}
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
         <StatCard icon={Truck} value={onRoute} label="On Route" color="bg-brand-50 dark:bg-brand-500/10 text-brand-700 dark:text-brand-400" />
-        <StatCard icon={CheckCircle2} value={available} label="Available" color="bg-success-50 dark:bg-success-500/10 text-success-500" />
+        <StatCard icon={CheckCircle2} value={available} label="Available" color="bg-success-50 dark:bg-success-500/10 text-success-700 dark:text-success-500" />
         <StatCard icon={Clock} value={offDuty} label="Off Duty" color="bg-surface-100 dark:bg-surface-800 text-muted-foreground" />
-        <StatCard icon={TrendingUp} value={deliveriesToday} label="Deliveries Today" color="bg-info-50 dark:bg-info-500/10 text-info-500" />
+        <StatCard icon={TrendingUp} value={deliveriesToday} label="Deliveries Today" color="bg-info-50 dark:bg-info-500/10 text-info-600 dark:text-info-500" />
       </div>
 
       {/* Driver Cards Grid */}
@@ -270,7 +270,7 @@ export default function AdminDriversPage() {
                   <div className="flex items-center gap-2 flex-wrap">
                     <p className="font-display font-semibold text-sm text-foreground truncate">{driver.name}</p>
                     {topDriver && driver.rating === topDriver.rating && driver.rating > 0 && (
-                      <span className="text-warning-500 text-xs font-medium flex items-center gap-0.5">
+                      <span className="text-warning-700 dark:text-warning-500 text-xs font-medium flex items-center gap-0.5">
                         <Star className="h-3 w-3" fill="currentColor" /> Top
                       </span>
                     )}

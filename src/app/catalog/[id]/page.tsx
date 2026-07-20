@@ -217,7 +217,7 @@ export default function ProductDetailPage() {
             onClick={() => toggle(product)}
             className="flex h-9 w-9 items-center justify-center rounded-xl hover:bg-muted transition-colors"
           >
-            <Heart className={cn("h-5 w-5", isFavorite(product.id) ? "fill-danger-500 text-danger-500" : "text-muted-foreground")} />
+            <Heart className={cn("h-5 w-5", isFavorite(product.id) ? "fill-danger-500 text-danger-600 dark:text-danger-500" : "text-muted-foreground")} />
           </button>
         </div>
       </div>

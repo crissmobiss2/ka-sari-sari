@@ -321,7 +321,7 @@ function OptimizeModal({
 
             {/* Total savings banner */}
             <div className="rounded-xl border border-success-200 bg-success-50 dark:bg-success-500/10 px-4 py-3 flex items-center gap-3">
-              <CheckCircle2 className="h-5 w-5 text-success-500 shrink-0" />
+              <CheckCircle2 className="h-5 w-5 text-success-700 dark:text-success-500 shrink-0" />
               <p className="text-sm font-medium text-success-700 dark:text-foreground">
                 Total savings: 20 km less · 2h 24min saved · ₱260 fuel saved
               </p>
@@ -362,7 +362,7 @@ function OptimizeModal({
         {step === 3 && (
           <div className="p-8 flex flex-col items-center gap-5 text-center">
             <div className="flex h-16 w-16 items-center justify-center rounded-2xl bg-success-50 dark:bg-success-500/10">
-              <CheckCircle2 className="h-8 w-8 text-success-500" />
+              <CheckCircle2 className="h-8 w-8 text-success-700 dark:text-success-500" />
             </div>
             <div className="space-y-1.5">
               <h2 className="font-display text-xl font-bold text-foreground">Routes optimized and applied!</h2>
@@ -912,7 +912,7 @@ export default function AdminRoutesPage() {
                 <button onClick={() => setSummaryModal(null)} className="rounded-lg p-1 hover:bg-muted text-muted-foreground"><X className="h-4 w-4" /></button>
               </div>
               <div className="rounded-xl bg-success-50 dark:bg-success-500/10 border border-success-200 p-4 flex items-center gap-3">
-                <CheckCircle2 className="h-8 w-8 text-success-500 shrink-0" />
+                <CheckCircle2 className="h-8 w-8 text-success-700 dark:text-success-500 shrink-0" />
                 <div><p className="font-semibold text-success-700 dark:text-foreground text-sm">Route Completed</p><p className="text-xs text-success-700 dark:text-foreground">{r.name} · {r.driver}</p></div>
               </div>
               <div className="grid grid-cols-2 gap-3">

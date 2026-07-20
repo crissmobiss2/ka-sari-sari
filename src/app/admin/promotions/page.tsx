@@ -323,7 +323,7 @@ function CreatePromoModal({ onClose, onSave }: CreatePromoModalProps) {
             onChange={set("maxUsage")}
           />
           {error && <p className="text-xs text-danger-600 dark:text-danger-500">{error}</p>}
-          {saved && <p className="text-xs text-success-600 dark:text-success-500">Promotion created successfully.</p>}
+          {saved && <p className="text-xs text-success-700 dark:text-success-500">Promotion created successfully.</p>}
         </div>
         <div className="flex gap-3 p-5 pt-0">
           <button
@@ -484,7 +484,7 @@ function EditPromoModal({ promo, onClose, onSave }: EditPromoModalProps) {
             onChange={set("maxUsage")}
           />
           {error && <p className="text-xs text-danger-600 dark:text-danger-500">{error}</p>}
-          {saved && <p className="text-xs text-success-600 dark:text-success-500">Promotion updated successfully.</p>}
+          {saved && <p className="text-xs text-success-700 dark:text-success-500">Promotion updated successfully.</p>}
         </div>
         <div className="flex gap-3 p-5 pt-0">
           <button
@@ -655,7 +655,7 @@ export default function AdminPromotionsPage() {
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
         {[
           { icon: Zap, label: "Active Promos", value: activeCount.toString(), color: "text-brand-700 dark:text-brand-400", bg: "bg-brand-50 dark:bg-brand-500/10" },
-          { icon: BarChart3, label: "Total Uses", value: totalUses.toString(), color: "text-success-600 dark:text-foreground", bg: "bg-success-50 dark:bg-success-500/10" },
+          { icon: BarChart3, label: "Total Uses", value: totalUses.toString(), color: "text-success-700 dark:text-foreground", bg: "bg-success-50 dark:bg-success-500/10" },
           { icon: TrendingUp, label: "Revenue Impact", value: revenueImpactLabel, color: "text-warning-600 dark:text-foreground", bg: "bg-warning-50 dark:bg-warning-500/10" },
         ].map((s) => (
           <Card key={s.label} className="p-4 flex items-center gap-4">

@@ -189,7 +189,7 @@ export default function POSPage() {
         <div className="bg-card rounded-3xl shadow-card-md p-8 w-full max-w-md space-y-6">
           <div className="text-center space-y-3">
             <div className="h-20 w-20 rounded-full bg-success-100 dark:bg-success-500/20 flex items-center justify-center mx-auto">
-              <CheckCircle2 className="h-10 w-10 text-success-500" />
+              <CheckCircle2 className="h-10 w-10 text-success-700 dark:text-success-500" />
             </div>
             <h2 className="font-display text-2xl font-bold text-foreground">Payment Received</h2>
             <p className="text-muted-foreground text-sm font-mono">{orderRef}</p>
@@ -219,7 +219,7 @@ export default function POSPage() {
               <span className="text-brand-700 dark:text-brand-400">{formatPHP(total)}</span>
             </div>
             {payMethod === "cash" && change > 0 && (
-              <div className="flex justify-between text-sm font-semibold text-success-600 dark:text-success-500">
+              <div className="flex justify-between text-sm font-semibold text-success-700 dark:text-success-500">
                 <span>Change</span>
                 <span>{formatPHP(change)}</span>
               </div>
@@ -417,7 +417,7 @@ export default function POSPage() {
                 </div>
               ) : (
                 <div className="flex items-center justify-between text-xs">
-                  <span className="text-success-600 dark:text-success-500 font-medium">✓ Promo applied: {promoInput}</span>
+                  <span className="text-success-700 dark:text-success-500 font-medium">✓ Promo applied: {promoInput}</span>
                   <button onClick={() => { setPromoApplied(false); setPromoInput(""); setDiscount(0); }} className="text-muted-foreground hover:text-foreground">Remove</button>
                 </div>
               )}
@@ -425,7 +425,7 @@ export default function POSPage() {
                 <div className="flex justify-between text-xs text-muted-foreground">
                   <span>Subtotal ({cartCount})</span><span>{formatPHP(subtotal)}</span>
                 </div>
-                {discount > 0 && <div className="flex justify-between text-xs text-success-600 dark:text-success-500"><span>Discount</span><span>-{formatPHP(discount)}</span></div>}
+                {discount > 0 && <div className="flex justify-between text-xs text-success-700 dark:text-success-500"><span>Discount</span><span>-{formatPHP(discount)}</span></div>}
                 <div className="flex justify-between text-sm font-bold text-foreground border-t border-border pt-1.5">
                   <span>Total</span><span className="text-brand-700 dark:text-brand-400 text-base">{formatPHP(total)}</span>
                 </div>
@@ -487,7 +487,7 @@ export default function POSPage() {
                   )}
                   {cashTendered && cash < total && (
                     <div className="flex items-center gap-2 rounded-xl bg-danger-50 dark:bg-danger-500/10 border border-danger-200 px-3 py-2">
-                      <AlertCircle className="h-4 w-4 text-danger-500 shrink-0" />
+                      <AlertCircle className="h-4 w-4 text-danger-600 dark:text-danger-500 shrink-0" />
                       <span className="text-xs text-danger-600 dark:text-danger-500 font-medium">Short by {formatPHP(total - cash)}</span>
                     </div>
                   )}

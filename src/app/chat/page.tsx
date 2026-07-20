@@ -369,7 +369,7 @@ export default function ChatPage() {
                   <span className="text-sm font-bold tabular-nums">₱{(item.price * item.qty).toLocaleString()}</span>
                   <button
                     onClick={(e) => { e.stopPropagation(); setCart((prev) => prev.filter((p) => p.id !== item.id)); }}
-                    className="text-muted-foreground hover:text-danger-500 transition-colors"
+                    className="text-muted-foreground hover:text-danger-600 transition-colors"
                   >
                     <X className="h-3.5 w-3.5" />
                   </button>

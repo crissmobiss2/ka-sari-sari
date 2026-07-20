@@ -292,7 +292,7 @@ export default function WarehouseDashboard() {
                   </div>
                   <div className="flex-1 min-w-0">
                     <div className="flex items-center gap-1.5 mb-0.5">
-                      {t.urgent && <AlertTriangle className="h-3 w-3 text-warning-500" />}
+                      {t.urgent && <AlertTriangle className="h-3 w-3 text-warning-700 dark:text-warning-500" />}
                       <p className="text-xs font-semibold text-foreground truncate">{t.product}</p>
                     </div>
                     <p className="text-[11px] text-muted-foreground">{t.from} → {t.to} · {t.qty} units</p>

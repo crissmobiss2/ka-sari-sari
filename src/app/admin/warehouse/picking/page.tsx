@@ -84,8 +84,8 @@ function BinLabel({ bin }: { bin: string }) {
 }
 
 function ItemStatusIcon({ status }: { status: ItemStatus }) {
-  if (status === "picked") return <CheckCircle2 className="h-4.5 w-4.5 text-success-500 shrink-0" />;
-  if (status === "partial") return <MinusCircle className="h-4.5 w-4.5 text-warning-500 shrink-0" />;
+  if (status === "picked") return <CheckCircle2 className="h-4.5 w-4.5 text-success-700 dark:text-success-500 shrink-0" />;
+  if (status === "partial") return <MinusCircle className="h-4.5 w-4.5 text-warning-700 dark:text-warning-500 shrink-0" />;
   return <Circle className="h-4.5 w-4.5 text-muted-foreground shrink-0" />;
 }
 
@@ -484,7 +484,7 @@ export default function PickingPage() {
 
                       {/* Completed checkmark */}
                       {isCompleted && (
-                        <CheckCircle2 className="h-4 w-4 text-success-500 shrink-0" />
+                        <CheckCircle2 className="h-4 w-4 text-success-700 dark:text-success-500 shrink-0" />
                       )}
                     </div>
                   );

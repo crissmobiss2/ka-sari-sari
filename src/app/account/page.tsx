@@ -389,7 +389,7 @@ export default function AccountPage() {
                 / {CREDIT_SCORE_MAX}
               </text>
             </svg>
-            <p className="text-xs font-black tracking-widest text-success-600 dark:text-success-500 -mt-1">GOOD</p>
+            <p className="text-xs font-black tracking-widest text-success-700 dark:text-success-500 -mt-1">GOOD</p>
           </div>
 
           {/* Score breakdown */}
@@ -419,7 +419,7 @@ export default function AccountPage() {
             </div>
             <div className="text-right">
               <p className="text-xs text-muted-foreground">Available</p>
-              <p className="text-base font-bold text-success-600 dark:text-success-500">₱{creditData.available.toLocaleString()}</p>
+              <p className="text-base font-bold text-success-700 dark:text-success-500">₱{creditData.available.toLocaleString()}</p>
             </div>
           </div>
 
@@ -466,7 +466,7 @@ export default function AccountPage() {
                     Submitted {new Date(app.created_at).toLocaleDateString("en-PH", { month: "short", day: "numeric", year: "numeric" })}
                   </p>
                   {app.status === "approved" && app.approved_limit && (
-                    <p className="text-xs text-success-600 dark:text-success-500 font-medium mt-0.5">
+                    <p className="text-xs text-success-700 dark:text-success-500 font-medium mt-0.5">
                       Approved: ₱{app.approved_limit.toLocaleString()} · {app.requested_terms ?? 7}-day terms
                     </p>
                   )}
@@ -481,10 +481,10 @@ export default function AccountPage() {
           {/* Success after submission */}
           {creditSubmitted && (
             <div className="flex items-start gap-3 rounded-xl bg-success-50 dark:bg-success-500/10 border border-success-200 px-4 py-3">
-              <CheckCircle2 className="h-4 w-4 text-success-600 dark:text-success-500 shrink-0 mt-0.5" />
+              <CheckCircle2 className="h-4 w-4 text-success-700 dark:text-success-500 shrink-0 mt-0.5" />
               <div>
                 <p className="text-sm font-semibold text-success-700 dark:text-foreground">Application submitted!</p>
-                <p className="text-xs text-success-600 dark:text-success-500 mt-0.5">We'll review within 24 hours and notify you of the decision.</p>
+                <p className="text-xs text-success-700 dark:text-success-500 mt-0.5">We'll review within 24 hours and notify you of the decision.</p>
               </div>
             </div>
           )}
@@ -517,7 +517,7 @@ export default function AccountPage() {
               <div className="space-y-3">
                 <div>
                   <label className="text-xs font-medium text-muted-foreground block mb-1">
-                    Requested Credit Limit (₱) <span className="text-danger-500">*</span>
+                    Requested Credit Limit (₱) <span className="text-danger-600 dark:text-danger-500">*</span>
                   </label>
                   <div className="relative">
                     <span className="absolute left-3 top-1/2 -translate-y-1/2 text-sm font-bold text-muted-foreground">₱</span>
@@ -569,7 +569,7 @@ export default function AccountPage() {
 
               {creditError && (
                 <div className="flex items-center gap-2 rounded-xl bg-danger-50 dark:bg-danger-500/10 border border-danger-200 px-3 py-2.5">
-                  <AlertCircle className="h-4 w-4 text-danger-500 shrink-0" />
+                  <AlertCircle className="h-4 w-4 text-danger-600 dark:text-danger-500 shrink-0" />
                   <p className="text-xs text-danger-700 dark:text-foreground">{creditError}</p>
                 </div>
               )}
@@ -602,18 +602,18 @@ export default function AccountPage() {
         {subIsActive ? (
           <div className="rounded-2xl border border-success-500/25 bg-success-50 dark:bg-success-500/10 p-5">
             <div className="flex items-start gap-3">
-              <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-success-100 dark:bg-success-500/20 text-success-600 dark:text-success-500">
+              <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-success-100 dark:bg-success-500/20 text-success-700 dark:text-success-500">
                 <Shield className="h-4 w-4" />
               </div>
               <div className="flex-1">
                 <p className="text-sm font-semibold text-success-700 dark:text-foreground">Active Subscription</p>
-                <p className="text-xs text-success-600 dark:text-foreground mt-0.5">Platform access · Free Trial · Year 1</p>
+                <p className="text-xs text-success-700 dark:text-foreground mt-0.5">Platform access · Free Trial · Year 1</p>
                 <div className="flex items-center gap-2 mt-2">
-                  <Check className="h-3.5 w-3.5 text-success-500" />
-                  <span className="text-xs text-success-600 dark:text-foreground">Unlimited orders</span>
+                  <Check className="h-3.5 w-3.5 text-success-700 dark:text-success-500" />
+                  <span className="text-xs text-success-700 dark:text-foreground">Unlimited orders</span>
                   <span className="text-success-300">·</span>
-                  <Clock className="h-3 w-3 text-success-500" />
-                  <span className="text-xs text-success-600 dark:text-foreground">{subDaysLeft !== null ? subDaysLeft : '—'} days left</span>
+                  <Clock className="h-3 w-3 text-success-700 dark:text-success-500" />
+                  <span className="text-xs text-success-700 dark:text-foreground">{subDaysLeft !== null ? subDaysLeft : '—'} days left</span>
                 </div>
               </div>
             </div>
@@ -661,8 +661,8 @@ export default function AccountPage() {
                   </p>
                   <p className="text-xs text-muted-foreground mt-0.5">
                     Browser permission: <span className={cn("font-semibold capitalize",
-                      pushPermission === "granted" ? "text-success-600 dark:text-success-500" :
-                      pushPermission === "denied" ? "text-danger-500" : "text-muted-foreground"
+                      pushPermission === "granted" ? "text-success-700 dark:text-success-500" :
+                      pushPermission === "denied" ? "text-danger-600 dark:text-danger-500" : "text-muted-foreground"
                     )}>{pushPermission}</span>
                   </p>
                 </div>
@@ -695,14 +695,14 @@ export default function AccountPage() {
 
               {pushError && (
                 <div className="flex items-center gap-2 rounded-xl bg-danger-50 dark:bg-danger-500/10 border border-danger-200 px-3 py-2.5">
-                  <AlertCircle className="h-4 w-4 text-danger-500 shrink-0" />
+                  <AlertCircle className="h-4 w-4 text-danger-600 dark:text-danger-500 shrink-0" />
                   <p className="text-xs text-danger-700 dark:text-foreground">{pushError}</p>
                 </div>
               )}
 
               {pushSuccess && (
                 <div className="flex items-center gap-2 rounded-xl bg-success-50 dark:bg-success-500/10 border border-success-200 px-3 py-2.5">
-                  <CheckCircle2 className="h-4 w-4 text-success-600 dark:text-success-500 shrink-0" />
+                  <CheckCircle2 className="h-4 w-4 text-success-700 dark:text-success-500 shrink-0" />
                   <p className="text-xs text-success-700 dark:text-foreground">{pushSuccess}</p>
                 </div>
               )}
