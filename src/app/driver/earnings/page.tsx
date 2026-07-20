@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import { useState, useEffect } from "react";
 import { TrendingUp, Wallet, Clock, CheckCircle2, Banknote, MapPin, Star, Gift } from "lucide-react";
@@ -144,7 +144,7 @@ export default function EarningsPage() {
       <div className="mx-4 grid grid-cols-2 gap-3">
         <Card className="p-4">
           <div className="flex items-center gap-2 mb-2">
-            <Wallet className="w-4 h-4 text-brand-500 flex-shrink-0" />
+            <Wallet className="w-4 h-4 text-brand-700 dark:text-brand-400 flex-shrink-0" />
             <p className="text-xs text-muted-foreground font-medium uppercase tracking-wider">This Month</p>
           </div>
           <p className="font-display text-xl font-black text-foreground">{formatPHP(displayMonthlyTotal)}</p>
@@ -152,7 +152,7 @@ export default function EarningsPage() {
         </Card>
         <Card className="p-4">
           <div className="flex items-center gap-2 mb-2">
-            <TrendingUp className="w-4 h-4 text-brand-500 flex-shrink-0" />
+            <TrendingUp className="w-4 h-4 text-brand-700 dark:text-brand-400 flex-shrink-0" />
             <p className="text-xs text-muted-foreground font-medium uppercase tracking-wider">Year to Date</p>
           </div>
           <p className="font-display text-xl font-black text-foreground">{formatPHP(displayYtdTotal)}</p>
@@ -188,11 +188,11 @@ export default function EarningsPage() {
                 const isToday = i === TODAY_INDEX;
                 return (
                   <div key={d.day} className="flex-1 flex flex-col items-center justify-end gap-1">
-                    <span className={cn("text-[9px] tabular-nums leading-none", isToday ? "text-brand-500 font-bold" : "text-muted-foreground")}>
+                    <span className={cn("text-[9px] tabular-nums leading-none", isToday ? "text-brand-700 dark:text-brand-400 font-bold" : "text-muted-foreground")}>
                       {d.earned > 0 ? `₱${d.earned}` : ""}
                     </span>
                     <div className={cn("w-full rounded-t-md", isToday ? "bg-brand-500" : "bg-brand-500/40")} style={{ height: barH }} />
-                    <span className={cn("text-[10px] font-medium", isToday ? "text-brand-500" : "text-muted-foreground")}>{d.day}</span>
+                    <span className={cn("text-[10px] font-medium", isToday ? "text-brand-700 dark:text-brand-400" : "text-muted-foreground")}>{d.day}</span>
                   </div>
                 );
               })}
@@ -202,7 +202,7 @@ export default function EarningsPage() {
           {/* COD reconciliation */}
           <div className="mx-4 rounded-2xl border border-border bg-card p-4 space-y-3">
             <div className="flex items-center gap-2">
-              <Banknote className="h-4 w-4 text-brand-500" />
+              <Banknote className="h-4 w-4 text-brand-700 dark:text-brand-400" />
               <p className="text-sm font-semibold text-foreground">COD This Week</p>
             </div>
             <div className="grid grid-cols-3 gap-2">
@@ -234,7 +234,7 @@ export default function EarningsPage() {
           {/* Bonuses & incentives */}
           <div className="mx-4 space-y-2">
             <p className="text-sm font-semibold text-foreground flex items-center gap-2">
-              <Gift className="h-4 w-4 text-brand-500" />
+              <Gift className="h-4 w-4 text-brand-700 dark:text-brand-400" />
               Bonuses & Incentives
             </p>
             {BONUSES.map((b, i) => (
@@ -270,7 +270,7 @@ export default function EarningsPage() {
           {/* Payment info */}
           <div className="mx-4 rounded-xl border border-border bg-card p-4">
             <div className="flex items-center gap-2 mb-3">
-              <Clock className="w-4 h-4 text-brand-500" />
+              <Clock className="w-4 h-4 text-brand-700 dark:text-brand-400" />
               <p className="text-sm font-semibold text-foreground">Payment Details</p>
             </div>
             <div className="space-y-2">
@@ -342,7 +342,7 @@ export default function EarningsPage() {
               <div key={c.city} className="rounded-xl border border-border bg-card p-3.5">
                 <div className="flex items-center justify-between mb-2">
                   <div className="flex items-center gap-2">
-                    <MapPin className="h-3.5 w-3.5 text-brand-500" />
+                    <MapPin className="h-3.5 w-3.5 text-brand-700 dark:text-brand-400" />
                     <span className="text-sm font-semibold text-foreground">{c.city}</span>
                   </div>
                   <div className="flex items-center gap-2">
@@ -367,7 +367,7 @@ export default function EarningsPage() {
 
           <div className="rounded-xl border border-brand-100 bg-brand-50 dark:bg-brand-500/10 dark:bg-card dark:border-border/50 p-4">
             <div className="flex items-center gap-2 mb-1">
-              <Star className="h-4 w-4 text-brand-500" />
+              <Star className="h-4 w-4 text-brand-700 dark:text-brand-400" />
               <p className="text-xs font-semibold text-foreground">Top Area: Caloocan</p>
             </div>
             <p className="text-xs text-muted-foreground leading-relaxed">

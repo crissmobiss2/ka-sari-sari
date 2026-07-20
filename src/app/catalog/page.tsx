@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 import { useState, useMemo, useEffect, Suspense } from "react";
 import { useSearchParams } from "next/navigation";
 import { Search, X, SlidersHorizontal, AlertCircle } from "lucide-react";

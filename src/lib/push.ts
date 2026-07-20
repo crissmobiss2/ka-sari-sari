@@ -1,4 +1,4 @@
-// Web Push notifications via VAPID
+﻿// Web Push notifications via VAPID
 // Generate keys once: npx web-push generate-vapid-keys
 // Add to .env.local: VAPID_PUBLIC_KEY, VAPID_PRIVATE_KEY, VAPID_SUBJECT (mailto:you@domain.com)
 

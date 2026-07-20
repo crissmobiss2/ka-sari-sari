@@ -1,4 +1,4 @@
-// Supabase-backed data access layer
+﻿// Supabase-backed data access layer
 // Replaces in-memory db.ts functions for production use.
 // API routes import from here for all real-data operations.
 

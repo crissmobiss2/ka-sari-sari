@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 import { useState, useEffect } from "react";
 import {
   MapPin, Clock, Navigation, Plus, CheckCircle2, AlertTriangle,
@@ -224,7 +224,7 @@ function OptimizeModal({
         {step === 1 && (
           <div className="p-8 flex flex-col items-center gap-6 text-center">
             <div className="flex h-16 w-16 items-center justify-center rounded-2xl bg-brand-50 dark:bg-brand-500/10">
-              <Loader2 className="h-8 w-8 text-brand-500 animate-spin" />
+              <Loader2 className="h-8 w-8 text-brand-700 dark:text-brand-400 animate-spin" />
             </div>
             <div>
               <h2 className="font-display text-xl font-bold text-foreground">Running TSP optimization...</h2>
@@ -255,7 +255,7 @@ function OptimizeModal({
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-2">
                 <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-brand-50 dark:bg-brand-500/10">
-                  <Zap className="h-4 w-4 text-brand-500" />
+                  <Zap className="h-4 w-4 text-brand-700 dark:text-brand-400" />
                 </div>
                 <h2 className="font-display text-lg font-bold text-foreground">Optimization Results</h2>
               </div>
@@ -839,7 +839,7 @@ export default function AdminRoutesPage() {
               </div>
               <div className="grid grid-cols-3 gap-3 text-center">
                 <div><p className="text-xl font-bold text-foreground tabular-nums">{r.completedStops}/{r.stops}</p><p className="text-xs text-muted-foreground">Stops</p></div>
-                <div><p className="text-xl font-bold text-brand-500 tabular-nums">{pct}%</p><p className="text-xs text-muted-foreground">Complete</p></div>
+                <div><p className="text-xl font-bold text-brand-700 dark:text-brand-400 tabular-nums">{pct}%</p><p className="text-xs text-muted-foreground">Complete</p></div>
                 <div><p className="text-xl font-bold text-foreground">{r.distance}</p><p className="text-xs text-muted-foreground">Total dist.</p></div>
               </div>
               <div>

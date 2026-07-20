@@ -1,4 +1,4 @@
-// Real-time driver GPS — POST to update, GET to retrieve
+﻿// Real-time driver GPS — POST to update, GET to retrieve
 import { NextRequest, NextResponse } from "next/server";
 import { getSessionFromRequest } from "@/lib/auth";
 import { updateDriverLocation, getDriverLocation } from "@/lib/supabase-db";

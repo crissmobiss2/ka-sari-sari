@@ -1,4 +1,4 @@
-// Credit application — POST to apply, GET for status, PATCH for admin review
+﻿// Credit application — POST to apply, GET for status, PATCH for admin review
 import { NextRequest, NextResponse } from "next/server";
 import { getSessionFromRequest } from "@/lib/auth";
 import {

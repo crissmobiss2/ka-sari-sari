@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 import { useState, useEffect } from "react";
 import {
   Plus, X, Calendar, Tag, Pause, Pencil, Copy, Archive, Ban,
@@ -654,7 +654,7 @@ export default function AdminPromotionsPage() {
 
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
         {[
-          { icon: Zap, label: "Active Promos", value: activeCount.toString(), color: "text-brand-500", bg: "bg-brand-50 dark:bg-brand-500/10" },
+          { icon: Zap, label: "Active Promos", value: activeCount.toString(), color: "text-brand-700 dark:text-brand-400", bg: "bg-brand-50 dark:bg-brand-500/10" },
           { icon: BarChart3, label: "Total Uses", value: totalUses.toString(), color: "text-success-600 dark:text-foreground", bg: "bg-success-50 dark:bg-success-500/10" },
           { icon: TrendingUp, label: "Revenue Impact", value: revenueImpactLabel, color: "text-warning-600 dark:text-foreground", bg: "bg-warning-50 dark:bg-warning-500/10" },
         ].map((s) => (

@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 // v2
 import { useState } from "react";
 import { Settings, Database, Zap, Brain, TrendingUp, Users, Tag, ChevronDown, ChevronUp, Check } from "lucide-react";
@@ -224,7 +224,7 @@ export default function AdminSettingsPage() {
         <Card key={section.title}>
           <CardHeader>
             <div className="flex items-center gap-2">
-              <section.icon className="h-4 w-4 text-brand-500" />
+              <section.icon className="h-4 w-4 text-brand-700 dark:text-brand-400" />
               <CardTitle>{section.title}</CardTitle>
             </div>
           </CardHeader>
@@ -251,7 +251,7 @@ export default function AdminSettingsPage() {
       <Card>
         <CardHeader>
           <div className="flex items-center gap-2">
-            <Zap className="h-4 w-4 text-brand-500" />
+            <Zap className="h-4 w-4 text-brand-700 dark:text-brand-400" />
             <CardTitle>AI & Automation</CardTitle>
           </div>
           <p className="text-xs text-muted-foreground mt-1">

@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 import { useState, useEffect } from "react";
 import { useParams } from "next/navigation";
 import Link from "next/link";
@@ -323,7 +323,7 @@ export default function AdminRetailerProfilePage() {
                   <td className="px-5 py-3.5">
                     <Link
                       href={`/admin/orders/${order.id}`}
-                      className="text-xs text-brand-500 hover:text-brand-600 font-medium transition-colors"
+                      className="text-xs text-brand-700 dark:text-brand-400 hover:text-brand-600 font-medium transition-colors"
                     >
                       View
                     </Link>
@@ -336,7 +336,7 @@ export default function AdminRetailerProfilePage() {
         <div className="px-5 py-3.5 border-t border-border">
           <Link
             href="/admin/orders"
-            className="inline-flex items-center gap-1 text-sm text-brand-500 hover:text-brand-600 font-medium transition-colors"
+            className="inline-flex items-center gap-1 text-sm text-brand-700 dark:text-brand-400 hover:text-brand-600 font-medium transition-colors"
           >
             View All Orders
             <ChevronRight className="h-3.5 w-3.5" />

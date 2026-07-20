@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 import Link from "next/link";
 import { useState, useEffect } from "react";
 import { BarChart3, TrendingUp, Package, ShoppingBasket, Zap, RotateCcw, Calendar, Loader2 } from "lucide-react";
@@ -309,7 +309,7 @@ export default function AnalyticsPage() {
         {/* Header */}
         <div>
           <h1 className="font-display text-xl font-bold text-foreground flex items-center gap-2">
-            <BarChart3 className="h-5 w-5 text-brand-500" />
+            <BarChart3 className="h-5 w-5 text-brand-700 dark:text-brand-400" />
             My Store Analytics
           </h1>
           <p className="text-sm text-muted-foreground mt-0.5">Track your spending and savings</p>
@@ -318,7 +318,7 @@ export default function AnalyticsPage() {
         {/* Key stats */}
         {analyticsLoading ? (
           <div className="flex justify-center py-6">
-            <Loader2 className="h-6 w-6 animate-spin text-brand-500" />
+            <Loader2 className="h-6 w-6 animate-spin text-brand-700 dark:text-brand-400" />
           </div>
         ) : (
         <div className="grid grid-cols-2 gap-3">
@@ -382,7 +382,7 @@ export default function AnalyticsPage() {
         {stats.topCategories.length > 0 && (
           <div className="rounded-2xl border border-border bg-card shadow-card p-5">
             <h2 className="font-display text-sm font-bold text-foreground mb-4 flex items-center gap-2">
-              <BarChart3 className="h-4 w-4 text-brand-500" />
+              <BarChart3 className="h-4 w-4 text-brand-700 dark:text-brand-400" />
               Category Breakdown
             </h2>
             <div className="space-y-3">
@@ -415,7 +415,7 @@ export default function AnalyticsPage() {
         {/* Top products */}
         <div>
           <h2 className="font-display text-sm font-bold text-foreground mb-3 flex items-center gap-2">
-            <Package className="h-4 w-4 text-brand-500" />
+            <Package className="h-4 w-4 text-brand-700 dark:text-brand-400" />
             Your Top Products
           </h2>
           {stats.topProducts.length > 0 ? (
@@ -451,7 +451,7 @@ export default function AnalyticsPage() {
         <div className="rounded-2xl border border-border bg-card shadow-card overflow-hidden">
           <div className="px-5 pt-5 pb-3">
             <h2 className="font-display text-sm font-bold text-foreground flex items-center gap-2">
-              <Calendar className="h-4 w-4 text-brand-500" />
+              <Calendar className="h-4 w-4 text-brand-700 dark:text-brand-400" />
               Order Frequency
             </h2>
           </div>
@@ -478,7 +478,7 @@ export default function AnalyticsPage() {
         {/* Restock suggestions */}
         <div>
           <h2 className="font-display text-sm font-bold text-foreground mb-3 flex items-center gap-2">
-            <RotateCcw className="h-4 w-4 text-brand-500" />
+            <RotateCcw className="h-4 w-4 text-brand-700 dark:text-brand-400" />
             Restock Suggestions
           </h2>
           <div className="space-y-3">
@@ -517,7 +517,7 @@ export default function AnalyticsPage() {
         {/* Savings vs market price */}
         <div className="rounded-2xl border border-border bg-card shadow-card p-5">
           <h2 className="font-display text-sm font-bold text-foreground mb-4 flex items-center gap-2">
-            <Zap className="h-4 w-4 text-brand-500" />
+            <Zap className="h-4 w-4 text-brand-700 dark:text-brand-400" />
             Savings vs Market Price
           </h2>
 
@@ -530,7 +530,7 @@ export default function AnalyticsPage() {
             {/* Bar comparison */}
             <div className="space-y-2">
               <div className="flex items-center gap-3">
-                <div className="w-20 shrink-0 text-right text-xs font-bold text-brand-500">
+                <div className="w-20 shrink-0 text-right text-xs font-bold text-brand-700 dark:text-brand-400">
                   {formatPHP(stats.totalSpent)}
                 </div>
                 <div className="flex-1 h-3 rounded-full bg-surface-100 dark:bg-surface-800 overflow-hidden">
@@ -570,7 +570,7 @@ export default function AnalyticsPage() {
         {/* CTA */}
         <div className="rounded-2xl border border-dashed border-brand-300 bg-brand-50 dark:bg-brand-500/10/50 p-5">
           <div className="flex items-start gap-3">
-            <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-xl bg-brand-100 dark:bg-brand-500/20 text-brand-500">
+            <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-xl bg-brand-100 dark:bg-brand-500/20 text-brand-700 dark:text-brand-400">
               <ShoppingBasket className="h-4 w-4" />
             </div>
             <div>

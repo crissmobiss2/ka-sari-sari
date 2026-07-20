@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import { useMemo, useState, useEffect, useCallback } from "react";
 import {
@@ -306,7 +306,7 @@ export default function AdminForecastPage() {
       bgColor: "bg-warning-50 dark:bg-warning-500/10/60",
     },
     {
-      icon: <Lightbulb className="h-4 w-4 text-brand-500 shrink-0 mt-0.5" />,
+      icon: <Lightbulb className="h-4 w-4 text-brand-700 dark:text-brand-400 shrink-0 mt-0.5" />,
       text: "Opportunity: Personal Care up 31% — consider stocking Dove and Palmolive variants to capture demand upside.",
       borderColor: "border-brand-400",
       bgColor: "bg-brand-50 dark:bg-brand-500/10/60",
@@ -320,7 +320,7 @@ export default function AdminForecastPage() {
       <div className="flex items-start justify-between gap-4 flex-wrap">
         <div>
           <div className="flex items-center gap-2.5">
-            <TrendingUp className="h-6 w-6 text-brand-500" />
+            <TrendingUp className="h-6 w-6 text-brand-700 dark:text-brand-400" />
             <h1 className="font-display text-2xl font-bold text-foreground">AI Demand Forecast</h1>
           </div>
           <p className="text-sm text-muted-foreground mt-1">Powered by order history analysis</p>
@@ -359,7 +359,7 @@ export default function AdminForecastPage() {
           sub="most frequently ordered"
           icon={<TrendingUp className="h-5 w-5" />}
           iconBg="bg-brand-50 dark:bg-brand-500/10"
-          iconColor="text-brand-500"
+          iconColor="text-brand-700 dark:text-brand-400"
         />
         <SummaryCard
           label="Forecast Accuracy"
@@ -385,7 +385,7 @@ export default function AdminForecastPage() {
           <div className="flex items-center justify-between gap-3 flex-wrap">
             <div className="flex items-center gap-2">
               <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-brand-50 dark:bg-brand-500/10">
-                <Sparkles className="h-4 w-4 text-brand-500" />
+                <Sparkles className="h-4 w-4 text-brand-700 dark:text-brand-400" />
               </div>
               <div>
                 <CardTitle className="text-base">AI Recommendations</CardTitle>
@@ -459,7 +459,7 @@ export default function AdminForecastPage() {
               {aiData.insights && (
                 <div className="rounded-xl bg-brand-50 dark:bg-brand-500/10/60 border border-brand-200 p-3.5">
                   <div className="flex items-start gap-2">
-                    <Lightbulb className="h-4 w-4 text-brand-500 shrink-0 mt-0.5" />
+                    <Lightbulb className="h-4 w-4 text-brand-700 dark:text-brand-400 shrink-0 mt-0.5" />
                     <p className="text-sm text-foreground leading-relaxed">{aiData.insights}</p>
                   </div>
                 </div>
@@ -479,7 +479,7 @@ export default function AdminForecastPage() {
           <CardHeader className="pb-2">
             <div className="flex items-center gap-2">
               <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-brand-50 dark:bg-brand-500/10">
-                <Zap className="h-4 w-4 text-brand-500" />
+                <Zap className="h-4 w-4 text-brand-700 dark:text-brand-400" />
               </div>
               <div>
                 <CardTitle className="text-base">High Velocity Items</CardTitle>

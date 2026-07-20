@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import { useState, useEffect, useCallback } from "react";
 import Link from "next/link";
@@ -233,7 +233,7 @@ export default function DriverDeliveriesPage() {
                     </div>
                     <p className="text-sm font-bold text-foreground">{delivery.orderNumber}</p>
                   </div>
-                  <p className="text-sm font-black text-brand-500 shrink-0">{formatPHP(delivery.total)}</p>
+                  <p className="text-sm font-black text-brand-700 dark:text-brand-400 shrink-0">{formatPHP(delivery.total)}</p>
                 </div>
 
                 <div className="flex items-start gap-2 text-xs text-muted-foreground">

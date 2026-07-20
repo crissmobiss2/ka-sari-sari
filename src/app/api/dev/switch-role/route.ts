@@ -1,4 +1,4 @@
-import { NextRequest, NextResponse } from "next/server";
+﻿import { NextRequest, NextResponse } from "next/server";
 import { signToken, COOKIE_NAME, COOKIE_MAX_AGE } from "@/lib/auth";
 
 const MOCK_USERS = {

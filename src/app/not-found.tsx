@@ -1,11 +1,11 @@
-import Link from "next/link";
+﻿import Link from "next/link";
 import { PackageSearch } from "lucide-react";
 
 export default function NotFound() {
   return (
     <div className="min-h-screen bg-background flex flex-col items-center justify-center px-6 text-center">
       <div className="flex h-20 w-20 items-center justify-center rounded-3xl bg-brand-50 dark:bg-brand-500/10 mb-6">
-        <PackageSearch className="h-10 w-10 text-brand-500" />
+        <PackageSearch className="h-10 w-10 text-brand-700 dark:text-brand-400" />
       </div>
 
       <p className="text-sm font-bold tracking-widest text-brand-400 uppercase mb-3">404</p>

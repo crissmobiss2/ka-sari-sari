@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 import { useState, useMemo } from "react";
 import {
   Search, Plus, Minus, X, CheckCircle2, Printer,
@@ -216,7 +216,7 @@ export default function POSPage() {
             )}
             <div className="border-t border-border pt-2 flex justify-between text-base font-bold">
               <span>Total</span>
-              <span className="text-brand-500">{formatPHP(total)}</span>
+              <span className="text-brand-700 dark:text-brand-400">{formatPHP(total)}</span>
             </div>
             {payMethod === "cash" && change > 0 && (
               <div className="flex justify-between text-sm font-semibold text-success-600 dark:text-success-500">
@@ -290,7 +290,7 @@ export default function POSPage() {
         </div>
         <div className="hidden md:flex items-center gap-3 text-xs text-muted-foreground">
           <span>{new Date().toLocaleDateString("en-PH", { weekday: "short", month: "short", day: "numeric", year: "numeric" })}</span>
-          {cartCount > 0 && <span className="font-semibold text-brand-500">{cartCount} items · {formatPHP(total)}</span>}
+          {cartCount > 0 && <span className="font-semibold text-brand-700 dark:text-brand-400">{cartCount} items · {formatPHP(total)}</span>}
         </div>
       </header>
 
@@ -304,7 +304,7 @@ export default function POSPage() {
                 className="h-10 w-full rounded-xl border border-input bg-card pl-9 pr-12 text-sm focus:outline-none focus:ring-2 focus:ring-brand-500" />
               <button
                 onClick={() => setShowScanner(true)}
-                className="absolute right-2 top-1/2 -translate-y-1/2 flex h-7 w-7 items-center justify-center rounded-lg bg-surface-100 dark:bg-surface-800 text-muted-foreground hover:text-brand-500 hover:bg-brand-50 dark:bg-brand-500/10 transition-colors"
+                className="absolute right-2 top-1/2 -translate-y-1/2 flex h-7 w-7 items-center justify-center rounded-lg bg-surface-100 dark:bg-surface-800 text-muted-foreground hover:text-brand-600 hover:bg-brand-50 dark:bg-brand-500/10 transition-colors"
                 title="Scan barcode"
               >
                 <Camera className="h-4 w-4" />
@@ -339,7 +339,7 @@ export default function POSPage() {
                     <div className="p-2.5">
                       <p className="text-[11px] font-semibold text-foreground line-clamp-2 leading-tight min-h-[28px]">{product.name}</p>
                       <div className="flex items-baseline gap-1 mt-1">
-                        <p className="text-xs font-black text-brand-500">{formatPHP(product.price)}</p>
+                        <p className="text-xs font-black text-brand-700 dark:text-brand-400">{formatPHP(product.price)}</p>
                         {product.srp && product.srp > product.price && (
                           <p className="text-[10px] text-muted-foreground">SRP {formatPHP(product.srp)}</p>
                         )}
@@ -427,7 +427,7 @@ export default function POSPage() {
                 </div>
                 {discount > 0 && <div className="flex justify-between text-xs text-success-600 dark:text-success-500"><span>Discount</span><span>-{formatPHP(discount)}</span></div>}
                 <div className="flex justify-between text-sm font-bold text-foreground border-t border-border pt-1.5">
-                  <span>Total</span><span className="text-brand-500 text-base">{formatPHP(total)}</span>
+                  <span>Total</span><span className="text-brand-700 dark:text-brand-400 text-base">{formatPHP(total)}</span>
                 </div>
               </div>
             </div>

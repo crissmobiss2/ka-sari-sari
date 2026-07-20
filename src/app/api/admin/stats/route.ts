@@ -1,4 +1,4 @@
-import { NextRequest, NextResponse } from "next/server";
+﻿import { NextRequest, NextResponse } from "next/server";
 import { getSessionFromRequest } from "@/lib/auth";
 import { getAdminStats as getAdminStatsLegacy, getAllOrders } from "@/lib/db";
 import { getAdminStats } from "@/lib/supabase-db";

@@ -1,4 +1,4 @@
-import { SignJWT, jwtVerify, type JWTPayload } from "jose";
+﻿import { SignJWT, jwtVerify, type JWTPayload } from "jose";
 import type { NextRequest } from "next/server";
 
 function getSecret(): Uint8Array {

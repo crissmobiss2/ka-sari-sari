@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import { useState, useMemo, useEffect } from "react";
 import {
@@ -285,7 +285,7 @@ export default function NotificationsPage() {
           {unreadCount > 0 && (
             <button
               onClick={markAllRead}
-              className="flex items-center gap-1.5 text-sm text-brand-500 font-medium hover:text-brand-600 transition-colors"
+              className="flex items-center gap-1.5 text-sm text-brand-700 dark:text-brand-400 font-medium hover:text-brand-600 transition-colors"
             >
               <CheckCheck className="h-4 w-4" />
               Mark all read

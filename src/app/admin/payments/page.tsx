@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 import React, { useState, useMemo, useCallback } from "react";
 import {
   Download, Search, TrendingUp, TrendingDown,
@@ -608,7 +608,7 @@ export default function PaymentsPage() {
                           </button>
                         )}
                         <button
-                          className="text-brand-500 hover:text-brand-600"
+                          className="text-brand-700 dark:text-brand-400 hover:text-brand-600"
                           onClick={() => setSelected(tx)}
                         >
                           <ArrowUpRight className="h-4 w-4" />
@@ -668,7 +668,7 @@ export default function PaymentsPage() {
                 {
                   label: "Amount",
                   value: (
-                    <span className="font-bold text-brand-500 text-base">
+                    <span className="font-bold text-brand-700 dark:text-brand-400 text-base">
                       {formatPHP(selected.amount)}
                     </span>
                   ),

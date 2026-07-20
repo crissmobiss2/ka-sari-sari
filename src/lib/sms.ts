@@ -1,4 +1,4 @@
-// Semaphore SMS — PH-native SMS provider (Globe + Smart direct routing)
+﻿// Semaphore SMS — PH-native SMS provider (Globe + Smart direct routing)
 // Sign up at semaphore.co.ph — ₱0.50/SMS
 
 const SEMAPHORE_API = "https://api.semaphore.co.ph/api/v4";

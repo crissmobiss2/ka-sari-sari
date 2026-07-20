@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import { useState, useEffect } from "react";
 import {
@@ -441,14 +441,14 @@ export default function RouteMapPage() {
                         rel="noopener noreferrer"
                         className="flex flex-col items-center gap-1 rounded-xl bg-surface-100 dark:bg-surface-800 hover:bg-surface-200 px-2 py-2.5 text-xs font-semibold text-surface-900 transition-colors"
                       >
-                        <Navigation className="h-4 w-4 text-brand-500" />
+                        <Navigation className="h-4 w-4 text-brand-700 dark:text-brand-400" />
                         Navigate
                       </a>
                       <a
                         href={`tel:${stop.phone}`}
                         className="flex flex-col items-center gap-1 rounded-xl bg-surface-100 dark:bg-surface-800 hover:bg-surface-200 px-2 py-2.5 text-xs font-semibold text-surface-900 transition-colors"
                       >
-                        <Phone className="h-4 w-4 text-brand-500" />
+                        <Phone className="h-4 w-4 text-brand-700 dark:text-brand-400" />
                         Call
                       </a>
                       <button
@@ -512,7 +512,7 @@ export default function RouteMapPage() {
 
             <div className="flex items-center justify-between pt-2">
               <span className="font-bold text-foreground">Total to Remit</span>
-              <span className="font-black text-xl text-brand-500">{formatPHP(collectedCOD)}</span>
+              <span className="font-black text-xl text-brand-700 dark:text-brand-400">{formatPHP(collectedCOD)}</span>
             </div>
 
             <button

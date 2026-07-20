@@ -1,4 +1,4 @@
-import { NextRequest, NextResponse } from "next/server";
+﻿import { NextRequest, NextResponse } from "next/server";
 import { signToken, COOKIE_NAME, COOKIE_MAX_AGE } from "@/lib/auth";
 import { findUserByPhone, createUser } from "@/lib/supabase-db";
 import { findUserByPhone as legacyFind, createUser as legacyCreate } from "@/lib/db";

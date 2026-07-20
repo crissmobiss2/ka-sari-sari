@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 import { useState, useRef, useEffect } from "react";
 import {
   MessageCircle,
@@ -403,7 +403,7 @@ export default function SupportPage() {
               href="mailto:support@kasarisari.ph"
               className="flex flex-col items-center gap-2 rounded-2xl border border-border bg-card p-4 text-center shadow-card hover:bg-muted transition-colors"
             >
-              <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-brand-50 dark:bg-brand-500/10 text-brand-500">
+              <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-brand-50 dark:bg-brand-500/10 text-brand-700 dark:text-brand-400">
                 <Mail className="h-5 w-5" />
               </div>
               <p className="text-xs font-semibold text-foreground leading-tight">Email</p>
@@ -415,7 +415,7 @@ export default function SupportPage() {
               href={`tel:${phoneNumber}`}
               className="flex flex-col items-center gap-2 rounded-2xl border border-border bg-card p-4 text-center shadow-card hover:bg-muted transition-colors"
             >
-              <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-brand-50 dark:bg-brand-500/10 text-brand-500">
+              <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-brand-50 dark:bg-brand-500/10 text-brand-700 dark:text-brand-400">
                 <Phone className="h-5 w-5" />
               </div>
               <p className="text-xs font-semibold text-foreground leading-tight">Tumawag</p>

@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { Home, Package, Map, Wallet, User } from "lucide-react";
@@ -30,7 +30,7 @@ export function DriverBottomNav() {
               href={href}
               className={cn(
                 "flex-1 flex flex-col items-center justify-center gap-1 py-3 transition-colors",
-                active ? "text-brand-500" : "text-muted-foreground hover:text-brand-500"
+                active ? "text-brand-700 dark:text-brand-400" : "text-muted-foreground hover:text-brand-600"
               )}
             >
               <Icon className="w-5 h-5" />

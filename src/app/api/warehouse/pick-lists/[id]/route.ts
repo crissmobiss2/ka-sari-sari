@@ -1,4 +1,4 @@
-// GET/PATCH /api/warehouse/pick-lists/[id]
+﻿// GET/PATCH /api/warehouse/pick-lists/[id]
 import { NextRequest, NextResponse } from "next/server";
 import { getSessionFromRequest } from "@/lib/auth";
 import { updatePickListItem, completePickList, updateOrderStatus, createNotification } from "@/lib/supabase-db";

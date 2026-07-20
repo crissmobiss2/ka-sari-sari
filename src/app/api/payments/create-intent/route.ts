@@ -1,4 +1,4 @@
-// POST /api/payments/create-intent
+﻿// POST /api/payments/create-intent
 // Creates a PayMongo payment intent and returns the client key for the frontend
 import { NextRequest, NextResponse } from "next/server";
 import { getSessionFromRequest } from "@/lib/auth";

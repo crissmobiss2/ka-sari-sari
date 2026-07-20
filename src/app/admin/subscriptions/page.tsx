@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 import { useState, useEffect } from "react";
 import { CreditCard, CheckCircle2, Clock, XCircle } from "lucide-react";
 import { Card } from "@/components/ui/card";
@@ -90,7 +90,7 @@ export default function AdminSubscriptionsPage() {
                     <td className="px-5 py-3.5">
                       <p className="font-medium text-foreground">{sub.retailer}</p>
                       <p className="text-xs text-muted-foreground">{sub.store}</p>
-                      <p className="text-xs text-brand-500 font-medium mt-0.5">{sub.plan}</p>
+                      <p className="text-xs text-brand-700 dark:text-brand-400 font-medium mt-0.5">{sub.plan}</p>
                     </td>
                     <td className="px-5 py-3.5 text-xs text-muted-foreground hidden md:table-cell">
                       {sub.startDate ? `${formatDate(sub.startDate)} - ${formatDate(sub.endDate)}` : "-"}

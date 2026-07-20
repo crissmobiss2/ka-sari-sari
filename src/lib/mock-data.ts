@@ -1,4 +1,4 @@
-import type { Category, Product, Order, User, Notification, AdminStats, Supplier, Driver, Route, PurchaseOrder, Promotion, PickList, GoodsReceipt } from "@/types";
+﻿import type { Category, Product, Order, User, Notification, AdminStats, Supplier, Driver, Route, PurchaseOrder, Promotion, PickList, GoodsReceipt } from "@/types";
 
 export const CATEGORIES: Category[] = [
   { id: "cat-01", name: "Coffee & Creamer", slug: "coffee-creamer", productCount: 5, isActive: true, sortOrder: 1, description: "3-in-1 coffee, black coffee, creamers — Nescafé, Great Taste, Kopiko" },

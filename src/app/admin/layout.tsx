@@ -1,4 +1,4 @@
-import { AdminSidebar } from "@/components/layout/admin-sidebar";
+﻿import { AdminSidebar } from "@/components/layout/admin-sidebar";
 import { NexoflowFooter } from "@/components/ui/nexoflow-footer";
 
 export default function AdminLayout({ children }: { children: React.ReactNode }) {

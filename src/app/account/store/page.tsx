@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 import { useState, useMemo, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { Store, MapPin, Phone, ArrowLeft, CheckCircle2, ChevronDown, Search, AlertCircle } from "lucide-react";
@@ -125,7 +125,7 @@ export default function StoreProfilePage() {
             {/* Store info */}
             <div className="rounded-2xl border border-border bg-card shadow-card p-5 space-y-4">
               <div className="flex items-center gap-2 mb-1">
-                <Store className="h-4 w-4 text-brand-500" />
+                <Store className="h-4 w-4 text-brand-700 dark:text-brand-400" />
                 <h3 className="font-display text-sm font-semibold text-foreground">Store Information</h3>
               </div>
               <Input
@@ -153,7 +153,7 @@ export default function StoreProfilePage() {
             <div className="rounded-2xl border border-border bg-card shadow-card p-5 space-y-4">
               <div className="flex items-center justify-between mb-1">
                 <div className="flex items-center gap-2">
-                  <MapPin className="h-4 w-4 text-brand-500" />
+                  <MapPin className="h-4 w-4 text-brand-700 dark:text-brand-400" />
                   <h3 className="font-display text-sm font-semibold text-foreground">Delivery Address</h3>
                 </div>
                 {covered ? (

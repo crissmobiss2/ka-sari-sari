@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import { useState, useEffect, useRef } from "react";
 import Link from "next/link";
@@ -194,7 +194,7 @@ export default function DriverHomePage() {
           <SummaryCard
             label="COD to Collect"
             value={formatPHP(displayCodToCollect)}
-            valueClass="text-brand-500"
+            valueClass="text-brand-700 dark:text-brand-400"
             badge="cash"
             badgeVariant="default"
           />

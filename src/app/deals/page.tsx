@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 import { useState, useEffect } from "react";
 import Image from "next/image";
 import { Zap, Clock, Tag, ShoppingCart, Flame } from "lucide-react";
@@ -141,7 +141,7 @@ function DealCard({ deal }: { deal: Deal }) {
         </div>
       </div>
       <div className="p-3 flex-1 flex flex-col gap-1">
-        <span className="text-[10px] font-semibold text-brand-500 uppercase tracking-wide">{deal.dealLabel}</span>
+        <span className="text-[10px] font-semibold text-brand-700 dark:text-brand-400 uppercase tracking-wide">{deal.dealLabel}</span>
         <p className="text-sm font-semibold text-foreground leading-snug line-clamp-2">{deal.name}</p>
         <div className="flex items-baseline gap-1.5 mt-auto pt-1">
           <span className="text-base font-bold text-foreground">{formatPHP(deal.price)}</span>
@@ -248,7 +248,7 @@ export default function DealsPage() {
         <div>
           <div className="flex items-center justify-between mb-3">
             <h2 className="font-display text-base font-bold text-foreground flex items-center gap-2">
-              <Tag className="h-4 w-4 text-brand-500" />
+              <Tag className="h-4 w-4 text-brand-700 dark:text-brand-400" />
               All Deals
               <span className="text-xs font-normal text-muted-foreground">({filtered.length})</span>
             </h2>

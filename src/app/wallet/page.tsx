@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 import { useState, useEffect } from "react";
 import {
   Wallet, ArrowUpRight, ArrowDownLeft, Plus, CreditCard,
@@ -246,7 +246,7 @@ export default function WalletPage() {
             onClick={() => { setShowTopUp(true); setTopUpError(""); setIsCustomAmount(false); setCustomAmount(""); }}
             className="flex items-center gap-3 rounded-2xl border border-border bg-card shadow-card px-4 py-4 hover:border-brand-300 transition-colors active:scale-95"
           >
-            <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-brand-50 dark:bg-brand-500/10 text-brand-500">
+            <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-brand-50 dark:bg-brand-500/10 text-brand-700 dark:text-brand-400">
               <Plus className="h-5 w-5" />
             </div>
             <div className="text-left">
@@ -339,7 +339,7 @@ export default function WalletPage() {
                     <span className="text-lg">{m.icon}</span>
                     <span className="text-sm font-semibold text-foreground">{m.label}</span>
                     {selectedMethod === m.id && (
-                      <span className="ml-auto text-brand-500 text-xs font-bold">Selected</span>
+                      <span className="ml-auto text-brand-700 dark:text-brand-400 text-xs font-bold">Selected</span>
                     )}
                   </button>
                 ))}
@@ -407,7 +407,7 @@ export default function WalletPage() {
                       >
                         <span className="text-base">{m.icon}</span>
                         <span className="text-sm font-semibold text-foreground">{m.label}</span>
-                        {withdrawMethod === m.id && <CheckCircle2 className="ml-auto h-4 w-4 text-brand-500" />}
+                        {withdrawMethod === m.id && <CheckCircle2 className="ml-auto h-4 w-4 text-brand-700 dark:text-brand-400" />}
                       </button>
                     ))}
                   </div>

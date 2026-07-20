@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 import { useState, useMemo, useEffect } from "react";
 import Link from "next/link";
 import { Search, Download, ChevronLeft, ChevronRight } from "lucide-react";
@@ -189,7 +189,7 @@ export default function AdminOrdersPage() {
               {pageOrders.map((order) => (
                 <tr key={order.id} className="hover:bg-muted/30 transition-colors">
                   <td className="px-5 py-3.5">
-                    <Link href={`/admin/orders/${order.id}`} className="font-medium text-foreground hover:text-brand-500">
+                    <Link href={`/admin/orders/${order.id}`} className="font-medium text-foreground hover:text-brand-600">
                       {order.orderNumber}
                     </Link>
                   </td>
@@ -219,7 +219,7 @@ export default function AdminOrdersPage() {
                   <td className="px-5 py-3.5">
                     <Link
                       href={`/admin/orders/${order.id}`}
-                      className="text-xs text-brand-500 hover:text-brand-600 font-medium"
+                      className="text-xs text-brand-700 dark:text-brand-400 hover:text-brand-600 font-medium"
                     >
                       View
                     </Link>

@@ -1,4 +1,4 @@
-import { createClient, type SupabaseClient } from "@supabase/supabase-js";
+﻿import { createClient, type SupabaseClient } from "@supabase/supabase-js";
 
 // Lazy singletons — only instantiated when Supabase env vars are present.
 // Routes guard with !!process.env.NEXT_PUBLIC_SUPABASE_URL before calling these.

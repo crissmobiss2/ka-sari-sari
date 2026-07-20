@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 import { useEffect, useState } from "react";
 import { useSearchParams, useRouter } from "next/navigation";
 import { Suspense } from "react";
@@ -116,7 +116,7 @@ function ProcessingContent() {
         {STEPS.map((s, i) => (
           <span key={i} className={cn(
             "text-xs transition-colors duration-300",
-            i === step ? "text-brand-500 font-semibold" :
+            i === step ? "text-brand-700 dark:text-brand-400 font-semibold" :
             i < step ? "text-success-700 dark:text-foreground font-medium" :
             "text-muted-foreground/50"
           )}>

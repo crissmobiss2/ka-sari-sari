@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 import Link from "next/link";
 import { Heart, Package, ShoppingCart } from "lucide-react";
 import { RetailerTopBar, RetailerBottomNav } from "@/components/layout/retailer-nav";
@@ -42,7 +42,7 @@ export default function FavoritesPage() {
                 <div className="flex-1 min-w-0">
                   <p className="text-sm font-semibold text-foreground line-clamp-1">{product.name}</p>
                   <p className="text-xs text-muted-foreground">{product.brand}</p>
-                  <p className="text-sm font-bold text-brand-500 mt-1">{formatPHP(product.price)}</p>
+                  <p className="text-sm font-bold text-brand-700 dark:text-brand-400 mt-1">{formatPHP(product.price)}</p>
                 </div>
                 <div className="flex flex-col items-end gap-2 shrink-0">
                   <button
@@ -66,7 +66,7 @@ export default function FavoritesPage() {
 
           <Link
             href="/catalog"
-            className="block text-center text-sm text-brand-500 hover:text-brand-600 font-medium py-2"
+            className="block text-center text-sm text-brand-700 dark:text-brand-400 hover:text-brand-600 font-medium py-2"
           >
             Browse more products
           </Link>

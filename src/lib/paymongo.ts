@@ -1,4 +1,4 @@
-// PayMongo — BSP-licensed Philippine payment gateway
+﻿// PayMongo — BSP-licensed Philippine payment gateway
 // Supports: GCash, Maya, QRPh, Visa/MC, all major PH banks
 // Dashboard: dashboard.paymongo.com
 // Docs: developers.paymongo.com

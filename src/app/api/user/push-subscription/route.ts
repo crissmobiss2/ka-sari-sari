@@ -1,4 +1,4 @@
-// POST /api/user/push-subscription — save subscription
+﻿// POST /api/user/push-subscription — save subscription
 // DELETE /api/user/push-subscription — remove subscription
 import { NextRequest, NextResponse } from "next/server";
 import { getSessionFromRequest } from "@/lib/auth";

@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 import { useParams, useRouter } from "next/navigation";
 import { useState, useEffect } from "react";
 import Image from "next/image";
@@ -149,7 +149,7 @@ export default function ProductDetailPage() {
   if (loading) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-background">
-        <Loader2 className="h-8 w-8 animate-spin text-brand-500" />
+        <Loader2 className="h-8 w-8 animate-spin text-brand-700 dark:text-brand-400" />
       </div>
     );
   }
@@ -159,7 +159,7 @@ export default function ProductDetailPage() {
       <div className="min-h-screen flex flex-col items-center justify-center gap-4 bg-background px-4">
         <Package className="h-12 w-12 text-muted-foreground" />
         <p className="text-foreground font-semibold">Product not found</p>
-        <button onClick={() => router.back()} className="text-sm text-brand-500 underline">Go back</button>
+        <button onClick={() => router.back()} className="text-sm text-brand-700 dark:text-brand-400 underline">Go back</button>
       </div>
     );
   }
@@ -246,7 +246,7 @@ export default function ProductDetailPage() {
         <div>
           <div className="flex items-start justify-between gap-3 mb-2">
             <div className="flex-1">
-              <p className="text-xs font-semibold text-brand-500 uppercase tracking-wide mb-1">{product.brand}</p>
+              <p className="text-xs font-semibold text-brand-700 dark:text-brand-400 uppercase tracking-wide mb-1">{product.brand}</p>
               <h1 className="font-display text-xl font-bold text-foreground leading-tight">{product.name}</h1>
             </div>
           </div>
@@ -263,7 +263,7 @@ export default function ProductDetailPage() {
 
           {/* Price block */}
           <div className="mt-3 flex items-baseline gap-2 flex-wrap">
-            <span className="font-display text-3xl font-black text-brand-500">{formatPHP(product.price)}</span>
+            <span className="font-display text-3xl font-black text-brand-700 dark:text-brand-400">{formatPHP(product.price)}</span>
             {hasSrp && (
               <span className="text-base text-muted-foreground line-through">{formatPHP(product.srp!)}</span>
             )}
@@ -288,7 +288,7 @@ export default function ProductDetailPage() {
 
         {/* Min-order callout */}
         <div className="rounded-2xl border border-brand-200 bg-brand-50 dark:bg-brand-500/10 px-4 py-3 flex items-center gap-3">
-          <Tag className="h-5 w-5 text-brand-500 shrink-0" />
+          <Tag className="h-5 w-5 text-brand-700 dark:text-brand-400 shrink-0" />
           <div>
             <p className="text-xs font-bold text-brand-700 dark:text-brand-400 uppercase tracking-wide">Minimum Order</p>
             <p className="text-sm font-semibold text-brand-700 dark:text-brand-400">
@@ -386,7 +386,7 @@ export default function ProductDetailPage() {
             { icon: Package, label: "Bulk Savings" },
           ].map(({ icon: Icon, label }) => (
             <div key={label} className="flex flex-col items-center gap-1.5 rounded-xl border border-border bg-card py-3 px-2 text-center">
-              <Icon className="h-5 w-5 text-brand-500" />
+              <Icon className="h-5 w-5 text-brand-700 dark:text-brand-400" />
               <p className="text-[10px] font-medium text-muted-foreground leading-tight">{label}</p>
             </div>
           ))}

@@ -1,4 +1,4 @@
-// POST /api/payments/topup
+﻿// POST /api/payments/topup
 // Creates a PayMongo payment link for wallet top-up
 import { NextRequest, NextResponse } from "next/server";
 import { getSessionFromRequest } from "@/lib/auth";

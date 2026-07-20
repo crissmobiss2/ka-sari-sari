@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import { useState, useEffect } from "react";
 import {
@@ -527,7 +527,7 @@ function ReceiptCard({
                         <div className="flex items-center gap-2">
                           <button
                             onClick={onToggleManual}
-                            className="flex items-center gap-1.5 text-sm text-brand-500 font-medium py-1 px-2 rounded-lg hover:bg-brand-500/10 transition-colors"
+                            className="flex items-center gap-1.5 text-sm text-brand-700 dark:text-brand-400 font-medium py-1 px-2 rounded-lg hover:bg-brand-500/10 transition-colors"
                             title={form.manualMode ? "Switch to scanner" : "Switch to manual entry"}
                           >
                             {form.manualMode ? (

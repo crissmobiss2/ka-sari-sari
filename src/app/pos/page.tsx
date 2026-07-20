@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 import { useState, useMemo, useRef, useCallback, useEffect } from "react";
 import {
   Search, Plus, Minus, X, CheckCircle2, Printer,
@@ -210,7 +210,7 @@ export default function RetailerPOSPage() {
                 </div>
                 <div className="flex justify-between border-t border-border pt-2">
                   <span className="text-foreground font-semibold">Change</span>
-                  <span className="font-black text-brand-500">{formatPHP(change)}</span>
+                  <span className="font-black text-brand-700 dark:text-brand-400">{formatPHP(change)}</span>
                 </div>
               </>
             )}
@@ -251,7 +251,7 @@ export default function RetailerPOSPage() {
         </div>
         <button
           onClick={() => setShowScanner(true)}
-          className="flex h-8 w-8 items-center justify-center rounded-xl border border-border text-muted-foreground hover:text-brand-500 hover:border-brand-300 transition-colors"
+          className="flex h-8 w-8 items-center justify-center rounded-xl border border-border text-muted-foreground hover:text-brand-600 hover:border-brand-300 transition-colors"
           title="Scan barcode"
         >
           <Camera className="h-4 w-4" />
@@ -269,7 +269,7 @@ export default function RetailerPOSPage() {
           className={cn(
             "flex-1 py-2 text-xs font-semibold transition-colors",
             mobileView === "products"
-              ? "text-brand-500 border-b-2 border-brand-500"
+              ? "text-brand-700 dark:text-brand-400 border-b-2 border-brand-500"
               : "text-muted-foreground"
           )}
         >
@@ -280,7 +280,7 @@ export default function RetailerPOSPage() {
           className={cn(
             "flex-1 py-2 text-xs font-semibold transition-colors",
             mobileView === "cart"
-              ? "text-brand-500 border-b-2 border-brand-500"
+              ? "text-brand-700 dark:text-brand-400 border-b-2 border-brand-500"
               : "text-muted-foreground"
           )}
         >
@@ -314,7 +314,7 @@ export default function RetailerPOSPage() {
               />
               <button
                 onClick={() => setShowScanner(true)}
-                className="absolute right-2 top-1/2 -translate-y-1/2 flex h-6 w-6 items-center justify-center rounded-lg text-muted-foreground hover:text-brand-500 transition-colors"
+                className="absolute right-2 top-1/2 -translate-y-1/2 flex h-6 w-6 items-center justify-center rounded-lg text-muted-foreground hover:text-brand-600 transition-colors"
                 title="Scan barcode"
               >
                 <Camera className="h-3.5 w-3.5" />
@@ -378,7 +378,7 @@ export default function RetailerPOSPage() {
                     </div>
                     <div className="p-2">
                       <p className="text-[11px] font-semibold text-foreground line-clamp-2 leading-tight">{p.name}</p>
-                      <p className="text-xs font-black text-brand-500 mt-1">{formatPHP(p.srp ?? p.price)}</p>
+                      <p className="text-xs font-black text-brand-700 dark:text-brand-400 mt-1">{formatPHP(p.srp ?? p.price)}</p>
                     </div>
                   </button>
                 );
@@ -509,7 +509,7 @@ export default function RetailerPOSPage() {
                     <p className="text-sm text-muted-foreground">Tap a product to add it</p>
                     <button
                       onClick={() => { setMobileView("products"); setShowScanner(true); }}
-                      className="mt-3 flex items-center gap-1.5 text-xs text-brand-500 font-semibold md:hidden"
+                      className="mt-3 flex items-center gap-1.5 text-xs text-brand-700 dark:text-brand-400 font-semibold md:hidden"
                     >
                       <Camera className="h-3.5 w-3.5" />
                       Or scan a barcode

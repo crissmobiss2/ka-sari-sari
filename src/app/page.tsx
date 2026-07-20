@@ -1,4 +1,4 @@
-import Link from "next/link";
+﻿import Link from "next/link";
 import {
   ArrowRight, CheckCircle2, Package, Truck, BarChart3,
   ShoppingBasket, Store, Clock, Star, Shield, Zap,
@@ -59,7 +59,7 @@ export default function HomePage() {
           </div>
           <h1 className="font-display text-4xl sm:text-5xl lg:text-6xl font-bold text-foreground leading-tight tracking-tight">
             Order warehouse stock<br className="hidden sm:block" />{" "}
-            <span className="text-brand-500">without leaving your store.</span>
+            <span className="text-brand-700 dark:text-brand-400">without leaving your store.</span>
           </h1>
           <p className="mt-6 text-lg text-muted-foreground max-w-2xl mx-auto leading-relaxed">
             Ka Sari-Sari connects your sari-sari store directly to our warehouse.
@@ -98,14 +98,14 @@ export default function HomePage() {
       <section id="how-it-works" className="py-20 px-4">
         <div className="mx-auto max-w-6xl">
           <div className="text-center mb-14">
-            <p className="text-xs font-semibold uppercase tracking-widest text-brand-500 mb-2">Simple process</p>
+            <p className="text-xs font-semibold uppercase tracking-widest text-brand-700 dark:text-brand-400 mb-2">Simple process</p>
             <h2 className="font-display text-3xl font-bold text-foreground">Stock your store in 3 steps</h2>
           </div>
           <div className="grid md:grid-cols-3 gap-8">
             {HOW_IT_WORKS.map((step) => (
               <div key={step.step} className="relative flex flex-col items-start p-6 rounded-2xl border border-border bg-card shadow-card">
                 <div className="flex items-center gap-3 mb-4">
-                  <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-brand-50 dark:bg-brand-500/10 text-brand-500">
+                  <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-brand-50 dark:bg-brand-500/10 text-brand-700 dark:text-brand-400">
                     <step.icon className="h-5 w-5" />
                   </div>
                   <span className="font-display text-2xl font-bold text-surface-200 leading-none">{step.step}</span>
@@ -123,10 +123,10 @@ export default function HomePage() {
         <div className="mx-auto max-w-6xl">
           <div className="flex items-end justify-between mb-8">
             <div>
-              <p className="text-xs font-semibold uppercase tracking-widest text-brand-500 mb-1">What we carry</p>
+              <p className="text-xs font-semibold uppercase tracking-widest text-brand-700 dark:text-brand-400 mb-1">What we carry</p>
               <h2 className="font-display text-2xl font-bold text-foreground">Popular categories</h2>
             </div>
-            <Link href="/register" className="flex items-center gap-1 text-sm font-medium text-brand-500 hover:text-brand-600">
+            <Link href="/register" className="flex items-center gap-1 text-sm font-medium text-brand-700 dark:text-brand-400 hover:text-brand-600">
               See all <ChevronRight className="h-4 w-4" />
             </Link>
           </div>
@@ -134,7 +134,7 @@ export default function HomePage() {
             {CATEGORIES.slice(0, 8).map((cat) => (
               <div key={cat.id} className="flex items-center gap-3 rounded-2xl border border-border bg-card px-4 py-3.5 shadow-card hover:shadow-card-md transition-shadow cursor-pointer">
                 <div className="h-9 w-9 rounded-xl bg-brand-50 dark:bg-brand-500/10 flex items-center justify-center shrink-0">
-                  <Package className="h-4.5 w-4.5 text-brand-500" />
+                  <Package className="h-4.5 w-4.5 text-brand-700 dark:text-brand-400" />
                 </div>
                 <div>
                   <p className="text-sm font-semibold text-foreground">{cat.name}</p>
@@ -150,7 +150,7 @@ export default function HomePage() {
       <section className="py-20 px-4">
         <div className="mx-auto max-w-6xl">
           <div className="text-center mb-14">
-            <p className="text-xs font-semibold uppercase tracking-widest text-brand-500 mb-2">Why Ka Sari-Sari</p>
+            <p className="text-xs font-semibold uppercase tracking-widest text-brand-700 dark:text-brand-400 mb-2">Why Ka Sari-Sari</p>
             <h2 className="font-display text-3xl font-bold text-foreground">
               Everything your store needs, in one place
             </h2>
@@ -158,7 +158,7 @@ export default function HomePage() {
           <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
             {BENEFITS.map((b) => (
               <div key={b.title} className="flex gap-4 p-5 rounded-2xl border border-border bg-card shadow-card">
-                <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-brand-50 dark:bg-brand-500/10 text-brand-500">
+                <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-brand-50 dark:bg-brand-500/10 text-brand-700 dark:text-brand-400">
                   <b.icon className="h-5 w-5" />
                 </div>
                 <div>
@@ -174,12 +174,12 @@ export default function HomePage() {
       {/* Pricing */}
       <section id="pricing" className="py-20 px-4 bg-surface-50 dark:bg-surface-900">
         <div className="mx-auto max-w-xl text-center">
-          <p className="text-xs font-semibold uppercase tracking-widest text-brand-500 mb-2">Simple pricing</p>
+          <p className="text-xs font-semibold uppercase tracking-widest text-brand-700 dark:text-brand-400 mb-2">Simple pricing</p>
           <h2 className="font-display text-3xl font-bold text-surface-900 mb-4">Simple pricing. No surprises.</h2>
           <div className="rounded-2xl border border-border bg-card shadow-card-md p-8 text-left mt-8">
             <div className="flex items-start justify-between mb-2">
               <div>
-                <p className="font-display text-4xl font-bold text-brand-500">FREE</p>
+                <p className="font-display text-4xl font-bold text-brand-700 dark:text-brand-400">FREE</p>
                 <p className="text-sm text-muted-foreground mt-1">for your first year</p>
               </div>
               <span className="rounded-full bg-brand-50 dark:bg-brand-500/10 border border-brand-200 px-3 py-1 text-xs font-medium text-brand-600 dark:text-foreground">
@@ -215,7 +215,7 @@ export default function HomePage() {
       <section className="py-20 px-4">
         <div className="mx-auto max-w-6xl">
           <div className="text-center mb-14">
-            <p className="text-xs font-semibold uppercase tracking-widest text-brand-500 mb-2">Store owners love it</p>
+            <p className="text-xs font-semibold uppercase tracking-widest text-brand-700 dark:text-brand-400 mb-2">Store owners love it</p>
             <h2 className="font-display text-3xl font-bold text-foreground">What tinderas are saying</h2>
           </div>
           <div className="grid md:grid-cols-3 gap-6">

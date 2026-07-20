@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 import { useState, useEffect } from "react";
 import {
   Plus, X, Send, CheckCheck, Eye, Trash2, FileText,
@@ -178,7 +178,7 @@ function AutoPOModal({ onClose, onViewDrafts }: AutoPOModalProps) {
 
         {step === 1 && (
           <div className="flex flex-col items-center py-8 gap-5 text-center">
-            <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-brand-50 dark:bg-brand-500/10 text-brand-500">
+            <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-brand-50 dark:bg-brand-500/10 text-brand-700 dark:text-brand-400">
               <Loader2 className="h-7 w-7 animate-spin" />
             </div>
             <div>
@@ -392,7 +392,7 @@ function CreatePOModal({ onClose, onSubmit, initialSupplier = "", initialItems, 
               <p className="text-sm font-medium text-foreground">Items</p>
               <button
                 onClick={addItem}
-                className="flex items-center gap-1.5 text-xs text-brand-500 hover:text-brand-600 font-medium transition-colors"
+                className="flex items-center gap-1.5 text-xs text-brand-700 dark:text-brand-400 hover:text-brand-600 font-medium transition-colors"
               >
                 <Plus className="h-3.5 w-3.5" /> Add Item
               </button>

@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 import { useState, useMemo, useEffect } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
@@ -157,7 +157,7 @@ function FrequentlyReordered({
     <div className="rounded-2xl border border-border bg-card shadow-card overflow-hidden">
       {/* Header */}
       <div className="flex items-center gap-2 px-4 py-3 border-b border-border bg-surface-50 dark:bg-surface-900 dark:bg-surface-800">
-        <Star className="h-4 w-4 text-brand-500 fill-brand-500" />
+        <Star className="h-4 w-4 text-brand-700 dark:text-brand-400 fill-brand-500" />
         <span className="text-sm font-bold text-foreground">Frequently Reordered</span>
         <span className="ml-auto text-[11px] text-muted-foreground">{items.length} items</span>
       </div>
@@ -176,7 +176,7 @@ function FrequentlyReordered({
             </div>
             <button
               onClick={() => onAdd(item.productId, item.defaultQty, item.name)}
-              className="flex h-8 w-8 shrink-0 items-center justify-center rounded-xl border border-brand-200 bg-brand-50 dark:bg-brand-500/10 text-brand-500 hover:bg-brand-100 active:scale-90 transition-all"
+              className="flex h-8 w-8 shrink-0 items-center justify-center rounded-xl border border-brand-200 bg-brand-50 dark:bg-brand-500/10 text-brand-700 dark:text-brand-400 hover:bg-brand-100 active:scale-90 transition-all"
               aria-label={`Add ${item.name} to cart`}
             >
               <Plus className="h-4 w-4" />
@@ -247,7 +247,7 @@ function OrderCard({
               {selectionMode && (
                 <button
                   onClick={() => onToggleItem(key)}
-                  className="shrink-0 text-brand-500 hover:text-brand-600 active:scale-90 transition-all"
+                  className="shrink-0 text-brand-700 dark:text-brand-400 hover:text-brand-600 active:scale-90 transition-all"
                   aria-label={checked ? "Deselect item" : "Select item"}
                 >
                   {checked ? (
@@ -276,7 +276,7 @@ function OrderCard({
                       addItem(product, item.qty);
                     }
                   }}
-                  className="flex h-8 w-8 shrink-0 items-center justify-center rounded-xl border border-brand-200 bg-brand-50 dark:bg-brand-500/10 text-brand-500 hover:bg-brand-100 active:scale-90 transition-all"
+                  className="flex h-8 w-8 shrink-0 items-center justify-center rounded-xl border border-brand-200 bg-brand-50 dark:bg-brand-500/10 text-brand-700 dark:text-brand-400 hover:bg-brand-100 active:scale-90 transition-all"
                   aria-label={`Add ${item.name} to cart`}
                 >
                   <Plus className="h-4 w-4" />
@@ -551,7 +551,7 @@ export default function ReorderPage() {
         <div className="flex items-start justify-between">
           <div>
             <h1 className="font-display text-xl font-bold text-foreground flex items-center gap-2">
-              <RotateCcw className="h-5 w-5 text-brand-500" />
+              <RotateCcw className="h-5 w-5 text-brand-700 dark:text-brand-400" />
               Quick Reorder
             </h1>
             <p className="text-sm text-muted-foreground mt-0.5">Your past orders, ready to repeat</p>
@@ -581,7 +581,7 @@ export default function ReorderPage() {
         {/* Tip banner */}
         {!selectionMode && (
           <div className="rounded-xl border border-brand-200 bg-brand-50 dark:bg-brand-500/10 px-4 py-3 flex items-center gap-3">
-            <span className="text-brand-500 shrink-0">
+            <span className="text-brand-700 dark:text-brand-400 shrink-0">
               <ShoppingCart className="h-4 w-4" />
             </span>
             <p className="text-xs text-brand-700 dark:text-brand-400 font-medium">
@@ -639,7 +639,7 @@ export default function ReorderPage() {
             className="flex items-center justify-between rounded-2xl border border-border bg-card shadow-card px-5 py-4 hover:border-brand-300 active:scale-[0.99] transition-all"
           >
             <div className="flex items-center gap-3">
-              <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-brand-50 dark:bg-brand-500/10 text-brand-500">
+              <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-brand-50 dark:bg-brand-500/10 text-brand-700 dark:text-brand-400">
                 <ShoppingCart className="h-5 w-5" />
               </div>
               <div>

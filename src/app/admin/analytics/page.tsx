@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import { useMemo } from "react";
 import { TrendingUp, Users, ShoppingCart, Package, Download, FileDown, ArrowUpRight, ArrowDownRight, Zap, Star } from "lucide-react";
@@ -491,7 +491,7 @@ export default function AdminAnalyticsPage() {
       <Card>
         <CardHeader className="pb-2">
           <div className="flex items-center gap-2">
-            <Zap className="h-4 w-4 text-brand-500" />
+            <Zap className="h-4 w-4 text-brand-700 dark:text-brand-400" />
             <CardTitle>Sales Velocity</CardTitle>
           </div>
           <p className="text-xs text-muted-foreground mt-0.5">Orders per day · computed from order dates</p>

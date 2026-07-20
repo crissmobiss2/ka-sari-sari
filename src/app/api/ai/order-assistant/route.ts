@@ -1,4 +1,4 @@
-// POST /api/ai/order-assistant — Claude AI Taglish order parsing + suggestions
+﻿// POST /api/ai/order-assistant — Claude AI Taglish order parsing + suggestions
 import { NextRequest, NextResponse } from "next/server";
 import { getSessionFromRequest } from "@/lib/auth";
 import { getProducts } from "@/lib/supabase-db";

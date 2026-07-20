@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import {
@@ -36,7 +36,7 @@ export function RetailerBottomNav() {
               href={href}
               className={cn(
                 "relative flex flex-col items-center gap-0.5 px-1 py-2 rounded-xl transition-colors flex-1 min-w-0",
-                active ? "text-brand-500" : "text-muted-foreground hover:text-foreground"
+                active ? "text-brand-700 dark:text-brand-400" : "text-muted-foreground hover:text-foreground"
               )}
             >
               <div className="relative">
@@ -47,7 +47,7 @@ export function RetailerBottomNav() {
                   </span>
                 )}
               </div>
-              <span className={cn("text-[10px] font-medium", active ? "text-brand-500" : "text-muted-foreground")}>
+              <span className={cn("text-[10px] font-medium", active ? "text-brand-700 dark:text-brand-400" : "text-muted-foreground")}>
                 {label}
               </span>
             </Link>
@@ -100,7 +100,7 @@ export function RetailerTopBar({ title }: { title?: string }) {
                 className={cn(
                   "flex items-center gap-1.5 px-3 py-2 rounded-lg text-sm font-medium transition-colors",
                   active
-                    ? "bg-brand-500/10 text-brand-500"
+                    ? "bg-brand-500/10 text-brand-700 dark:text-brand-400"
                     : "text-muted-foreground hover:text-foreground hover:bg-muted"
                 )}
               >
@@ -122,7 +122,7 @@ export function RetailerTopBar({ title }: { title?: string }) {
             title={lang === "tl" ? "Switch to English" : "Switch to Filipino"}
             className={cn(
               "flex h-9 w-9 items-center justify-center rounded-xl hover:bg-muted transition-colors text-xs font-bold",
-              lang === "tl" ? "text-brand-500" : "text-muted-foreground"
+              lang === "tl" ? "text-brand-700 dark:text-brand-400" : "text-muted-foreground"
             )}
           >
             {lang === "tl" ? "TL" : "EN"}

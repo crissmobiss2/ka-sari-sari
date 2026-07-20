@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import {
@@ -173,7 +173,7 @@ export default function CheckoutPage() {
         <div className="rounded-2xl border border-border bg-card shadow-card p-5">
           <div className="flex items-center justify-between mb-3">
             <div className="flex items-center gap-2">
-              <MapPin className="h-4 w-4 text-brand-500" />
+              <MapPin className="h-4 w-4 text-brand-700 dark:text-brand-400" />
               <h3 className="font-display text-sm font-semibold text-foreground">Delivery Address</h3>
             </div>
             {!editingAddress && (
@@ -182,7 +182,7 @@ export default function CheckoutPage() {
                   setDraftAddress(address);
                   setEditingAddress(true);
                 }}
-                className="text-xs text-brand-500 font-medium hover:text-brand-600 transition-colors"
+                className="text-xs text-brand-700 dark:text-brand-400 font-medium hover:text-brand-600 transition-colors"
               >
                 Change
               </button>
@@ -265,7 +265,7 @@ export default function CheckoutPage() {
         {/* ── Section C: Payment Method ── */}
         <div className="rounded-2xl border border-border bg-card shadow-card p-5 space-y-3">
           <div className="flex items-center gap-2">
-            <CreditCard className="h-4 w-4 text-brand-500" />
+            <CreditCard className="h-4 w-4 text-brand-700 dark:text-brand-400" />
             <h3 className="font-display text-sm font-semibold text-foreground">Payment Method</h3>
           </div>
 
@@ -340,7 +340,7 @@ export default function CheckoutPage() {
           </div>
           <div className="border-t border-border pt-2.5 flex justify-between text-base font-bold text-foreground">
             <span>Total</span>
-            <span className="text-brand-500">{formatPHP(total)}</span>
+            <span className="text-brand-700 dark:text-brand-400">{formatPHP(total)}</span>
           </div>
         </div>
 

@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 import { forwardRef } from "react";
 import Link from "next/link";
 import { cva, type VariantProps } from "class-variance-authority";
@@ -14,7 +14,7 @@ const buttonVariants = cva(
         ghost:     "hover:bg-muted text-foreground",
         secondary: "bg-surface-100 dark:bg-surface-800 text-surface-700 hover:bg-surface-200",
         danger:    "bg-danger-600 text-white hover:bg-danger-700",
-        link:      "text-brand-500 underline-offset-4 hover:underline p-0 h-auto",
+        link:      "text-brand-700 dark:text-brand-400 underline-offset-4 hover:underline p-0 h-auto",
       },
       size: {
         sm:   "h-8 px-3 text-sm",

@@ -1,4 +1,4 @@
-// Nexoflow City Partners — 137 cities across Luzon, Visayas & Mindanao
+﻿// Nexoflow City Partners — 137 cities across Luzon, Visayas & Mindanao
 // Source: Nexoflow City Partners document
 
 export type Island = "Luzon" | "Visayas" | "Mindanao";

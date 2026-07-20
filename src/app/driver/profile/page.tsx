@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
@@ -121,7 +121,7 @@ export default function ProfilePage() {
             <p className="text-2xs text-muted-foreground uppercase tracking-wide font-medium text-center">Total Deliveries</p>
           </div>
           <div className="flex flex-col items-center gap-1 px-3">
-            <p className="font-display text-xl font-bold text-brand-500 tabular-nums">{driver.deliveriesToday}</p>
+            <p className="font-display text-xl font-bold text-brand-700 dark:text-brand-400 tabular-nums">{driver.deliveriesToday}</p>
             <p className="text-2xs text-muted-foreground uppercase tracking-wide font-medium text-center">Today</p>
           </div>
           <div className="flex flex-col items-center gap-1 px-3">

@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 import { useState, useEffect } from "react";
 import { Crown, Star, Gift, Users, Copy, CheckCircle2, ChevronRight } from "lucide-react";
 import { RetailerTopBar, RetailerBottomNav } from "@/components/layout/retailer-nav";
@@ -167,7 +167,7 @@ export default function LoyaltyPage() {
         {/* Header */}
         <div>
           <h1 className="font-display text-xl font-bold text-foreground flex items-center gap-2">
-            <Crown className="h-5 w-5 text-brand-500" />
+            <Crown className="h-5 w-5 text-brand-700 dark:text-brand-400" />
             Rewards &amp; Loyalty
           </h1>
           <p className="text-sm text-muted-foreground mt-0.5">Earn points with every order</p>
@@ -259,7 +259,7 @@ export default function LoyaltyPage() {
                     )}>
                       <ChevronRight className={cn(
                         "h-3.5 w-3.5 mt-0.5 shrink-0",
-                        tier.current ? "text-brand-500" : "text-muted-foreground/50"
+                        tier.current ? "text-brand-700 dark:text-brand-400" : "text-muted-foreground/50"
                       )} />
                       {perk}
                     </li>
@@ -273,7 +273,7 @@ export default function LoyaltyPage() {
         {/* Points history */}
         <div>
           <h2 className="font-display text-sm font-bold text-foreground mb-3 flex items-center gap-2">
-            <Star className="h-4 w-4 text-brand-500" />
+            <Star className="h-4 w-4 text-brand-700 dark:text-brand-400" />
             Points History
           </h2>
           <div className="rounded-2xl border border-border bg-card shadow-card overflow-hidden divide-y divide-border">
@@ -285,7 +285,7 @@ export default function LoyaltyPage() {
                 )}>
                   {entry.type === "earn"
                     ? <Star className="h-4 w-4 text-success-700 dark:text-foreground" />
-                    : <Gift className="h-4 w-4 text-brand-500" />}
+                    : <Gift className="h-4 w-4 text-brand-700 dark:text-brand-400" />}
                 </div>
                 <div className="flex-1 min-w-0">
                   <p className="text-sm font-medium text-foreground truncate">{entry.label}</p>
@@ -293,7 +293,7 @@ export default function LoyaltyPage() {
                 </div>
                 <span className={cn(
                   "text-sm font-black tabular-nums shrink-0",
-                  entry.type === "earn" ? "text-success-700 dark:text-foreground" : "text-brand-500"
+                  entry.type === "earn" ? "text-success-700 dark:text-foreground" : "text-brand-700 dark:text-brand-400"
                 )}>
                   {entry.type === "earn" ? "+" : "−"}{entry.pts} pts
                 </span>
@@ -305,13 +305,13 @@ export default function LoyaltyPage() {
         {/* How to earn */}
         <div>
           <h2 className="font-display text-sm font-bold text-foreground mb-3 flex items-center gap-2">
-            <Gift className="h-4 w-4 text-brand-500" />
+            <Gift className="h-4 w-4 text-brand-700 dark:text-brand-400" />
             How to Earn Points
           </h2>
           <div className="rounded-2xl border border-border bg-card shadow-card divide-y divide-border overflow-hidden">
             {HOW_TO_EARN.map(({ icon: Icon, text }) => (
               <div key={text} className="flex items-center gap-3 px-4 py-3.5">
-                <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-brand-50 dark:bg-brand-500/10 text-brand-500">
+                <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-brand-50 dark:bg-brand-500/10 text-brand-700 dark:text-brand-400">
                   <Icon className="h-4 w-4" />
                 </div>
                 <p className="text-sm text-foreground">{text}</p>
@@ -323,7 +323,7 @@ export default function LoyaltyPage() {
         {/* Referral */}
         <div className="rounded-2xl border border-border bg-card shadow-card p-5">
           <div className="flex items-center gap-2 mb-1">
-            <Users className="h-4 w-4 text-brand-500" />
+            <Users className="h-4 w-4 text-brand-700 dark:text-brand-400" />
             <h2 className="font-display text-sm font-bold text-foreground">Refer a Friend</h2>
           </div>
           <p className="text-xs text-muted-foreground mb-4">

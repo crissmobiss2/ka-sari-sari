@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import { useState, useEffect } from "react";
 import Link from "next/link";
@@ -227,7 +227,7 @@ export default function WarehouseDashboard() {
       {/* KPI stats */}
       <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
         {[
-          { label: "Open Pick Lists", value: openPickLists, icon: ClipboardList, color: "text-brand-500", bg: "bg-brand-500/10" },
+          { label: "Open Pick Lists", value: openPickLists, icon: ClipboardList, color: "text-brand-700 dark:text-brand-400", bg: "bg-brand-500/10" },
           { label: "Items to Pick",   value: itemsToPick,   icon: ScanLine,       color: "text-blue-500",  bg: "bg-blue-500/10" },
           { label: "Receiving Queue", value: receivingQueue, icon: PackageCheck,  color: "text-warning-700 dark:text-foreground",bg: "bg-warning-50 dark:bg-warning-500/10" },
           { label: "Completed Today", value: completedToday, icon: CheckCircle2,  color: "text-success-700 dark:text-foreground",bg: "bg-success-50 dark:bg-success-500/10" },
@@ -279,7 +279,7 @@ export default function WarehouseDashboard() {
       {TRANSFER_REQUESTS.length > 0 && (
         <div className="space-y-2">
           <h2 className="font-display text-base font-semibold text-foreground flex items-center gap-2">
-            <ArrowRightLeft className="h-4 w-4 text-brand-500" />
+            <ArrowRightLeft className="h-4 w-4 text-brand-700 dark:text-brand-400" />
             Transfer Requests
           </h2>
           {TRANSFER_REQUESTS.map((t, i) => {
@@ -342,7 +342,7 @@ export default function WarehouseDashboard() {
                   {pl.status === "completed"
                     ? <CheckCircle2 className="h-4 w-4 text-success-700 dark:text-foreground" />
                     : pl.status === "in_progress"
-                    ? <ScanLine className="h-4 w-4 text-brand-500" />
+                    ? <ScanLine className="h-4 w-4 text-brand-700 dark:text-brand-400" />
                     : <ClipboardList className="h-4 w-4 text-muted-foreground" />}
                 </div>
                 <div className="flex-1 min-w-0">
@@ -358,7 +358,7 @@ export default function WarehouseDashboard() {
             ))}
           </CardContent>
         </Card>
-        <Link href="/warehouse/picking" className="flex items-center justify-center gap-1 text-sm text-brand-500 font-medium py-1">
+        <Link href="/warehouse/picking" className="flex items-center justify-center gap-1 text-sm text-brand-700 dark:text-brand-400 font-medium py-1">
           View all pick lists <ChevronRight className="h-4 w-4" />
         </Link>
       </div>

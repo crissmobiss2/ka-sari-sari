@@ -1,4 +1,4 @@
-// POST /api/upload — Vercel Blob image upload for products and POD photos
+﻿// POST /api/upload — Vercel Blob image upload for products and POD photos
 import { NextRequest, NextResponse } from "next/server";
 import { getSessionFromRequest } from "@/lib/auth";
 import { put } from "@vercel/blob";

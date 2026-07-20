@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 import { useState, useEffect, useRef, useCallback } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
@@ -378,7 +378,7 @@ export default function ChatPage() {
             ))}
             <div className="px-3 py-2 border-t border-border flex justify-between bg-surface-50 dark:bg-surface-900">
               <span className="text-sm font-bold">Total</span>
-              <span className="text-sm font-bold text-brand-500">₱{cartTotal.toLocaleString()}</span>
+              <span className="text-sm font-bold text-brand-700 dark:text-brand-400">₱{cartTotal.toLocaleString()}</span>
             </div>
             <div className="p-2">
               <Link
@@ -445,7 +445,7 @@ export default function ChatPage() {
             {aiParsedOrder.totalEstimate > 0 && (
               <div className="flex justify-between border-t border-success-200 pt-2">
                 <span className="text-sm font-semibold text-foreground">Estimated Total</span>
-                <span className="text-sm font-bold text-brand-500">
+                <span className="text-sm font-bold text-brand-700 dark:text-brand-400">
                   ₱{aiParsedOrder.totalEstimate.toLocaleString()}
                 </span>
               </div>
@@ -555,7 +555,7 @@ export default function ChatPage() {
         </div>
 
         {isListening && (
-          <p className="text-xs text-brand-500 text-center font-medium animate-pulse">
+          <p className="text-xs text-brand-700 dark:text-brand-400 text-center font-medium animate-pulse">
             🎤 Nakikinig... Magsalita na po
           </p>
         )}

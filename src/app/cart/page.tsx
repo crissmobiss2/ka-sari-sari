@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 import { useState, useEffect } from "react";
 import Image from "next/image";
 import { Minus, Plus, Trash2, ShoppingCart, ArrowRight, Truck, Gift } from "lucide-react";
@@ -116,7 +116,7 @@ export default function CartPage() {
               <div key={product.id} className="flex items-center gap-3 px-4 py-3.5">
                 <ProductThumb product={product} />
                 <div className="flex-1 min-w-0">
-                  <p className="text-[11px] font-semibold text-brand-500 uppercase tracking-wide">{product.brand}</p>
+                  <p className="text-[11px] font-semibold text-brand-700 dark:text-brand-400 uppercase tracking-wide">{product.brand}</p>
                   <p className="text-sm font-semibold text-foreground leading-snug line-clamp-1">{product.name}</p>
                   <p className="text-xs text-muted-foreground">{formatPHP(product.price)} each</p>
                   <div className="flex items-center gap-2 mt-2">
@@ -167,7 +167,7 @@ export default function CartPage() {
               </div>
               <div className="border-t border-border pt-2 flex justify-between font-bold text-foreground text-base">
                 <span>Total</span>
-                <span className="text-brand-500">{formatPHP(total)}</span>
+                <span className="text-brand-700 dark:text-brand-400">{formatPHP(total)}</span>
               </div>
             </div>
           </div>

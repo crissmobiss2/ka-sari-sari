@@ -1,4 +1,4 @@
-// ─── User & Auth ─────────────────────────────────────────────────────────────
+﻿// ─── User & Auth ─────────────────────────────────────────────────────────────
 
 export type UserRole = "retailer" | "admin" | "warehouse" | "driver" | "super_admin";
 

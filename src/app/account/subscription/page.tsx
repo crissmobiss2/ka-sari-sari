@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
@@ -144,7 +144,7 @@ export default function SubscriptionPage() {
         {!loading && sub && sub.plan !== "free_trial" && (
           <div className="rounded-2xl border border-brand-200 bg-brand-50 dark:bg-brand-500/10 p-5 space-y-3">
             <div className="flex items-start gap-2">
-              <Clock className="h-4 w-4 text-brand-500 mt-0.5 shrink-0" />
+              <Clock className="h-4 w-4 text-brand-700 dark:text-brand-400 mt-0.5 shrink-0" />
               <p className="text-sm text-brand-700 dark:text-foreground">
                 Your subscription renews on <span className="font-semibold">{sub.renewalDate}</span>.
                 Renew early to avoid any interruption.
@@ -160,7 +160,7 @@ export default function SubscriptionPage() {
         {!loading && sub && sub.plan === "free_trial" && (
           <div className="rounded-2xl border border-brand-200 bg-brand-50 dark:bg-brand-500/10 p-5 space-y-2">
             <div className="flex items-start gap-2">
-              <Clock className="h-4 w-4 text-brand-500 mt-0.5 shrink-0" />
+              <Clock className="h-4 w-4 text-brand-700 dark:text-brand-400 mt-0.5 shrink-0" />
               <p className="text-sm text-brand-700 dark:text-foreground">
                 Your free trial runs until <span className="font-semibold">{sub.renewalDate}</span>.
                 After that, ₱200/month keeps your store active.

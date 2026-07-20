@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import { useState, useEffect, useRef } from "react";
 import { ScanLine, ChevronRight, CheckCircle2, Clock, Package, ChevronDown, Camera } from "lucide-react";
@@ -46,7 +46,7 @@ function getTotalCount(pl: PickList) {
 function StatusBanner({ status }: { status: PickList["status"] }) {
   if (status === "open") {
     return (
-      <div className="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-brand-500/10 text-brand-500 text-sm font-semibold w-fit">
+      <div className="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-brand-500/10 text-brand-700 dark:text-brand-400 text-sm font-semibold w-fit">
         <Package className="h-4 w-4" />
         Open
       </div>

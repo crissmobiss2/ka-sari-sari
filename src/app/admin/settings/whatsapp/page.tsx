@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import { useState, useEffect } from "react";
 import { Eye, EyeOff, Wifi, WifiOff, CheckCircle2, AlertTriangle, RefreshCw, RotateCcw } from "lucide-react";

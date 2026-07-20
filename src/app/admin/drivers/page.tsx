@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 // v2
 import { useState } from "react";
 import {
@@ -248,7 +248,7 @@ export default function AdminDriversPage() {
 
       {/* Stats */}
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
-        <StatCard icon={Truck} value={onRoute} label="On Route" color="bg-brand-50 dark:bg-brand-500/10 text-brand-500" />
+        <StatCard icon={Truck} value={onRoute} label="On Route" color="bg-brand-50 dark:bg-brand-500/10 text-brand-700 dark:text-brand-400" />
         <StatCard icon={CheckCircle2} value={available} label="Available" color="bg-success-50 dark:bg-success-500/10 text-success-500" />
         <StatCard icon={Clock} value={offDuty} label="Off Duty" color="bg-surface-100 dark:bg-surface-800 text-muted-foreground" />
         <StatCard icon={TrendingUp} value={deliveriesToday} label="Deliveries Today" color="bg-info-50 dark:bg-info-500/10 text-info-500" />
@@ -310,7 +310,7 @@ export default function AdminDriversPage() {
               {/* Assigned route */}
               {assignedRoute && (
                 <div className="flex items-center gap-1.5 rounded-lg bg-brand-50 dark:bg-brand-500/10 border border-brand-100 px-2.5 py-1.5">
-                  <Navigation className="h-3 w-3 text-brand-500 shrink-0" />
+                  <Navigation className="h-3 w-3 text-brand-700 dark:text-brand-400 shrink-0" />
                   <span className="text-xs text-brand-700 dark:text-foreground font-medium truncate">{assignedRoute.name}</span>
                 </div>
               )}
@@ -350,7 +350,7 @@ export default function AdminDriversPage() {
       {/* Performance Table */}
       <Card>
         <div className="p-5 pb-3 border-b border-border flex items-center gap-2">
-          <TrendingUp className="h-4 w-4 text-brand-500" />
+          <TrendingUp className="h-4 w-4 text-brand-700 dark:text-brand-400" />
           <h2 className="font-display font-semibold text-sm text-foreground">Performance Overview</h2>
         </div>
         <div className="overflow-x-auto">
@@ -525,10 +525,10 @@ export default function AdminDriversPage() {
               const assignedRoute = routes.find((r) => r.assignedTo === viewDriver.id);
               return assignedRoute ? (
                 <div className="flex items-center gap-2 rounded-xl bg-brand-50 dark:bg-brand-500/10 border border-brand-100 px-4 py-3">
-                  <Navigation className="h-4 w-4 text-brand-500 shrink-0" />
+                  <Navigation className="h-4 w-4 text-brand-700 dark:text-brand-400 shrink-0" />
                   <div>
                     <p className="text-sm font-semibold text-brand-700 dark:text-foreground">{assignedRoute.name}</p>
-                    <p className="text-xs text-brand-500">{assignedRoute.stops} stops · ~{assignedRoute.estimatedHours}h</p>
+                    <p className="text-xs text-brand-700 dark:text-brand-400">{assignedRoute.stops} stops · ~{assignedRoute.estimatedHours}h</p>
                   </div>
                 </div>
               ) : (

@@ -1,4 +1,4 @@
-// GET /api/admin/forecast — Claude AI demand forecasting
+﻿// GET /api/admin/forecast — Claude AI demand forecasting
 import { NextRequest, NextResponse } from "next/server";
 import { getSessionFromRequest } from "@/lib/auth";
 import { supabaseAdmin } from "@/lib/supabase";

@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 import { useState, useEffect, useRef } from "react";
 import Link from "next/link";
 import {
@@ -79,7 +79,7 @@ function LiveLocationSection({ location }: { location: DriverLocation | null }) 
     <div className="mx-4 rounded-2xl border border-border bg-card shadow-card overflow-hidden">
       <div className="px-4 py-2.5 border-b border-border flex items-center justify-between">
         <div className="flex items-center gap-2">
-          <MapPin className="h-3.5 w-3.5 text-brand-500" />
+          <MapPin className="h-3.5 w-3.5 text-brand-700 dark:text-brand-400" />
           <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wide">Driver GPS</p>
         </div>
         <div className="flex items-center gap-1.5">
@@ -105,7 +105,7 @@ function LiveLocationSection({ location }: { location: DriverLocation | null }) 
       ) : (
         <div className="p-4 space-y-3">
           <div className="flex items-start gap-3 rounded-xl bg-surface-50 dark:bg-surface-900 border border-border px-4 py-3">
-            <MapPin className="h-4 w-4 text-brand-500 shrink-0 mt-0.5" />
+            <MapPin className="h-4 w-4 text-brand-700 dark:text-brand-400 shrink-0 mt-0.5" />
             <div className="min-w-0">
               <p className="text-xs font-semibold text-surface-900">Current GPS Coordinates</p>
               <p className="text-xs text-muted-foreground font-mono mt-0.5">
@@ -375,7 +375,7 @@ function StopsBreakdown() {
   return (
     <div className="mx-4 rounded-2xl border border-border bg-card overflow-hidden shadow-card">
       <div className="px-4 py-3 border-b border-border flex items-center gap-2">
-        <MapPin className="h-3.5 w-3.5 text-brand-500" />
+        <MapPin className="h-3.5 w-3.5 text-brand-700 dark:text-brand-400" />
         <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wide">Route Breakdown</p>
       </div>
       <div className="divide-y divide-border">
@@ -411,7 +411,7 @@ function StopsBreakdown() {
                 </p>
                 <span className={cn("text-[11px] shrink-0 tabular-nums font-medium",
                   stop.status === "done"    ? "text-success-700 dark:text-foreground" :
-                  stop.status === "current" ? "text-brand-500" : "text-muted-foreground"
+                  stop.status === "current" ? "text-brand-700 dark:text-brand-400" : "text-muted-foreground"
                 )}>
                   {stop.eta}
                 </span>
@@ -446,7 +446,7 @@ function LiveUpdates({ extraUpdates = [] }: { extraUpdates?: typeof INITIAL_UPDA
     <div className="mx-4 rounded-2xl border border-border bg-card overflow-hidden shadow-card">
       <div className="px-4 py-3 border-b border-border flex items-center justify-between">
         <div className="flex items-center gap-2">
-          <Radio className="h-3.5 w-3.5 text-brand-500" />
+          <Radio className="h-3.5 w-3.5 text-brand-700 dark:text-brand-400" />
           <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wide">Live Updates</p>
         </div>
         <span className="text-[10px] text-muted-foreground">{updates.length} updates</span>
@@ -680,7 +680,7 @@ export default function TrackingPage() {
         {/* Order summary */}
         <div className="mx-4 rounded-2xl border border-border bg-card overflow-hidden shadow-card">
           <div className="px-4 py-3 border-b border-border flex items-center gap-2">
-            <Package className="h-4 w-4 text-brand-500" />
+            <Package className="h-4 w-4 text-brand-700 dark:text-brand-400" />
             <p className="text-sm font-semibold text-foreground">Order Summary</p>
           </div>
           <div className="divide-y divide-border">
@@ -717,7 +717,7 @@ export default function TrackingPage() {
           className="mx-4 flex items-center justify-between rounded-xl border border-border bg-card px-4 py-3 hover:bg-muted transition-colors"
         >
           <p className="text-sm text-foreground font-medium">Issue with this order?</p>
-          <span className="text-xs text-brand-500 font-semibold flex items-center gap-1">
+          <span className="text-xs text-brand-700 dark:text-brand-400 font-semibold flex items-center gap-1">
             Get help <ChevronRight className="h-3.5 w-3.5" />
           </span>
         </Link>

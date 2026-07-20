@@ -1,4 +1,4 @@
-// POST /api/warehouse/receive — goods receiving against purchase order
+﻿// POST /api/warehouse/receive — goods receiving against purchase order
 import { NextRequest, NextResponse } from "next/server";
 import { getSessionFromRequest } from "@/lib/auth";
 import { supabaseAdmin } from "@/lib/supabase";

@@ -1,4 +1,4 @@
-// GET /api/orders/[id]/receipt — returns a printable HTML Official Receipt
+﻿// GET /api/orders/[id]/receipt — returns a printable HTML Official Receipt
 import { NextRequest, NextResponse } from "next/server";
 import { getSessionFromRequest } from "@/lib/auth";
 import { getOrderById as sbGet } from "@/lib/supabase-db";

@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 import { useState, useEffect } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
@@ -351,7 +351,7 @@ export default function AccountPage() {
         <div className="grid grid-cols-2 gap-3">
           <Link href="/wallet" className="rounded-2xl border border-border bg-card shadow-card p-4 hover:border-brand-200 active:scale-95 transition-all">
             <p className="text-xs text-muted-foreground mb-1">Wallet Balance</p>
-            <p className="text-xl font-black text-brand-500">{formatPHP(walletBalance)}</p>
+            <p className="text-xl font-black text-brand-700 dark:text-brand-400">{formatPHP(walletBalance)}</p>
           </Link>
           <Link href="/favorites" className="rounded-2xl border border-border bg-card shadow-card p-4 hover:border-brand-200 active:scale-95 transition-all">
             <p className="text-xs text-muted-foreground mb-1">Saved Items</p>
@@ -415,7 +415,7 @@ export default function AccountPage() {
             </div>
             <div className="text-right">
               <p className="text-xs text-muted-foreground">Used</p>
-              <p className="text-base font-bold text-brand-500">₱{creditData.used.toLocaleString()}</p>
+              <p className="text-base font-bold text-brand-700 dark:text-brand-400">₱{creditData.used.toLocaleString()}</p>
             </div>
             <div className="text-right">
               <p className="text-xs text-muted-foreground">Available</p>

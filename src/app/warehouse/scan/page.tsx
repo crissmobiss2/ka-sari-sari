@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import { useState, useRef, useEffect } from "react";
 import { Camera, Search, CheckCircle2, XCircle, Plus, Minus } from "lucide-react";

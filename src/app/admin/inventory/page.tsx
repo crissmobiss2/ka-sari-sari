@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 import { useState, useMemo } from "react";
 import { Search, AlertTriangle, Package, TrendingDown, ArrowUpDown, ArrowUp, ArrowDown, ShoppingCart } from "lucide-react";
 import { Card } from "@/components/ui/card";
@@ -69,8 +69,8 @@ export default function AdminInventoryPage() {
   function SortIcon({ col }: { col: SortKey }) {
     if (sortKey !== col) return <ArrowUpDown className="h-3.5 w-3.5 opacity-40" />;
     return sortDir === "asc"
-      ? <ArrowUp className="h-3.5 w-3.5 text-brand-500" />
-      : <ArrowDown className="h-3.5 w-3.5 text-brand-500" />;
+      ? <ArrowUp className="h-3.5 w-3.5 text-brand-700 dark:text-brand-400" />
+      : <ArrowDown className="h-3.5 w-3.5 text-brand-700 dark:text-brand-400" />;
   }
 
   return (

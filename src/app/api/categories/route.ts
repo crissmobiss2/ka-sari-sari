@@ -1,4 +1,4 @@
-import { NextResponse } from "next/server";
+﻿import { NextResponse } from "next/server";
 import { CATEGORIES, PRODUCTS } from "@/lib/mock-data";
 import { getCategories, getProducts } from "@/lib/supabase-db";
 

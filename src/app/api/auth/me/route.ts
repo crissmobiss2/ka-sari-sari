@@ -1,4 +1,4 @@
-import { NextRequest, NextResponse } from "next/server";
+﻿import { NextRequest, NextResponse } from "next/server";
 import { getSessionFromRequest } from "@/lib/auth";
 import { findUserById as sbFindUserById } from "@/lib/supabase-db";
 import { findUserById } from "@/lib/db";

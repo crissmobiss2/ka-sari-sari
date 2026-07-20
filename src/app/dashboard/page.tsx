@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 // v2
 import Link from "next/link";
 import Image from "next/image";
@@ -155,7 +155,7 @@ export default function DashboardPage() {
             href="/wallet"
             className="flex items-center gap-1.5 rounded-2xl border border-border bg-card shadow-card px-3 py-2"
           >
-            <Wallet className="h-4 w-4 text-brand-500" />
+            <Wallet className="h-4 w-4 text-brand-700 dark:text-brand-400" />
             <span className="text-sm font-bold text-foreground">{formatPHP(walletBalance)}</span>
           </Link>
         </div>
@@ -229,7 +229,7 @@ export default function DashboardPage() {
         <div className="px-4">
           <div className="flex items-center justify-between mb-3">
             <h2 className="font-display text-base font-semibold text-foreground">Recent Orders</h2>
-            <Link href="/orders" className="flex items-center gap-1 text-sm text-brand-500 font-medium">
+            <Link href="/orders" className="flex items-center gap-1 text-sm text-brand-700 dark:text-brand-400 font-medium">
               See all <ChevronRight className="h-4 w-4" />
             </Link>
           </div>
@@ -248,7 +248,7 @@ export default function DashboardPage() {
             ))}
             {recentOrders.length === 0 && (
               <div className="px-4 py-8 text-center text-sm text-muted-foreground">
-                No orders yet. <Link href="/catalog" className="text-brand-500 font-medium">Browse the catalog →</Link>
+                No orders yet. <Link href="/catalog" className="text-brand-700 dark:text-brand-400 font-medium">Browse the catalog →</Link>
               </div>
             )}
           </div>
@@ -261,7 +261,7 @@ export default function DashboardPage() {
               <Flame className="h-4 w-4 text-danger-500" />
               Today&apos;s Deals
             </h2>
-            <Link href="/deals" className="flex items-center gap-1 text-sm text-brand-500 font-medium">
+            <Link href="/deals" className="flex items-center gap-1 text-sm text-brand-700 dark:text-brand-400 font-medium">
               All deals <ChevronRight className="h-4 w-4" />
             </Link>
           </div>
@@ -282,7 +282,7 @@ export default function DashboardPage() {
                   <div className="p-2.5">
                     <p className="text-xs font-semibold text-foreground line-clamp-2 leading-tight">{p.name}</p>
                     <div className="flex items-baseline gap-1 mt-1">
-                      <span className="text-sm font-black text-brand-500">{formatPHP(salePrice)}</span>
+                      <span className="text-sm font-black text-brand-700 dark:text-brand-400">{formatPHP(salePrice)}</span>
                       <span className="text-[10px] text-muted-foreground line-through">{formatPHP(p.price)}</span>
                     </div>
                   </div>
@@ -296,10 +296,10 @@ export default function DashboardPage() {
         <div className="px-4">
           <div className="flex items-center justify-between mb-3">
             <h2 className="font-display text-base font-semibold text-foreground flex items-center gap-2">
-              <RotateCcw className="h-4 w-4 text-brand-500" />
+              <RotateCcw className="h-4 w-4 text-brand-700 dark:text-brand-400" />
               Your Usuals
             </h2>
-            <Link href="/catalog" className="flex items-center gap-1 text-sm text-brand-500 font-medium">
+            <Link href="/catalog" className="flex items-center gap-1 text-sm text-brand-700 dark:text-brand-400 font-medium">
               Browse <ChevronRight className="h-4 w-4" />
             </Link>
           </div>
@@ -313,7 +313,7 @@ export default function DashboardPage() {
         {/* Popular this week */}
         <div className="px-4">
           <div className="flex items-center gap-2 mb-3">
-            <TrendingUp className="h-4 w-4 text-brand-500" />
+            <TrendingUp className="h-4 w-4 text-brand-700 dark:text-brand-400" />
             <h2 className="font-display text-base font-semibold text-foreground">Popular This Week</h2>
           </div>
           <div className="grid grid-cols-2 gap-3">
@@ -331,7 +331,7 @@ export default function DashboardPage() {
                 <Zap className="h-4 w-4 text-warning-500" />
                 Restock Suggestions
               </h2>
-              <Link href="/reorder" className="flex items-center gap-1 text-sm text-brand-500 font-medium">
+              <Link href="/reorder" className="flex items-center gap-1 text-sm text-brand-700 dark:text-brand-400 font-medium">
                 View all <ChevronRight className="h-4 w-4" />
               </Link>
             </div>

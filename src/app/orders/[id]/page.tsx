@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 import { useParams, useSearchParams } from "next/navigation";
 import Link from "next/link";
 import Image from "next/image";
@@ -295,7 +295,7 @@ function DeliveryTimeline({
                     )}
                   </div>
                   {stepStatus === "current" && (
-                    <p className="text-xs text-brand-500 mt-1 flex items-center gap-1">
+                    <p className="text-xs text-brand-700 dark:text-brand-400 mt-1 flex items-center gap-1">
                       In progress
                       <span className="inline-flex gap-0.5">
                         <span className="animate-bounce" style={{ animationDelay: "0ms" }}>.</span>
@@ -576,7 +576,7 @@ function DriverCard({ onAction, driver }: { onAction: (msg: string) => void; dri
             href={`tel:${phone}`}
             className="flex items-center justify-center gap-2 rounded-xl border border-border bg-surface-50 dark:bg-surface-900 py-2.5 text-sm font-medium text-surface-900 hover:bg-surface-100 dark:bg-surface-800 active:scale-95 transition-all"
           >
-            <Phone className="h-4 w-4 text-brand-500" />
+            <Phone className="h-4 w-4 text-brand-700 dark:text-brand-400" />
             Call Driver
           </a>
         ) : (
@@ -629,7 +629,7 @@ function MapPlaceholder() {
         </svg>
         <div className="absolute left-8 top-1/2 -translate-y-1/2 flex flex-col items-center">
           <div className="h-8 w-8 rounded-full bg-white shadow-lg flex items-center justify-center border-2 border-brand-500">
-            <Package className="h-4 w-4 text-brand-500" />
+            <Package className="h-4 w-4 text-brand-700 dark:text-brand-400" />
           </div>
           <div className="mt-1 rounded-md bg-brand-700 px-2 py-0.5 text-[10px] font-semibold text-white whitespace-nowrap shadow">
             Warehouse
@@ -797,7 +797,7 @@ export default function OrderDetailPage() {
       <div className="min-h-screen bg-background flex items-center justify-center px-4 text-center">
         <div>
           <p className="text-foreground font-semibold">Order not found</p>
-          <Link href="/orders" className="mt-3 block text-sm text-brand-500">Back to orders</Link>
+          <Link href="/orders" className="mt-3 block text-sm text-brand-700 dark:text-brand-400">Back to orders</Link>
         </div>
       </div>
     );

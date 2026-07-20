@@ -1,4 +1,4 @@
-// Rate limiter with Upstash Redis backend when UPSTASH_REDIS_REST_URL is set,
+﻿// Rate limiter with Upstash Redis backend when UPSTASH_REDIS_REST_URL is set,
 // falling back to in-memory for local development.
 // WARNING: The in-memory fallback does NOT share state across serverless instances
 // and resets on every cold start. Set UPSTASH_REDIS_REST_URL and

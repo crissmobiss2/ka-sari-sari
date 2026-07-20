@@ -1,4 +1,4 @@
-import { NextRequest, NextResponse } from "next/server";
+﻿import { NextRequest, NextResponse } from "next/server";
 import { sendSMS, generateOTP, hashOTP } from "@/lib/sms";
 import { saveOTP, verifyOTP, findUserByPhone, updateUser } from "@/lib/supabase-db";
 import bcrypt from "bcryptjs";

@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 import { useSearchParams } from "next/navigation";
 import { Suspense, useEffect, useRef, useState } from "react";
 import Link from "next/link";
@@ -240,7 +240,7 @@ function SuccessContent() {
       {ptsEarned > 0 && (
         <div className="kss-points-in w-full max-w-sm rounded-2xl border border-brand-200 bg-brand-50 dark:bg-brand-500/10 p-4 flex items-center gap-3 text-left mb-6">
           <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-brand-100 dark:bg-brand-500/20">
-            <Star className="h-5 w-5 text-brand-500 fill-brand-400" />
+            <Star className="h-5 w-5 text-brand-700 dark:text-brand-400 fill-brand-400" />
           </div>
           <div>
             <p className="text-sm font-bold text-brand-700 dark:text-brand-400">

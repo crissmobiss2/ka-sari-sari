@@ -1,4 +1,4 @@
-// PATCH /api/driver/deliveries/[id] — update delivery status, record POD, log failed attempt
+﻿// PATCH /api/driver/deliveries/[id] — update delivery status, record POD, log failed attempt
 import { NextRequest, NextResponse } from "next/server";
 import { getSessionFromRequest } from "@/lib/auth";
 import {

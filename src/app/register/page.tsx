@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 import { useState, useMemo } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
@@ -136,7 +136,7 @@ export default function RegisterPage() {
                 <div className={cn(
                   "flex h-7 w-7 shrink-0 items-center justify-center rounded-full text-xs font-semibold transition-colors",
                   i < step  ? "bg-brand-700 text-white"
-                  : i === step ? "border-2 border-brand-500 text-brand-500"
+                  : i === step ? "border-2 border-brand-500 text-brand-700 dark:text-brand-400"
                   : "border-2 border-border text-muted-foreground"
                 )}>
                   {i < step ? <Check className="h-3.5 w-3.5" /> : i + 1}
@@ -224,7 +224,7 @@ export default function RegisterPage() {
                     body: JSON.stringify({ phone: form.phone }),
                   }).catch(() => {});
                 }}
-                className="w-full text-center text-sm text-brand-500 hover:text-brand-600"
+                className="w-full text-center text-sm text-brand-700 dark:text-brand-400 hover:text-brand-600"
               >
                 Resend code
               </button>
@@ -300,7 +300,7 @@ export default function RegisterPage() {
                               <p className="font-medium text-foreground">{c.city}</p>
                               <p className="text-[11px] text-muted-foreground">{c.province}</p>
                             </div>
-                            <span className="text-[10px] font-semibold text-brand-500 bg-brand-50 dark:bg-brand-500/10 border border-brand-100 rounded-full px-1.5 py-0.5 shrink-0">
+                            <span className="text-[10px] font-semibold text-brand-700 dark:text-brand-400 bg-brand-50 dark:bg-brand-500/10 border border-brand-100 rounded-full px-1.5 py-0.5 shrink-0">
                               {c.hub}
                             </span>
                           </button>
@@ -337,7 +337,7 @@ export default function RegisterPage() {
               <div className="rounded-2xl border border-brand-200 bg-brand-50 dark:bg-brand-500/10 dark:border-brand-500/30 p-6">
                 <div className="flex items-start justify-between mb-4">
                   <div>
-                    <p className="font-display text-3xl font-bold text-brand-500">FREE</p>
+                    <p className="font-display text-3xl font-bold text-brand-700 dark:text-brand-400">FREE</p>
                     <p className="text-sm text-muted-foreground">First year on us</p>
                   </div>
                   <span className="rounded-full bg-success-50 dark:bg-success-500/10 border border-success-500/25 px-2.5 py-1 text-xs font-medium text-success-700 dark:text-foreground">
@@ -370,7 +370,7 @@ export default function RegisterPage() {
 
           <p className="mt-8 text-center text-sm text-muted-foreground">
             Already registered?{" "}
-            <Link href="/login" className="font-medium text-brand-500 hover:text-brand-600">Sign in</Link>
+            <Link href="/login" className="font-medium text-brand-700 dark:text-brand-400 hover:text-brand-600">Sign in</Link>
           </p>
         </div>
       </div>

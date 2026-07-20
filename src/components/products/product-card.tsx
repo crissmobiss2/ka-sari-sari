@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 import { useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
@@ -110,7 +110,7 @@ export function ProductCard({ product, className }: ProductCardProps) {
       <div className="p-3 flex flex-col gap-2">
         {/* Brand */}
         {product.brand && (
-          <p className="text-[10px] font-semibold text-brand-500 uppercase tracking-wider leading-none">
+          <p className="text-[10px] font-semibold text-brand-700 dark:text-brand-400 uppercase tracking-wider leading-none">
             {product.brand}
           </p>
         )}
@@ -127,7 +127,7 @@ export function ProductCard({ product, className }: ProductCardProps) {
 
         {/* Price row */}
         <div className="flex items-baseline gap-1.5">
-          <span className="text-base font-black text-brand-500">{formatPHP(product.price)}</span>
+          <span className="text-base font-black text-brand-700 dark:text-brand-400">{formatPHP(product.price)}</span>
           {product.srp && product.srp > product.price && (
             <span className="text-[11px] text-muted-foreground line-through">{formatPHP(product.srp)}</span>
           )}
