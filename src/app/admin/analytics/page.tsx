@@ -39,7 +39,7 @@ const RETAILER_NAMES: Record<string, string> = {
 
 const PAYMENT_METHODS = [
   { name: "GCash",  pct: 58, barColor: "bg-blue-500" },
-  { name: "COD",    pct: 27, barColor: "bg-brand-50 dark:bg-brand-500/100" },
+  { name: "COD",    pct: 27, barColor: "bg-brand-700 dark:bg-brand-500" },
   { name: "Maya",   pct: 15, barColor: "bg-emerald-500" },
 ];
 

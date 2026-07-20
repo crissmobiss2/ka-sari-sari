@@ -47,10 +47,10 @@ const STATUS_STYLE: Record<POStatus, string> = {
 
 const STATUS_BAR: Record<POStatus, string> = {
   draft:     "bg-surface-300",
-  sent:      "bg-warning-400",
-  confirmed: "bg-blue-400",
+  sent:      "bg-warning-700 dark:bg-warning-500",
+  confirmed: "bg-info-600 dark:bg-info-500",
   received:  "bg-success-700 dark:bg-success-500",
-  partial:   "bg-orange-400",
+  partial:   "bg-brand-600 dark:bg-brand-500",
 };
 
 const STATUS_LABEL: Record<POStatus, string> = {
@@ -265,7 +265,7 @@ function AutoPOModal({ onClose, onViewDrafts }: AutoPOModalProps) {
             <button
               onClick={handleCreate}
               disabled={selectedCount === 0 || isCreating}
-              className="w-full flex items-center justify-center gap-2 rounded-xl bg-brand-50 dark:bg-brand-500/100 py-3 text-sm font-medium text-white hover:bg-brand-600 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+              className="w-full flex items-center justify-center gap-2 rounded-xl bg-brand-700 dark:bg-brand-500 py-3 text-sm font-medium text-white hover:bg-brand-800 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
             >
               {isCreating ? (
                 <>
@@ -304,7 +304,7 @@ function AutoPOModal({ onClose, onViewDrafts }: AutoPOModalProps) {
               </button>
               <button
                 onClick={onClose}
-                className="flex-1 rounded-xl bg-brand-50 dark:bg-brand-500/100 py-2.5 text-sm font-medium text-white hover:bg-brand-600 transition-colors"
+                className="flex-1 rounded-xl bg-brand-700 dark:bg-brand-500 py-2.5 text-sm font-medium text-white hover:bg-brand-800 transition-colors"
               >
                 Done
               </button>
@@ -478,7 +478,7 @@ function CreatePOModal({ onClose, onSubmit, initialSupplier = "", initialItems, 
           </button>
           <button
             onClick={handleSubmit}
-            className="flex-1 rounded-xl bg-brand-50 dark:bg-brand-500/100 py-2.5 text-sm font-medium text-white hover:bg-brand-600 transition-colors"
+            className="flex-1 rounded-xl bg-brand-700 dark:bg-brand-500 py-2.5 text-sm font-medium text-white hover:bg-brand-800 transition-colors"
           >
             {submitLabel}
           </button>
@@ -565,7 +565,7 @@ function POCard({ po, onSend, onEdit, onDelete, confirmDeleteId, onConfirmDelete
                 <>
                   <button
                     onClick={() => onSend(po.id)}
-                    className="flex items-center gap-1.5 rounded-xl bg-brand-50 dark:bg-brand-500/100 px-3 py-2 text-xs font-medium text-white hover:bg-brand-600 transition-colors"
+                    className="flex items-center gap-1.5 rounded-xl bg-brand-700 dark:bg-brand-500 px-3 py-2 text-xs font-medium text-white hover:bg-brand-800 transition-colors"
                   >
                     <Send className="h-3.5 w-3.5" /> Send to Supplier
                   </button>
@@ -766,7 +766,7 @@ export default function AdminPurchaseOrdersPage() {
           </button>
           <button
             onClick={() => setShowCreate(true)}
-            className="flex items-center gap-2 rounded-xl bg-brand-50 dark:bg-brand-500/100 px-4 py-2.5 text-sm font-medium text-white hover:bg-brand-600 transition-colors"
+            className="flex items-center gap-2 rounded-xl bg-brand-700 dark:bg-brand-500 px-4 py-2.5 text-sm font-medium text-white hover:bg-brand-800 transition-colors"
           >
             <Plus className="h-4 w-4" /> Create PO
           </button>

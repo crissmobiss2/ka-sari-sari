@@ -435,7 +435,7 @@ export default function AdminDriversPage() {
                       onClick={() => setAddForm({ ...addForm, vehicleType: type })}
                       className={cn(
                         "flex-1 rounded-xl border py-2.5 text-sm font-semibold transition-colors",
-                        addForm.vehicleType === type ? "border-brand-500 bg-brand-50 dark:bg-brand-500/100 text-white" : "border-border bg-card text-foreground hover:border-brand-300"
+                        addForm.vehicleType === type ? "border-brand-500 bg-brand-700 dark:bg-brand-500 text-white" : "border-border bg-card text-foreground hover:border-brand-300"
                       )}
                     >
                       {type}
@@ -588,7 +588,7 @@ export default function AdminDriversPage() {
                         isSelected ? "border-brand-500 bg-brand-50 dark:bg-brand-500/10" : "border-border bg-card hover:border-brand-200"
                       )}
                     >
-                      <div className={cn("mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-full border-2", isSelected ? "border-brand-500 bg-brand-50 dark:bg-brand-500/100" : "border-border")}>
+                      <div className={cn("mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-full border-2", isSelected ? "border-brand-500 bg-brand-700 dark:bg-brand-500" : "border-border")}>
                         {isSelected && <CheckCircle2 className="h-3 w-3 text-white" />}
                       </div>
                       <div className="flex-1 min-w-0">

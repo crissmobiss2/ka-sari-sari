@@ -305,7 +305,7 @@ export default function NotificationsPage() {
                   className={cn(
                     "relative flex items-center gap-1.5 rounded-full px-3.5 py-1.5 text-sm font-medium transition-colors whitespace-nowrap",
                     isActive
-                      ? "bg-brand-50 dark:bg-brand-500/100 text-white"
+                      ? "bg-brand-700 dark:bg-brand-500 text-white"
                       : "bg-surface-100 dark:bg-surface-800 text-muted-foreground hover:bg-surface-200"
                   )}
                 >
@@ -316,7 +316,7 @@ export default function NotificationsPage() {
                         "inline-flex items-center justify-center rounded-full text-xs font-semibold min-w-[18px] h-[18px] px-1",
                         isActive
                           ? "bg-white/25 text-white"
-                          : "bg-brand-50 dark:bg-brand-500/100 text-white"
+                          : "bg-brand-700 dark:bg-brand-500 text-white"
                       )}
                     >
                       {unreadCount}
@@ -441,7 +441,7 @@ function NotifRow({
       <div
         className={cn(
           "h-2 w-2 shrink-0 rounded-full mt-1.5 transition-all duration-300",
-          unread ? "bg-brand-50 dark:bg-brand-500/100 scale-100 opacity-100" : "scale-0 opacity-0"
+          unread ? "bg-brand-700 dark:bg-brand-500 scale-100 opacity-100" : "scale-0 opacity-0"
         )}
       />
     </button>

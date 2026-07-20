@@ -362,7 +362,7 @@ export default function InventoryPage() {
                             />
                             <button
                               onClick={() => confirmAdjust(product.id)}
-                              className="text-xs rounded-lg bg-brand-700 text-white px-2 py-1 font-semibold hover:bg-brand-600 transition-colors"
+                              className="text-xs rounded-lg bg-brand-700 text-white px-2 py-1 font-semibold hover:bg-brand-800 transition-colors"
                             >
                               OK
                             </button>

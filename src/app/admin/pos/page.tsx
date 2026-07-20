@@ -258,7 +258,7 @@ export default function POSPage() {
 
           <button
             onClick={reset}
-            className="w-full h-12 rounded-2xl bg-brand-50 dark:bg-brand-500/100 text-white font-bold text-base hover:bg-brand-600 active:scale-[0.98] transition-all flex items-center justify-center gap-2"
+            className="w-full h-12 rounded-2xl bg-brand-700 dark:bg-brand-500 text-white font-bold text-base hover:bg-brand-800 active:scale-[0.98] transition-all flex items-center justify-center gap-2"
           >
             <RefreshCcw className="h-4 w-4" /> New Transaction
           </button>
@@ -281,7 +281,7 @@ export default function POSPage() {
             <button
               key={t}
               onClick={() => setMobileTab(t)}
-              className={cn("relative px-3 py-2 font-medium capitalize transition-colors", mobileTab === t ? "bg-brand-50 dark:bg-brand-500/100 text-white" : "text-muted-foreground")}
+              className={cn("relative px-3 py-2 font-medium capitalize transition-colors", mobileTab === t ? "bg-brand-700 dark:bg-brand-500 text-white" : "text-muted-foreground")}
             >
               {t === "cart" && cartCount > 0 && <span className="absolute top-0.5 right-0.5 h-3.5 w-3.5 rounded-full bg-danger-700 dark:bg-danger-500 text-white text-[8px] flex items-center justify-center">{cartCount > 9 ? "9+" : cartCount}</span>}
               {t === "cart" ? `Cart${cartCount > 0 ? ` (${cartCount})` : ""}` : t === "pay" ? "Pay" : "Items"}
@@ -311,9 +311,9 @@ export default function POSPage() {
               </button>
             </div>
             <div className="flex gap-1.5 overflow-x-auto scrollbar-hide">
-              <button onClick={() => setCategory("all")} className={cn("shrink-0 rounded-lg px-3 py-1.5 text-[11px] font-semibold border transition-colors", category === "all" ? "bg-brand-50 dark:bg-brand-500/100 text-white border-brand-500" : "bg-card border-border text-muted-foreground")}>All</button>
+              <button onClick={() => setCategory("all")} className={cn("shrink-0 rounded-lg px-3 py-1.5 text-[11px] font-semibold border transition-colors", category === "all" ? "bg-brand-700 dark:bg-brand-500 text-white border-brand-500" : "bg-card border-border text-muted-foreground")}>All</button>
               {CATEGORIES.map(c => (
-                <button key={c.id} onClick={() => setCategory(c.id)} className={cn("shrink-0 rounded-lg px-3 py-1.5 text-[11px] font-semibold border transition-colors", category === c.id ? "bg-brand-50 dark:bg-brand-500/100 text-white border-brand-500" : "bg-card border-border text-muted-foreground")}>{c.name}</button>
+                <button key={c.id} onClick={() => setCategory(c.id)} className={cn("shrink-0 rounded-lg px-3 py-1.5 text-[11px] font-semibold border transition-colors", category === c.id ? "bg-brand-700 dark:bg-brand-500 text-white border-brand-500" : "bg-card border-border text-muted-foreground")}>{c.name}</button>
               ))}
             </div>
           </div>
@@ -333,7 +333,7 @@ export default function POSPage() {
                     )}>
                     <div className={cn("h-20 flex items-center justify-center relative bg-gradient-to-br", d.gradient)}>
                       <span className="text-4xl">{d.emoji}</span>
-                      {inCart && <span className="absolute top-1.5 right-1.5 h-6 w-6 rounded-full bg-brand-50 dark:bg-brand-500/100 text-white text-[11px] font-bold flex items-center justify-center shadow">{inCart.quantity}</span>}
+                      {inCart && <span className="absolute top-1.5 right-1.5 h-6 w-6 rounded-full bg-brand-700 dark:bg-brand-500 text-white text-[11px] font-bold flex items-center justify-center shadow">{inCart.quantity}</span>}
                       {outOfStock && <div className="absolute inset-0 bg-white/70 flex items-center justify-center"><span className="text-[10px] font-black text-danger-600 dark:text-danger-500 tracking-wide">OUT</span></div>}
                     </div>
                     <div className="p-2.5">
@@ -575,7 +575,7 @@ export default function POSPage() {
                 className={cn(
                   "w-full h-14 rounded-2xl font-black text-lg tracking-wide transition-all",
                   canCharge && !loading
-                    ? "bg-brand-50 dark:bg-brand-500/100 text-white hover:bg-brand-600 active:scale-[0.98] shadow-lg"
+                    ? "bg-brand-700 dark:bg-brand-500 text-white hover:bg-brand-800 active:scale-[0.98] shadow-lg"
                     : "bg-muted text-muted-foreground cursor-not-allowed"
                 )}
               >

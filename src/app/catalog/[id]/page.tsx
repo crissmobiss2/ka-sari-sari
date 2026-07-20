@@ -319,7 +319,7 @@ export default function ProductDetailPage() {
             <button
               onClick={handleQtyIncrease}
               disabled={product.stock !== undefined && qty >= product.stock}
-              className="flex h-11 w-11 items-center justify-center rounded-xl bg-brand-700 text-white text-lg font-bold hover:bg-brand-600 disabled:opacity-50 transition-colors"
+              className="flex h-11 w-11 items-center justify-center rounded-xl bg-brand-700 text-white text-lg font-bold hover:bg-brand-800 disabled:opacity-50 transition-colors"
             >
               +
             </button>

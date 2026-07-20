@@ -430,7 +430,7 @@ export default function AccountPage() {
               <p className="text-[11px] font-semibold text-muted-foreground">{creditData.utilization.toFixed(1)}% used</p>
             </div>
             <div className="h-1.5 rounded-full bg-success-100 dark:bg-success-500/20 overflow-hidden">
-              <div className="h-full rounded-full bg-brand-50 dark:bg-brand-500/100 transition-all" style={{ width: `${creditData.utilization}%` }} />
+              <div className="h-full rounded-full bg-brand-600 dark:bg-brand-500 transition-all" style={{ width: `${creditData.utilization}%` }} />
             </div>
           </div>
 
@@ -585,7 +585,7 @@ export default function AccountPage() {
                 <button
                   type="submit"
                   disabled={creditLoading || !creditForm.requestedLimit}
-                  className="flex-1 rounded-xl bg-brand-50 dark:bg-brand-500/100 py-3 text-sm font-bold text-white hover:bg-brand-600 transition-colors disabled:opacity-60 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+                  className="flex-1 rounded-xl bg-brand-700 py-3 text-sm font-bold text-white hover:bg-brand-800 transition-colors disabled:opacity-60 disabled:cursor-not-allowed flex items-center justify-center gap-2"
                 >
                   {creditLoading ? (
                     <><Loader2 className="h-4 w-4 animate-spin" /> Submitting…</>
@@ -672,7 +672,7 @@ export default function AccountPage() {
                   disabled={pushLoading || pushPermission === "denied"}
                   className={cn(
                     "relative inline-flex h-6 w-11 shrink-0 items-center rounded-full transition-colors focus:outline-none disabled:opacity-50 disabled:cursor-not-allowed",
-                    isPushEnabled ? "bg-brand-50 dark:bg-brand-500/100" : "bg-surface-300"
+                    isPushEnabled ? "bg-brand-700 dark:bg-brand-500" : "bg-surface-300"
                   )}
                   aria-label={isPushEnabled ? "Disable push notifications" : "Enable push notifications"}
                 >

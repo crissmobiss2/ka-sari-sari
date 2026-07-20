@@ -60,7 +60,7 @@ const STATUS_CONFIG: Record<CreditStatus, { label: string; color: string; badge:
 
 function UtilizationBar({ used, limit }: { used: number; limit: number }) {
   const pct = Math.min(100, Math.round((used / limit) * 100));
-  const color = pct >= 100 ? "bg-danger-500" : pct >= 80 ? "bg-warning-400" : "bg-success-500";
+  const color = pct >= 100 ? "bg-danger-500" : pct >= 80 ? "bg-warning-700 dark:bg-warning-500" : "bg-success-500";
   return (
     <div className="flex items-center gap-2">
       <div className="flex-1 h-1.5 bg-surface-100 dark:bg-surface-800 rounded-full overflow-hidden">

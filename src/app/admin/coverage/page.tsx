@@ -63,7 +63,7 @@ export default function CoveragePage() {
       <div className="flex items-start justify-between gap-4">
         <div>
           <div className="flex items-center gap-2 mb-1">
-            <div className="flex h-8 w-8 items-center justify-center rounded-xl bg-brand-50 dark:bg-brand-500/100">
+            <div className="flex h-8 w-8 items-center justify-center rounded-xl bg-brand-700 dark:bg-brand-500">
               <Globe className="h-4 w-4 text-white" />
             </div>
             <h1 className="font-display text-2xl font-bold text-foreground">Network Coverage</h1>
@@ -139,7 +139,7 @@ export default function CoveragePage() {
             className={cn(
               "flex items-center gap-1.5 rounded-xl px-3 py-1.5 text-sm font-semibold transition-colors",
               selectedIsland === id
-                ? "bg-brand-50 dark:bg-brand-500/100 text-white"
+                ? "bg-brand-700 dark:bg-brand-500 text-white"
                 : "bg-surface-100 dark:bg-surface-800 text-muted-foreground hover:text-foreground"
             )}
           >
@@ -209,7 +209,7 @@ export default function CoveragePage() {
       <Card className="border-brand-200 bg-gradient-to-r from-brand-50 to-transparent">
         <CardContent className="p-5">
           <div className="flex items-start gap-4">
-            <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-brand-50 dark:bg-brand-500/100">
+            <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-brand-700 dark:bg-brand-500">
               <TrendingUp className="h-5 w-5 text-white" />
             </div>
             <div>

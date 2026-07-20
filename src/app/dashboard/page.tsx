@@ -359,7 +359,7 @@ export default function DashboardPage() {
                       <div className="flex items-center gap-2">
                         <div className="h-1.5 flex-1 rounded-full bg-warning-100 dark:bg-warning-500/20 overflow-hidden max-w-[80px]">
                           <div
-                            className={cn("h-full rounded-full", urgency === "critical" ? "bg-danger-500" : "bg-warning-400")}
+                            className={cn("h-full rounded-full", urgency === "critical" ? "bg-danger-500" : "bg-warning-700 dark:bg-warning-500")}
                             style={{ width: `${Math.max(4, pctLeft)}%` }}
                           />
                         </div>

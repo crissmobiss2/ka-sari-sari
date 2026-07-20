@@ -178,7 +178,7 @@ function ActiveProgressBar({ status }: { status: OrderStatus }) {
             key={s}
             className={cn(
               "h-1 flex-1 rounded-full transition-all",
-              i <= current ? "bg-brand-50 dark:bg-brand-500/100" : "bg-surface-200"
+              i <= current ? "bg-brand-700 dark:bg-brand-500" : "bg-surface-200"
             )}
           />
         ))}
@@ -255,7 +255,7 @@ function OrderCard({ order }: { order: DisplayOrder }) {
               href={`/tracking?orderId=${order.id}`}
               aria-label="Track order"
               onClick={(e) => e.stopPropagation()}
-              className="rounded-lg bg-brand-50 dark:bg-brand-500/100 px-3 py-1.5 text-xs font-semibold text-white flex items-center gap-1.5 hover:bg-brand-600 transition-colors"
+              className="rounded-lg bg-brand-700 dark:bg-brand-500 px-3 py-1.5 text-xs font-semibold text-white flex items-center gap-1.5 hover:bg-brand-800 transition-colors"
             >
               <Truck className="h-3 w-3" />
               Track
@@ -343,7 +343,7 @@ export default function OrdersPage() {
               className={cn(
                 "flex-1 flex items-center justify-center gap-1.5 rounded-xl py-2.5 text-sm font-semibold transition-all",
                 tab === t.id
-                  ? "bg-brand-50 dark:bg-brand-500/100 text-white shadow-brand"
+                  ? "bg-brand-700 dark:bg-brand-500 text-white shadow-brand"
                   : "bg-surface-100 dark:bg-surface-800 text-muted-foreground hover:text-foreground hover:bg-surface-200"
               )}
             >
@@ -372,7 +372,7 @@ export default function OrdersPage() {
             <p className="text-xs text-muted-foreground">{fetchError}</p>
             <button
               onClick={() => { setFetchError(null); setLoading(true); fetch("/api/orders").then((r) => { if (!r.ok) throw new Error(r.statusText); return r.json(); }).then((d) => { setOrders((d.orders ?? []).map(buildDisplayOrder).sort((a: DisplayOrder, b: DisplayOrder) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime())); }).catch((e) => setFetchError(e.message)).finally(() => setLoading(false)); }}
-              className="rounded-xl bg-brand-50 dark:bg-brand-500/100 px-4 py-2 text-sm font-semibold text-white hover:bg-brand-600 transition-colors"
+              className="rounded-xl bg-brand-700 dark:bg-brand-500 px-4 py-2 text-sm font-semibold text-white hover:bg-brand-800 transition-colors"
             >
               Retry
             </button>
