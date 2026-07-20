@@ -18,13 +18,13 @@ import {
 
 const BRAND_COLOR = "#f47028";
 
-// -- Static chart data (monthly revenue trend — platform-level) ---------------
+// -- Static chart data (monthly revenue trend ï¿½ platform-level) ---------------
 
 const MONTHLY_REVENUE = [890_000, 1_020_000, 1_150_000, 1_340_000, 1_480_000, 1_250_000];
 const MONTHS = ["Aug '25", "Sep '25", "Oct '25", "Nov '25", "Dec '25", "Jan '26"];
 const maxRevenue = Math.max(...MONTHLY_REVENUE);
 
-// -- Retailer names (synthetic — keyed to storeId from ADMIN_RECENT_ORDERS) ---
+// -- Retailer names (synthetic ï¿½ keyed to storeId from ADMIN_RECENT_ORDERS) ---
 
 const RETAILER_NAMES: Record<string, string> = {
   "s1": "Aling Nena's Store",
@@ -182,7 +182,7 @@ export default function AdminAnalyticsPage() {
     []
   );
 
-  // -- Top products by revenue (from MOCK_ORDERS items × product prices) -----
+  // -- Top products by revenue (from MOCK_ORDERS items ï¿½ product prices) -----
   const topProducts = useMemo(() => {
     const revenueByProduct = new Map<string, { name: string; revenue: number; qty: number; categoryId: string }>();
 
@@ -211,7 +211,7 @@ export default function AdminAnalyticsPage() {
       .slice(0, 5);
   }, [productMap]);
 
-  // -- Revenue by Category (MOCK_ORDERS items × product prices) --------------
+  // -- Revenue by Category (MOCK_ORDERS items ï¿½ product prices) --------------
   // Supplement with ADMIN_STATS scale so the chart reflects realistic proportions.
   // We compute real percentages from order items, then scale to ADMIN_STATS revenue.
   const categoryRevenue = useMemo(() => {
@@ -261,7 +261,7 @@ export default function AdminAnalyticsPage() {
     return entries;
   }, [productMap, categoryMap]);
 
-  // -- Sales Velocity — orders per day from order dates ----------------------
+  // -- Sales Velocity ï¿½ orders per day from order dates ----------------------
   const salesVelocity = useMemo(() => {
     if (MOCK_ORDERS.length === 0) return { ordersPerDay: 0, busiestDay: "N/A", dayBreakdown: [], platformOrdersPerDay: 0 };
 
@@ -341,7 +341,7 @@ export default function AdminAnalyticsPage() {
     return merged.slice(0, 5);
   }, []);
 
-  // -- KPI numbers — use ADMIN_STATS for platform-level realism ---------------
+  // -- KPI numbers ï¿½ use ADMIN_STATS for platform-level realism ---------------
   const kpi = useMemo(() => {
     return {
       totalRevenue: ADMIN_STATS.revenueMonth,
@@ -474,7 +474,7 @@ export default function AdminAnalyticsPage() {
           <div className="flex items-center justify-between">
             <div>
               <CardTitle>Revenue Trend</CardTitle>
-              <p className="text-xs text-muted-foreground mt-0.5">Aug 2025 – Jan 2026</p>
+              <p className="text-xs text-muted-foreground mt-0.5">Aug 2025 ï¿½ Jan 2026</p>
             </div>
             <div className="flex items-center gap-2">
               <span className="inline-block h-3 w-3 rounded-sm" style={{ background: BRAND_COLOR }} />
@@ -494,7 +494,7 @@ export default function AdminAnalyticsPage() {
             <Zap className="h-4 w-4 text-brand-700 dark:text-brand-400" />
             <CardTitle>Sales Velocity</CardTitle>
           </div>
-          <p className="text-xs text-muted-foreground mt-0.5">Orders per day · computed from order dates</p>
+          <p className="text-xs text-muted-foreground mt-0.5">Orders per day ï¿½ computed from order dates</p>
         </CardHeader>
         <CardContent className="pt-2">
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-5">
@@ -527,7 +527,7 @@ export default function AdminAnalyticsPage() {
           {/* Day-by-day breakdown from MOCK_ORDERS */}
           {salesVelocity.dayBreakdown.length > 0 && (
             <div>
-              <p className="text-xs font-semibold text-muted-foreground mb-3 uppercase tracking-wide">Order Activity — Sample Window</p>
+              <p className="text-xs font-semibold text-muted-foreground mb-3 uppercase tracking-wide">Order Activity ï¿½ Sample Window</p>
               <div className="flex flex-wrap gap-2">
                 {salesVelocity.dayBreakdown.map((d) => (
                   <div
@@ -554,10 +554,10 @@ export default function AdminAnalyticsPage() {
         <Card>
           <CardHeader className="pb-2">
             <CardTitle>Order Status</CardTitle>
-            <p className="text-xs text-muted-foreground">Distribution · MOCK_ORDERS sample</p>
+            <p className="text-xs text-muted-foreground">Distribution ï¿½ MOCK_ORDERS sample</p>
           </CardHeader>
           <CardContent className="pt-2 flex flex-col items-center gap-5">
-            {/* Donut via conic-gradient — built from computed orderStatusDist */}
+            {/* Donut via conic-gradient ï¿½ built from computed orderStatusDist */}
             <div className="relative flex-shrink-0">
               {(() => {
                 // Build conic stops from real data
@@ -609,7 +609,7 @@ export default function AdminAnalyticsPage() {
         <Card>
           <CardHeader className="pb-2">
             <CardTitle>Payment Methods</CardTitle>
-            <p className="text-xs text-muted-foreground">Transaction split · Jan 2026</p>
+            <p className="text-xs text-muted-foreground">Transaction split ï¿½ Jan 2026</p>
           </CardHeader>
           <CardContent className="pt-2 space-y-5">
             {paymentMethods.map((pm) => (
@@ -642,11 +642,11 @@ export default function AdminAnalyticsPage() {
       <Card>
         <CardHeader className="pb-2">
           <div className="flex items-center gap-2">
-            <Star className="h-4 w-4 text-amber-500" />
+            <Star className="h-4 w-4 text-amber-700" />
             <CardTitle>Top Retailers by Revenue</CardTitle>
           </div>
           <p className="text-xs text-muted-foreground mt-0.5">
-            Computed from order history · Sorted by total revenue
+            Computed from order history ï¿½ Sorted by total revenue
           </p>
         </CardHeader>
         <CardContent className="pt-0">
@@ -710,7 +710,7 @@ export default function AdminAnalyticsPage() {
         <Card>
           <CardHeader className="pb-2">
             <CardTitle>Top Products by Revenue</CardTitle>
-            <p className="text-xs text-muted-foreground mt-0.5">Computed from MOCK_ORDERS line items × unit prices</p>
+            <p className="text-xs text-muted-foreground mt-0.5">Computed from MOCK_ORDERS line items ï¿½ unit prices</p>
           </CardHeader>
           <CardContent className="pt-2 space-y-3">
             {topProducts.map((p, i) => {
@@ -763,7 +763,7 @@ export default function AdminAnalyticsPage() {
         <CardHeader className="pb-2">
           <CardTitle>Revenue by Category</CardTitle>
           <p className="text-xs text-muted-foreground mt-0.5">
-            Computed from order items · scaled to platform revenue
+            Computed from order items ï¿½ scaled to platform revenue
           </p>
         </CardHeader>
         <CardContent className="pt-2 space-y-4">

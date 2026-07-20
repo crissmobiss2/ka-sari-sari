@@ -420,7 +420,7 @@ export default function PaymentsPage() {
               </div>
               <div className="flex justify-between text-xs">
                 <span className="text-muted-foreground">Pending</span>
-                <span className="font-semibold text-amber-600">{formatPHP(stats.pending)}</span>
+                <span className="font-semibold text-amber-700">{formatPHP(stats.pending)}</span>
               </div>
               <div className="flex justify-between text-xs">
                 <span className="text-muted-foreground">Total</span>

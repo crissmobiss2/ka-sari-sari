@@ -206,7 +206,7 @@ function SuccessContent() {
 
       {/* ── delivery chip ── */}
       <div className="inline-flex items-center gap-2 rounded-full bg-amber-50 border border-amber-200 px-4 py-1.5 text-amber-700 text-sm font-semibold mb-8">
-        <Clock className="h-4 w-4 text-amber-500" />
+        <Clock className="h-4 w-4 text-amber-700" />
         Expected delivery in 2–4 hours
       </div>
 
