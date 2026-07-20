@@ -367,7 +367,7 @@ export default function AdminForecastPage() {
           sub="based on 90-day backtest"
           icon={<CheckCircle2 className="h-5 w-5" />}
           iconBg="bg-success-50 dark:bg-success-500/10"
-          iconColor="text-success-600"
+          iconColor="text-success-600 dark:text-success-500"
         />
         <SummaryCard
           label="Forecast Period"
@@ -424,7 +424,7 @@ export default function AdminForecastPage() {
                         <span className={cn("inline-block text-xs font-semibold rounded-full px-2 py-0.5 capitalize", urgencyBadgeClass(item.urgency))}>
                           {item.urgency}
                         </span>
-                        <p className="text-xs font-bold text-success-600 tabular-nums">+{item.suggestedQty} units</p>
+                        <p className="text-xs font-bold text-success-600 dark:text-success-500 tabular-nums">+{item.suggestedQty} units</p>
                       </div>
                     </div>
                   ))}
@@ -528,7 +528,7 @@ export default function AdminForecastPage() {
           <CardContent className="pt-0 space-y-2.5">
             {stockoutItems.length === 0 ? (
               <div className="flex items-center gap-2 py-4 justify-center">
-                <CheckCircle2 className="h-4 w-4 text-success-600" />
+                <CheckCircle2 className="h-4 w-4 text-success-600 dark:text-success-500" />
                 <p className="text-sm text-muted-foreground">All products have sufficient stock</p>
               </div>
             ) : (
@@ -565,7 +565,7 @@ export default function AdminForecastPage() {
           <CardHeader className="pb-2">
             <div className="flex items-center gap-2">
               <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-success-50 dark:bg-success-500/10">
-                <ShoppingCart className="h-4 w-4 text-success-600" />
+                <ShoppingCart className="h-4 w-4 text-success-600 dark:text-success-500" />
               </div>
               <div>
                 <CardTitle className="text-base">Recommended Reorders</CardTitle>
@@ -587,7 +587,7 @@ export default function AdminForecastPage() {
                     <p className="text-[11px] text-muted-foreground mt-0.5">{item.stock} in stock</p>
                   </div>
                   <div className="shrink-0 text-right">
-                    <p className="text-sm font-bold text-success-600 tabular-nums">+{item.suggestedQty}</p>
+                    <p className="text-sm font-bold text-success-600 dark:text-success-500 tabular-nums">+{item.suggestedQty}</p>
                     <p className="text-[11px] text-muted-foreground">units to order</p>
                   </div>
                 </div>
@@ -675,7 +675,7 @@ export default function AdminForecastPage() {
                         <span
                           className={cn(
                             "text-xs font-semibold tabular-nums",
-                            isUp ? "text-success-600" : "text-danger-600"
+                            isUp ? "text-success-600 dark:text-success-500" : "text-danger-600 dark:text-danger-500"
                           )}
                         >
                           {isUp ? "▲" : "▼"} {isUp ? "+" : ""}{row.trendPct}%
@@ -744,7 +744,7 @@ export default function AdminForecastPage() {
                   <span
                     className={cn(
                       "text-sm font-bold w-14 text-right shrink-0 tabular-nums",
-                      isPos ? "text-brand-600" : "text-danger-600"
+                      isPos ? "text-brand-600" : "text-danger-600 dark:text-danger-500"
                     )}
                   >
                     {isPos ? "+" : ""}{cat.changePct}%

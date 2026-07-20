@@ -179,7 +179,7 @@ export default function WarehouseDashboardPage() {
           label="Incoming Today"
           sub="Confirmed POs"
           iconBg="bg-info-50 dark:bg-info-500/10 text-info-600 dark:text-foreground"
-          accent="text-info-600"
+          accent="text-info-600 dark:text-foreground"
         />
       </div>
 

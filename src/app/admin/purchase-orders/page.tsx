@@ -461,7 +461,7 @@ function CreatePOModal({ onClose, onSubmit, initialSupplier = "", initialItems, 
           </div>
 
           {validationError && (
-            <p className="text-xs text-danger-600">{validationError}</p>
+            <p className="text-xs text-danger-600 dark:text-danger-500">{validationError}</p>
           )}
 
           <div className="flex justify-end items-center gap-2 pt-2 border-t border-border">
@@ -547,7 +547,7 @@ function POCard({ po, onSend, onEdit, onDelete, confirmDeleteId, onConfirmDelete
             <>
               {isConfirmingDelete ? (
                 <>
-                  <span className="flex items-center text-xs text-danger-600 font-medium">Delete this PO?</span>
+                  <span className="flex items-center text-xs text-danger-600 dark:text-danger-500 font-medium">Delete this PO?</span>
                   <button
                     onClick={() => onDelete(po.id)}
                     className="flex items-center gap-1.5 rounded-xl bg-danger-50 dark:bg-danger-500/100 px-3 py-2 text-xs font-medium text-white hover:bg-danger-600 transition-colors"

@@ -47,7 +47,7 @@ export default function FavoritesPage() {
                 <div className="flex flex-col items-end gap-2 shrink-0">
                   <button
                     onClick={() => remove(product.id)}
-                    className="text-danger-400 hover:text-danger-600 transition-colors"
+                    className="text-danger-400 hover:text-danger-600 dark:text-danger-500 transition-colors"
                     aria-label="Remove from favorites"
                   >
                     <Heart className="h-5 w-5 fill-current" />

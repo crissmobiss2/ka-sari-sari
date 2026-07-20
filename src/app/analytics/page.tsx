@@ -230,11 +230,11 @@ function StatCard({
   return (
     <div className="rounded-2xl border border-border bg-card shadow-card px-4 py-4">
       <p className="text-[11px] font-semibold uppercase tracking-wide text-muted-foreground mb-1">{label}</p>
-      <p className={cn("font-display text-xl font-black leading-tight", accent ? "text-success-600" : "text-foreground")}>
+      <p className={cn("font-display text-xl font-black leading-tight", accent ? "text-success-600 dark:text-success-500" : "text-foreground")}>
         {value}
       </p>
       {sub && (
-        <p className={cn("text-xs mt-1 flex items-center gap-1", accent ? "text-success-600" : "text-muted-foreground")}>
+        <p className={cn("text-xs mt-1 flex items-center gap-1", accent ? "text-success-600 dark:text-success-500" : "text-muted-foreground")}>
           {accent && <TrendingUp className="h-3 w-3" />}
           {sub}
         </p>
@@ -557,11 +557,11 @@ export default function AnalyticsPage() {
             <div className="mt-3 rounded-xl bg-success-50 dark:bg-success-500/10 border border-success-200 px-4 py-3 flex items-center justify-between">
               <div>
                 <p className="text-xs font-semibold text-success-700">Total savings this year</p>
-                <p className="text-[11px] text-success-600 mt-0.5">Buying through Ka Sari-Sari</p>
+                <p className="text-[11px] text-success-600 dark:text-success-500 mt-0.5">Buying through Ka Sari-Sari</p>
               </div>
               <div className="text-right">
                 <p className="font-display text-lg font-black text-success-700">{formatPHP(stats.savings)}</p>
-                <p className="text-xs text-success-600 font-semibold">{stats.savingsPct}% saved</p>
+                <p className="text-xs text-success-600 dark:text-success-500 font-semibold">{stats.savingsPct}% saved</p>
               </div>
             </div>
           </div>

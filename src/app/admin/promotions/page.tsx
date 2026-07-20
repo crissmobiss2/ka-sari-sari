@@ -322,8 +322,8 @@ function CreatePromoModal({ onClose, onSave }: CreatePromoModalProps) {
             value={form.maxUsage}
             onChange={set("maxUsage")}
           />
-          {error && <p className="text-xs text-danger-600">{error}</p>}
-          {saved && <p className="text-xs text-success-600">Promotion created successfully.</p>}
+          {error && <p className="text-xs text-danger-600 dark:text-danger-500">{error}</p>}
+          {saved && <p className="text-xs text-success-600 dark:text-success-500">Promotion created successfully.</p>}
         </div>
         <div className="flex gap-3 p-5 pt-0">
           <button
@@ -483,8 +483,8 @@ function EditPromoModal({ promo, onClose, onSave }: EditPromoModalProps) {
             value={form.maxUsage}
             onChange={set("maxUsage")}
           />
-          {error && <p className="text-xs text-danger-600">{error}</p>}
-          {saved && <p className="text-xs text-success-600">Promotion updated successfully.</p>}
+          {error && <p className="text-xs text-danger-600 dark:text-danger-500">{error}</p>}
+          {saved && <p className="text-xs text-success-600 dark:text-success-500">Promotion updated successfully.</p>}
         </div>
         <div className="flex gap-3 p-5 pt-0">
           <button
