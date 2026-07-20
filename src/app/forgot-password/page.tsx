@@ -1,4 +1,4 @@
-﻿"use client";
+"use client";
 
 import { useState, useEffect, useRef } from "react";
 import Link from "next/link";
@@ -227,7 +227,7 @@ export default function ForgotPasswordPage() {
 
               <p className="mt-6 text-center text-sm text-muted-foreground">
                 Remember your password?{" "}
-                <Link href="/login" className="font-medium text-brand-700 dark:text-brand-400 hover:text-brand-600">
+                <Link href="/login" className="font-medium text-brand-700 dark:text-brand-400 hover:text-brand-700">
                   Sign in
                 </Link>
               </p>
@@ -292,7 +292,7 @@ export default function ForgotPasswordPage() {
                 {canResend ? (
                   <button
                     onClick={handleResend}
-                    className="font-medium text-brand-700 dark:text-brand-400 hover:text-brand-600"
+                    className="font-medium text-brand-700 dark:text-brand-400 hover:text-brand-700"
                   >
                     Resend code
                   </button>

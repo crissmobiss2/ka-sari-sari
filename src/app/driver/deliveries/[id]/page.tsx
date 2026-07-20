@@ -907,7 +907,7 @@ export default function DeliveryDetailPage() {
                 </div>
               </div>
               <div className="flex items-center justify-between px-0.5">
-                <span className="inline-flex items-center gap-1 text-xs font-semibold" style={{ color: "#f47028" }}>
+                <span className="inline-flex items-center gap-1 text-xs font-semibold" style={{ color: "#c2410c" }}>
                   <svg className="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2.5} strokeLinecap="round" strokeLinejoin="round">
                     <polyline points="20 6 9 17 4 12" />
                   </svg>
@@ -965,7 +965,7 @@ export default function DeliveryDetailPage() {
               "w-full h-16 rounded-2xl flex items-center justify-center gap-2 font-bold text-base transition-all",
               isDeliverDisabled
                 ? "bg-surface-200 text-surface-500 cursor-not-allowed"
-                : "bg-success-600 hover:bg-success-700 active:bg-success-800 text-white shadow-lg shadow-success-600/30"
+                : "bg-success-700 hover:bg-success-800 active:bg-success-800 text-white shadow-lg shadow-success-700/30"
             )}
           >
             {!isDeliverDisabled && (
@@ -1069,7 +1069,7 @@ export default function DeliveryDetailPage() {
                 >
                   <div className={cn(
                     "w-4 h-4 rounded-full border-2 flex items-center justify-center flex-shrink-0",
-                    selectedFailReason === reason ? "border-danger-500 bg-danger-500" : "border-surface-300"
+                    selectedFailReason === reason ? "border-danger-500 bg-danger-500" : "border-surface-500"
                   )}>
                     {selectedFailReason === reason && <div className="w-2 h-2 rounded-full bg-white" />}
                   </div>

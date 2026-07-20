@@ -1,4 +1,4 @@
-﻿"use client";
+"use client";
 // v2
 import { useState, useEffect, useCallback } from "react";
 import { TrendingUp, TrendingDown, Package, Users, ShoppingCart, AlertTriangle, ArrowRight, Clock } from "lucide-react";
@@ -278,7 +278,7 @@ export default function AdminDashboardPage() {
         <CardHeader>
           <div className="flex items-center justify-between">
             <CardTitle>Recent Orders</CardTitle>
-            <Link href="/admin/orders" className="flex items-center gap-1 text-sm text-brand-700 dark:text-brand-400 hover:text-brand-600">
+            <Link href="/admin/orders" className="flex items-center gap-1 text-sm text-brand-700 dark:text-brand-400 hover:text-brand-700">
               View all <ArrowRight className="h-3.5 w-3.5" />
             </Link>
           </div>
@@ -310,7 +310,7 @@ export default function AdminDashboardPage() {
                   recentOrders.map((order) => (
                     <tr key={order.id} className="hover:bg-muted/50 transition-colors">
                       <td className="px-5 py-3.5">
-                        <Link href={`/admin/orders/${order.id}`} className="font-medium text-foreground hover:text-brand-600">
+                        <Link href={`/admin/orders/${order.id}`} className="font-medium text-foreground hover:text-brand-700">
                           {order.orderNumber}
                         </Link>
                       </td>

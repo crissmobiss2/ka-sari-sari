@@ -67,7 +67,7 @@ const EXTRA_NOTIFICATIONS: Notification[] = [
     userId: "user-1",
     type: "system",
     title: "Deal alert: 15% off San Miguel",
-    message: "Limited-time promo on San Miguel Pale Pilsen 330ml — ends midnight tonight.",
+    message: "Limited-time promo on San Miguel Pale Pilsen 330ml ï¿½ ends midnight tonight.",
     isRead: true,
     createdAt: new Date(Date.now() - 1000 * 60 * 60 * 8).toISOString(),
   },
@@ -77,7 +77,7 @@ const EXTRA_NOTIFICATIONS: Notification[] = [
     type: "order_out_for_delivery",
     title: "Delivery ETA updated",
     message:
-      "Your driver is 3 stops away. Expected arrival: 4:30–5:00 PM today.",
+      "Your driver is 3 stops away. Expected arrival: 4:30ï¿½5:00 PM today.",
     isRead: true,
     orderId: "ord-004",
     createdAt: new Date(Date.now() - 1000 * 60 * 60 * 22).toISOString(),
@@ -98,7 +98,7 @@ const EXTRA_NOTIFICATIONS: Notification[] = [
     type: "system",
     title: "System maintenance tonight",
     message:
-      "Ka Sari-Sari will be briefly unavailable on Jul 7 from 1–2 AM for scheduled maintenance.",
+      "Ka Sari-Sari will be briefly unavailable on Jul 7 from 1ï¿½2 AM for scheduled maintenance.",
     isRead: true,
     createdAt: new Date(Date.now() - 1000 * 60 * 60 * 48).toISOString(),
   },
@@ -285,7 +285,7 @@ export default function NotificationsPage() {
           {unreadCount > 0 && (
             <button
               onClick={markAllRead}
-              className="flex items-center gap-1.5 text-sm text-brand-700 dark:text-brand-400 font-medium hover:text-brand-600 transition-colors"
+              className="flex items-center gap-1.5 text-sm text-brand-700 dark:text-brand-400 font-medium hover:text-brand-700 transition-colors"
             >
               <CheckCheck className="h-4 w-4" />
               Mark all read

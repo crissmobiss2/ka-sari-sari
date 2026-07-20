@@ -1,4 +1,4 @@
-﻿"use client";
+"use client";
 import { useState, useMemo, useEffect } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
@@ -247,7 +247,7 @@ function OrderCard({
               {selectionMode && (
                 <button
                   onClick={() => onToggleItem(key)}
-                  className="shrink-0 text-brand-700 dark:text-brand-400 hover:text-brand-600 active:scale-90 transition-all"
+                  className="shrink-0 text-brand-700 dark:text-brand-400 hover:text-brand-700 active:scale-90 transition-all"
                   aria-label={checked ? "Deselect item" : "Select item"}
                 >
                   {checked ? (

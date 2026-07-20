@@ -1,4 +1,4 @@
-﻿"use client";
+"use client";
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
@@ -29,7 +29,7 @@ export function WarehouseNav() {
                 "flex-1 flex flex-col items-center justify-center gap-1 py-3 px-2 transition-colors",
                 isActive
                   ? "text-brand-700 dark:text-brand-400"
-                  : "text-muted-foreground hover:text-brand-600"
+                  : "text-muted-foreground hover:text-brand-700"
               )}
             >
               <Icon

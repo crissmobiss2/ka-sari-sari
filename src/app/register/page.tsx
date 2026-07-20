@@ -1,4 +1,4 @@
-﻿"use client";
+"use client";
 import { useState, useMemo } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
@@ -224,7 +224,7 @@ export default function RegisterPage() {
                     body: JSON.stringify({ phone: form.phone }),
                   }).catch(() => {});
                 }}
-                className="w-full text-center text-sm text-brand-700 dark:text-brand-400 hover:text-brand-600"
+                className="w-full text-center text-sm text-brand-700 dark:text-brand-400 hover:text-brand-700"
               >
                 Resend code
               </button>
@@ -370,7 +370,7 @@ export default function RegisterPage() {
 
           <p className="mt-8 text-center text-sm text-muted-foreground">
             Already registered?{" "}
-            <Link href="/login" className="font-medium text-brand-700 dark:text-brand-400 hover:text-brand-600">Sign in</Link>
+            <Link href="/login" className="font-medium text-brand-700 dark:text-brand-400 hover:text-brand-700">Sign in</Link>
           </p>
         </div>
       </div>

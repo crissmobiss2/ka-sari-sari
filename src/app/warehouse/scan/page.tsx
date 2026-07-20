@@ -127,7 +127,7 @@ export default function ScanPage() {
         onClick={() => setShowScanner(true)}
         className="w-full max-w-sm mx-auto flex flex-col items-center justify-center gap-3 rounded-2xl border-2 border-dashed border-brand-300 bg-brand-50/50 dark:bg-brand-500/5 py-10 hover:bg-brand-50 dark:bg-brand-500/10 dark:hover:bg-brand-500/10 transition-colors group"
       >
-        <div className="h-16 w-16 rounded-2xl bg-brand-500 flex items-center justify-center shadow-lg group-hover:scale-105 transition-transform">
+        <div className="h-16 w-16 rounded-2xl bg-brand-700 flex items-center justify-center shadow-lg group-hover:scale-105 transition-transform">
           <Camera className="h-8 w-8 text-white" />
         </div>
         <div className="text-center">

@@ -1,4 +1,4 @@
-﻿"use client";
+"use client";
 import { useState, useEffect } from "react";
 import { Plus, Edit2, Tag, Check, X } from "lucide-react";
 import { Card } from "@/components/ui/card";
@@ -125,7 +125,7 @@ export default function AdminCategoriesPage() {
                 <div className="flex items-center gap-1 ml-2 shrink-0">
                   <button
                     onClick={() => handleSave(cat.id)}
-                    className="text-brand-700 dark:text-brand-400 hover:text-brand-600 transition-colors"
+                    className="text-brand-700 dark:text-brand-400 hover:text-brand-700 transition-colors"
                     title="Save"
                   >
                     <Check className="h-4 w-4" />

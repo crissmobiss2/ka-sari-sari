@@ -1,4 +1,4 @@
-﻿"use client";
+"use client";
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import {
@@ -182,7 +182,7 @@ export default function CheckoutPage() {
                   setDraftAddress(address);
                   setEditingAddress(true);
                 }}
-                className="text-xs text-brand-700 dark:text-brand-400 font-medium hover:text-brand-600 transition-colors"
+                className="text-xs text-brand-700 dark:text-brand-400 font-medium hover:text-brand-700 transition-colors"
               >
                 Change
               </button>

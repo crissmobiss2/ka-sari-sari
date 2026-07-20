@@ -1,4 +1,4 @@
-﻿"use client";
+"use client";
 import { useState, useMemo, useRef, useCallback, useEffect } from "react";
 import {
   Search, Plus, Minus, X, CheckCircle2, Printer,
@@ -251,7 +251,7 @@ export default function RetailerPOSPage() {
         </div>
         <button
           onClick={() => setShowScanner(true)}
-          className="flex h-8 w-8 items-center justify-center rounded-xl border border-border text-muted-foreground hover:text-brand-600 hover:border-brand-300 transition-colors"
+          className="flex h-8 w-8 items-center justify-center rounded-xl border border-border text-muted-foreground hover:text-brand-700 hover:border-brand-300 transition-colors"
           title="Scan barcode"
         >
           <Camera className="h-4 w-4" />
@@ -314,7 +314,7 @@ export default function RetailerPOSPage() {
               />
               <button
                 onClick={() => setShowScanner(true)}
-                className="absolute right-2 top-1/2 -translate-y-1/2 flex h-6 w-6 items-center justify-center rounded-lg text-muted-foreground hover:text-brand-600 transition-colors"
+                className="absolute right-2 top-1/2 -translate-y-1/2 flex h-6 w-6 items-center justify-center rounded-lg text-muted-foreground hover:text-brand-700 transition-colors"
                 title="Scan barcode"
               >
                 <Camera className="h-3.5 w-3.5" />

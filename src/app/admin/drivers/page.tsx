@@ -84,11 +84,11 @@ function StarRating({ rating }: { rating: number }) {
         <span key={i} className="relative inline-block">
           <Star className="h-3.5 w-3.5 text-border" fill="currentColor" />
           {i <= full && (
-            <Star className="absolute inset-0 h-3.5 w-3.5 text-warning-400" fill="currentColor" />
+            <Star className="absolute inset-0 h-3.5 w-3.5 text-warning-600" fill="currentColor" />
           )}
           {i === full + 1 && partial > 0 && (
             <span className="absolute inset-0 overflow-hidden" style={{ width: `${partial * 100}%` }}>
-              <Star className="h-3.5 w-3.5 text-warning-400" fill="currentColor" />
+              <Star className="h-3.5 w-3.5 text-warning-600" fill="currentColor" />
             </span>
           )}
         </span>
@@ -376,7 +376,7 @@ export default function AdminDriversPage() {
                           {driver.initials}
                         </div>
                         <span className="font-medium text-foreground">{driver.name}</span>
-                        {isTop && <Star className="h-3.5 w-3.5 text-warning-400 shrink-0" fill="currentColor" />}
+                        {isTop && <Star className="h-3.5 w-3.5 text-warning-600 shrink-0" fill="currentColor" />}
                       </div>
                     </td>
                     <td className="px-5 py-3 text-right tabular-nums font-semibold text-foreground">{driver.rating.toFixed(2)}</td>

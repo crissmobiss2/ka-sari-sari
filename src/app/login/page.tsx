@@ -1,4 +1,4 @@
-﻿"use client";
+"use client";
 import { useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
@@ -104,7 +104,7 @@ export default function LoginPage() {
             )}
 
             <div className="flex justify-end">
-              <Link href="/forgot-password" className="text-sm text-brand-700 dark:text-brand-400 hover:text-brand-600">
+              <Link href="/forgot-password" className="text-sm text-brand-700 dark:text-brand-400 hover:text-brand-700">
                 Forgot password?
               </Link>
             </div>
@@ -117,7 +117,7 @@ export default function LoginPage() {
           <div className="mt-6 text-center">
             <p className="text-sm text-muted-foreground">
               No account yet?{" "}
-              <Link href="/register" className="font-medium text-brand-700 dark:text-brand-400 hover:text-brand-600">
+              <Link href="/register" className="font-medium text-brand-700 dark:text-brand-400 hover:text-brand-700">
                 Register your store
               </Link>
             </p>

@@ -1,4 +1,4 @@
-﻿import Link from "next/link";
+import Link from "next/link";
 import {
   ArrowRight, CheckCircle2, Package, Truck, BarChart3,
   ShoppingBasket, Store, Clock, Star, Shield, Zap,
@@ -108,7 +108,7 @@ export default function HomePage() {
                   <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-brand-50 dark:bg-brand-500/10 text-brand-700 dark:text-brand-400">
                     <step.icon className="h-5 w-5" />
                   </div>
-                  <span className="font-display text-2xl font-bold text-surface-200 leading-none">{step.step}</span>
+                  <span className="font-display text-2xl font-bold text-surface-200 leading-none" aria-hidden="true">{step.step}</span>
                 </div>
                 <h3 className="font-display text-lg font-semibold text-foreground mb-2">{step.title}</h3>
                 <p className="text-sm text-muted-foreground leading-relaxed">{step.description}</p>
@@ -126,7 +126,7 @@ export default function HomePage() {
               <p className="text-xs font-semibold uppercase tracking-widest text-brand-700 dark:text-brand-400 mb-1">What we carry</p>
               <h2 className="font-display text-2xl font-bold text-foreground">Popular categories</h2>
             </div>
-            <Link href="/register" className="flex items-center gap-1 text-sm font-medium text-brand-700 dark:text-brand-400 hover:text-brand-600">
+            <Link href="/register" className="flex items-center gap-1 text-sm font-medium text-brand-700 dark:text-brand-400 hover:text-brand-700">
               See all <ChevronRight className="h-4 w-4" />
             </Link>
           </div>
