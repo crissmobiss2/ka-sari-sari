@@ -333,7 +333,7 @@ export default function AdminForecastPage() {
           </Button>
           <Button
             size="sm"
-            className="bg-brand-500 hover:bg-brand-600 text-white"
+            className="bg-brand-700 hover:bg-brand-800 text-white"
             onClick={() => { fetchForecast(); toastSuccess("Refreshing AI forecastâ€¦"); }}
             disabled={aiLoading}
           >

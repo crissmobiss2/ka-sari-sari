@@ -257,7 +257,7 @@ export default function WarehouseDashboard() {
         <h2 className="font-display text-base font-semibold text-foreground">Quick Actions</h2>
         <div className="grid grid-cols-2 gap-2">
           {[
-            { href: "/warehouse/picking",   label: "Start Picking",    icon: ScanLine,   color: "bg-brand-500 text-white",          sub: `${openPickLists + inProgress} lists` },
+            { href: "/warehouse/picking",   label: "Start Picking",    icon: ScanLine,   color: "bg-brand-700 text-white",          sub: `${openPickLists + inProgress} lists` },
             { href: "/warehouse/receiving", label: "Receive Goods",    icon: PackageCheck,color: "bg-success-700 text-white",       sub: `${receivingQueue} pending` },
             { href: "/warehouse/scan",      label: "Scan / Lookup",   icon: Zap,         color: "bg-surface-800 text-white",        sub: "Quick scan" },
             { href: "/warehouse/inventory", label: "Check Inventory",  icon: Package,     color: "bg-violet-600 text-white",         sub: "Stock levels" },
@@ -316,7 +316,7 @@ export default function WarehouseDashboard() {
                       "shrink-0 rounded-lg text-xs font-semibold px-2.5 py-1.5 transition-colors",
                       isPrepped
                         ? "bg-success-100 text-success-700 cursor-default"
-                        : "bg-brand-500 text-white"
+                        : "bg-brand-700 text-white"
                     )}
                   >
                     {isPrepped ? "Prepped ✓" : "Prep"}

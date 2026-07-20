@@ -405,7 +405,7 @@ export default function AdminCreditPage() {
               <button
                 onClick={handleRecordPayment}
                 disabled={!paymentAmount || Number(paymentAmount) <= 0}
-                className="flex-1 rounded-xl bg-brand-500 text-white py-2.5 text-sm font-semibold hover:bg-brand-600 transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
+                className="flex-1 rounded-xl bg-brand-700 text-white py-2.5 text-sm font-semibold hover:bg-brand-800 transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
               >
                 Confirm Payment
               </button>
@@ -477,7 +477,7 @@ export default function AdminCreditPage() {
               <button
                 onClick={handleCreateCreditLine}
                 disabled={!newRetailer.trim() || !newLimit || Number(newLimit) <= 0}
-                className="flex-1 rounded-xl bg-brand-500 text-white py-2.5 text-sm font-semibold hover:bg-brand-600 transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
+                className="flex-1 rounded-xl bg-brand-700 text-white py-2.5 text-sm font-semibold hover:bg-brand-800 transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
               >
                 Create Credit Line
               </button>
@@ -496,7 +496,7 @@ export default function AdminCreditPage() {
       <div className="flex items-start justify-between gap-4">
         <div>
           <div className="flex items-center gap-2 mb-1">
-            <div className="flex h-8 w-8 items-center justify-center rounded-xl bg-brand-500">
+            <div className="flex h-8 w-8 items-center justify-center rounded-xl bg-brand-700">
               <CreditCard className="h-4 w-4 text-white" />
             </div>
             <h1 className="font-display text-2xl font-bold text-foreground">Credit Terms</h1>
@@ -627,7 +627,7 @@ export default function AdminCreditPage() {
               onClick={() => setStatusFilter(s)}
               className={cn(
                 "rounded-xl border px-3 py-2 text-xs font-semibold transition-colors",
-                statusFilter === s ? "bg-brand-500 text-white border-brand-500" : "border-border bg-card text-muted-foreground hover:text-foreground"
+                statusFilter === s ? "bg-brand-700 text-white border-brand-500" : "border-border bg-card text-muted-foreground hover:text-foreground"
               )}
             >
               {s === "all" ? "All" : s === "at_limit" ? "At Limit" : s.charAt(0).toUpperCase() + s.slice(1)}
@@ -724,7 +724,7 @@ export default function AdminCreditPage() {
               <div className="space-y-2 pt-2">
                 <button
                   onClick={() => { setPaymentModal(selectedAccount.id); setPaymentAmount(""); }}
-                  className="w-full rounded-xl bg-brand-500 text-white py-2.5 text-sm font-semibold hover:bg-brand-600 transition-colors"
+                  className="w-full rounded-xl bg-brand-700 text-white py-2.5 text-sm font-semibold hover:bg-brand-800 transition-colors"
                 >
                   Record Payment
                 </button>

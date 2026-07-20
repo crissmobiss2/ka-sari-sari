@@ -175,7 +175,7 @@ function PickListCard({
               {onOpenScanner && (
                 <button
                   onClick={onOpenScanner}
-                  className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-brand-500 text-white text-sm font-semibold hover:bg-brand-600 transition-colors"
+                  className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-brand-700 text-white text-sm font-semibold hover:bg-brand-800 transition-colors"
                 >
                   <Camera className="h-4 w-4" />
                   Scan
@@ -521,7 +521,7 @@ export default function PickingPage() {
             className={cn(
               "flex items-center gap-1.5 px-4 py-2.5 rounded-xl text-sm font-semibold whitespace-nowrap transition-colors shrink-0",
               activeFilter === key
-                ? "bg-brand-500 text-white"
+                ? "bg-brand-700 text-white"
                 : "bg-muted text-muted-foreground hover:text-foreground"
             )}
           >

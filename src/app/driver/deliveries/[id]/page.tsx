@@ -287,7 +287,7 @@ export default function DeliveryDetailPage() {
       <div className="flex flex-col items-center justify-center min-h-screen gap-4 px-6">
         <p className="text-lg font-semibold text-foreground">Delivery not found</p>
         <p className="text-sm text-muted-foreground text-center">Could not load delivery details for this order.</p>
-        <Link href="/driver/deliveries" className="rounded-xl bg-brand-500 px-4 py-2 text-sm font-semibold text-white">
+        <Link href="/driver/deliveries" className="rounded-xl bg-brand-700 px-4 py-2 text-sm font-semibold text-white">
           Back to deliveries
         </Link>
       </div>
@@ -1126,7 +1126,7 @@ export default function DeliveryDetailPage() {
               </button>
               <button
                 onClick={saveSignature}
-                className="flex-1 h-11 rounded-2xl bg-brand-500 hover:bg-brand-600 text-white font-semibold text-sm"
+                className="flex-1 h-11 rounded-2xl bg-brand-700 hover:bg-brand-800 text-white font-semibold text-sm"
               >
                 Save Signature
               </button>

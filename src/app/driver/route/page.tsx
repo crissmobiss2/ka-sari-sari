@@ -265,7 +265,7 @@ export default function RouteMapPage() {
         <p className="text-sm text-muted-foreground text-center">Check your connection and try again.</p>
         <button
           onClick={() => { setRouteError(false); setLoading(true); fetch("/api/driver/route").then(r => r.ok ? r.json() : Promise.reject()).then(d => { if (d.stops?.length) { let na = false; setStops((d.stops as ApiStop[]).map(s => { const isNext = (s.status !== "delivered" && s.status !== "failed") && !na; if (isNext) na = true; return mapApiStop(s, isNext); })); } }).catch(() => setRouteError(true)).finally(() => setLoading(false)); }}
-          className="rounded-xl bg-brand-500 px-4 py-2 text-sm font-semibold text-white"
+          className="rounded-xl bg-brand-700 px-4 py-2 text-sm font-semibold text-white"
         >
           Retry
         </button>
@@ -276,7 +276,7 @@ export default function RouteMapPage() {
   return (
     <div className="min-h-screen bg-background pb-28">
       {/* Route header card */}
-      <div className="bg-brand-500 px-4 pt-5 pb-6 text-white">
+      <div className="bg-brand-700 px-4 pt-5 pb-6 text-white">
         <div className="flex items-start justify-between mb-4">
           <div>
             <p className="text-xs font-medium opacity-80 uppercase tracking-wider">Today's Route</p>
@@ -359,7 +359,7 @@ export default function RouteMapPage() {
                   "flex h-8 w-8 shrink-0 items-center justify-center rounded-full font-bold text-sm",
                   isDone ? "bg-success-100 text-success-600"
                   : isFailed ? "bg-danger-100 text-danger-600"
-                  : isNext ? "bg-brand-500 text-white"
+                  : isNext ? "bg-brand-700 text-white"
                   : "bg-surface-100 dark:bg-surface-800 text-muted-foreground"
                 )}>
                   {isDone ? <CheckCircle2 className="h-4 w-4" /> : isFailed ? <XCircle className="h-4 w-4" /> : stop.stopNumber}
@@ -368,7 +368,7 @@ export default function RouteMapPage() {
                 <div className="flex-1 min-w-0">
                   <div className="flex items-center gap-2">
                     <p className="text-sm font-bold text-foreground truncate">{stop.storeName}</p>
-                    {isNext && <span className="shrink-0 rounded-full bg-brand-500 text-white text-[10px] font-bold px-2 py-0.5">NEXT</span>}
+                    {isNext && <span className="shrink-0 rounded-full bg-brand-700 text-white text-[10px] font-bold px-2 py-0.5">NEXT</span>}
                   </div>
                   <div className="flex items-center gap-2 mt-0.5">
                     <span className="text-xs text-muted-foreground truncate">{stop.barangay}, {stop.city}</span>
@@ -518,7 +518,7 @@ export default function RouteMapPage() {
             <button
               onClick={handleSubmitReport}
               disabled={isSubmitting}
-              className="w-full rounded-2xl bg-brand-500 hover:bg-brand-600 text-white font-bold h-12 transition-colors disabled:opacity-60"
+              className="w-full rounded-2xl bg-brand-700 hover:bg-brand-800 text-white font-bold h-12 transition-colors disabled:opacity-60"
             >
               {isSubmitting ? "Submittingâ€¦" : "Confirm & Submit Report"}
             </button>

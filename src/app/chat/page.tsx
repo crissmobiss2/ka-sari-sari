@@ -96,7 +96,7 @@ function ChatBubble({ message }: { message: Message }) {
   return (
     <div className={cn("flex gap-2", isUser ? "justify-end" : "justify-start")}>
       {!isUser && (
-        <div className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-brand-500 text-white text-[10px] font-bold mt-1">
+        <div className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-brand-700 text-white text-[10px] font-bold mt-1">
           KSS
         </div>
       )}
@@ -104,7 +104,7 @@ function ChatBubble({ message }: { message: Message }) {
         <div className={cn(
           "rounded-2xl px-4 py-3 text-sm leading-relaxed",
           isUser
-            ? "rounded-br-sm bg-brand-500 text-white"
+            ? "rounded-br-sm bg-brand-700 text-white"
             : "rounded-bl-sm bg-muted text-foreground border border-border"
         )}>
           {message.isVoice && (
@@ -331,7 +331,7 @@ export default function ChatPage() {
               className={cn(
                 "flex-shrink-0 rounded-full border px-3 py-1 text-xs font-semibold transition-colors whitespace-nowrap",
                 selectedLang.id === lang.id
-                  ? "bg-brand-500 text-white border-brand-500"
+                  ? "bg-brand-700 text-white border-brand-500"
                   : "border-border bg-card text-muted-foreground hover:text-foreground hover:border-brand-300"
               )}
             >
@@ -386,7 +386,7 @@ export default function ChatPage() {
             <div className="p-2">
               <Link
                 href="/cart"
-                className="flex items-center justify-center gap-2 w-full rounded-xl bg-brand-500 py-2.5 text-sm font-bold text-white hover:bg-brand-600 transition-colors"
+                className="flex items-center justify-center gap-2 w-full rounded-xl bg-brand-700 py-2.5 text-sm font-bold text-white hover:bg-brand-800 transition-colors"
               >
                 <ShoppingCart className="h-4 w-4" /> Go to Cart & Checkout
               </Link>
@@ -402,7 +402,7 @@ export default function ChatPage() {
         {/* AI typing / loading indicator */}
         {isAiLoading && (
           <div className="flex gap-2 justify-start">
-            <div className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-brand-500 text-white text-[10px] font-bold mt-1">
+            <div className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-brand-700 text-white text-[10px] font-bold mt-1">
               KSS
             </div>
             <div className="rounded-2xl rounded-bl-sm bg-muted border border-border px-4 py-3 flex items-center gap-2">
@@ -472,7 +472,7 @@ export default function ChatPage() {
               </button>
               <button
                 onClick={placeOrder}
-                className="flex-1 rounded-xl bg-brand-500 py-2.5 text-sm font-bold text-white hover:bg-brand-600 transition-colors flex items-center justify-center gap-1.5"
+                className="flex-1 rounded-xl bg-brand-700 py-2.5 text-sm font-bold text-white hover:bg-brand-800 transition-colors flex items-center justify-center gap-1.5"
               >
                 <ShoppingCart className="h-3.5 w-3.5" /> Place This Order
               </button>
@@ -483,7 +483,7 @@ export default function ChatPage() {
         {/* Live voice transcript bubble */}
         {isListening && (
           <div className="flex justify-end">
-            <div className="max-w-[82%] rounded-2xl rounded-br-sm bg-brand-500 px-4 py-3">
+            <div className="max-w-[82%] rounded-2xl rounded-br-sm bg-brand-700 px-4 py-3">
               <div className="flex items-center gap-2 mb-1.5">
                 <div className="flex gap-0.5 items-end">
                   {[0, 1, 2, 3].map((i) => (
@@ -534,7 +534,7 @@ export default function ChatPage() {
           ) : input.trim() ? (
             <button
               onClick={() => handleSubmit(input)}
-              className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-brand-500 text-white hover:bg-brand-600 transition-colors"
+              className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-brand-700 text-white hover:bg-brand-800 transition-colors"
             >
               <Send className="h-4 w-4" />
             </button>
@@ -548,7 +548,7 @@ export default function ChatPage() {
                 isListening
                   ? "bg-danger-500 text-white scale-110 shadow-lg shadow-danger-500/30"
                   : speechSupported
-                    ? "bg-brand-500 text-white hover:bg-brand-600 active:scale-95"
+                    ? "bg-brand-700 text-white hover:bg-brand-800 active:scale-95"
                     : "bg-surface-200 text-muted-foreground cursor-not-allowed opacity-50"
               )}
             >

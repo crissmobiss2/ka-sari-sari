@@ -166,7 +166,7 @@ export default function AdminInventoryPage() {
               className={cn(
                 "rounded-xl px-4 py-2 text-sm font-medium border transition-colors",
                 filter === f.id
-                  ? "bg-brand-500 text-white border-brand-500"
+                  ? "bg-brand-700 text-white border-brand-500"
                   : "bg-card text-muted-foreground border-border hover:border-brand-300"
               )}
             >

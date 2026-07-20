@@ -338,7 +338,7 @@ function OptimizeModal({
                 Cancel
               </Button>
               <Button
-                className="flex-1 bg-brand-500 hover:bg-brand-600 text-white"
+                className="flex-1 bg-brand-700 hover:bg-brand-800 text-white"
                 onClick={onApply}
                 disabled={applying}
               >
@@ -370,7 +370,7 @@ function OptimizeModal({
                 Drivers have been notified of updated stop sequences via the app.
               </p>
             </div>
-            <Button className="bg-brand-500 hover:bg-brand-600 text-white px-8" onClick={onClose}>
+            <Button className="bg-brand-700 hover:bg-brand-800 text-white px-8" onClick={onClose}>
               Close
             </Button>
           </div>

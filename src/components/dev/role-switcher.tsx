@@ -57,7 +57,7 @@ export function DevRoleSwitcher() {
                 className={cn(
                   "flex w-full items-center gap-2.5 rounded-xl px-2.5 py-2 text-left transition-colors disabled:cursor-default",
                   isActive
-                    ? "bg-brand-500 text-white"
+                    ? "bg-brand-700 text-white"
                     : "hover:bg-muted text-foreground"
                 )}
               >

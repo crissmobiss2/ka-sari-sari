@@ -130,7 +130,7 @@ export default function CartPage() {
                     <button
                       onClick={() => updateQty(product.id, quantity + 1)}
                       disabled={product.stock !== undefined && quantity >= product.stock}
-                      className="flex h-6 w-6 items-center justify-center rounded-lg bg-brand-500 text-white hover:bg-brand-600 transition-colors disabled:opacity-40"
+                      className="flex h-6 w-6 items-center justify-center rounded-lg bg-brand-700 text-white hover:bg-brand-800 transition-colors disabled:opacity-40"
                     >
                       <Plus className="h-3 w-3" />
                     </button>

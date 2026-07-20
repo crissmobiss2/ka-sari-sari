@@ -225,7 +225,7 @@ export default function InventoryPage() {
           className={cn(
             "px-4 py-2 rounded-xl text-sm font-semibold whitespace-nowrap shrink-0 transition-colors",
             activeCategory === "all"
-              ? "bg-brand-500 text-white"
+              ? "bg-brand-700 text-white"
               : "bg-muted text-muted-foreground hover:text-foreground"
           )}
         >
@@ -238,7 +238,7 @@ export default function InventoryPage() {
             className={cn(
               "px-4 py-2 rounded-xl text-sm font-semibold whitespace-nowrap shrink-0 transition-colors",
               activeCategory === cat.id
-                ? "bg-brand-500 text-white"
+                ? "bg-brand-700 text-white"
                 : "bg-muted text-muted-foreground hover:text-foreground"
             )}
           >
@@ -362,7 +362,7 @@ export default function InventoryPage() {
                             />
                             <button
                               onClick={() => confirmAdjust(product.id)}
-                              className="text-xs rounded-lg bg-brand-500 text-white px-2 py-1 font-semibold hover:bg-brand-600 transition-colors"
+                              className="text-xs rounded-lg bg-brand-700 text-white px-2 py-1 font-semibold hover:bg-brand-600 transition-colors"
                             >
                               OK
                             </button>

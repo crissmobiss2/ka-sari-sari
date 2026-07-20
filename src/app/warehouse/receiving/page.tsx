@@ -571,7 +571,7 @@ function ReceiptCard({
                               type="button"
                               onClick={onOpenScanner}
                               title="Scan with camera"
-                              className="absolute right-3 top-1/2 -translate-y-1/2 flex h-9 w-9 items-center justify-center rounded-xl bg-brand-500 text-white hover:bg-brand-600 transition-colors"
+                              className="absolute right-3 top-1/2 -translate-y-1/2 flex h-9 w-9 items-center justify-center rounded-xl bg-brand-700 text-white hover:bg-brand-800 transition-colors"
                             >
                               <Camera className="h-4 w-4" />
                             </button>
@@ -618,7 +618,7 @@ function ReceiptCard({
                             className={cn(
                               "flex-1 py-3 rounded-xl text-base font-semibold border transition-colors",
                               form.qty === String(v)
-                                ? "bg-brand-500 text-white border-brand-500"
+                                ? "bg-brand-700 text-white border-brand-500"
                                 : "bg-background border-border text-foreground hover:bg-muted"
                             )}
                           >

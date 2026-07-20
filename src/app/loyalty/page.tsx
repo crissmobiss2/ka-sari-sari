@@ -246,7 +246,7 @@ export default function LoyaltyPage() {
                     </span>
                   </div>
                   {tier.current && (
-                    <span className="rounded-full bg-brand-500 px-2.5 py-0.5 text-[10px] font-bold text-white">
+                    <span className="rounded-full bg-brand-700 px-2.5 py-0.5 text-[10px] font-bold text-white">
                       Current tier
                     </span>
                   )}
@@ -341,7 +341,7 @@ export default function LoyaltyPage() {
                 "flex items-center gap-1.5 rounded-lg px-3 py-1.5 text-xs font-bold transition-all active:scale-95",
                 copied
                   ? "bg-success-700 text-white"
-                  : "bg-brand-500 text-white hover:bg-brand-600"
+                  : "bg-brand-700 text-white hover:bg-brand-800"
               )}
             >
               {copied ? (

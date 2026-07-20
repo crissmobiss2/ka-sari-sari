@@ -264,7 +264,7 @@ function EtaCard({ estimatedDelivery = ORDER.estimatedDelivery }: { estimatedDel
   }, []);
 
   return (
-    <div className="mx-4 rounded-2xl bg-brand-500 text-white p-5 shadow-brand">
+    <div className="mx-4 rounded-2xl bg-brand-700 text-white p-5 shadow-brand">
       <div className="flex items-start justify-between gap-3">
         <div className="flex-1">
           <div className="flex items-center gap-2 mb-1">
@@ -391,7 +391,7 @@ function StopsBreakdown() {
               <div className={cn(
                 "flex h-6 w-6 shrink-0 items-center justify-center rounded-full text-[11px] font-bold",
                 stop.status === "done"    ? "bg-success-700 text-white" :
-                stop.status === "current" ? "bg-brand-500 text-white" :
+                stop.status === "current" ? "bg-brand-700 text-white" :
                 stop.status === "yours"   ? "border-2 border-brand-500 bg-white text-brand-500" :
                 "bg-surface-200 dark:bg-surface-800 text-muted-foreground"
               )}>
@@ -653,7 +653,7 @@ export default function TrackingPage() {
           </p>
           <Link
             href="/orders"
-            className="inline-flex items-center gap-2 rounded-xl bg-brand-500 px-5 py-3 text-sm font-bold text-white hover:bg-brand-600 transition-colors"
+            className="inline-flex items-center gap-2 rounded-xl bg-brand-700 px-5 py-3 text-sm font-bold text-white hover:bg-brand-800 transition-colors"
           >
             <ArrowLeft className="h-4 w-4" />
             View My Orders

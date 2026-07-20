@@ -259,7 +259,7 @@ export default function AdminOrdersPage() {
                     className={cn(
                       "rounded-lg px-2.5 py-1 text-xs font-medium transition-colors",
                       n === safePage
-                        ? "bg-brand-500 text-white"
+                        ? "bg-brand-700 text-white"
                         : "hover:bg-muted text-muted-foreground"
                     )}
                   >

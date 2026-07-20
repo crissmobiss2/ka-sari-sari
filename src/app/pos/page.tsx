@@ -218,7 +218,7 @@ export default function RetailerPOSPage() {
           <div className="flex flex-col gap-2 w-full max-w-xs">
             <button
               onClick={handleNewSale}
-              className="w-full rounded-xl bg-brand-500 hover:bg-brand-600 text-white text-sm font-bold h-11 transition-colors flex items-center justify-center gap-2"
+              className="w-full rounded-xl bg-brand-700 hover:bg-brand-800 text-white text-sm font-bold h-11 transition-colors flex items-center justify-center gap-2"
             >
               <RefreshCcw className="h-4 w-4" />
               New Sale
@@ -286,7 +286,7 @@ export default function RetailerPOSPage() {
         >
           Cart
           {cartCount > 0 && (
-            <span className="ml-1.5 inline-flex items-center justify-center h-4 min-w-4 px-1 rounded-full bg-brand-500 text-white text-[10px] font-bold">
+            <span className="ml-1.5 inline-flex items-center justify-center h-4 min-w-4 px-1 rounded-full bg-brand-700 text-white text-[10px] font-bold">
               {cartCount}
             </span>
           )}
@@ -331,7 +331,7 @@ export default function RetailerPOSPage() {
                 className={cn(
                   "shrink-0 rounded-full px-3 py-1 text-xs font-semibold transition-colors whitespace-nowrap",
                   categoryId === cat.id
-                    ? "bg-brand-500 text-white"
+                    ? "bg-brand-700 text-white"
                     : "bg-surface-100 dark:bg-surface-800 text-muted-foreground hover:text-foreground"
                 )}
               >
@@ -365,7 +365,7 @@ export default function RetailerPOSPage() {
                     )}
                   >
                     {inCart && (
-                      <span className="absolute top-1.5 right-1.5 z-10 flex h-5 w-5 items-center justify-center rounded-full bg-brand-500 text-[10px] font-bold text-white">
+                      <span className="absolute top-1.5 right-1.5 z-10 flex h-5 w-5 items-center justify-center rounded-full bg-brand-700 text-[10px] font-bold text-white">
                         {inCart.quantity}
                       </span>
                     )}
@@ -532,7 +532,7 @@ export default function RetailerPOSPage() {
                         <span className="text-xs font-bold text-foreground w-5 text-center tabular-nums">{item.quantity}</span>
                         <button
                           onClick={() => updateQty(item.product.id, 1)}
-                          className="flex h-6 w-6 items-center justify-center rounded-lg bg-brand-500 hover:bg-brand-600 text-white transition-colors"
+                          className="flex h-6 w-6 items-center justify-center rounded-lg bg-brand-700 hover:bg-brand-800 text-white transition-colors"
                         >
                           <Plus className="h-3 w-3" />
                         </button>
@@ -559,7 +559,7 @@ export default function RetailerPOSPage() {
                 <button
                   onClick={() => setStep("pay")}
                   disabled={cart.length === 0}
-                  className="w-full rounded-2xl bg-brand-500 hover:bg-brand-600 disabled:opacity-40 text-white text-sm font-bold h-12 transition-colors flex items-center justify-center gap-2"
+                  className="w-full rounded-2xl bg-brand-700 hover:bg-brand-800 disabled:opacity-40 text-white text-sm font-bold h-12 transition-colors flex items-center justify-center gap-2"
                 >
                   <Banknote className="h-5 w-5" />
                   Charge {cart.length > 0 ? formatPHP(total) : ""}

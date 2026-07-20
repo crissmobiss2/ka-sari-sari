@@ -350,7 +350,7 @@ export default function AdminOrderDetailPage() {
                     />
                     <Button
                       size="sm"
-                      className="w-full bg-brand-500 hover:bg-brand-600 text-white"
+                      className="w-full bg-brand-700 hover:bg-brand-800 text-white"
                       onClick={handleAssignDriver}
                       disabled={!driverId.trim() || assigning}
                     >

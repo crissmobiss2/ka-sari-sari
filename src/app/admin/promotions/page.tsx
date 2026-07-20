@@ -276,7 +276,7 @@ function CreatePromoModal({ onClose, onSave }: CreatePromoModalProps) {
                   className={cn(
                     "flex-1 py-2.5 text-sm font-medium transition-colors",
                     form.discountType === t
-                      ? "bg-brand-500 text-white"
+                      ? "bg-brand-700 text-white"
                       : "text-muted-foreground hover:bg-muted/50"
                   )}
                 >
@@ -334,7 +334,7 @@ function CreatePromoModal({ onClose, onSave }: CreatePromoModalProps) {
           </button>
           <button
             onClick={handleSubmit}
-            className="flex-1 rounded-xl bg-brand-500 py-2.5 text-sm font-medium text-white hover:bg-brand-600 transition-colors"
+            className="flex-1 rounded-xl bg-brand-700 py-2.5 text-sm font-medium text-white hover:bg-brand-800 transition-colors"
           >
             Create Promotion
           </button>
@@ -437,7 +437,7 @@ function EditPromoModal({ promo, onClose, onSave }: EditPromoModalProps) {
                   className={cn(
                     "flex-1 py-2.5 text-sm font-medium transition-colors",
                     form.discountType === t
-                      ? "bg-brand-500 text-white"
+                      ? "bg-brand-700 text-white"
                       : "text-muted-foreground hover:bg-muted/50"
                   )}
                 >
@@ -495,7 +495,7 @@ function EditPromoModal({ promo, onClose, onSave }: EditPromoModalProps) {
           </button>
           <button
             onClick={handleSave}
-            className="flex-1 rounded-xl bg-brand-500 py-2.5 text-sm font-medium text-white hover:bg-brand-600 transition-colors"
+            className="flex-1 rounded-xl bg-brand-700 py-2.5 text-sm font-medium text-white hover:bg-brand-800 transition-colors"
           >
             Save Changes
           </button>
@@ -646,7 +646,7 @@ export default function AdminPromotionsPage() {
         <h1 className="font-display text-2xl font-bold text-foreground">Promotions &amp; Deals</h1>
         <button
           onClick={() => setShowCreate(true)}
-          className="flex items-center gap-2 rounded-xl bg-brand-500 px-4 py-2.5 text-sm font-medium text-white hover:bg-brand-600 transition-colors"
+          className="flex items-center gap-2 rounded-xl bg-brand-700 px-4 py-2.5 text-sm font-medium text-white hover:bg-brand-800 transition-colors"
         >
           <Plus className="h-4 w-4" /> Create Promotion
         </button>

@@ -166,7 +166,7 @@ export default function DriverHomePage() {
         className={`w-full h-14 text-base font-semibold rounded-2xl ${
           onDuty
             ? "border-danger-500 text-danger-600 hover:bg-danger-50"
-            : "bg-brand-500 text-white"
+            : "bg-brand-700 text-white"
         }`}
         onClick={handleDutyToggle}
       >

@@ -427,7 +427,7 @@ export default function AnalyticsPage() {
                   <div className="flex items-center gap-3 px-4 py-3.5 flex-1 min-w-0">
                     <span className={cn(
                       "flex h-7 w-7 shrink-0 items-center justify-center rounded-lg text-xs font-black",
-                      p.rank === 1 ? "bg-brand-500 text-white" : "bg-surface-100 dark:bg-surface-800 text-muted-foreground"
+                      p.rank === 1 ? "bg-brand-700 text-white" : "bg-surface-100 dark:bg-surface-800 text-muted-foreground"
                     )}>
                       {p.rank}
                     </span>
@@ -504,7 +504,7 @@ export default function AnalyticsPage() {
                   </div>
                   <Link
                     href="/catalog"
-                    className="shrink-0 rounded-xl bg-brand-500 px-3 py-2 text-xs font-bold text-white active:scale-95 transition-transform hover:bg-brand-600"
+                    className="shrink-0 rounded-xl bg-brand-700 px-3 py-2 text-xs font-bold text-white active:scale-95 transition-transform hover:bg-brand-800"
                   >
                     Add to cart
                   </Link>
@@ -578,7 +578,7 @@ export default function AnalyticsPage() {
               <p className="text-xs text-muted-foreground mt-0.5">
                 You&apos;re on track to save <span className="text-brand-600 font-semibold">{formatPHP(displaySavingsForecast)}</span> this year if you keep ordering through Ka Sari-Sari.
               </p>
-              <Link href="/catalog" className="mt-2.5 inline-flex items-center gap-1 rounded-xl bg-brand-500 px-3 py-1.5 text-xs font-bold text-white hover:bg-brand-600 transition-colors active:scale-95">
+              <Link href="/catalog" className="mt-2.5 inline-flex items-center gap-1 rounded-xl bg-brand-700 px-3 py-1.5 text-xs font-bold text-white hover:bg-brand-800 transition-colors active:scale-95">
                 Browse catalog
               </Link>
             </div>

@@ -54,7 +54,7 @@ export default function FavoritesPage() {
                   </button>
                   <button
                     onClick={() => addItem(product)}
-                    className="flex items-center gap-1 rounded-xl bg-brand-500 px-3 py-1.5 text-xs font-semibold text-white hover:bg-brand-600 transition-colors active:scale-95"
+                    className="flex items-center gap-1 rounded-xl bg-brand-700 px-3 py-1.5 text-xs font-semibold text-white hover:bg-brand-800 transition-colors active:scale-95"
                   >
                     <ShoppingCart className="h-3.5 w-3.5" />
                     {inCart ? "Add more" : "Add"}

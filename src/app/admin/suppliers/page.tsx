@@ -18,10 +18,10 @@ const INITIAL_SUPPLIERS = [
 ];
 
 const TERMS_COLORS: Record<string, string> = {
-  "COD":         "bg-success-50 text-success-700 border-success-500/25",
-  "15 days NET": "bg-blue-50 text-blue-700 border-blue-200",
-  "30 days NET": "bg-warning-50 text-warning-700 border-warning-500/25",
-  "45 days NET": "bg-purple-50 text-purple-700 border-purple-200",
+  "COD":         "bg-success-50 dark:bg-success-500/20 text-success-700 dark:text-foreground border-success-500/25 dark:border-success-500/30",
+  "15 days NET": "bg-blue-50 dark:bg-blue-500/20 text-blue-700 dark:text-foreground border-blue-200 dark:border-blue-500/30",
+  "30 days NET": "bg-warning-50 dark:bg-warning-500/20 text-warning-700 dark:text-foreground border-warning-500/25 dark:border-warning-500/30",
+  "45 days NET": "bg-purple-50 dark:bg-purple-500/20 text-purple-700 dark:text-foreground border-purple-200 dark:border-purple-500/30",
 };
 
 function formatM(n: number) {
@@ -115,7 +115,7 @@ function SupplierCard({ s, onView, onNewPO, onEdit }: { s: Supplier } & CardHand
         </button>
         <button
           onClick={() => onNewPO(s)}
-          className="flex-1 flex items-center justify-center gap-1.5 rounded-xl bg-brand-500 py-2 text-xs font-medium text-white hover:bg-brand-600 transition-colors"
+          className="flex-1 flex items-center justify-center gap-1.5 rounded-xl bg-brand-700 py-2 text-xs font-medium text-white hover:bg-brand-800 transition-colors"
         >
           <ShoppingCart className="h-3.5 w-3.5" /> New PO
         </button>
@@ -321,7 +321,7 @@ function EditSupplierModal({
           </button>
           <button
             onClick={handleSave}
-            className="flex-1 rounded-xl bg-brand-500 py-2.5 text-sm font-medium text-white hover:bg-brand-600 transition-colors"
+            className="flex-1 rounded-xl bg-brand-700 py-2.5 text-sm font-medium text-white hover:bg-brand-800 transition-colors"
           >
             Save Changes
           </button>
@@ -430,7 +430,7 @@ function AddSupplierModal({
           </button>
           <button
             onClick={handleAdd}
-            className="flex-1 rounded-xl bg-brand-500 py-2.5 text-sm font-medium text-white hover:bg-brand-600 transition-colors"
+            className="flex-1 rounded-xl bg-brand-700 py-2.5 text-sm font-medium text-white hover:bg-brand-800 transition-colors"
           >
             Add Supplier
           </button>
@@ -524,7 +524,7 @@ export default function AdminSuppliersPage() {
       <div className="flex items-center justify-between gap-4">
         <div className="flex items-center gap-3">
           <h1 className="font-display text-2xl font-bold text-foreground">Suppliers</h1>
-          <span className="rounded-full bg-brand-50 border border-brand-200 px-2.5 py-0.5 text-xs font-semibold text-brand-600">
+          <span className="rounded-full bg-brand-50 dark:bg-brand-500/20 border border-brand-200 dark:border-brand-500/30 px-2.5 py-0.5 text-xs font-semibold text-brand-700 dark:text-foreground">
             {suppliers.length}
           </span>
         </div>
@@ -541,7 +541,7 @@ export default function AdminSuppliersPage() {
           </div>
           <button
             onClick={() => setShowAdd(true)}
-            className="flex items-center gap-2 rounded-xl bg-brand-500 px-4 py-2.5 text-sm font-medium text-white hover:bg-brand-600 transition-colors"
+            className="flex items-center gap-2 rounded-xl bg-brand-700 px-4 py-2.5 text-sm font-medium text-white hover:bg-brand-800 transition-colors"
           >
             <Plus className="h-4 w-4" /> Add Supplier
           </button>
@@ -570,7 +570,7 @@ export default function AdminSuppliersPage() {
             onClick={() => setViewMode("card")}
             className={cn(
               "px-3 py-2 transition-colors",
-              viewMode === "card" ? "bg-brand-500 text-white" : "text-muted-foreground hover:bg-muted/50"
+              viewMode === "card" ? "bg-brand-700 text-white" : "text-muted-foreground hover:bg-muted/50"
             )}
             aria-label="Card view"
           >
@@ -580,7 +580,7 @@ export default function AdminSuppliersPage() {
             onClick={() => setViewMode("table")}
             className={cn(
               "px-3 py-2 transition-colors",
-              viewMode === "table" ? "bg-brand-500 text-white" : "text-muted-foreground hover:bg-muted/50"
+              viewMode === "table" ? "bg-brand-700 text-white" : "text-muted-foreground hover:bg-muted/50"
             )}
             aria-label="Table view"
           >

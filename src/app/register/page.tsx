@@ -135,7 +135,7 @@ export default function RegisterPage() {
               <div key={label} className="flex items-center gap-2 flex-1 last:flex-none">
                 <div className={cn(
                   "flex h-7 w-7 shrink-0 items-center justify-center rounded-full text-xs font-semibold transition-colors",
-                  i < step  ? "bg-brand-500 text-white"
+                  i < step  ? "bg-brand-700 text-white"
                   : i === step ? "border-2 border-brand-500 text-brand-500"
                   : "border-2 border-border text-muted-foreground"
                 )}>

@@ -121,7 +121,7 @@ function CatalogContent() {
             className={cn(
               "shrink-0 rounded-full px-4 py-1.5 text-xs font-semibold border transition-colors",
               !activeCategory
-                ? "bg-brand-500 text-white border-brand-500"
+                ? "bg-brand-700 text-white border-brand-500"
                 : "bg-card text-muted-foreground border-border hover:border-brand-300"
             )}
           >
@@ -134,7 +134,7 @@ function CatalogContent() {
               className={cn(
                 "shrink-0 rounded-full px-4 py-1.5 text-xs font-semibold border transition-colors whitespace-nowrap",
                 activeCategory === cat.id
-                  ? "bg-brand-500 text-white border-brand-500"
+                  ? "bg-brand-700 text-white border-brand-500"
                   : "bg-card text-muted-foreground border-border hover:border-brand-300"
               )}
             >

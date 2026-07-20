@@ -402,10 +402,10 @@ export default function AdminAnalyticsPage() {
         {/* Total Revenue */}
         <Card className="p-5">
           <div className="flex items-start justify-between mb-3">
-            <div className="flex h-10 w-10 items-center justify-center rounded-xl text-success-600 bg-success-50">
+            <div className="flex h-10 w-10 items-center justify-center rounded-xl text-success-600 bg-success-50 dark:bg-success-500/10 dark:text-success-500">
               <TrendingUp className="h-5 w-5" />
             </div>
-            <span className="inline-flex items-center gap-0.5 text-[11px] font-semibold text-success-600 bg-success-50 rounded-full px-2 py-0.5">
+            <span className="inline-flex items-center gap-0.5 text-[11px] font-semibold text-success-700 dark:text-foreground bg-success-50 dark:bg-success-500/20 rounded-full px-2 py-0.5">
               <ArrowUpRight className="h-3 w-3" />12.3%
             </span>
           </div>
@@ -419,10 +419,10 @@ export default function AdminAnalyticsPage() {
         {/* Active Retailers */}
         <Card className="p-5">
           <div className="flex items-start justify-between mb-3">
-            <div className="flex h-10 w-10 items-center justify-center rounded-xl text-brand-600 bg-brand-50">
+            <div className="flex h-10 w-10 items-center justify-center rounded-xl text-brand-600 bg-brand-50 dark:bg-brand-500/10 dark:text-brand-400">
               <Users className="h-5 w-5" />
             </div>
-            <span className="inline-flex items-center gap-0.5 text-[11px] font-semibold text-success-600 bg-success-50 rounded-full px-2 py-0.5">
+            <span className="inline-flex items-center gap-0.5 text-[11px] font-semibold text-success-700 dark:text-foreground bg-success-50 dark:bg-success-500/20 rounded-full px-2 py-0.5">
               <ArrowUpRight className="h-3 w-3" />+{ADMIN_STATS.newRetailersMonth} new
             </span>
           </div>
@@ -436,10 +436,10 @@ export default function AdminAnalyticsPage() {
         {/* Orders This Month */}
         <Card className="p-5">
           <div className="flex items-start justify-between mb-3">
-            <div className="flex h-10 w-10 items-center justify-center rounded-xl text-info-600 bg-info-50">
+            <div className="flex h-10 w-10 items-center justify-center rounded-xl text-info-600 bg-info-50 dark:bg-info-500/10 dark:text-foreground">
               <ShoppingCart className="h-5 w-5" />
             </div>
-            <span className="inline-flex items-center gap-0.5 text-[11px] font-semibold text-red-600 bg-red-50 rounded-full px-2 py-0.5">
+            <span className="inline-flex items-center gap-0.5 text-[11px] font-semibold text-red-700 dark:text-foreground bg-red-50 dark:bg-red-500/20 rounded-full px-2 py-0.5">
               <ArrowDownRight className="h-3 w-3" />3.2%
             </span>
           </div>
@@ -453,10 +453,10 @@ export default function AdminAnalyticsPage() {
         {/* Avg Order Value */}
         <Card className="p-5">
           <div className="flex items-start justify-between mb-3">
-            <div className="flex h-10 w-10 items-center justify-center rounded-xl text-purple-600 bg-purple-50">
+            <div className="flex h-10 w-10 items-center justify-center rounded-xl text-purple-600 bg-purple-50 dark:bg-purple-500/10 dark:text-purple-400">
               <Package className="h-5 w-5" />
             </div>
-            <span className="inline-flex items-center gap-0.5 text-[11px] font-semibold text-success-600 bg-success-50 rounded-full px-2 py-0.5">
+            <span className="inline-flex items-center gap-0.5 text-[11px] font-semibold text-success-700 dark:text-foreground bg-success-50 dark:bg-success-500/20 rounded-full px-2 py-0.5">
               <ArrowUpRight className="h-3 w-3" />4.1%
             </span>
           </div>
@@ -499,12 +499,12 @@ export default function AdminAnalyticsPage() {
         <CardContent className="pt-2">
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-5">
             {/* Platform daily avg */}
-            <div className="rounded-xl bg-brand-50 border border-brand-100 p-4">
-              <p className="text-xs text-brand-700 font-medium mb-1">Platform Daily Avg</p>
-              <p className="font-display text-3xl font-bold text-brand-700 leading-none">
+            <div className="rounded-xl bg-brand-50 dark:bg-brand-500/10 border border-brand-100 dark:border-brand-500/20 p-4">
+              <p className="text-xs text-brand-700 dark:text-foreground font-medium mb-1">Platform Daily Avg</p>
+              <p className="font-display text-3xl font-bold text-brand-700 dark:text-foreground leading-none">
                 {salesVelocity.platformOrdersPerDay}
               </p>
-              <p className="text-[11px] text-brand-600 mt-1">orders / day (Jan 2026)</p>
+              <p className="text-[11px] text-brand-700 dark:text-foreground/70 mt-1">orders / day (Jan 2026)</p>
             </div>
             {/* Today */}
             <div className="rounded-xl bg-surface-50 border border-border p-4">

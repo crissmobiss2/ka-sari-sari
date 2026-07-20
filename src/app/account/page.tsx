@@ -585,7 +585,7 @@ export default function AccountPage() {
                 <button
                   type="submit"
                   disabled={creditLoading || !creditForm.requestedLimit}
-                  className="flex-1 rounded-xl bg-brand-500 py-3 text-sm font-bold text-white hover:bg-brand-600 transition-colors disabled:opacity-60 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+                  className="flex-1 rounded-xl bg-brand-700 py-3 text-sm font-bold text-white hover:bg-brand-800 transition-colors disabled:opacity-60 disabled:cursor-not-allowed flex items-center justify-center gap-2"
                 >
                   {creditLoading ? (
                     <><Loader2 className="h-4 w-4 animate-spin" /> Submittingâ€¦</>

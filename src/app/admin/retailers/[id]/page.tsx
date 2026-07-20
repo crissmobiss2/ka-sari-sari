@@ -213,7 +213,7 @@ export default function AdminRetailerProfilePage() {
 
         {/* Action buttons */}
         <div className="flex flex-wrap gap-2 mt-5 pt-5 border-t border-border">
-          <button className="flex items-center gap-1.5 rounded-xl bg-brand-500 px-4 py-2 text-sm font-medium text-white hover:bg-brand-600 transition-colors">
+          <button className="flex items-center gap-1.5 rounded-xl bg-brand-700 px-4 py-2 text-sm font-medium text-white hover:bg-brand-800 transition-colors">
             <Pencil className="h-3.5 w-3.5" /> Edit Profile
           </button>
           <button className="flex items-center gap-1.5 rounded-xl border border-border px-4 py-2 text-sm font-medium text-foreground hover:bg-muted/50 transition-colors">

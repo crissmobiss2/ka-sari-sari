@@ -163,7 +163,7 @@ function WhatsAppPreview() {
         {/* WhatsApp chat header */}
         <div className="flex items-center gap-2.5 bg-[#075E54] px-3 py-2.5">
           {/* Avatar */}
-          <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-brand-500">
+          <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-brand-700">
             <WhatsAppIcon className="h-5 w-5 text-white" />
           </div>
           <div className="flex-1 min-w-0">

@@ -183,7 +183,7 @@ function TrackingLink({ orderId }: { orderId: string }) {
   return (
     <Link
       href={href}
-      className="mt-4 flex items-center justify-center gap-2 rounded-xl bg-brand-500 px-4 py-2.5 text-sm font-semibold text-white hover:bg-brand-600 active:scale-95 transition-all"
+      className="mt-4 flex items-center justify-center gap-2 rounded-xl bg-brand-700 px-4 py-2.5 text-sm font-semibold text-white hover:bg-brand-800 active:scale-95 transition-all"
     >
       <Navigation className="h-4 w-4" />
       View Live Tracking
@@ -593,7 +593,7 @@ function DriverCard({ onAction, driver }: { onAction: (msg: string) => void; dri
             href={`https://wa.me/${phone.replace(/\D/g, "")}`}
             target="_blank"
             rel="noopener noreferrer"
-            className="flex items-center justify-center gap-2 rounded-xl bg-brand-500 py-2.5 text-sm font-medium text-white hover:bg-brand-600 active:scale-95 transition-all"
+            className="flex items-center justify-center gap-2 rounded-xl bg-brand-700 py-2.5 text-sm font-medium text-white hover:bg-brand-800 active:scale-95 transition-all"
           >
             <MessageCircle className="h-4 w-4" />
             Message
@@ -631,7 +631,7 @@ function MapPlaceholder() {
           <div className="h-8 w-8 rounded-full bg-white shadow-lg flex items-center justify-center border-2 border-brand-500">
             <Package className="h-4 w-4 text-brand-500" />
           </div>
-          <div className="mt-1 rounded-md bg-brand-500 px-2 py-0.5 text-[10px] font-semibold text-white whitespace-nowrap shadow">
+          <div className="mt-1 rounded-md bg-brand-700 px-2 py-0.5 text-[10px] font-semibold text-white whitespace-nowrap shadow">
             Warehouse
           </div>
         </div>

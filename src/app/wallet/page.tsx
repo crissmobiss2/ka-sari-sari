@@ -288,7 +288,7 @@ export default function WalletPage() {
                     className={cn(
                       "rounded-xl border py-2.5 text-sm font-bold transition-colors",
                       !isCustomAmount && selectedAmount === amt
-                        ? "border-brand-500 bg-brand-500 text-white"
+                        ? "border-brand-500 bg-brand-700 text-white"
                         : "border-border bg-card text-foreground hover:border-brand-300"
                     )}
                   >
@@ -424,7 +424,7 @@ export default function WalletPage() {
                         className={cn(
                           "rounded-xl border py-2.5 text-sm font-bold transition-colors disabled:opacity-40 disabled:cursor-not-allowed",
                           withdrawAmount === amt
-                            ? "border-brand-500 bg-brand-500 text-white"
+                            ? "border-brand-500 bg-brand-700 text-white"
                             : "border-border bg-card text-foreground hover:border-brand-300"
                         )}
                       >

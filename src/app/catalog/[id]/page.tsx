@@ -319,7 +319,7 @@ export default function ProductDetailPage() {
             <button
               onClick={handleQtyIncrease}
               disabled={product.stock !== undefined && qty >= product.stock}
-              className="flex h-11 w-11 items-center justify-center rounded-xl bg-brand-500 text-white text-lg font-bold hover:bg-brand-600 disabled:opacity-50 transition-colors"
+              className="flex h-11 w-11 items-center justify-center rounded-xl bg-brand-700 text-white text-lg font-bold hover:bg-brand-600 disabled:opacity-50 transition-colors"
             >
               +
             </button>
@@ -473,7 +473,7 @@ export default function ProductDetailPage() {
               <span className="flex-1 text-center text-lg font-bold">{cartItem.quantity} in cart</span>
               <button
                 onClick={() => updateQty(product.id, cartItem.quantity + 1)}
-                className="flex h-11 w-11 items-center justify-center rounded-xl bg-brand-500 text-white text-lg font-bold"
+                className="flex h-11 w-11 items-center justify-center rounded-xl bg-brand-700 text-white text-lg font-bold"
               >
                 +
               </button>

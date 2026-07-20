@@ -186,7 +186,7 @@ export default function DriverDeliveriesPage() {
               className={cn(
                 "px-3 py-1.5 rounded-lg text-xs font-semibold transition-colors",
                 activeTab === id
-                  ? "bg-brand-500 text-white"
+                  ? "bg-brand-700 text-white"
                   : "bg-surface-100 dark:bg-surface-800 text-muted-foreground hover:text-surface-900"
               )}
             >
@@ -247,14 +247,14 @@ export default function DriverDeliveriesPage() {
                       {/* Navigation uses orderId â€” File 3 reads the URL param as order ID */}
                       <Link
                         href={`/driver/deliveries/${delivery.orderId}`}
-                        className="flex-1 flex items-center justify-center gap-1.5 rounded-xl bg-brand-500 hover:bg-brand-600 text-white text-xs font-semibold h-9 transition-colors"
+                        className="flex-1 flex items-center justify-center gap-1.5 rounded-xl bg-brand-700 hover:bg-brand-800 text-white text-xs font-semibold h-9 transition-colors"
                       >
                         View Details
                       </Link>
                       {isCOD ? (
                         <Link
                           href={`/driver/deliveries/${delivery.orderId}`}
-                          className="flex items-center gap-1 rounded-xl bg-brand-500 hover:bg-brand-600 text-white text-xs font-semibold h-9 px-3 transition-colors"
+                          className="flex items-center gap-1 rounded-xl bg-brand-700 hover:bg-brand-800 text-white text-xs font-semibold h-9 px-3 transition-colors"
                         >
                           View & Confirm
                         </Link>

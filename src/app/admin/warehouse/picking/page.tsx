@@ -469,7 +469,7 @@ export default function PickingPage() {
                               focus:outline-none focus:ring-2 focus:ring-brand-500 focus:border-transparent bg-card text-foreground"
                           />
                           <button
-                            className="rounded-lg bg-brand-500 px-2 py-1.5 text-xs font-semibold text-white hover:bg-brand-600 transition-colors"
+                            className="rounded-lg bg-brand-700 px-2 py-1.5 text-xs font-semibold text-white hover:bg-brand-800 transition-colors"
                             onClick={() => confirmPartial(list.id, item.id, Number(partialQty[item.id] ?? item.pickedQty))}
                           >
                             Confirm

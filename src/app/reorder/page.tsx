@@ -126,7 +126,7 @@ function EmptyState() {
       </p>
       <Link
         href="/catalog"
-        className="mt-6 flex items-center gap-2 rounded-xl bg-brand-500 px-6 py-3 text-sm font-bold text-white hover:bg-brand-600 active:scale-[0.98] transition-all"
+        className="mt-6 flex items-center gap-2 rounded-xl bg-brand-700 px-6 py-3 text-sm font-bold text-white hover:bg-brand-800 active:scale-[0.98] transition-all"
       >
         <ShoppingCart className="h-4 w-4" />
         Browse Catalog
@@ -292,7 +292,7 @@ function OrderCard({
         <div className="px-4 py-3.5 border-t border-border bg-surface-50">
           <button
             onClick={handleReorderAll}
-            className="flex w-full items-center justify-center gap-2 rounded-xl bg-brand-500 py-3 text-sm font-bold text-white hover:bg-brand-600 active:scale-[0.98] transition-all"
+            className="flex w-full items-center justify-center gap-2 rounded-xl bg-brand-700 py-3 text-sm font-bold text-white hover:bg-brand-800 active:scale-[0.98] transition-all"
           >
             <RotateCcw className="h-4 w-4" />
             Reorder All — {formatPHP(order.total)}

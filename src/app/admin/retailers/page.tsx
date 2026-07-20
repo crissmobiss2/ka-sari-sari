@@ -118,7 +118,7 @@ export default function AdminRetailersPage() {
               </div>
               <button
                 onClick={handleSendInvite}
-                className="w-full rounded-xl bg-brand-500 py-2.5 text-sm font-semibold text-white hover:bg-brand-600 transition-colors"
+                className="w-full rounded-xl bg-brand-700 py-2.5 text-sm font-semibold text-white hover:bg-brand-800 transition-colors"
               >
                 Send Invite
               </button>
@@ -131,7 +131,7 @@ export default function AdminRetailersPage() {
       <div className="flex items-start justify-between gap-4">
         <div>
           <div className="flex items-center gap-2 mb-1">
-            <div className="flex h-8 w-8 items-center justify-center rounded-xl bg-brand-500">
+            <div className="flex h-8 w-8 items-center justify-center rounded-xl bg-brand-700">
               <Users className="h-4 w-4 text-white" />
             </div>
             <h1 className="font-display text-2xl font-bold text-foreground">Retailers</h1>
@@ -180,7 +180,7 @@ export default function AdminRetailersPage() {
                   "flex items-center gap-1.5 rounded-xl border px-3 py-1.5 text-xs font-semibold transition-all",
                   hub === h
                     ? h === "all"
-                      ? "bg-brand-500 text-white border-brand-500"
+                      ? "bg-brand-700 text-white border-brand-500"
                       : cn(HUB_COLORS[h], "ring-1 ring-current/30")
                     : "border-border text-muted-foreground bg-card hover:text-foreground"
                 )}
@@ -295,7 +295,7 @@ export default function AdminRetailersPage() {
       {/* Expansion opportunity */}
       <Card className="border-brand-200 bg-gradient-to-r from-brand-50 to-transparent p-5">
         <div className="flex items-start gap-4">
-          <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-brand-500">
+          <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-brand-700">
             <TrendingUp className="h-5 w-5 text-white" />
           </div>
           <div>

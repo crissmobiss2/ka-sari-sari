@@ -24,7 +24,7 @@ export default function AdminError({
       </p>
       <button
         onClick={reset}
-        className="inline-flex items-center gap-2 rounded-xl bg-brand-500 hover:bg-brand-600 text-white text-sm font-semibold px-5 py-2.5 transition-colors"
+        className="inline-flex items-center gap-2 rounded-xl bg-brand-700 hover:bg-brand-800 text-white text-sm font-semibold px-5 py-2.5 transition-colors"
       >
         <RefreshCw className="h-4 w-4" /> Reload page
       </button>

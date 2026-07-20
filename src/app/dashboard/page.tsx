@@ -50,7 +50,7 @@ function WelcomeBanner() {
   const params = useSearchParams();
   if (!params.get("welcome")) return null;
   return (
-    <div className="mx-4 mb-4 rounded-2xl bg-brand-500 p-5 text-white animate-fade-in">
+    <div className="mx-4 mb-4 rounded-2xl bg-brand-700 p-5 text-white animate-fade-in">
       <p className="font-display text-lg font-bold mb-1">Welcome to Ka Sari-Sari! 🎉</p>
       <p className="text-sm text-brand-100">Your account is active. Start ordering from our warehouse now.</p>
     </div>
@@ -369,7 +369,7 @@ export default function DashboardPage() {
                     </div>
                     <button
                       onClick={() => addItem(p)}
-                      className="flex items-center gap-1 rounded-xl bg-brand-500 px-3 py-2 text-xs font-semibold text-white hover:bg-brand-600 active:scale-95 transition-all shrink-0"
+                      className="flex items-center gap-1 rounded-xl bg-brand-700 px-3 py-2 text-xs font-semibold text-white hover:bg-brand-800 active:scale-95 transition-all shrink-0"
                     >
                       <ShoppingCart className="h-3.5 w-3.5" />
                       {inCart ? "Add more" : "Add"}

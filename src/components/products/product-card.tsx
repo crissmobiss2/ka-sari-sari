@@ -153,7 +153,7 @@ export function ProductCard({ product, className }: ProductCardProps) {
               e.preventDefault();
               addItem(product, product.minOrderQty);
             }}
-            className="mt-1 w-full flex items-center justify-center gap-1.5 rounded-xl bg-brand-500 text-white text-xs font-semibold py-3 min-h-[44px] hover:bg-brand-600 active:scale-95 transition-all shadow-brand"
+            className="mt-1 w-full flex items-center justify-center gap-1.5 rounded-xl bg-brand-700 text-white text-xs font-semibold py-3 min-h-[44px] hover:bg-brand-600 active:scale-95 transition-all shadow-brand"
           >
             <ShoppingCart className="h-3.5 w-3.5" />
             Add to Cart

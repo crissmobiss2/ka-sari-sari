@@ -435,7 +435,7 @@ export default function AdminDriversPage() {
                       onClick={() => setAddForm({ ...addForm, vehicleType: type })}
                       className={cn(
                         "flex-1 rounded-xl border py-2.5 text-sm font-semibold transition-colors",
-                        addForm.vehicleType === type ? "border-brand-500 bg-brand-500 text-white" : "border-border bg-card text-foreground hover:border-brand-300"
+                        addForm.vehicleType === type ? "border-brand-500 bg-brand-700 text-white" : "border-border bg-card text-foreground hover:border-brand-300"
                       )}
                     >
                       {type}

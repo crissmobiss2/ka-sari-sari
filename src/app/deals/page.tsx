@@ -151,12 +151,12 @@ function DealCard({ deal }: { deal: Deal }) {
           <div className="flex items-center justify-between mt-1">
             <button onClick={() => updateQty(deal.id, cartItem.quantity - 1)} className="flex h-7 w-7 items-center justify-center rounded-lg border border-border bg-muted text-sm font-bold">−</button>
             <span className="text-sm font-semibold">{cartItem.quantity}</span>
-            <button onClick={() => updateQty(deal.id, cartItem.quantity + 1)} className="flex h-7 w-7 items-center justify-center rounded-lg bg-brand-500 text-white text-sm font-bold">+</button>
+            <button onClick={() => updateQty(deal.id, cartItem.quantity + 1)} className="flex h-7 w-7 items-center justify-center rounded-lg bg-brand-700 text-white text-sm font-bold">+</button>
           </div>
         ) : (
           <button
             onClick={handleAddToCart}
-            className="mt-1 w-full rounded-xl bg-brand-500 py-2 text-xs font-semibold text-white hover:bg-brand-600 transition-colors active:scale-95"
+            className="mt-1 w-full rounded-xl bg-brand-700 py-2 text-xs font-semibold text-white hover:bg-brand-800 transition-colors active:scale-95"
           >
             Add to Cart
           </button>
@@ -235,7 +235,7 @@ export default function DealsPage() {
               className={cn(
                 "shrink-0 rounded-full px-4 py-2 text-xs font-semibold transition-colors",
                 activeCategory === cat.id
-                  ? "bg-brand-500 text-white"
+                  ? "bg-brand-700 text-white"
                   : "border border-border bg-card text-muted-foreground hover:border-brand-300"
               )}
             >

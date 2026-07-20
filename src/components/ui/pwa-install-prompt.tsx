@@ -69,7 +69,7 @@ export function PwaInstallPrompt() {
         </div>
         <button
           onClick={handleInstall}
-          className="flex-shrink-0 bg-brand-500 hover:bg-brand-600 text-white text-sm font-semibold px-3 py-1.5 rounded-md transition-colors"
+          className="flex-shrink-0 bg-brand-700 hover:bg-brand-800 text-white text-sm font-semibold px-3 py-1.5 rounded-md transition-colors"
         >
           Install
         </button>

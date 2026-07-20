@@ -620,7 +620,7 @@ export default function AdminReportsPage() {
                   <span className="text-xs text-muted-foreground w-14 shrink-0">{MONTHS[i]}</span>
                   <div className="flex-1 h-8 bg-surface-100 rounded-lg overflow-hidden relative">
                     <div
-                      className="h-full bg-brand-500 rounded-lg flex items-center px-2 transition-all"
+                      className="h-full bg-brand-700 rounded-lg flex items-center px-2 transition-all"
                       style={{ width: `${pct}%` }}
                     >
                       {pct > 25 && (
