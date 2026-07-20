@@ -326,7 +326,7 @@ export default function AdminCreditPage() {
               <button
                 onClick={handleApprove}
                 disabled={!approveLimit || Number(approveLimit) <= 0 || approving}
-                className="flex-1 rounded-xl bg-success-500 text-white py-2.5 text-sm font-semibold hover:bg-success-600 transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
+                className="flex-1 rounded-xl bg-success-700 text-white py-2.5 text-sm font-semibold hover:bg-success-800 transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
               >
                 {approving ? "Approving…" : "Approve"}
               </button>
@@ -569,7 +569,7 @@ export default function AdminCreditPage() {
                       <div className="flex gap-2 shrink-0">
                         <button
                           onClick={() => { setApproveApp(app); setApproveLimit(app.requestedLimit.toString()); }}
-                          className="rounded-lg bg-success-500 text-white px-3 py-1.5 text-xs font-semibold hover:bg-success-600 transition-colors"
+                          className="rounded-lg bg-success-700 text-white px-3 py-1.5 text-xs font-semibold hover:bg-success-800 transition-colors"
                         >
                           Approve
                         </button>
@@ -658,7 +658,7 @@ export default function AdminCreditPage() {
                   >
                     <div className="flex items-start justify-between gap-3">
                       <div className="flex items-center gap-3 flex-1 min-w-0">
-                        <div className={cn("flex h-9 w-9 shrink-0 items-center justify-center rounded-full text-sm font-bold", a.status === "good" ? "bg-brand-100 text-brand-600" : "bg-surface-200 text-surface-900")}>
+                        <div className={cn("flex h-9 w-9 shrink-0 items-center justify-center rounded-full text-sm font-bold", a.status === "good" ? "bg-brand-100 dark:bg-brand-700 text-brand-600 dark:text-white" : "bg-surface-200 text-surface-900")}>
                           {a.retailer.charAt(0)}
                         </div>
                         <div className="min-w-0">

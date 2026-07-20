@@ -231,7 +231,7 @@ export default function LoyaltyPage() {
               <div
                 key={tier.name}
                 className={cn(
-                  "rounded-2xl border px-4 py-4",
+                  "rounded-2xl border px-4 py-4 dark:bg-card dark:border-border/50",
                   tier.current ? "border-brand-300 bg-brand-50" : tier.color
                 )}
               >
@@ -240,7 +240,7 @@ export default function LoyaltyPage() {
                     <span className="text-xl">{tier.icon}</span>
                     <span className={cn(
                       "font-display text-sm font-bold",
-                      tier.current ? "text-brand-700" : "text-surface-900"
+                      tier.current ? "text-brand-700" : "text-foreground"
                     )}>
                       {tier.name}
                     </span>
@@ -331,7 +331,7 @@ export default function LoyaltyPage() {
           </p>
 
           {/* Code display */}
-          <div className="flex items-center gap-2 rounded-xl border border-dashed border-brand-300 bg-brand-50 px-4 py-3 mb-3">
+          <div className="flex items-center gap-2 rounded-xl border border-dashed border-brand-300 bg-brand-50 dark:bg-card dark:border-brand-700/50 px-4 py-3 mb-3">
             <span className="flex-1 font-mono text-sm font-bold text-brand-700 tracking-wider">
               {referralCode}
             </span>
@@ -340,7 +340,7 @@ export default function LoyaltyPage() {
               className={cn(
                 "flex items-center gap-1.5 rounded-lg px-3 py-1.5 text-xs font-bold transition-all active:scale-95",
                 copied
-                  ? "bg-success-500 text-white"
+                  ? "bg-success-700 text-white"
                   : "bg-brand-500 text-white hover:bg-brand-600"
               )}
             >

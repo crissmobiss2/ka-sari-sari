@@ -156,9 +156,9 @@ function FrequentlyReordered({
   return (
     <div className="rounded-2xl border border-border bg-card shadow-card overflow-hidden">
       {/* Header */}
-      <div className="flex items-center gap-2 px-4 py-3 border-b border-border bg-surface-50">
+      <div className="flex items-center gap-2 px-4 py-3 border-b border-border bg-surface-50 dark:bg-surface-800">
         <Star className="h-4 w-4 text-brand-500 fill-brand-500" />
-        <span className="text-sm font-bold text-surface-900">Frequently Reordered</span>
+        <span className="text-sm font-bold text-foreground">Frequently Reordered</span>
         <span className="ml-auto text-[11px] text-muted-foreground">{items.length} items</span>
       </div>
 
@@ -222,13 +222,13 @@ function OrderCard({
   return (
     <div className="rounded-2xl border border-border bg-card shadow-card overflow-hidden">
       {/* Order header */}
-      <div className="flex items-center justify-between px-4 py-3.5 border-b border-border bg-surface-50">
+      <div className="flex items-center justify-between px-4 py-3.5 border-b border-border bg-surface-50 dark:bg-surface-800">
         <div>
-          <p className="text-xs font-bold text-surface-900 font-mono">{order.orderNumber}</p>
+          <p className="text-xs font-bold text-foreground font-mono">{order.orderNumber}</p>
           <p className="text-[11px] text-muted-foreground mt-0.5">{formatDate(order.createdAt)}</p>
         </div>
         <div className="text-right">
-          <p className="text-sm font-black text-surface-900">{formatPHP(order.total)}</p>
+          <p className="text-sm font-black text-foreground">{formatPHP(order.total)}</p>
           <p className="text-[11px] text-muted-foreground">
             {order.items.length} item{order.items.length !== 1 ? "s" : ""}
           </p>
@@ -569,7 +569,7 @@ export default function ReorderPage() {
             className={cn(
               "flex items-center gap-1.5 rounded-xl px-3 py-2 text-xs font-bold transition-all active:scale-95",
               selectionMode
-                ? "bg-surface-100 text-surface-900 border border-border"
+                ? "bg-surface-100 dark:bg-surface-800 text-foreground border border-border"
                 : "bg-brand-50 text-brand-600 border border-brand-200 hover:bg-brand-100"
             )}
           >

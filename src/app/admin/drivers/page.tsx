@@ -1,4 +1,4 @@
-﻿"use client";
+"use client";
 // v2
 import { useState } from "react";
 import {
@@ -59,7 +59,7 @@ const STATUS_CONFIG: Record<DriverStatus, { label: string; badgeClass: string; a
   on_route: {
     label: "On Route",
     badgeClass: "bg-brand-50 text-brand-600 border border-brand-200",
-    avatarClass: "bg-brand-100 text-brand-600",
+    avatarClass: "bg-brand-100 dark:bg-brand-700 text-brand-600 dark:text-white",
   },
   active: {
     label: "Available",

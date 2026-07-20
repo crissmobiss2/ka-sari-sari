@@ -1,4 +1,4 @@
-﻿"use client";
+"use client";
 
 import { useState, useEffect } from "react";
 import {
@@ -464,7 +464,7 @@ export default function RouteMapPage() {
                   {!isDone && !isFailed && (
                     <button
                       onClick={() => markDone(stop.stopNumber)}
-                      className="w-full rounded-2xl bg-success-500 hover:bg-success-600 text-white text-sm font-bold h-11 flex items-center justify-center gap-2 transition-colors"
+                      className="w-full rounded-2xl bg-success-700 hover:bg-success-800 text-white text-sm font-bold h-11 flex items-center justify-center gap-2 transition-colors"
                     >
                       <CheckCircle2 className="h-5 w-5" />
                       {stop.paymentMethod === "cod" ? `Mark Delivered Â· Collect ${formatPHP(stop.total)}` : "Mark Delivered"}

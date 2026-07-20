@@ -163,7 +163,7 @@ export default function AdminRetailerProfilePage() {
         <div className="flex flex-col sm:flex-row sm:items-start gap-5">
 
           {/* Avatar */}
-          <div className="flex h-16 w-16 shrink-0 items-center justify-center rounded-2xl bg-brand-100 text-brand-600 text-xl font-bold font-display select-none">
+          <div className="flex h-16 w-16 shrink-0 items-center justify-center rounded-2xl bg-brand-100 dark:bg-brand-700 text-brand-600 dark:text-white text-xl font-bold font-display select-none">
             {retailer.initials}
           </div>
 

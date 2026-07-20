@@ -314,7 +314,7 @@ function DriverCard({ driver = DRIVER }: { driver?: typeof DRIVER }) {
       </div>
       <div className="p-4">
         <div className="flex items-center gap-3 mb-4">
-          <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-brand-100 text-brand-600 font-bold text-lg">
+          <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-brand-100 dark:bg-brand-700 text-brand-600 dark:text-white font-bold text-lg">
             {driver.name.charAt(0)}
           </div>
           <div className="flex-1 min-w-0">
@@ -390,7 +390,7 @@ function StopsBreakdown() {
             <div className="flex flex-col items-center gap-0.5 mt-0.5">
               <div className={cn(
                 "flex h-6 w-6 shrink-0 items-center justify-center rounded-full text-[11px] font-bold",
-                stop.status === "done"    ? "bg-success-500 text-white" :
+                stop.status === "done"    ? "bg-success-700 text-white" :
                 stop.status === "current" ? "bg-brand-500 text-white" :
                 stop.status === "yours"   ? "border-2 border-brand-500 bg-white text-brand-500" :
                 "bg-surface-200 dark:bg-surface-800 text-muted-foreground"

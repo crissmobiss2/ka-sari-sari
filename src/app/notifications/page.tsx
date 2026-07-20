@@ -1,4 +1,4 @@
-﻿"use client";
+"use client";
 
 import { useState, useMemo, useEffect } from "react";
 import {
@@ -182,7 +182,7 @@ function iconColors(notif: Notification, unread: boolean) {
   if (notif.type === "low_stock") return "bg-warning-50 text-warning-600";
   if (/deal|promo/i.test(notif.title + notif.message))
     return "bg-brand-50 text-brand-600";
-  return "bg-brand-100 text-brand-600";
+  return "bg-brand-100 dark:bg-brand-700 text-brand-600 dark:text-white";
 }
 
 // â”€â”€â”€ Tabs config â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€

@@ -137,7 +137,7 @@ function DispatchCard({
         <div className="grid grid-cols-2 gap-1.5">
           <Button
             size="sm"
-            className="text-xs h-8 bg-success-500 hover:bg-success-600 text-white"
+            className="text-xs h-8 bg-success-700 hover:bg-success-800 text-white"
             onClick={() => onDelivered(id)}
           >
             <CheckCircle2 className="h-3.5 w-3.5" />

@@ -108,7 +108,7 @@ export function AdminSidebar() {
                       className={cn(
                         "flex items-center gap-2.5 rounded-xl px-3 py-2 text-sm transition-colors",
                         active
-                          ? "bg-brand-50 text-brand-600 font-medium"
+                          ? "bg-brand-50 dark:bg-brand-500/10 text-brand-600 dark:text-foreground font-medium"
                           : "text-muted-foreground hover:bg-muted hover:text-foreground"
                       )}
                     >
@@ -138,7 +138,7 @@ export function AdminSidebar() {
           <ThemeToggle />
         </div>
         <div className="flex items-center gap-3 rounded-xl px-3 py-2 hover:bg-muted cursor-pointer transition-colors">
-          <div className="flex h-7 w-7 items-center justify-center rounded-full bg-brand-100 text-brand-600 text-xs font-bold shrink-0">
+          <div className="flex h-7 w-7 items-center justify-center rounded-full bg-brand-100 dark:bg-brand-700 text-brand-600 dark:text-white text-xs font-bold shrink-0">
             A
           </div>
           <div className="flex-1 min-w-0">

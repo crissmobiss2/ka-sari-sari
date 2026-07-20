@@ -244,7 +244,7 @@ export default function AdminRetailersPage() {
                 >
                   <td className="px-5 py-3.5">
                     <div className="flex items-center gap-3">
-                      <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-brand-100 text-brand-600 text-sm font-bold">
+                      <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-brand-100 dark:bg-brand-700 text-brand-600 dark:text-white text-sm font-bold">
                         {r.name.charAt(0)}
                       </div>
                       <div>

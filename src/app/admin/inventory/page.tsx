@@ -93,7 +93,7 @@ export default function AdminInventoryPage() {
 
       {/* ── Urgent alert banner (only when there are issues) ── */}
       {(lowStockCount > 0 || outCount > 0) && (
-        <div className="rounded-xl border border-warning-500/30 bg-warning-50 px-4 py-3 flex flex-col sm:flex-row sm:items-center gap-3">
+        <div className="rounded-xl border border-warning-500/30 bg-warning-50 dark:bg-surface-800 dark:border-warning-600/40 px-4 py-3 flex flex-col sm:flex-row sm:items-center gap-3">
           <AlertTriangle className="h-5 w-5 text-warning-600 shrink-0" />
           <div className="flex-1 text-sm text-warning-600">
             <span className="font-semibold">Stock alert: </span>
@@ -126,9 +126,9 @@ export default function AdminInventoryPage() {
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
         {[
           { label: "Total Products",  value: PRODUCTS.length, icon: Package,      color: "text-foreground",    bg: "" },
-          { label: "Low Stock",       value: lowStockCount,   icon: TrendingDown,  color: "text-warning-600",   bg: "bg-warning-50" },
-          { label: "Out of Stock",    value: outCount,        icon: AlertTriangle, color: "text-danger-600",    bg: "bg-danger-50" },
-          { label: "Showing",         value: filtered.length, icon: ShoppingCart,  color: "text-brand-600",     bg: "bg-brand-50" },
+          { label: "Low Stock",       value: lowStockCount,   icon: TrendingDown,  color: "text-warning-600",   bg: "bg-warning-50 dark:bg-card" },
+          { label: "Out of Stock",    value: outCount,        icon: AlertTriangle, color: "text-danger-600",    bg: "bg-danger-50 dark:bg-card" },
+          { label: "Showing",         value: filtered.length, icon: ShoppingCart,  color: "text-brand-600",     bg: "bg-brand-50 dark:bg-card" },
         ].map((s) => (
           <Card key={s.label} className={cn("p-4", s.bg)}>
             <div className="flex items-center gap-3">

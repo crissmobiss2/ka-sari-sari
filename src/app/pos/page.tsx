@@ -1,4 +1,4 @@
-﻿"use client";
+"use client";
 import { useState, useMemo, useRef, useCallback, useEffect } from "react";
 import {
   Search, Plus, Minus, X, CheckCircle2, Printer,
@@ -470,7 +470,7 @@ export default function RetailerPOSPage() {
                 <button
                   onClick={handlePay}
                   disabled={(method === "cash" && tenderedNum < total) || txnLoading}
-                  className="w-full rounded-2xl bg-success-500 hover:bg-success-600 disabled:opacity-40 text-white text-sm font-bold h-12 transition-colors flex items-center justify-center gap-2"
+                  className="w-full rounded-2xl bg-success-700 hover:bg-success-800 disabled:opacity-40 text-white text-sm font-bold h-12 transition-colors flex items-center justify-center gap-2"
                 >
                   {txnLoading ? (
                     <>

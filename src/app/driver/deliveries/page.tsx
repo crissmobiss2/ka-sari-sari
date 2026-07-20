@@ -1,4 +1,4 @@
-﻿"use client";
+"use client";
 
 import { useState, useEffect, useCallback } from "react";
 import Link from "next/link";
@@ -261,7 +261,7 @@ export default function DriverDeliveriesPage() {
                       ) : (
                         <button
                           onClick={() => handleMarkDelivered(delivery.id, delivery.orderId)}
-                          className="flex items-center gap-1 rounded-xl bg-success-500 hover:bg-success-600 text-white text-xs font-semibold h-9 px-3 transition-colors"
+                          className="flex items-center gap-1 rounded-xl bg-success-700 hover:bg-success-800 text-white text-xs font-semibold h-9 px-3 transition-colors"
                         >
                           <CheckCircle2 className="h-3.5 w-3.5" />
                           Done

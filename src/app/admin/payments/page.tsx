@@ -441,7 +441,7 @@ export default function PaymentsPage() {
 
       {/* ── COD reconciliation alert ─────────────────────────────────────── */}
       {needsReconcile.length > 0 && (
-        <div className="rounded-2xl border border-warning-200 bg-warning-50 p-4">
+        <div className="rounded-2xl border border-warning-200 bg-warning-50 dark:bg-surface-800 dark:border-warning-600/40 p-4">
           <div className="flex items-start gap-3">
             <AlertCircle className="h-4 w-4 text-warning-600 shrink-0 mt-0.5" />
             <div className="flex-1 min-w-0">
@@ -601,7 +601,7 @@ export default function PaymentsPage() {
                         {isCodPending && (
                           <button
                             onClick={() => reconcile(tx.id)}
-                            className="inline-flex items-center gap-1 rounded-lg bg-amber-500 px-2.5 py-1 text-[11px] font-semibold text-white hover:bg-amber-600 transition-colors"
+                            className="inline-flex items-center gap-1 rounded-lg bg-amber-700 px-2.5 py-1 text-[11px] font-semibold text-white hover:bg-amber-800 transition-colors"
                           >
                             <CheckCircle2 className="h-3 w-3" />
                             Reconcile
@@ -744,7 +744,7 @@ export default function PaymentsPage() {
                 <div className="flex gap-2">
                   <button
                     onClick={() => { handleMarkPaid(selected.id); }}
-                    className="flex-1 h-10 rounded-xl bg-success-500 text-white text-sm font-semibold hover:bg-success-600 transition-colors"
+                    className="flex-1 h-10 rounded-xl bg-success-700 text-white text-sm font-semibold hover:bg-success-800 transition-colors"
                   >
                     Mark Paid
                   </button>

@@ -550,7 +550,7 @@ function DriverCard({ onAction, driver }: { onAction: (msg: string) => void; dri
     <div className="rounded-2xl border border-border bg-card shadow-card p-5 mx-4">
       <h3 className="font-display text-sm font-semibold text-foreground mb-4">Your Driver</h3>
       <div className="flex items-center gap-4">
-        <div className="flex h-14 w-14 shrink-0 items-center justify-center rounded-2xl bg-brand-100 text-brand-600 font-display font-bold text-lg">
+        <div className="flex h-14 w-14 shrink-0 items-center justify-center rounded-2xl bg-brand-100 dark:bg-brand-700 text-brand-600 dark:text-white font-display font-bold text-lg">
           {initials}
         </div>
         <div className="flex-1 min-w-0">
@@ -639,7 +639,7 @@ function MapPlaceholder() {
           <div className="h-8 w-8 rounded-full bg-white shadow-lg flex items-center justify-center border-2 border-success-500">
             <MapPin className="h-4 w-4 text-success-500" />
           </div>
-          <div className="mt-1 rounded-md bg-success-500 px-2 py-0.5 text-[10px] font-semibold text-white whitespace-nowrap shadow">
+          <div className="mt-1 rounded-md bg-success-700 px-2 py-0.5 text-[10px] font-semibold text-white whitespace-nowrap shadow">
             Your Store
           </div>
         </div>
