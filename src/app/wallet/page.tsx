@@ -555,7 +555,7 @@ export default function WalletPage() {
             {/* Step: Done */}
             {withdrawStep === "done" && (
               <div className="text-center py-4 space-y-3">
-                <div className="flex h-16 w-16 items-center justify-center rounded-full bg-success-100 mx-auto">
+                <div className="flex h-16 w-16 items-center justify-center rounded-full bg-success-100 dark:bg-success-500/20 mx-auto">
                   <CheckCircle2 className="h-8 w-8 text-success-700 dark:text-foreground" />
                 </div>
                 <div>

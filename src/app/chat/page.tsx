@@ -434,9 +434,9 @@ export default function ChatPage() {
                   <span className={cn(
                     "text-[10px] rounded-full px-1.5 py-0.5 font-semibold",
                     item.confidence === "high"
-                      ? "bg-success-100 text-success-700 dark:text-foreground"
+                      ? "bg-success-100 dark:bg-success-500/20 text-success-700 dark:text-foreground"
                       : item.confidence === "medium"
-                        ? "bg-warning-100 text-warning-700 dark:text-foreground"
+                        ? "bg-warning-100 dark:bg-warning-500/20 text-warning-700 dark:text-foreground"
                         : "bg-surface-200 dark:bg-surface-800 text-muted-foreground"
                   )}>
                     {item.confidence}

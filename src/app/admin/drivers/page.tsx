@@ -59,12 +59,12 @@ const STATUS_CONFIG: Record<DriverStatus, { label: string; badgeClass: string; a
   on_route: {
     label: "On Route",
     badgeClass: "bg-brand-50 dark:bg-brand-500/10 text-brand-600 dark:text-foreground border border-brand-200",
-    avatarClass: "bg-brand-100 text-brand-600",
+    avatarClass: "bg-brand-100 dark:bg-brand-500/20 text-brand-600",
   },
   active: {
     label: "Available",
     badgeClass: "bg-success-50 dark:bg-success-500/10 text-success-600 dark:text-foreground border border-success-200",
-    avatarClass: "bg-success-100 text-success-600 dark:text-success-500",
+    avatarClass: "bg-success-100 dark:bg-success-500/20 text-success-600 dark:text-success-500",
   },
   off_duty: {
     label: "Off Duty",

@@ -527,7 +527,7 @@ export default function AdminRoutesPage() {
                     onChange={() => setSelectedDriver(driver.id)}
                     className="accent-brand-500"
                   />
-                  <div className="flex h-7 w-7 items-center justify-center rounded-lg bg-success-100 text-success-700 dark:text-foreground text-xs font-bold">
+                  <div className="flex h-7 w-7 items-center justify-center rounded-lg bg-success-100 dark:bg-success-500/20 text-success-700 dark:text-foreground text-xs font-bold">
                     {driver.name.split(" ").map((n) => n[0]).slice(0, 2).join("")}
                   </div>
                   <span className="text-sm font-medium text-foreground">{driver.name}</span>

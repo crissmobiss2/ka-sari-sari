@@ -325,7 +325,7 @@ function DeliveryAddress({ address, notes }: { address: string; notes?: string }
   return (
     <div className="rounded-2xl border border-border bg-card shadow-card p-5 mx-4">
       <div className="flex items-center gap-2 mb-3">
-        <div className="flex h-8 w-8 items-center justify-center rounded-xl bg-brand-100">
+        <div className="flex h-8 w-8 items-center justify-center rounded-xl bg-brand-100 dark:bg-brand-500/20">
           <MapPin className="h-4 w-4 text-brand-600" />
         </div>
         <h3 className="font-display text-sm font-semibold text-foreground">Delivery Address</h3>
@@ -360,8 +360,8 @@ function PaymentBadge({ method, paymentStatus }: { method: string; paymentStatus
       <span className={cn(
         "inline-flex items-center rounded-full px-2.5 py-1 text-xs font-semibold",
         isPaid
-          ? "bg-success-100 text-success-700 dark:text-foreground"
-          : "bg-warning-100 text-warning-700 dark:text-foreground"
+          ? "bg-success-100 dark:bg-success-500/20 text-success-700 dark:text-foreground"
+          : "bg-warning-100 dark:bg-warning-500/20 text-warning-700 dark:text-foreground"
       )}>
         {isPaid ? "Paid" : "Payment Pending"}
       </span>

@@ -315,7 +315,7 @@ export default function WarehouseDashboard() {
                     className={cn(
                       "shrink-0 rounded-lg text-xs font-semibold px-2.5 py-1.5 transition-colors",
                       isPrepped
-                        ? "bg-success-100 text-success-700 dark:text-foreground cursor-default"
+                        ? "bg-success-100 dark:bg-success-500/20 text-success-700 dark:text-foreground cursor-default"
                         : "bg-brand-700 text-white"
                     )}
                   >

@@ -298,7 +298,7 @@ export default function PickingPage() {
               className={cn(
                 "flex h-5 min-w-5 items-center justify-center rounded-full px-1.5 text-[10px] font-semibold",
                 activeTab === key
-                  ? "bg-brand-100 text-brand-700 dark:text-brand-400"
+                  ? "bg-brand-100 dark:bg-brand-500/20 text-brand-700 dark:text-brand-400"
                   : "bg-muted text-muted-foreground"
               )}
             >

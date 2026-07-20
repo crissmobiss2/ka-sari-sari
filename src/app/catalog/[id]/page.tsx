@@ -66,7 +66,7 @@ function StockBadge({ stock, className }: StockBadgeProps) {
   if (status === "out") {
     return (
       <span className={cn(
-        "inline-flex items-center gap-1 rounded-full px-2.5 py-1 text-xs font-bold bg-danger-100 text-danger-700 dark:text-foreground border border-danger-200",
+        "inline-flex items-center gap-1 rounded-full px-2.5 py-1 text-xs font-bold bg-danger-100 dark:bg-danger-500/20 text-danger-700 dark:text-foreground border border-danger-200",
         className,
       )}>
         <XCircle className="h-3.5 w-3.5" />
@@ -78,7 +78,7 @@ function StockBadge({ stock, className }: StockBadgeProps) {
   if (status === "low") {
     return (
       <span className={cn(
-        "inline-flex items-center gap-1 rounded-full px-2.5 py-1 text-xs font-bold bg-warning-100 text-warning-700 dark:text-foreground border border-warning-200",
+        "inline-flex items-center gap-1 rounded-full px-2.5 py-1 text-xs font-bold bg-warning-100 dark:bg-warning-500/20 text-warning-700 dark:text-foreground border border-warning-200",
         className,
       )}>
         <AlertTriangle className="h-3.5 w-3.5" />
@@ -89,7 +89,7 @@ function StockBadge({ stock, className }: StockBadgeProps) {
 
   return (
     <span className={cn(
-      "inline-flex items-center gap-1 rounded-full px-2.5 py-1 text-xs font-bold bg-success-100 text-success-700 dark:text-foreground border border-success-200",
+      "inline-flex items-center gap-1 rounded-full px-2.5 py-1 text-xs font-bold bg-success-100 dark:bg-success-500/20 text-success-700 dark:text-foreground border border-success-200",
       className,
     )}>
       <CheckCircle2 className="h-3.5 w-3.5" />

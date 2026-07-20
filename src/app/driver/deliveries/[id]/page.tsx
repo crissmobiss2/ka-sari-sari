@@ -642,7 +642,7 @@ export default function DeliveryDetailPage() {
         {/* COD prominent banner */}
         {isCOD && (
           <div className="rounded-2xl bg-warning-50 dark:bg-warning-500/10 border-2 border-warning-400 p-4 flex items-center gap-3">
-            <div className="w-10 h-10 rounded-full bg-warning-100 flex items-center justify-center flex-shrink-0">
+            <div className="w-10 h-10 rounded-full bg-warning-100 dark:bg-warning-500/20 flex items-center justify-center flex-shrink-0">
               <svg className="w-5 h-5 text-warning-700 dark:text-foreground" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round">
                 <rect x="2" y="5" width="20" height="14" rx="2" />
                 <line x1="2" y1="10" x2="22" y2="10" />
@@ -737,12 +737,12 @@ export default function DeliveryDetailPage() {
                       @ {formatPHP(item.unitPrice)} each
                     </span>
                     {item.status === "unavailable" && (
-                      <span className="inline-block px-1.5 py-0.5 rounded text-[10px] font-bold bg-danger-100 text-danger-700 dark:text-foreground">
+                      <span className="inline-block px-1.5 py-0.5 rounded text-[10px] font-bold bg-danger-100 dark:bg-danger-500/20 text-danger-700 dark:text-foreground">
                         Unavailable
                       </span>
                     )}
                     {item.status === "partial" && (
-                      <span className="inline-block px-1.5 py-0.5 rounded text-[10px] font-bold bg-warning-100 text-warning-700 dark:text-foreground">
+                      <span className="inline-block px-1.5 py-0.5 rounded text-[10px] font-bold bg-warning-100 dark:bg-warning-500/20 text-warning-700 dark:text-foreground">
                         Partial ({item.fulfilledQty}/{item.quantity})
                       </span>
                     )}

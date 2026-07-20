@@ -519,7 +519,7 @@ export default function AdminCreditPage() {
               <FileText className="h-4 w-4 text-muted-foreground" />
               <CardTitle className="text-sm font-semibold text-foreground">Credit Applications</CardTitle>
               {applications.filter((a) => a.status === "pending").length > 0 && (
-                <span className="rounded-full bg-warning-100 text-warning-700 dark:text-foreground px-2 py-0.5 text-xs font-bold">
+                <span className="rounded-full bg-warning-100 dark:bg-warning-500/20 text-warning-700 dark:text-foreground px-2 py-0.5 text-xs font-bold">
                   {applications.filter((a) => a.status === "pending").length} pending
                 </span>
               )}

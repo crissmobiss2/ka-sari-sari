@@ -44,7 +44,7 @@ function Numpad({ value, onChange }: { value: string; onChange: (v: string) => v
           onClick={() => press(k)}
           className={cn(
             "rounded-xl h-12 text-base font-semibold transition-colors active:scale-95",
-            k === "C" ? "bg-danger-100 text-danger-700 dark:text-foreground hover:bg-danger-200"
+            k === "C" ? "bg-danger-100 dark:bg-danger-500/20 text-danger-700 dark:text-foreground hover:bg-danger-200"
             : k === "⌫" ? "bg-surface-200 text-surface-900 hover:bg-surface-300"
             : "bg-surface-100 dark:bg-surface-800 text-surface-900 hover:bg-surface-200"
           )}
@@ -186,7 +186,7 @@ export default function RetailerPOSPage() {
           <p className="text-sm font-bold text-foreground">Point of Sale</p>
         </header>
         <div className="flex-1 flex flex-col items-center justify-center p-6 text-center gap-4">
-          <div className="flex h-16 w-16 items-center justify-center rounded-full bg-success-100">
+          <div className="flex h-16 w-16 items-center justify-center rounded-full bg-success-100 dark:bg-success-500/20">
             <CheckCircle2 className="h-8 w-8 text-success-600 dark:text-success-500" />
           </div>
           <div>
@@ -453,7 +453,7 @@ export default function RetailerPOSPage() {
                     </div>
                     <Numpad value={tendered} onChange={setTendered} />
                     {tenderedNum > 0 && (
-                      <div className={cn("rounded-xl p-2.5 text-center text-sm font-bold", tenderedNum >= total ? "bg-success-100 text-success-700 dark:text-foreground" : "bg-danger-100 text-danger-700 dark:text-foreground")}>
+                      <div className={cn("rounded-xl p-2.5 text-center text-sm font-bold", tenderedNum >= total ? "bg-success-100 dark:bg-success-500/20 text-success-700 dark:text-foreground" : "bg-danger-100 text-danger-700 dark:text-foreground")}>
                         {tenderedNum >= total ? `Change: ${formatPHP(change)}` : `Short by ${formatPHP(total - tenderedNum)}`}
                       </div>
                     )}

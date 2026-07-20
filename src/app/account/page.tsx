@@ -336,7 +336,7 @@ export default function AccountPage() {
         {/* Profile card */}
         <div className="rounded-2xl border border-border bg-card shadow-card p-5">
           <div className="flex items-center gap-4">
-            <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-brand-100 text-brand-600 text-2xl font-black shrink-0">
+            <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-brand-100 dark:bg-brand-500/20 text-brand-600 text-2xl font-black shrink-0">
               {userInfo.initial}
             </div>
             <div>
@@ -429,7 +429,7 @@ export default function AccountPage() {
               <p className="text-[11px] text-muted-foreground">Credit utilization</p>
               <p className="text-[11px] font-semibold text-muted-foreground">{creditData.utilization.toFixed(1)}% used</p>
             </div>
-            <div className="h-1.5 rounded-full bg-success-100 overflow-hidden">
+            <div className="h-1.5 rounded-full bg-success-100 dark:bg-success-500/20 overflow-hidden">
               <div className="h-full rounded-full bg-brand-50 dark:bg-brand-500/100 transition-all" style={{ width: `${creditData.utilization}%` }} />
             </div>
           </div>
@@ -602,7 +602,7 @@ export default function AccountPage() {
         {subIsActive ? (
           <div className="rounded-2xl border border-success-500/25 bg-success-50 dark:bg-success-500/10 p-5">
             <div className="flex items-start gap-3">
-              <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-success-100 text-success-600 dark:text-success-500">
+              <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-success-100 dark:bg-success-500/20 text-success-600 dark:text-success-500">
                 <Shield className="h-4 w-4" />
               </div>
               <div className="flex-1">

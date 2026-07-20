@@ -240,7 +240,7 @@ export default function DriverHomePage() {
             <span>{route.completedStops} of {route.stops} stops complete</span>
             <span className="font-semibold text-brand-600">{progressPct}%</span>
           </div>
-          <div className="h-2.5 bg-brand-100 rounded-full overflow-hidden">
+          <div className="h-2.5 bg-brand-100 dark:bg-brand-500/20 rounded-full overflow-hidden">
             <div
               className="h-full bg-brand-500 rounded-full transition-all"
               style={{ width: `${progressPct}%` }}
@@ -259,7 +259,7 @@ export default function DriverHomePage() {
       <Card className="p-4">
         {nextStop ? (
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-full bg-brand-100 flex items-center justify-center flex-shrink-0">
+            <div className="w-10 h-10 rounded-full bg-brand-100 dark:bg-brand-500/20 flex items-center justify-center flex-shrink-0">
               <span className="font-display text-sm font-bold text-brand-700 dark:text-brand-400">
                 {pendingDeliveries.indexOf(nextStop) + 1}
               </span>

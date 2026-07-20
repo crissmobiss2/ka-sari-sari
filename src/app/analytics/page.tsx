@@ -203,7 +203,7 @@ const RANK_COLORS = [
   "bg-brand-400",
   "bg-brand-300",
   "bg-brand-200",
-  "bg-brand-100",
+  "bg-brand-100 dark:bg-brand-500/20",
 ];
 
 // Category bar opacity classes — brand-500 at decreasing opacity
@@ -570,7 +570,7 @@ export default function AnalyticsPage() {
         {/* CTA */}
         <div className="rounded-2xl border border-dashed border-brand-300 bg-brand-50 dark:bg-brand-500/10/50 p-5">
           <div className="flex items-start gap-3">
-            <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-xl bg-brand-100 text-brand-500">
+            <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-xl bg-brand-100 dark:bg-brand-500/20 text-brand-500">
               <ShoppingBasket className="h-4 w-4" />
             </div>
             <div>

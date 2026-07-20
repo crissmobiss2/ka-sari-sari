@@ -357,8 +357,8 @@ export default function RouteMapPage() {
                 {/* Status indicator */}
                 <div className={cn(
                   "flex h-8 w-8 shrink-0 items-center justify-center rounded-full font-bold text-sm",
-                  isDone ? "bg-success-100 text-success-600 dark:text-success-500"
-                  : isFailed ? "bg-danger-100 text-danger-600 dark:text-danger-500"
+                  isDone ? "bg-success-100 dark:bg-success-500/20 text-success-600 dark:text-success-500"
+                  : isFailed ? "bg-danger-100 dark:bg-danger-500/20 text-danger-600 dark:text-danger-500"
                   : isNext ? "bg-brand-50 dark:bg-brand-500/100 text-white"
                   : "bg-surface-100 dark:bg-surface-800 text-muted-foreground"
                 )}>

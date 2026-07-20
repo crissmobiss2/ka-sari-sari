@@ -413,7 +413,7 @@ export default function AdminForecastPage() {
                 <div className="space-y-2">
                   {aiData.topReorders.map((item, i) => (
                     <div key={i} className="flex items-start gap-3 py-2.5 border-b border-border last:border-0">
-                      <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-brand-100 text-brand-700 dark:text-brand-400 text-xs font-bold mt-0.5">
+                      <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-brand-100 dark:bg-brand-500/20 text-brand-700 dark:text-brand-400 text-xs font-bold mt-0.5">
                         {i + 1}
                       </span>
                       <div className="flex-1 min-w-0">
@@ -493,7 +493,7 @@ export default function AdminForecastPage() {
             ) : (
               highVelocityItems.map((item, idx) => (
                 <div key={item.productId} className="flex items-start gap-3 py-2 border-b border-border last:border-0">
-                  <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-brand-100 text-brand-700 dark:text-brand-400 text-xs font-bold">
+                  <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-brand-100 dark:bg-brand-500/20 text-brand-700 dark:text-brand-400 text-xs font-bold">
                     {idx + 1}
                   </span>
                   <div className="flex-1 min-w-0">
