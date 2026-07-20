@@ -30,7 +30,7 @@ const Input = forwardRef<HTMLInputElement, InputProps>(
             ref={ref}
             className={cn(
               "h-11 w-full rounded-xl border border-input bg-card px-4 text-sm text-foreground placeholder:text-muted-foreground transition-colors",
-              "focus:outline-none focus:ring-2 focus:ring-brand-500 focus:border-brand-500",
+              "focus:outline-none focus:ring-2 focus:ring-brand-700 focus:border-brand-700",
               "disabled:cursor-not-allowed disabled:opacity-50",
               error && "border-danger-500 focus:ring-danger-500",
               leftIcon && "pl-10",
