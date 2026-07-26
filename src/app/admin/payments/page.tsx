@@ -1,5 +1,5 @@
 "use client";
-import React, { useState, useMemo, useCallback } from "react";
+import React, { useState, useMemo, useCallback, useEffect } from "react";
 import {
   Download, Search, TrendingUp, TrendingDown,
   AlertCircle, CheckCircle2, Clock, XCircle, ArrowUpRight,
@@ -86,6 +86,7 @@ const ORDERS_AS_TXS: Transaction[] = ALL_ORDERS.map((order) => ({
 
 // ─── Supplemental static transactions (richer dataset) ───────────────────────
 
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 const STATIC_TXS: Transaction[] = [
   { id: "txn-001", orderId: "ord-s001", orderNumber: "KSS-2025-00130", retailer: "Alvarez Tindahan",      method: "gcash",   amount: 4850, status: "completed", reference: "GC-20250101-001", date: "2025-01-10T08:23:00Z" },
   { id: "txn-002", orderId: "ord-s002", orderNumber: "KSS-2025-00129", retailer: "Bautista Store",        method: "cod",     amount: 2300, status: "pending",   date: "2025-01-10T09:10:00Z", notes: "Driver to collect on delivery" },
@@ -110,10 +111,11 @@ const STATIC_TXS: Transaction[] = [
 ];
 
 // Merge and deduplicate by orderNumber, sort newest first
-const ALL_TXS: Transaction[] = [
-  ...ORDERS_AS_TXS,
-  ...STATIC_TXS,
-].sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
+// Demo fallback only: derived from the demo orders. Real transactions are
+// fetched from /api/admin/payments at runtime. No fabricated static financials.
+const ALL_TXS: Transaction[] = [...ORDERS_AS_TXS].sort(
+  (a, b) => new Date(b.date).getTime() - new Date(a.date).getTime()
+);
 
 // ─── Config maps ─────────────────────────────────────────────────────────────
 
@@ -211,6 +213,18 @@ export default function PaymentsPage() {
   const [search, setSearch] = useState("");
   const [selected, setSelected] = useState<Transaction | null>(null);
   const [reconciledIds, setReconciledIds] = useState<Set<string>>(new Set());
+
+  // Load real payment transactions (empty in demo mode → keeps demo fallback).
+  useEffect(() => {
+    fetch("/api/admin/payments")
+      .then((r) => (r.ok ? r.json() : Promise.reject()))
+      .then((data) => {
+        if (Array.isArray(data?.transactions) && data.transactions.length > 0) {
+          setTransactions(data.transactions);
+        }
+      })
+      .catch(() => {});
+  }, []);
 
   // ── Derived KPIs ─────────────────────────────────────────────────────────
   const collected = useMemo(
