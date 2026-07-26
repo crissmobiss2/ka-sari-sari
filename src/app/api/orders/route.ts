@@ -12,13 +12,26 @@ import type { Order } from "@/types";
 
 const useSupabase = !!process.env.NEXT_PUBLIC_SUPABASE_URL;
 
+// Per-process rolling counter (random start so instances don't align).
+let orderSeq = Math.floor(Math.random() * 1000);
+
 function generateOrderId() {
   const d = new Date();
   const yy = d.getFullYear().toString().slice(-2);
   const mm = String(d.getMonth() + 1).padStart(2, "0");
   const dd = String(d.getDate()).padStart(2, "0");
-  const rand = Math.floor(Math.random() * 9000) + 1000;
-  return `KSS-${yy}${mm}${dd}-${rand}`;
+  // Collision-resistant suffix. The old 4-digit random (9,000 values/day)
+  // collided within a few hundred orders/day (birthday paradox) → silent
+  // overwrites in memory and UNIQUE-violation failures against Postgres.
+  // Millisecond timestamp guarantees uniqueness per ms; the counter guarantees
+  // it within a ms in one process; random covers cross-instance same-ms.
+  orderSeq = (orderSeq + 1) % 1_000_000;
+  const suffix = (
+    Date.now().toString(36) +
+    orderSeq.toString(36) +
+    Math.floor(Math.random() * 1296).toString(36)
+  ).toUpperCase();
+  return `KSS-${yy}${mm}${dd}-${suffix}`;
 }
 
 export async function GET(req: NextRequest) {
