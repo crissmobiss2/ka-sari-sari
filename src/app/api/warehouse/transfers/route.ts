@@ -24,11 +24,23 @@ export async function GET(_req: NextRequest) {
     });
   }
 
-  // Supabase implementation placeholder
-  return NextResponse.json({ error: "Not implemented" }, { status: 501 });
+  // Inter-hub transfers are not yet backed by a real table. Degrade gracefully
+  // to an empty list rather than a 501 so the warehouse UI renders cleanly.
+  // (Tracked as a post-launch feature — see launch plan.)
+  return NextResponse.json({ transfers: [] });
 }
 
 export async function POST(req: NextRequest) {
+  // Demo mode only: simulate a created transfer so the UI is explorable.
+  // In production (Supabase configured) the feature isn't implemented yet —
+  // respond honestly instead of faking success.
+  if (process.env.NEXT_PUBLIC_SUPABASE_URL) {
+    return NextResponse.json(
+      { error: "Inter-hub transfers are not yet available" },
+      { status: 503 }
+    );
+  }
+
   try {
     const body = await req.json();
     const { fromHub, toHub, items, notes } = body;

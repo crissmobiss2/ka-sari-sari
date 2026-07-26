@@ -307,9 +307,10 @@ export default function SupportPage() {
   // FAQ accordion
   const [openFaq, setOpenFaq] = useState<number | null>(null);
 
-  // Contact info (fetched from API, falls back to defaults)
-  const [whatsappNumber, setWhatsappNumber] = useState("639170000000");
-  const [phoneNumber, setPhoneNumber] = useState("+63288881234");
+  // Contact info (fetched from /api/config/contact). Empty until loaded so a
+  // misconfigured deploy never shows or dials a placeholder number.
+  const [whatsappNumber, setWhatsappNumber] = useState("");
+  const [phoneNumber, setPhoneNumber] = useState("");
 
   useEffect(() => {
     fetch("/api/config/contact")
@@ -372,13 +373,14 @@ export default function SupportPage() {
           <h2 className="font-display text-base font-semibold text-foreground mb-3">
             Makipag-ugnayan / Contact Us
           </h2>
-          <div className="grid grid-cols-3 gap-2">
+          <div className="flex gap-2">
             {/* WhatsApp */}
+            {whatsappNumber && (
             <a
               href={`https://wa.me/${whatsappNumber}`}
               target="_blank"
               rel="noopener noreferrer"
-              className="flex flex-col items-center gap-2 rounded-2xl border border-border bg-card p-4 text-center shadow-card hover:bg-muted transition-colors"
+              className="flex flex-1 flex-col items-center gap-2 rounded-2xl border border-border bg-card p-4 text-center shadow-card hover:bg-muted transition-colors"
             >
               <div
                 className="flex h-10 w-10 items-center justify-center rounded-xl"
@@ -397,11 +399,12 @@ export default function SupportPage() {
               <p className="text-xs font-semibold text-foreground leading-tight">WhatsApp</p>
               <p className="text-[10px] text-muted-foreground">Chat tayo</p>
             </a>
+            )}
 
             {/* Email */}
             <a
               href="mailto:support@kasarisari.ph"
-              className="flex flex-col items-center gap-2 rounded-2xl border border-border bg-card p-4 text-center shadow-card hover:bg-muted transition-colors"
+              className="flex flex-1 flex-col items-center gap-2 rounded-2xl border border-border bg-card p-4 text-center shadow-card hover:bg-muted transition-colors"
             >
               <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-brand-50 dark:bg-brand-500/10 text-brand-700 dark:text-brand-400">
                 <Mail className="h-5 w-5" />
@@ -411,9 +414,10 @@ export default function SupportPage() {
             </a>
 
             {/* Call */}
+            {phoneNumber && (
             <a
               href={`tel:${phoneNumber}`}
-              className="flex flex-col items-center gap-2 rounded-2xl border border-border bg-card p-4 text-center shadow-card hover:bg-muted transition-colors"
+              className="flex flex-1 flex-col items-center gap-2 rounded-2xl border border-border bg-card p-4 text-center shadow-card hover:bg-muted transition-colors"
             >
               <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-brand-50 dark:bg-brand-500/10 text-brand-700 dark:text-brand-400">
                 <Phone className="h-5 w-5" />
@@ -421,6 +425,7 @@ export default function SupportPage() {
               <p className="text-xs font-semibold text-foreground leading-tight">Tumawag</p>
               <p className="text-[10px] text-muted-foreground">8AM–6PM</p>
             </a>
+            )}
           </div>
 
           {/* Hours note */}

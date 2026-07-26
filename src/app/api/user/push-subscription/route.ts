@@ -45,7 +45,10 @@ export async function DELETE(req: NextRequest) {
 }
 
 export async function GET() {
-  // Return VAPID public key so client can create subscription
-  const vapidKey = process.env.VAPID_PUBLIC_KEY ?? "";
+  // Return VAPID public key so client can create subscription.
+  // Fall back to the NEXT_PUBLIC_ variant (same value) so a missing
+  // server-only VAPID_PUBLIC_KEY doesn't leave the client unable to subscribe.
+  const vapidKey =
+    process.env.VAPID_PUBLIC_KEY ?? process.env.NEXT_PUBLIC_VAPID_PUBLIC_KEY ?? "";
   return NextResponse.json({ vapidPublicKey: vapidKey });
 }

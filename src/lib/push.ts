@@ -6,7 +6,11 @@ import webpush from "web-push";
 import { supabaseAdmin } from "./supabase";
 
 function initWebPush() {
-  const pub = process.env.VAPID_PUBLIC_KEY;
+  // Accept either the server-only VAPID_PUBLIC_KEY or the browser-exposed
+  // NEXT_PUBLIC_VAPID_PUBLIC_KEY — they hold the same value, and only having
+  // the NEXT_PUBLIC_ one set is a common misconfiguration that silently
+  // disables all push. Fall back so push still works either way.
+  const pub = process.env.VAPID_PUBLIC_KEY ?? process.env.NEXT_PUBLIC_VAPID_PUBLIC_KEY;
   const priv = process.env.VAPID_PRIVATE_KEY;
   const subject = process.env.VAPID_SUBJECT ?? "mailto:support@kasarisari.com";
   if (pub && priv) {

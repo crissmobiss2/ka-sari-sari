@@ -84,7 +84,8 @@ const HOW_TO_EARN = [
 
 export default function LoyaltyPage() {
   const [copied, setCopied] = useState(false);
-  const [referralCode, setReferralCode] = useState("KSS-DEMO-2025");
+  // Populated from /api/auth/me; empty until loaded so no demo code is shown.
+  const [referralCode, setReferralCode] = useState("");
 
   const { balance, transactions } = useLoyaltyStore();
 
