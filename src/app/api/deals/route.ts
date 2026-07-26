@@ -80,9 +80,8 @@ export async function GET(_req: NextRequest) {
     });
   }
 
-  // Deals/promotions table not yet implemented in production
-  return NextResponse.json(
-    { error: "Deals/promotions not yet implemented", deals: [] },
-    { status: 501 }
-  );
+  // No promotions table yet: return an empty list (200) so the page shows its
+  // "no deals" state rather than falling back to fabricated mock deals. When a
+  // real promotions backend lands, query it here.
+  return NextResponse.json({ deals: [] });
 }

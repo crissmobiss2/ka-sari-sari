@@ -123,8 +123,8 @@ export default function LoginPage() {
             </p>
           </div>
 
-          {/* Demo hint — development only */}
-          {process.env.NEXT_PUBLIC_SHOW_DEMO === "true" && (
+          {/* Demo hint — development only, never in a production build */}
+          {process.env.NEXT_PUBLIC_SHOW_DEMO === "true" && process.env.NODE_ENV !== "production" && (
           <div className="mt-8 rounded-xl bg-surface-100 dark:bg-surface-800 border border-border p-4 text-xs text-muted-foreground space-y-1">
             <p className="font-medium text-surface-900 mb-1.5">Demo accounts</p>
             <p><span className="font-mono text-surface-900">09171234567</span> + <span className="font-mono text-surface-900">admin</span> → Admin</p>

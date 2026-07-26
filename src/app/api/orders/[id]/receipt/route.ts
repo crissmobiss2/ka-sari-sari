@@ -24,6 +24,13 @@ function esc(v: unknown): string {
     .replace(/'/g, "&#39;");
 }
 
+// BIR official-receipt details. Only claim "Official Receipt" when the real,
+// registered values are configured — never ship fabricated TIN/ATP numbers.
+const BIZ_TIN = process.env.BUSINESS_TIN;
+const BIZ_ATP = process.env.BUSINESS_ATP;
+const BIZ_OR_SERIES = process.env.BUSINESS_OR_SERIES;
+const IS_OFFICIAL = !!(BIZ_TIN && BIZ_ATP);
+
 export async function GET(
   req: NextRequest,
   { params }: { params: Promise<{ id: string }> }
@@ -130,12 +137,12 @@ export async function GET(
     <div class="biz-info">
       Ka Sari-Sari Wholesale Distribution, Inc.<br>
       NCR Hub, Valenzuela City, Metro Manila 1440<br>
-      TIN: 000-000-000-000 &middot; VAT Registered
+      ${IS_OFFICIAL ? `TIN: ${esc(BIZ_TIN)} &middot; VAT Registered` : "Order confirmation — not a BIR-registered official receipt"}
     </div>
   </div>
 
   <div style="text-align:center;margin-bottom:20px">
-    <span class="or-badge">Official Receipt</span>
+    <span class="or-badge">${IS_OFFICIAL ? "Official Receipt" : "Order Receipt"}</span>
   </div>
 
   <div class="meta-grid">
@@ -201,9 +208,10 @@ export async function GET(
 
   <div class="footer">
     This document is an acknowledgement that the above goods were received in good condition.<br>
-    This serves as an Official Receipt pursuant to BIR Revenue Regulations.<br>
-    Series: OR-KSS-2025-001 &middot; Authority to Print: ATP-XXXXXXXX<br>
-    Validity: January 2025 &ndash; December 2027
+    ${IS_OFFICIAL
+      ? `This serves as an Official Receipt pursuant to BIR Revenue Regulations.<br>
+    Series: ${esc(BIZ_OR_SERIES ?? "—")} &middot; Authority to Print: ${esc(BIZ_ATP)}`
+      : "This is an order confirmation, not an official BIR receipt."}
   </div>
 </div>
 

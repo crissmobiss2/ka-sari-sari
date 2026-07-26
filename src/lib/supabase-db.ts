@@ -281,6 +281,23 @@ export async function verifyOTP(phone: string, codeHash: string): Promise<boolea
   return true;
 }
 
+// Non-consuming validity check — does NOT mark the code used. For the
+// interactive "verify" step in signup/reset; the final action (register or
+// password reset) is what consumes the code via verifyOTP().
+export async function peekOTP(phone: string, codeHash: string): Promise<boolean> {
+  const { data } = await supabaseAdmin
+    .from("otp_codes")
+    .select("id")
+    .eq("phone", phone)
+    .eq("code_hash", codeHash)
+    .eq("used", false)
+    .gte("expires_at", new Date().toISOString())
+    .order("created_at", { ascending: false })
+    .limit(1)
+    .single();
+  return !!data;
+}
+
 // ── Products ──────────────────────────────────────────────────────────────────
 
 export async function getProducts(opts: {
