@@ -1,6 +1,7 @@
 ﻿import { NextRequest, NextResponse } from "next/server";
 import { getSessionFromRequest } from "@/lib/auth";
 import { supabaseAdmin } from "@/lib/supabase";
+import { DRIVERS } from "@/lib/mock-data";
 import bcrypt from "bcryptjs";
 
 export async function GET(req: NextRequest) {
@@ -10,7 +11,15 @@ export async function GET(req: NextRequest) {
   }
 
   if (!process.env.NEXT_PUBLIC_SUPABASE_URL) {
-    return NextResponse.json({ drivers: [] });
+    // Demo mode: return the seeded drivers so dispatch/assignment is exercisable.
+    const drivers = DRIVERS.map((d) => ({
+      id: d.id, name: d.name, phone: d.phone,
+      vehiclePlate: (d as { vehiclePlate?: string }).vehiclePlate ?? "",
+      vehicleType: (d as { vehicleType?: string }).vehicleType ?? "motorcycle",
+      status: (d as { status?: string }).status ?? "available",
+      area: (d as { area?: string }).area ?? "",
+    }));
+    return NextResponse.json({ drivers });
   }
 
   const { data, error } = await supabaseAdmin

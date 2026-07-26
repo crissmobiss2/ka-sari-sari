@@ -8,6 +8,7 @@ import {
 } from "@/lib/supabase-db";
 import { sendPushToUser } from "@/lib/push";
 import { supabaseAdmin } from "@/lib/supabase";
+import { getOrderById as legacyGetOrderById, saveOrder as legacySaveOrder } from "@/lib/db";
 
 export async function GET(
   req: NextRequest,
@@ -48,10 +49,32 @@ export async function PATCH(
 
   const { id } = await params;
   const body = await req.json();
-  const { action, driverId, reason } = body;
+  const { driverId, reason, status } = body;
+  let { action } = body;
 
+  // The fulfillment board sends { status } for linear advances; map it onto the
+  // action contract so both callers work.
+  const STATUS_TO_ACTION: Record<string, string> = {
+    picking: "start_picking", packed: "mark_packed", cancelled: "cancel",
+  };
+  if (!action && typeof status === "string") action = STATUS_TO_ACTION[status] ?? "set_status";
+
+  const ACTION_TO_STATUS: Record<string, string | undefined> = {
+    start_picking: "picking", mark_packed: "packed", cancel: "cancelled",
+    assign_driver: "out_for_delivery", set_status: typeof status === "string" ? status : undefined,
+  };
+  const targetStatus = ACTION_TO_STATUS[action as string] ?? (typeof status === "string" ? status : undefined);
+
+  // Demo mode (no database): update the in-memory order so the whole
+  // retailer → warehouse → driver pipeline is still exercisable end-to-end.
   if (!process.env.NEXT_PUBLIC_SUPABASE_URL) {
-    return NextResponse.json({ error: "Database not configured" }, { status: 503 });
+    const o = legacyGetOrderById(id);
+    if (!o) return NextResponse.json({ error: "Order not found" }, { status: 404 });
+    if (!targetStatus) return NextResponse.json({ error: "action or status required" }, { status: 400 });
+    o.status = targetStatus as typeof o.status;
+    if (action === "assign_driver" && driverId) (o as { driverId?: string }).driverId = driverId;
+    legacySaveOrder(o);
+    return NextResponse.json({ ok: true });
   }
 
   try {
@@ -82,7 +105,7 @@ export async function PATCH(
         });
       }
 
-      await updateOrderStatus(id, "dispatched");
+      await updateOrderStatus(id, "out_for_delivery");
 
       // Notify retailer
       if (order.retailerId) {
@@ -157,6 +180,8 @@ export async function PATCH(
           url: `/orders/${id}`,
         }).catch(() => {});
       }
+    } else if (action === "set_status" && targetStatus) {
+      await updateOrderStatus(id, targetStatus);
     } else {
       return NextResponse.json({ error: "Invalid action" }, { status: 400 });
     }

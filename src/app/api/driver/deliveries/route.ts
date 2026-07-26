@@ -5,6 +5,8 @@ import { getDriverDeliveries } from "@/lib/supabase-db";
 import { supabaseAdmin } from "@/lib/supabase";
 import type { OrderStatus } from "@/types";
 
+// A driver sees an order from the moment it's out for delivery through
+// completion. assign_driver moves the order to out_for_delivery so it lands here.
 const DELIVERY_STATUSES: OrderStatus[] = ["out_for_delivery", "delivered", "failed_delivery"];
 
 export async function GET(req: NextRequest) {
