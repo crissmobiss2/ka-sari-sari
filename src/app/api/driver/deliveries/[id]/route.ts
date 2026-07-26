@@ -8,6 +8,7 @@ import {
   createNotification,
   getOrderById,
 } from "@/lib/supabase-db";
+import { supabaseAdmin } from "@/lib/supabase";
 import { sendPushToUser } from "@/lib/push";
 
 export async function PATCH(
@@ -36,6 +37,18 @@ export async function PATCH(
 
   if (!process.env.NEXT_PUBLIC_SUPABASE_URL) {
     return NextResponse.json({ ok: true }); // dev fallback
+  }
+
+  // Ownership check: a driver may only act on deliveries assigned to them.
+  // Without this, any driver could mark any order delivered or write COD/proof
+  // on another driver's delivery (IDOR → COD-reconciliation fraud).
+  const { data: delivery } = await supabaseAdmin
+    .from("deliveries")
+    .select("driver_id")
+    .eq("id", deliveryId)
+    .single();
+  if (!delivery || delivery.driver_id !== session.userId) {
+    return NextResponse.json({ error: "Not your delivery" }, { status: 403 });
   }
 
   try {

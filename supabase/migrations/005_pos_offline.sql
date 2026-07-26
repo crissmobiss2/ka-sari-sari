@@ -16,6 +16,12 @@ ALTER TABLE pos_transactions
 CREATE INDEX IF NOT EXISTS idx_pos_retailer_created
   ON pos_transactions(retailer_id, created_at DESC);
 
+-- Receipt numbers are minted offline per-device and cannot be globally unique
+-- from local state alone. They are NOT the idempotency key (client_txn_id is),
+-- so drop the UNIQUE constraint — a duplicate must never 500 and jam a device's
+-- outbox. (Global BIR-grade uniqueness = a server-issued range, a follow-up.)
+ALTER TABLE pos_transactions DROP CONSTRAINT IF EXISTS pos_transactions_receipt_number_key;
+
 -- ── Exactly-once sale recording ────────────────────────────────────────────────
 -- Returns the canonical row. Safe to call repeatedly with the same
 -- p_client_txn_id — stock is decremented only on the first successful insert.
@@ -32,8 +38,7 @@ CREATE OR REPLACE FUNCTION record_pos_sale(
   p_client_created_at TIMESTAMPTZ
 ) RETURNS pos_transactions LANGUAGE plpgsql AS $$
 DECLARE
-  v_row  pos_transactions;
-  v_item JSONB;
+  v_row pos_transactions;
 BEGIN
   -- Race-safe idempotency: only one concurrent caller wins the insert.
   INSERT INTO pos_transactions
@@ -45,22 +50,16 @@ BEGIN
   ON CONFLICT (client_txn_id) DO NOTHING
   RETURNING * INTO v_row;
 
-  -- Conflict → this sale already landed. Return it, do NOT decrement again.
+  -- Conflict → this sale already landed. Return it unchanged (idempotent).
   IF v_row.id IS NULL THEN
     SELECT * INTO v_row FROM pos_transactions WHERE client_txn_id = p_client_txn_id;
-    RETURN v_row;
   END IF;
 
-  -- First time only: decrement stock once per line item (atomic per row).
-  FOR v_item IN SELECT * FROM jsonb_array_elements(p_items) LOOP
-    IF (v_item->>'productId') IS NOT NULL THEN
-      PERFORM adjust_stock(
-        (v_item->>'productId'),
-        -1 * GREATEST(1, COALESCE((v_item->>'qty')::int, 1))
-      );
-    END IF;
-  END LOOP;
-
+  -- NOTE: a retailer's POS sale to a walk-in customer does NOT decrement shared
+  -- warehouse stock (products.stock_qty) — that column is warehouse on-hand for
+  -- B2B ordering, and one store's retail sales must not deplete what every other
+  -- store sees. Per-retailer inventory is a separate, documented follow-up. The
+  -- sale is recorded here as the source of truth; no stock side effects.
   RETURN v_row;
 END;
 $$;

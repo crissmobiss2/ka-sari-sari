@@ -8,8 +8,10 @@
 import {
   pendingOutbox,
   markSynced,
+  markFailed,
   bumpAttempt,
   pendingCount,
+  failedCount,
   pruneSynced,
   type OutboxTxn,
 } from "./offline-db";
@@ -17,14 +19,16 @@ import {
 const ENDPOINT = "/api/pos/transaction";
 const CHANGE_EVENT = "pos-sync-change";
 const INTERVAL_MS = 30_000;
+const MAX_ATTEMPTS = 5;
 
 let flushing = false;
 
-// Broadcast the current pending count so any UI (the header badge) can react.
+// Broadcast pending + failed counts so the UI (header badge) can react —
+// distinguishing "syncing" from "needs attention".
 export async function emitPending(): Promise<void> {
   if (typeof window === "undefined") return;
-  const pending = await pendingCount();
-  window.dispatchEvent(new CustomEvent(CHANGE_EVENT, { detail: { pending } }));
+  const [pending, failed] = await Promise.all([pendingCount(), failedCount()]);
+  window.dispatchEvent(new CustomEvent(CHANGE_EVENT, { detail: { pending, failed } }));
 }
 
 export async function flush(): Promise<void> {
@@ -42,15 +46,24 @@ export async function flush(): Promise<void> {
         });
         if (res.ok) {
           await markSynced(txn.clientTxnId);
-          await emitPending();
         } else if (res.status === 401) {
-          // Not signed in / session expired — stop; retry after re-auth.
+          // Session expired — not this sale's fault. Stop; retry after re-auth.
           await bumpAttempt(txn.clientTxnId, "HTTP 401");
           break;
+        } else if (res.status >= 400 && res.status < 500) {
+          // Permanent client error: the server will never accept this row.
+          // Quarantine it so it can't jam the rest of the queue behind it.
+          await markFailed(txn.clientTxnId, `HTTP ${res.status}`);
         } else {
+          // Transient server error: retry a few cycles, then quarantine.
           await bumpAttempt(txn.clientTxnId, `HTTP ${res.status}`);
-          break; // back off; the timer/online triggers will retry
+          if ((txn.attempts ?? 0) + 1 >= MAX_ATTEMPTS) {
+            await markFailed(txn.clientTxnId, `HTTP ${res.status} after ${MAX_ATTEMPTS} tries`);
+          } else {
+            break; // back off; the timer/online triggers will retry
+          }
         }
+        await emitPending();
       } catch (e) {
         await bumpAttempt(txn.clientTxnId, e instanceof Error ? e.message : "network");
         break; // offline again — stop and wait for the next trigger
@@ -91,12 +104,12 @@ export async function registerBackgroundSync(): Promise<void> {
 }
 
 // Wire up all triggers. Returns a cleanup function. Safe to call once per mount.
-export function initSync(onChange?: (pending: number) => void): () => void {
+export function initSync(onChange?: (pending: number, failed: number) => void): () => void {
   if (typeof window === "undefined") return () => {};
 
   const changeHandler = (e: Event) => {
-    const pending = (e as CustomEvent<{ pending: number }>).detail?.pending ?? 0;
-    onChange?.(pending);
+    const detail = (e as CustomEvent<{ pending: number; failed: number }>).detail;
+    onChange?.(detail?.pending ?? 0, detail?.failed ?? 0);
   };
   const onlineHandler = () => void flush();
   const visibilityHandler = () => {

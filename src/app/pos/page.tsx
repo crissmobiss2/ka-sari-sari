@@ -2,15 +2,15 @@
 import { useState, useMemo, useRef, useCallback, useEffect } from "react";
 import {
   Search, Plus, Minus, X, CheckCircle2, Printer,
-  RefreshCcw, ShoppingCart, Package, Banknote, ArrowLeft, Camera, CloudOff,
+  RefreshCcw, ShoppingCart, Package, Banknote, ArrowLeft, Camera, CloudOff, AlertTriangle,
 } from "lucide-react";
 import Link from "next/link";
 import { cn, formatPHP } from "@/lib/utils";
 import { PRODUCTS, CATEGORIES } from "@/lib/mock-data";
 import type { Product } from "@/types";
 import { BarcodeScanner } from "@/components/pos/barcode-scanner";
-import { putOutbox, cacheCatalog, readCatalog, type OutboxTxn } from "@/lib/pos/offline-db";
-import { nextReceiptNumber, getDeviceId } from "@/lib/pos/receipt";
+import { commitSale, cacheCatalog, readCatalog, type OutboxTxn } from "@/lib/pos/offline-db";
+import { getDeviceId, seriesOf } from "@/lib/pos/receipt";
 import { initSync, flush, emitPending, registerBackgroundSync } from "@/lib/pos/sync";
 
 // ─── Types ──────────────────────────────────────────────────────────────────
@@ -77,9 +77,11 @@ export default function RetailerPOSPage() {
   const [txnLoading, setTxnLoading] = useState(false);
   const [allProducts, setAllProducts] = useState<Product[]>(PRODUCTS);
   const [pendingSync, setPendingSync] = useState(0);
+  const [failedSync, setFailedSync] = useState(0);
   const [isOnline, setIsOnline] = useState(true);
   const feedbackTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const searchRef = useRef<HTMLInputElement>(null);
+  const payingRef = useRef(false);
 
   // Load the product catalog: fetch when online (and cache it for offline use),
   // fall back to the cached catalog, then to the bundled list.
@@ -103,7 +105,7 @@ export default function RetailerPOSPage() {
 
   // Start the offline sync engine + track connectivity for the status badge.
   useEffect(() => {
-    const cleanup = initSync((pending) => setPendingSync(pending));
+    const cleanup = initSync((pending, failed) => { setPendingSync(pending); setFailedSync(failed); });
     const goOnline = () => setIsOnline(true);
     const goOffline = () => setIsOnline(false);
     setIsOnline(typeof navigator !== "undefined" ? navigator.onLine : true);
@@ -152,11 +154,12 @@ export default function RetailerPOSPage() {
   // background and retries safely — a dropped connection can't fail a sale.
   async function handlePay() {
     if (method === "cash" && tenderedNum < total) return;
+    if (payingRef.current) return;       // re-entrancy latch — one tap, one sale
+    payingRef.current = true;
     setTxnLoading(true);
     setTxnError(null);
     try {
       const deviceId = await getDeviceId();
-      const receiptNumber = await nextReceiptNumber();
       const clientTxnId =
         typeof crypto !== "undefined" && "randomUUID" in crypto
           ? crypto.randomUUID()
@@ -164,7 +167,7 @@ export default function RetailerPOSPage() {
       const txn: OutboxTxn = {
         clientTxnId,
         deviceId,
-        receiptNumber,
+        receiptNumber: "",               // assigned atomically by commitSale
         items: cart.map((i) => ({
           productId: i.product.id,
           name: i.product.name,
@@ -178,17 +181,20 @@ export default function RetailerPOSPage() {
         status: "pending",
         attempts: 0,
       };
-      await putOutbox(txn);              // durable local write — the sale is now DONE
+      // Atomic: allocate the receipt number AND durably store the sale in one
+      // transaction, or throw. We never show "received" for an unpersisted sale.
+      const receiptNumber = await commitSale(txn, seriesOf(deviceId));
       setTxnReceiptNo(receiptNumber);
       setStep("done");
       setReceiptNo((n) => n + 1);
-      void emitPending();                // update the pending badge immediately
+      void emitPending();                // update the badge immediately
       void registerBackgroundSync();     // let the SW flush us even if closed
       void flush();                      // fire-and-forget; retries own any failure
     } catch {
-      setTxnError("Could not save the sale. Please try again.");
+      setTxnError("Couldn't save the sale on this device. Please try again.");
     } finally {
       setTxnLoading(false);
+      payingRef.current = false;
     }
   }
 
@@ -296,7 +302,15 @@ export default function RetailerPOSPage() {
         >
           <Camera className="h-4 w-4" />
         </button>
-        {!isOnline ? (
+        {failedSync > 0 ? (
+          <div
+            className="flex items-center gap-1.5 rounded-lg px-2 py-1 text-[10px] font-semibold bg-danger-100 text-danger-700 dark:bg-danger-500/15 dark:text-danger-400"
+            title={`${failedSync} sale${failedSync === 1 ? "" : "s"} could not sync — needs attention`}
+          >
+            <AlertTriangle className="h-3 w-3" />
+            {failedSync}
+          </div>
+        ) : !isOnline ? (
           <div
             className="flex items-center gap-1.5 rounded-lg px-2 py-1 text-[10px] font-semibold bg-surface-200 text-surface-900 dark:bg-surface-800 dark:text-surface-100"
             title="Offline — sales are saved on this device and sync automatically when you reconnect"

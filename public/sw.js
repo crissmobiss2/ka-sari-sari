@@ -37,11 +37,18 @@ self.addEventListener('fetch', (event) => {
       )
     );
   } else {
+    // Network-first. Only cache a SAFE allowlist for offline fallback — never
+    // authenticated pages/APIs, which would leak one signed-in user's data to
+    // the next user on a shared device.
+    const path = new URL(url).pathname;
+    const cacheable =
+      path === '/pos' || path === '/' || path === '/login' ||
+      path === '/manifest.webmanifest' || path === '/api/products' ||
+      path.startsWith('/icon');
     event.respondWith(
       fetch(event.request)
         .then((res) => {
-          // Cache good, same-origin responses for offline fallback.
-          if (res && res.status === 200 && res.type === 'basic') {
+          if (cacheable && res && res.status === 200 && res.type === 'basic') {
             const copy = res.clone();
             caches.open(CACHE_NAME).then((cache) => cache.put(event.request, copy));
           }
@@ -84,6 +91,18 @@ function idbMarkSynced(db, row) {
   });
 }
 
+function idbMarkFailed(db, row, err) {
+  return new Promise((resolve) => {
+    const t = db.transaction('outbox', 'readwrite');
+    row.status = 'failed';
+    row.failedAt = new Date().toISOString();
+    row.lastError = err;
+    t.objectStore('outbox').put(row);
+    t.oncomplete = () => resolve();
+    t.onerror = () => resolve();
+  });
+}
+
 async function flushOutbox() {
   // Don't create the DB from here — only touch it if the app already made it.
   try {
@@ -115,8 +134,13 @@ async function flushOutbox() {
           clientCreatedAt: txn.clientCreatedAt,
         }),
       });
-      if (res.ok) await idbMarkSynced(db, txn);
-      else break; // stop; the next sync/foreground trigger retries
+      if (res.ok) {
+        await idbMarkSynced(db, txn);
+      } else if (res.status >= 400 && res.status < 500 && res.status !== 401) {
+        await idbMarkFailed(db, txn, 'HTTP ' + res.status); // quarantine, don't jam
+      } else {
+        break; // 401/5xx — stop; the next sync/foreground trigger retries
+      }
     } catch {
       break;
     }

@@ -29,9 +29,15 @@ export async function POST(req: NextRequest) {
       clientCreatedAt,
     } = body;
 
-    if (!items?.length || !total || !method) {
+    // Allow a ₱0 total (free/promo item) — rejecting it would permanently
+    // quarantine that sale. Validate the type so a malformed value can't error.
+    if (
+      !Array.isArray(items) || items.length === 0 ||
+      typeof total !== "number" || !Number.isFinite(total) || total < 0 ||
+      !method
+    ) {
       return NextResponse.json(
-        { error: "items, total, and method are required" },
+        { error: "items[], a non-negative numeric total, and method are required" },
         { status: 400 }
       );
     }

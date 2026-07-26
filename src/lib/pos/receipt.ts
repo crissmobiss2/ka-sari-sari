@@ -1,17 +1,19 @@
-// Offline-first POS — device identity + receipt numbering.
+// Offline-first POS — device identity + receipt series.
 //
 // Each register gets a stable device id (generated once, persisted locally).
-// Receipts are OR-{series}-{seq}:
-//   series — 5 chars derived from the device id → unique per register
-//   seq    — a local monotonic counter → gapless per register
-// So two devices in the same store never collide, and each device's own
-// sequence is unbroken — the shape BIR expects per terminal. For strict
-// accreditation this counter can later be seeded from a server-issued range.
+// Receipts are OR-{series}-{seq}; the seq is allocated atomically at sale time
+// by commitSale() in offline-db, and the series is derived from the device id.
+//
+// CAVEAT — this is PRACTICAL, not cryptographic, uniqueness. Registers imaged
+// from a clone AFTER first use share a device id (hence a series), and a 5-char
+// series can birthday-collide across a large fleet. Global, BIR-grade receipt
+// uniqueness requires server-issued receipt ranges — a documented follow-up.
+// A collision does NOT block a sale: receipt_number is not the idempotency key
+// (client_txn_id is), and the server tolerates duplicate receipt numbers.
 
-import { getMeta, setMeta, nextCounter } from "./offline-db";
+import { getMeta, setMeta } from "./offline-db";
 
 const DEVICE_KEY = "deviceId";
-const SEQ_KEY = "receiptSeq";
 
 function uuid(): string {
   if (typeof crypto !== "undefined" && "randomUUID" in crypto) {
@@ -41,11 +43,4 @@ export async function getDeviceId(): Promise<string> {
 // 5-char uppercase series derived from the device id — stable for the device.
 export function seriesOf(deviceId: string): string {
   return deviceId.replace(/[^a-zA-Z0-9]/g, "").slice(-5).toUpperCase();
-}
-
-// Allocate the next receipt number for this device, e.g. "OR-3F9A2-000042".
-export async function nextReceiptNumber(): Promise<string> {
-  const deviceId = await getDeviceId();
-  const seq = await nextCounter(SEQ_KEY);
-  return `OR-${seriesOf(deviceId)}-${String(seq).padStart(6, "0")}`;
 }

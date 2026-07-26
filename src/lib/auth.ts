@@ -3,10 +3,14 @@ import type { NextRequest } from "next/server";
 
 function getSecret(): Uint8Array {
   const raw = process.env.JWT_SECRET;
-  if (!raw && process.env.NODE_ENV === "production") {
-    throw new Error("JWT_SECRET environment variable is required in production");
+  if (raw) return new TextEncoder().encode(raw);
+  // No secret set: only tolerate a throwaway default in explicit local dev.
+  // Anywhere else (production, or an ambiguous NODE_ENV on a self-host) fail
+  // closed — the public default would otherwise let anyone forge an admin token.
+  if (process.env.NODE_ENV === "development") {
+    return new TextEncoder().encode("ka-sari-sari-dev-secret-please-change-in-prod");
   }
-  return new TextEncoder().encode(raw || "ka-sari-sari-dev-secret-please-change-in-prod");
+  throw new Error("JWT_SECRET environment variable is required");
 }
 
 export const COOKIE_NAME = "ks-session";

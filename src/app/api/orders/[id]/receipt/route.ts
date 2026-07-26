@@ -11,6 +11,19 @@ function toOrderData(raw: unknown): Record<string, any> {
   return raw as Record<string, unknown> as Record<string, any>;
 }
 
+// Escape user-controlled values before interpolating into the receipt HTML.
+// Store name / recipient / address / item names are attacker-settable (e.g. at
+// registration) and this document is served as text/html — without escaping,
+// a `<script>` store name is stored XSS that fires for staff/admin too.
+function esc(v: unknown): string {
+  return String(v ?? "")
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&#39;");
+}
+
 export async function GET(
   req: NextRequest,
   { params }: { params: Promise<{ id: string }> }
@@ -132,9 +145,9 @@ export async function GET(
 
   <div class="section-title">Bill To</div>
   <div class="bill-to">
-    <div class="name">${storeName}</div>
-    ${retailer?.name && retailer.name !== storeName ? `<div class="detail">${retailer.name}</div>` : ""}
-    ${address ? `<div class="detail">${address}</div>` : ""}
+    <div class="name">${esc(storeName)}</div>
+    ${retailer?.name && retailer.name !== storeName ? `<div class="detail">${esc(retailer.name)}</div>` : ""}
+    ${address ? `<div class="detail">${esc(address)}</div>` : ""}
   </div>
 
   <div class="section-title">Items Ordered</div>
@@ -155,7 +168,7 @@ export async function GET(
             const unitPrice = Number(item.price ?? item.unitPrice ?? item.unit_price ?? 0);
             const lineTotal = unitPrice * qty;
             return `<tr>
-              <td>${name}</td>
+              <td>${esc(name)}</td>
               <td style="text-align:center">${qty}</td>
               <td style="text-align:right">&#8369;${unitPrice.toLocaleString("en-PH", { minimumFractionDigits: 2 })}</td>
               <td>&#8369;${lineTotal.toLocaleString("en-PH", { minimumFractionDigits: 2 })}</td>
