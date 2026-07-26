@@ -2,13 +2,16 @@
 import { useState, useMemo, useRef, useCallback, useEffect } from "react";
 import {
   Search, Plus, Minus, X, CheckCircle2, Printer,
-  RefreshCcw, ShoppingCart, Package, Banknote, ArrowLeft, Camera,
+  RefreshCcw, ShoppingCart, Package, Banknote, ArrowLeft, Camera, CloudOff,
 } from "lucide-react";
 import Link from "next/link";
 import { cn, formatPHP } from "@/lib/utils";
 import { PRODUCTS, CATEGORIES } from "@/lib/mock-data";
 import type { Product } from "@/types";
 import { BarcodeScanner } from "@/components/pos/barcode-scanner";
+import { putOutbox, cacheCatalog, readCatalog, type OutboxTxn } from "@/lib/pos/offline-db";
+import { nextReceiptNumber, getDeviceId } from "@/lib/pos/receipt";
+import { initSync, flush, emitPending, registerBackgroundSync } from "@/lib/pos/sync";
 
 // ─── Types ──────────────────────────────────────────────────────────────────
 
@@ -73,17 +76,44 @@ export default function RetailerPOSPage() {
   const [txnError, setTxnError] = useState<string | null>(null);
   const [txnLoading, setTxnLoading] = useState(false);
   const [allProducts, setAllProducts] = useState<Product[]>(PRODUCTS);
+  const [pendingSync, setPendingSync] = useState(0);
+  const [isOnline, setIsOnline] = useState(true);
   const feedbackTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const searchRef = useRef<HTMLInputElement>(null);
 
+  // Load the product catalog: fetch when online (and cache it for offline use),
+  // fall back to the cached catalog, then to the bundled list.
   useEffect(() => {
+    let cancelled = false;
     fetch("/api/products")
       .then((r) => (r.ok ? r.json() : Promise.reject()))
       .then((data) => {
         const fetched: Product[] = data.products ?? data;
-        if (Array.isArray(fetched) && fetched.length > 0) setAllProducts(fetched);
+        if (Array.isArray(fetched) && fetched.length > 0) {
+          if (!cancelled) setAllProducts(fetched);
+          void cacheCatalog(fetched);
+        }
       })
-      .catch(() => {});
+      .catch(async () => {
+        const cached = await readCatalog<Product>();
+        if (!cancelled && cached.length > 0) setAllProducts(cached);
+      });
+    return () => { cancelled = true; };
+  }, []);
+
+  // Start the offline sync engine + track connectivity for the status badge.
+  useEffect(() => {
+    const cleanup = initSync((pending) => setPendingSync(pending));
+    const goOnline = () => setIsOnline(true);
+    const goOffline = () => setIsOnline(false);
+    setIsOnline(typeof navigator !== "undefined" ? navigator.onLine : true);
+    window.addEventListener("online", goOnline);
+    window.addEventListener("offline", goOffline);
+    return () => {
+      cleanup();
+      window.removeEventListener("online", goOnline);
+      window.removeEventListener("offline", goOffline);
+    };
   }, []);
 
   const products = useMemo(() => {
@@ -117,36 +147,46 @@ export default function RetailerPOSPage() {
     setCart((prev) => prev.filter((i) => i.product.id !== productId));
   }
 
+  // Local-first: the sale is committed to the device (IndexedDB) and the receipt
+  // shown instantly, with zero network in the path. Sync happens in the
+  // background and retries safely — a dropped connection can't fail a sale.
   async function handlePay() {
     if (method === "cash" && tenderedNum < total) return;
     setTxnLoading(true);
     setTxnError(null);
     try {
-      const res = await fetch("/api/pos/transaction", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          items: cart.map((i) => ({
-            productId: i.product.id,
-            name: i.product.name,
-            price: i.product.srp ?? i.product.price,
-            qty: i.quantity,
-          })),
-          total,
-          method,
-          posType: "retailer",
-        }),
-      });
-      const data = await res.json();
-      if (res.ok) {
-        setTxnReceiptNo(data.receiptNumber ?? null);
-        setStep("done");
-        setReceiptNo((n) => n + 1);
-      } else {
-        setTxnError("Transaction failed. Please try again.");
-      }
+      const deviceId = await getDeviceId();
+      const receiptNumber = await nextReceiptNumber();
+      const clientTxnId =
+        typeof crypto !== "undefined" && "randomUUID" in crypto
+          ? crypto.randomUUID()
+          : `${Date.now()}-${Math.floor(Math.random() * 1e9)}`;
+      const txn: OutboxTxn = {
+        clientTxnId,
+        deviceId,
+        receiptNumber,
+        items: cart.map((i) => ({
+          productId: i.product.id,
+          name: i.product.name,
+          price: i.product.srp ?? i.product.price,
+          qty: i.quantity,
+        })),
+        total,
+        method,
+        posType: "retailer",
+        clientCreatedAt: new Date().toISOString(),
+        status: "pending",
+        attempts: 0,
+      };
+      await putOutbox(txn);              // durable local write — the sale is now DONE
+      setTxnReceiptNo(receiptNumber);
+      setStep("done");
+      setReceiptNo((n) => n + 1);
+      void emitPending();                // update the pending badge immediately
+      void registerBackgroundSync();     // let the SW flush us even if closed
+      void flush();                      // fire-and-forget; retries own any failure
     } catch {
-      setTxnError("Network error.");
+      setTxnError("Could not save the sale. Please try again.");
     } finally {
       setTxnLoading(false);
     }
@@ -256,6 +296,23 @@ export default function RetailerPOSPage() {
         >
           <Camera className="h-4 w-4" />
         </button>
+        {!isOnline ? (
+          <div
+            className="flex items-center gap-1.5 rounded-lg px-2 py-1 text-[10px] font-semibold bg-surface-200 text-surface-900 dark:bg-surface-800 dark:text-surface-100"
+            title="Offline — sales are saved on this device and sync automatically when you reconnect"
+          >
+            <CloudOff className="h-3 w-3" />
+            Offline
+          </div>
+        ) : pendingSync > 0 ? (
+          <div
+            className="flex items-center gap-1.5 rounded-lg px-2 py-1 text-[10px] font-semibold bg-warning-100 text-warning-700 dark:bg-warning-500/15 dark:text-warning-400"
+            title={`${pendingSync} sale${pendingSync === 1 ? "" : "s"} syncing…`}
+          >
+            <RefreshCcw className="h-3 w-3 animate-spin" />
+            {pendingSync}
+          </div>
+        ) : null}
         <div className="text-right">
           <p className="text-[10px] text-muted-foreground">Receipt #</p>
           <p className="text-xs font-bold text-foreground">{receiptNo}</p>
