@@ -26,7 +26,9 @@ export async function POST(req: NextRequest) {
       await updateProductStock(productId, adjustment);
     }
 
-    console.log(`[warehouse/adjust] ${session.userId} adjusted ${productId} by ${adjustment} — ${reason ?? "no reason"} @ ${location ?? "n/a"}`);
+    if (process.env.NODE_ENV !== "production") {
+      console.log(`[warehouse/adjust] ${session.userId} adjusted ${productId} by ${adjustment} — ${reason ?? "no reason"} @ ${location ?? "n/a"}`);
+    }
 
     return NextResponse.json({
       success: true,

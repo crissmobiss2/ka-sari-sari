@@ -33,7 +33,9 @@ export async function POST(req: NextRequest) {
     const event = JSON.parse(rawBody);
     const eventType = event.data?.attributes?.type;
     const eventData = event.data?.attributes?.data;
-    console.log("[PayMongo webhook]", eventType, eventData?.id);
+    if (process.env.NODE_ENV !== "production") {
+      console.log("[PayMongo webhook]", eventType, eventData?.id);
+    }
 
     switch (eventType) {
       case "payment.paid": {

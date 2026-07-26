@@ -27,8 +27,12 @@ export async function POST(req: NextRequest) {
       } else if (!sent) {
         console.error(`[forgot-password] SMS delivery failed for phone ending ${phone.slice(-4)}`);
       }
-    } else {
+    } else if (process.env.NODE_ENV !== "production") {
+      // Dev-only fixed code so the flow is testable without SMS.
       console.log(`[DEV] OTP for ${phone}: 123456`);
+    } else {
+      // Production with no database configured — never expose a fixed OTP.
+      console.error("[forgot-password] No database configured; cannot process reset");
     }
 
     return NextResponse.json({ ok: true });
@@ -60,10 +64,14 @@ export async function PUT(req: NextRequest) {
 
       const passwordHash = await bcrypt.hash(newPassword, 10);
       await updateUser(user.id, { passwordHash });
-    } else {
+    } else if (process.env.NODE_ENV !== "production") {
+      // Dev-only fixed code. This branch is unreachable in production.
       if (otp !== "123456") {
         return NextResponse.json({ error: "Invalid OTP (use 123456 in dev mode)" }, { status: 400 });
       }
+    } else {
+      // Production without a database — refuse rather than accept a fixed code.
+      return NextResponse.json({ error: "Password reset is temporarily unavailable" }, { status: 503 });
     }
 
     return NextResponse.json({ ok: true });

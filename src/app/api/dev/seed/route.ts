@@ -4,6 +4,12 @@ import { supabaseAdmin } from "@/lib/supabase";
 import { CATEGORIES, PRODUCTS } from "@/lib/mock-data";
 
 export async function POST(req: NextRequest) {
+  // Destructive: overwrites live catalog/categories with bundled mock data.
+  // Never allow it to run in production, even for an admin.
+  if (process.env.NODE_ENV === "production") {
+    return NextResponse.json({ error: "Not available in production" }, { status: 403 });
+  }
+
   const session = await getSessionFromRequest(req);
   if (!session || session.role !== "admin") {
     return NextResponse.json({ error: "Admin only" }, { status: 403 });
