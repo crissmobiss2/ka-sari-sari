@@ -119,12 +119,14 @@ async function main() {
     const itemCount = rint(1, 4);
     const items = Array.from({ length: itemCount }, () => {
       const qty = rint(1, 5);
-      const price = rint(8, 120);
-      return { productId: pick(PRODUCTS), name: "Item", quantity: qty, price };
+      const unitPrice = rint(8, 120);
+      // Match the real checkout contract: { productId, name, unitPrice, quantity }.
+      return { productId: pick(PRODUCTS), name: "Item", quantity: qty, unitPrice };
     });
-    const total = items.reduce((a, it) => a + it.price * it.quantity, 0);
+    const subtotal = items.reduce((a, it) => a + it.unitPrice * it.quantity, 0);
+    const total = subtotal;
     const res = await call("2_orders", "POST", "/api/orders",
-      { items, total, paymentMethod: pick(PAYMENTS), deliveryAddress: `${rint(1,999)} St, ${pick(CITIES)}` },
+      { items, subtotal, total, deliveryFee: 0, paymentMethod: pick(PAYMENTS), deliveryAddress: `${rint(1,999)} St, ${pick(CITIES)}` },
       s.cookie);
     return res.json?.order?.id ?? null;
   });

@@ -91,3 +91,17 @@ CREATE SEQUENCE IF NOT EXISTS order_seq START 1000;
 CREATE OR REPLACE FUNCTION next_order_number() RETURNS TEXT LANGUAGE sql AS $$
   SELECT 'KSS-' || TO_CHAR(NOW(), 'YYYY') || '-' || LPAD(nextval('order_seq')::TEXT, 5, '0');
 $$;
+
+-- ── Table Grants (merged from former 003_grants.sql) ──────────────────────────
+-- Raw SQL CREATE TABLE needs explicit grants (the Table Editor UI auto-grants).
+-- NOTE: two files sharing the "003" version prefix breaks CLI migration
+-- (schema_migrations PK), so grants live here rather than a second 003_ file.
+GRANT USAGE ON SCHEMA public TO service_role, authenticated, anon;
+
+GRANT ALL ON ALL TABLES IN SCHEMA public TO service_role;
+GRANT ALL ON ALL SEQUENCES IN SCHEMA public TO service_role;
+
+GRANT SELECT, INSERT, UPDATE, DELETE ON ALL TABLES IN SCHEMA public TO authenticated;
+GRANT SELECT ON ALL TABLES IN SCHEMA public TO anon;
+
+GRANT USAGE, SELECT ON ALL SEQUENCES IN SCHEMA public TO authenticated;

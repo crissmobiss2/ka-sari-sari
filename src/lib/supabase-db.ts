@@ -504,7 +504,13 @@ export async function createOrder(order: {
         subtotal: i.subtotal,
       }))
     );
-    if (itemsError) throw new Error(`Failed to insert order items: ${itemsError.message}`);
+    if (itemsError) {
+      // Order creation must be all-or-nothing. The order row is already in, so
+      // compensate by deleting it rather than leaving an orphan order with no
+      // line items. (A create_order RPC would make this a true single-txn.)
+      await supabaseAdmin.from("orders").delete().eq("id", order.id);
+      throw new Error(`Failed to insert order items: ${itemsError.message}`);
+    }
   }
 
   return rowToOrder(data);
