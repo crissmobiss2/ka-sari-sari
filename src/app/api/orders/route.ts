@@ -42,10 +42,13 @@ export async function GET(req: NextRequest) {
   const status = searchParams.get("status") ?? undefined;
   const driverId = searchParams.get("driverId") ?? undefined;
 
+  // Warehouse staff need to see the fulfillment queue, same as admin.
+  const isStaff = session.role === "admin" || session.role === "warehouse";
+  const statuses = status ? status.split(",").map((s) => s.trim()).filter(Boolean) : [];
+
   if (useSupabase) {
-    const isAdmin = session.role === "admin";
-    const orders = isAdmin
-      ? await sbGetAll({ status, driverId, limit: 100 })
+    const orders = isStaff
+      ? await sbGetAll({ statuses, driverId, limit: 100 })
       : await sbGetByUser(session.userId);
     // Map to UI-expected shape
     const mapped = orders.map(o => ({
@@ -74,12 +77,16 @@ export async function GET(req: NextRequest) {
         totalPrice: i.subtotal,
       })),
     }));
-    const filtered = status ? mapped.filter(o => o.status === status) : mapped;
+    // Staff orders are already status-filtered by the query; a retailer's own
+    // orders still need filtering here when a status set was requested.
+    const filtered = statuses.length && !isStaff
+      ? mapped.filter(o => statuses.includes(o.status))
+      : mapped;
     return NextResponse.json({ orders: filtered, total: filtered.length });
   }
 
-  let orders = session.role === "admin" ? getAllOrders() : getOrdersByUser(session.userId);
-  if (status) orders = orders.filter(o => o.status === status);
+  let orders = isStaff ? getAllOrders() : getOrdersByUser(session.userId);
+  if (statuses.length) orders = orders.filter(o => statuses.includes(o.status));
   return NextResponse.json({ orders, total: orders.length });
 }
 

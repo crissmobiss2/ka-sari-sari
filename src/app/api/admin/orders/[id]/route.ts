@@ -43,7 +43,8 @@ export async function PATCH(
   { params }: { params: Promise<{ id: string }> }
 ) {
   const session = await getSessionFromRequest(req);
-  if (!session || session.role !== "admin") {
+  // Warehouse staff run the pick/pack/dispatch actions too, not just admins.
+  if (!session || !["admin", "warehouse"].includes(session.role)) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 
@@ -91,16 +92,20 @@ export async function PATCH(
         .eq("order_id", id)
         .single();
 
+      // Carry the collect amount onto the delivery so the driver sees what to
+      // collect (COD is the norm for sari-sari stores).
+      const codAmount = order.paymentMethod === "cod" ? (order.total ?? 0) : 0;
       if (existingDelivery) {
         await supabaseAdmin
           .from("deliveries")
-          .update({ driver_id: driverId, status: "assigned" })
+          .update({ driver_id: driverId, status: "assigned", cod_amount: codAmount })
           .eq("id", existingDelivery.id);
       } else {
         await supabaseAdmin.from("deliveries").insert({
           order_id: id,
           driver_id: driverId,
           status: "assigned",
+          cod_amount: codAmount,
           scheduled_date: new Date().toISOString().split("T")[0],
         });
       }

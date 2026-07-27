@@ -414,18 +414,42 @@ export async function getOrdersByUser(retailerId: string): Promise<DBOrder[]> {
 
 export async function getAllOrders(opts: {
   status?: string;
+  statuses?: string[];
   driverId?: string;
   limit?: number;
   offset?: number;
 } = {}): Promise<DBOrder[]> {
   let q = supabaseAdmin
     .from("orders")
-    .select("*, retailer:users!retailer_id(name, store_name, phone), driver:users!driver_id(name, phone)");
-  if (opts.status) q = q.eq("status", opts.status);
+    .select("*, retailer:users!retailer_id(name, store_name, phone), driver:users!driver_id(name, phone), items:order_items(*)");
+  // Support both a single status and a set (the fulfillment queue passes several).
+  const statusList = opts.statuses?.length
+    ? opts.statuses
+    : opts.status
+      ? opts.status.split(",").map((s) => s.trim()).filter(Boolean)
+      : [];
+  if (statusList.length === 1) q = q.eq("status", statusList[0]);
+  else if (statusList.length > 1) q = q.in("status", statusList);
   if (opts.driverId) q = q.eq("driver_id", opts.driverId);
   if (opts.limit) q = q.limit(opts.limit);
   const { data } = await q.order("created_at", { ascending: false });
-  return (data ?? []).map(rowToOrder);
+  return (data ?? []).map((row) => {
+    const order = rowToOrder(row);
+    const r = row as Record<string, unknown>;
+    if (r.items) {
+      order.items = (r.items as Record<string, unknown>[]).map((i) => ({
+        id: i.id as string,
+        orderId: i.order_id as string,
+        productId: i.product_id as string,
+        productName: i.product_name as string,
+        productImage: i.product_image as string | undefined,
+        qty: Number(i.qty),
+        unitPrice: Number(i.unit_price),
+        subtotal: Number(i.subtotal),
+      }));
+    }
+    return order;
+  });
 }
 
 export async function getOrderById(id: string): Promise<DBOrder | null> {

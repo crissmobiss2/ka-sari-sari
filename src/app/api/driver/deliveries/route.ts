@@ -60,6 +60,18 @@ export async function PATCH(req: NextRequest) {
       .eq("id", orderId);
 
     if (error) return NextResponse.json({ error: error.message }, { status: 500 });
+
+    // Keep the delivery record in step so completed stops leave the active list.
+    const deliveryStatus: Record<string, string> = {
+      out_for_delivery: "en_route", delivered: "delivered",
+      failed_delivery: "failed", returned: "returned",
+    };
+    if (deliveryStatus[status]) {
+      await supabaseAdmin
+        .from("deliveries")
+        .update({ status: deliveryStatus[status], ...(status === "delivered" ? { delivered_at: new Date().toISOString() } : {}) })
+        .eq("order_id", orderId);
+    }
     return NextResponse.json({ ok: true });
   }
 

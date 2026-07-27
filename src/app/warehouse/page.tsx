@@ -1,92 +1,28 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import Link from "next/link";
 import {
-  ScanLine, PackageCheck, CheckCircle2, ClipboardList,
-  Clock, TrendingUp, Truck, ArrowRightLeft, AlertTriangle,
-  MapPin, ChevronRight, Zap, Package
+  ScanLine, PackageCheck, ClipboardList, Clock, Truck, Package,
+  Store, ChevronRight, Loader2, CheckCircle2,
 } from "lucide-react";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
+import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { cn } from "@/lib/utils";
-import { PICK_LISTS, GOODS_RECEIPTS } from "@/lib/mock-data";
-import { getCitiesByHub } from "@/lib/nexoflow-cities";
-import { toastSuccess } from "@/store/toast";
-import { useOrdersStore } from "@/store/orders";
+import { cn, formatPHP } from "@/lib/utils";
 
-type HubKey = "NCR" | "North Luzon" | "South Luzon" | "Visayas" | "Mindanao";
+// Real fulfillment dashboard — every number below reflects live orders from the
+// database, not mock data. New retailer orders show up under "Incoming".
 
-interface HubConfig {
-  label: string;
-  location: string;
-  color: string;
-  accent: string;
-  cities: number;
-  capacity: number;
-  used: number;
-  pickers: number;
-  driversActive: number;
+interface OrderItem { productName: string; quantity: number; }
+interface WHOrder {
+  id: string; orderNumber: string; status: string; total: number;
+  createdAt: string; retailer?: { name?: string; store_name?: string }; items: OrderItem[];
 }
 
-const HUBS: Record<HubKey, HubConfig> = {
-  "NCR": {
-    label: "NCR Hub",
-    location: "Valenzuela, Metro Manila",
-    color: "bg-brand-500",
-    accent: "text-brand-700 dark:text-foreground bg-brand-50 dark:bg-brand-500/10 border-brand-200",
-    cities: getCitiesByHub("NCR").length,
-    capacity: 1200, used: 847, pickers: 8, driversActive: 12,
-  },
-  "North Luzon": {
-    label: "North Luzon Hub",
-    location: "San Fernando, Pampanga",
-    color: "bg-purple-500",
-    accent: "text-purple-600 dark:text-foreground bg-purple-50 dark:bg-purple-500/20 border-purple-200",
-    cities: getCitiesByHub("North Luzon").length,
-    capacity: 600, used: 320, pickers: 4, driversActive: 6,
-  },
-  "South Luzon": {
-    label: "South Luzon Hub",
-    location: "Calamba, Laguna",
-    color: "bg-info-500",
-    accent: "text-info-600 dark:text-foreground bg-info-50 dark:bg-info-500/10 border-info-200",
-    cities: getCitiesByHub("South Luzon").length,
-    capacity: 500, used: 210, pickers: 3, driversActive: 5,
-  },
-  "Visayas": {
-    label: "Visayas Hub",
-    location: "Mandaue, Cebu",
-    color: "bg-success-500",
-    accent: "text-success-700 dark:text-foreground bg-success-50 dark:bg-success-500/10 border-success-200",
-    cities: getCitiesByHub("Visayas").length,
-    capacity: 400, used: 180, pickers: 2, driversActive: 4,
-  },
-  "Mindanao": {
-    label: "Mindanao Hub",
-    location: "Davao City",
-    color: "bg-warning-500",
-    accent: "text-warning-700 dark:text-foreground bg-warning-50 dark:bg-warning-500/10 border-warning-200",
-    cities: getCitiesByHub("Mindanao").length,
-    capacity: 350, used: 95, pickers: 2, driversActive: 3,
-  },
-};
+const FETCH_STATUSES = "pending,confirmed,picking,picked,packed,dispatched,out_for_delivery";
 
-const HUB_KEYS: HubKey[] = ["NCR", "North Luzon", "South Luzon", "Visayas", "Mindanao"];
-
-const TRANSFER_REQUESTS = [
-  { from: "South Luzon", to: "NCR", product: "Coca-Cola 330ml (2 cases)", qty: 48, urgent: true },
-  { from: "NCR", to: "North Luzon", product: "Lucky Me Pancit Canton (1 case)", qty: 24, urgent: false },
-];
-
-function formatTime(date: Date) {
-  return date.toLocaleTimeString("en-PH", { hour: "2-digit", minute: "2-digit", hour12: true });
-}
-
-function timeAgo(isoString: string) {
-  const diffMs = Date.now() - new Date(isoString).getTime();
-  const mins = Math.floor(diffMs / 60000);
+function timeAgo(iso: string) {
+  const mins = Math.floor((Date.now() - new Date(iso).getTime()) / 60000);
   if (mins < 1) return "Just now";
   if (mins < 60) return `${mins}m ago`;
   const hrs = Math.floor(mins / 60);
@@ -96,19 +32,30 @@ function timeAgo(isoString: string) {
 
 export default function WarehouseDashboard() {
   const [now, setNow] = useState<Date | null>(null);
-  const [activeHub, setActiveHub] = useState<HubKey>("NCR");
-  const [preppedTransfers, setPreppedTransfers] = useState<number[]>([]);
   const [userName, setUserName] = useState("there");
+  const [orders, setOrders] = useState<WHOrder[]>([]);
+  const [loading, setLoading] = useState(true);
 
-  useEffect(() => {
-    fetch("/api/auth/me")
-      .then((r) => r.json())
-      .then((d) => { if (d.user?.name) setUserName(d.user.name.split(" ")[0]); })
-      .catch(() => {});
+  const fetchOrders = useCallback(async () => {
+    try {
+      const res = await fetch(`/api/orders?status=${FETCH_STATUSES}`);
+      const data = await res.json();
+      setOrders(data.orders ?? []);
+    } catch {
+      setOrders([]);
+    } finally {
+      setLoading(false);
+    }
   }, []);
 
-  const storeOrders = useOrdersStore(s => s.orders);
-  const packedCount = storeOrders.filter(o => o.status === "packed").length;
+  useEffect(() => {
+    fetch("/api/auth/me").then((r) => r.json()).then((d) => {
+      if (d.user?.name) setUserName(d.user.name.split(" ")[0]);
+    }).catch(() => {});
+    fetchOrders();
+    const t = setInterval(fetchOrders, 15000);
+    return () => clearInterval(t);
+  }, [fetchOrders]);
 
   useEffect(() => {
     setNow(new Date());
@@ -119,126 +66,40 @@ export default function WarehouseDashboard() {
   const hour = now ? now.getHours() : new Date().getHours();
   const greeting = hour < 12 ? "Good morning" : hour < 17 ? "Good afternoon" : "Good evening";
 
-  const hub = HUBS[activeHub];
-  const capacityPct = Math.round((hub.used / hub.capacity) * 100);
+  const incoming   = orders.filter((o) => o.status === "pending" || o.status === "confirmed");
+  const picking    = orders.filter((o) => o.status === "picking" || o.status === "picked");
+  const packed     = orders.filter((o) => o.status === "packed");
+  const dispatched = orders.filter((o) => o.status === "out_for_delivery" || o.status === "dispatched");
 
-  const openPickLists     = PICK_LISTS.filter((pl) => pl.status === "open").length;
-  const inProgress        = PICK_LISTS.filter((pl) => pl.status === "in_progress").length;
-  const completedToday    = PICK_LISTS.filter((pl) => pl.status === "completed").length;
-  const receivingQueue    = GOODS_RECEIPTS.filter((gr) => gr.status === "pending").length;
-  const itemsToPick       = PICK_LISTS
-    .filter((pl) => pl.status === "open" || pl.status === "in_progress")
-    .flatMap((pl) => pl.items)
-    .filter((i) => i.status === "pending" || i.status === "partial")
-    .reduce((sum, i) => sum + (i.quantity - i.pickedQty), 0);
-
-  const recentActivity = [...PICK_LISTS]
-    .sort((a, b) => new Date(b.completedAt ?? b.createdAt).getTime() - new Date(a.completedAt ?? a.createdAt).getTime())
-    .slice(0, 5);
+  const KPIS = [
+    { label: "Incoming",   value: incoming.length,   icon: ClipboardList, color: "text-warning-700 dark:text-warning-400", bg: "bg-warning-500/10" },
+    { label: "Picking",    value: picking.length,    icon: ScanLine,      color: "text-brand-700 dark:text-brand-400",     bg: "bg-brand-500/10" },
+    { label: "Packed",     value: packed.length,     icon: PackageCheck,  color: "text-success-700 dark:text-success-400", bg: "bg-success-500/10" },
+    { label: "Dispatched", value: dispatched.length, icon: Truck,         color: "text-info-600 dark:text-info-400",       bg: "bg-info-500/10" },
+  ];
 
   return (
     <div className="px-4 py-5 max-w-2xl mx-auto space-y-5 pb-24">
-
       {/* Greeting */}
       <div>
         <h1 className="font-display text-xl font-bold text-foreground">{greeting}, {userName}!</h1>
         <div className="flex items-center gap-2 mt-0.5 text-muted-foreground">
           <Clock className="h-3.5 w-3.5" />
-          <span className="text-sm">{now ? formatTime(now) : '--:--'}</span>
+          <span className="text-sm">
+            {now ? now.toLocaleTimeString("en-PH", { hour: "2-digit", minute: "2-digit", hour12: true }) : "--:--"}
+          </span>
         </div>
       </div>
 
-      {/* Hub selector */}
-      <div>
-        <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wide mb-2">Your Hub</p>
-        <div className="flex gap-2 overflow-x-auto scrollbar-hide -mx-4 px-4 pb-1">
-          {HUB_KEYS.map((key) => {
-            const h = HUBS[key];
-            const isActive = activeHub === key;
-            return (
-              <button
-                key={key}
-                onClick={() => setActiveHub(key)}
-                className={cn(
-                  "shrink-0 rounded-2xl border px-3 py-2 text-left transition-all",
-                  isActive
-                    ? cn(h.accent, "ring-1 ring-current/20")
-                    : "border-border bg-card text-muted-foreground hover:text-foreground"
-                )}
-              >
-                <p className="text-xs font-bold">{h.label}</p>
-                <p className="text-[10px] mt-0.5">{h.cities} cities</p>
-              </button>
-            );
-          })}
-        </div>
-      </div>
-
-      {/* Active hub card */}
-      <Card className={cn("border-2 overflow-hidden", HUBS[activeHub].accent.split(" ").find(c => c.startsWith("border-")))}>
-        <CardContent className="p-4 space-y-3">
-          <div className="flex items-start justify-between">
-            <div>
-              <p className="font-display text-base font-bold text-foreground">{hub.label}</p>
-              <div className="flex items-center gap-1 text-xs text-muted-foreground mt-0.5">
-                <MapPin className="h-3 w-3" />
-                {hub.location}
-              </div>
-            </div>
-            <span className={cn("text-xs font-semibold rounded-full border px-2 py-0.5", hub.accent)}>
-              {hub.cities} cities covered
-            </span>
-          </div>
-
-          {/* Capacity bar */}
-          <div>
-            <div className="flex items-center justify-between text-xs mb-1">
-              <span className="text-muted-foreground">Storage capacity</span>
-              <span className={cn("font-semibold", capacityPct > 80 ? "text-danger-700 dark:text-foreground" : capacityPct > 60 ? "text-warning-700 dark:text-foreground" : "text-success-700 dark:text-foreground")}>
-                {hub.used}/{hub.capacity} pallets ({capacityPct}%)
-              </span>
-            </div>
-            <div className="h-2 bg-surface-100 dark:bg-surface-800 rounded-full overflow-hidden">
-              <div
-                className={cn("h-full rounded-full transition-all", capacityPct > 80 ? "bg-danger-500" : capacityPct > 60 ? "bg-warning-700 " : "bg-success-500")}
-                style={{ width: `${capacityPct}%` }}
-              />
-            </div>
-          </div>
-
-          {/* Hub stats */}
-          <div className="grid grid-cols-2 gap-2">
-            {[
-              { label: "Active Pickers", value: hub.pickers, icon: "👷" },
-              { label: "Drivers Out", value: hub.driversActive, icon: "🚛" },
-            ].map(({ label, value, icon }) => (
-              <div key={label} className="rounded-xl bg-white/50 border border-border/50 p-2.5 flex items-center gap-2">
-                <span className="text-xl">{icon}</span>
-                <div>
-                  <p className="text-lg font-black text-surface-900">{value}</p>
-                  <p className="text-[10px] text-muted-foreground">{label}</p>
-                </div>
-              </div>
-            ))}
-          </div>
-        </CardContent>
-      </Card>
-
-      {/* KPI stats */}
-      <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
-        {[
-          { label: "Open Pick Lists", value: openPickLists, icon: ClipboardList, color: "text-brand-700 dark:text-brand-400", bg: "bg-brand-500/10" },
-          { label: "Items to Pick",   value: itemsToPick,   icon: ScanLine,       color: "text-blue-500",  bg: "bg-blue-500/10" },
-          { label: "Receiving Queue", value: receivingQueue, icon: PackageCheck,  color: "text-warning-700 dark:text-foreground",bg: "bg-warning-50 dark:bg-warning-500/10" },
-          { label: "Completed Today", value: completedToday, icon: CheckCircle2,  color: "text-success-700 dark:text-foreground",bg: "bg-success-50 dark:bg-success-500/10" },
-          { label: "Packed & Ready",  value: packedCount,    icon: PackageCheck,  color: "text-amber-600",  bg: "bg-amber-50" },
-        ].map(({ label, value, icon: Icon, color, bg }) => (
+      {/* KPI stats — real */}
+      <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+        {KPIS.map(({ label, value, icon: Icon, color, bg }) => (
           <Card key={label}>
             <CardContent className="p-4">
               <div className="flex items-start justify-between">
                 <div>
                   <p className="text-xs text-muted-foreground leading-snug">{label}</p>
-                  <p className={cn("text-3xl font-display font-bold mt-1", color)}>{value}</p>
+                  <p className={cn("text-3xl font-display font-bold mt-1", color)}>{loading ? "–" : value}</p>
                 </div>
                 <div className={cn("flex items-center justify-center w-9 h-9 rounded-xl", bg)}>
                   <Icon className={cn("h-4.5 w-4.5", color)} />
@@ -248,119 +109,77 @@ export default function WarehouseDashboard() {
           </Card>
         ))}
       </div>
-      <p className="text-xs text-muted-foreground -mt-1">
-        Live data for {hub.label} · {hub.cities} cities covered
-      </p>
 
-      {/* Quick Actions */}
-      <div className="space-y-2">
-        <h2 className="font-display text-base font-semibold text-foreground">Quick Actions</h2>
-        <div className="grid grid-cols-2 gap-2">
-          {[
-            { href: "/warehouse/picking",   label: "Start Picking",    icon: ScanLine,   color: "bg-brand-700 text-white",          sub: `${openPickLists + inProgress} lists` },
-            { href: "/warehouse/receiving", label: "Receive Goods",    icon: PackageCheck,color: "bg-success-700 text-white",       sub: `${receivingQueue} pending` },
-            { href: "/warehouse/scan",      label: "Scan / Lookup",   icon: Zap,         color: "bg-surface-800 text-white",        sub: "Quick scan" },
-            { href: "/warehouse/inventory", label: "Check Inventory",  icon: Package,     color: "bg-violet-600 text-white",         sub: "Stock levels" },
-          ].map(({ href, label, icon: Icon, color, sub }) => (
-            <Link key={href} href={href}>
-              <div className={cn("rounded-2xl p-4 flex flex-col gap-2 h-full transition-opacity hover:opacity-90", color)}>
-                <Icon className="h-5 w-5" />
-                <div>
-                  <p className="text-sm font-bold leading-tight">{label}</p>
-                  <p className="text-xs mt-0.5">{sub}</p>
-                </div>
-              </div>
-            </Link>
-          ))}
-        </div>
+      {/* Quick actions */}
+      <div className="grid grid-cols-2 gap-2">
+        <Link href="/warehouse/picking">
+          <div className="rounded-2xl p-4 flex flex-col gap-2 h-full bg-brand-700 text-white transition-opacity hover:opacity-90">
+            <ScanLine className="h-5 w-5" />
+            <div>
+              <p className="text-sm font-bold leading-tight">Fulfillment Queue</p>
+              <p className="text-xs mt-0.5">{incoming.length + picking.length + packed.length} to handle</p>
+            </div>
+          </div>
+        </Link>
+        <Link href="/warehouse/receiving">
+          <div className="rounded-2xl p-4 flex flex-col gap-2 h-full bg-success-700 text-white transition-opacity hover:opacity-90">
+            <PackageCheck className="h-5 w-5" />
+            <div>
+              <p className="text-sm font-bold leading-tight">Receive Goods</p>
+              <p className="text-xs mt-0.5">Inbound stock</p>
+            </div>
+          </div>
+        </Link>
       </div>
 
-      {/* Inter-hub transfers */}
-      {TRANSFER_REQUESTS.length > 0 && (
-        <div className="space-y-2">
-          <h2 className="font-display text-base font-semibold text-foreground flex items-center gap-2">
-            <ArrowRightLeft className="h-4 w-4 text-brand-700 dark:text-brand-400" />
-            Transfer Requests
-          </h2>
-          {TRANSFER_REQUESTS.map((t, i) => {
-            const isPrepped = preppedTransfers.includes(i);
-            return (
-              <Card key={i} className={cn(t.urgent && "border-warning-200")}>
-                <CardContent className="p-3.5 flex items-center gap-3">
-                  <div className={cn("flex h-8 w-8 shrink-0 items-center justify-center rounded-xl", t.urgent ? "bg-warning-100" : "bg-surface-100 dark:bg-surface-800")}>
-                    <Truck className={cn("h-4 w-4", t.urgent ? "text-warning-700 dark:text-foreground" : "text-muted-foreground")} />
-                  </div>
-                  <div className="flex-1 min-w-0">
-                    <div className="flex items-center gap-1.5 mb-0.5">
-                      {t.urgent && <AlertTriangle className="h-3 w-3 text-warning-700 dark:text-warning-500" />}
-                      <p className="text-xs font-semibold text-foreground truncate">{t.product}</p>
-                    </div>
-                    <p className="text-[11px] text-muted-foreground">{t.from} → {t.to} · {t.qty} units</p>
-                  </div>
-                  <button
-                    disabled={isPrepped}
-                    onClick={() => {
-                      setPreppedTransfers(prev => [...prev, i]);
-                      toastSuccess("Transfer prep started — route to dispatch area");
-                      fetch("/api/warehouse/transfers", {
-                        method: "POST",
-                        headers: { "Content-Type": "application/json" },
-                        body: JSON.stringify({
-                          fromHub: t.from,
-                          toHub: t.to,
-                          items: [{ product: t.product, qty: t.qty }],
-                        }),
-                      }).catch(() => {});
-                    }}
-                    className={cn(
-                      "shrink-0 rounded-lg text-xs font-semibold px-2.5 py-1.5 transition-colors",
-                      isPrepped
-                        ? "bg-success-100 dark:bg-success-500/20 text-success-700 dark:text-foreground cursor-default"
-                        : "bg-brand-700 text-white"
-                    )}
-                  >
-                    {isPrepped ? "Prepped ✓" : "Prep"}
-                  </button>
-                </CardContent>
-              </Card>
-            );
-          })}
-        </div>
-      )}
-
-      {/* Recent activity */}
+      {/* Incoming orders — the thing that was invisible before */}
       <div className="space-y-2">
-        <h2 className="font-display text-base font-semibold text-foreground">Recent Activity</h2>
-        <Card>
-          <CardContent className="p-0 divide-y divide-border">
-            {recentActivity.map((pl) => (
-              <div key={pl.id} className="flex items-center gap-3 px-4 py-3">
-                <div className={cn(
-                  "flex h-8 w-8 shrink-0 items-center justify-center rounded-xl",
-                  pl.status === "completed" ? "bg-success-50 dark:bg-success-500/10" : pl.status === "in_progress" ? "bg-brand-50 dark:bg-brand-500/10" : "bg-surface-100 dark:bg-surface-800"
-                )}>
-                  {pl.status === "completed"
-                    ? <CheckCircle2 className="h-4 w-4 text-success-700 dark:text-foreground" />
-                    : pl.status === "in_progress"
-                    ? <ScanLine className="h-4 w-4 text-brand-700 dark:text-brand-400" />
-                    : <ClipboardList className="h-4 w-4 text-muted-foreground" />}
-                </div>
-                <div className="flex-1 min-w-0">
-                  <p className="text-sm font-semibold text-foreground truncate">{pl.orderNumber}</p>
-                  <p className="text-xs text-muted-foreground">{timeAgo(pl.completedAt ?? pl.createdAt)}</p>
-                </div>
-                <Badge
-                  variant={pl.status === "completed" ? "success" : pl.status === "in_progress" ? "default" : "neutral"}
-                >
-                  {pl.status === "completed" ? "Done" : pl.status === "in_progress" ? "Picking" : "Open"}
-                </Badge>
-              </div>
-            ))}
-          </CardContent>
-        </Card>
-        <Link href="/warehouse/picking" className="flex items-center justify-center gap-1 text-sm text-brand-700 dark:text-brand-400 font-medium py-1">
-          View all pick lists <ChevronRight className="h-4 w-4" />
-        </Link>
+        <div className="flex items-center justify-between">
+          <h2 className="font-display text-base font-semibold text-foreground">Incoming Orders</h2>
+          <Link href="/warehouse/picking" className="text-sm text-brand-700 dark:text-brand-400 font-medium flex items-center gap-1">
+            View all <ChevronRight className="h-4 w-4" />
+          </Link>
+        </div>
+
+        {loading ? (
+          <div className="flex items-center justify-center py-10">
+            <Loader2 className="h-6 w-6 animate-spin text-muted-foreground" />
+          </div>
+        ) : incoming.length === 0 ? (
+          <Card>
+            <CardContent className="p-8 text-center">
+              <CheckCircle2 className="h-10 w-10 text-success-700 dark:text-success-500 mx-auto mb-2" />
+              <p className="text-sm font-semibold text-foreground">All caught up</p>
+              <p className="text-muted-foreground text-sm mt-1">New orders from stores appear here instantly.</p>
+            </CardContent>
+          </Card>
+        ) : (
+          <Card>
+            <CardContent className="p-0 divide-y divide-border">
+              {incoming.slice(0, 6).map((o) => {
+                const units = o.items?.reduce((s, i) => s + (i.quantity ?? 0), 0) ?? 0;
+                return (
+                  <Link key={o.id} href="/warehouse/picking" className="flex items-center gap-3 px-4 py-3 hover:bg-muted/40">
+                    <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-warning-500/10">
+                      <Package className="h-4 w-4 text-warning-700 dark:text-warning-400" />
+                    </div>
+                    <div className="flex-1 min-w-0">
+                      <p className="text-sm font-semibold text-foreground truncate">{o.orderNumber}</p>
+                      <p className="text-xs text-muted-foreground flex items-center gap-1 truncate">
+                        <Store className="h-3 w-3 shrink-0" />
+                        {o.retailer?.store_name ?? o.retailer?.name ?? "Store"} · {units} unit{units !== 1 ? "s" : ""} · {timeAgo(o.createdAt)}
+                      </p>
+                    </div>
+                    <div className="flex flex-col items-end gap-1 shrink-0">
+                      <span className="text-sm font-bold text-foreground">{formatPHP(o.total)}</span>
+                      <Badge variant="warning">New</Badge>
+                    </div>
+                  </Link>
+                );
+              })}
+            </CardContent>
+          </Card>
+        )}
       </div>
     </div>
   );
