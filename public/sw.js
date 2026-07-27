@@ -1,4 +1,6 @@
-const CACHE_NAME = 'kss-v7';
+// Bump on every release that must force installed PWAs to refresh (activate
+// deletes all non-matching caches + claims clients, so devices flush cleanly).
+const CACHE_NAME = 'kss-v8';
 
 // Install: skip waiting immediately
 self.addEventListener('install', (event) => {
