@@ -208,8 +208,12 @@ export default function DeliveryDetailPage() {
 
   // Real order/delivery data from API — must be declared before derived customerName/phone below
   const [orderData, setOrderData] = useState<OrderDetail | null>(null);
+  // Full order loaded from the driver-deliveries API. The driver's client-side
+  // order store is empty on their device, so real dispatched orders MUST come
+  // from the API or the page shows "Delivery not found".
+  const [apiOrder, setApiOrder] = useState<(typeof MOCK_ORDERS)[number] | null>(null);
 
-  const order = storeOrders.find((o) => o.id === id) ?? MOCK_ORDERS.find((o) => o.id === id) ?? null;
+  const order = apiOrder ?? storeOrders.find((o) => o.id === id) ?? MOCK_ORDERS.find((o) => o.id === id) ?? null;
   const customer = order ? CUSTOMER_DETAILS[order.id] : undefined;
   const customerName = orderData?.retailerName ?? customer?.name ?? order?.deliveryAddress?.split(",")[0] ?? "Customer";
   const customerPhone = orderData?.customerPhone ?? orderData?.retailerPhone ?? customer?.phone;
@@ -252,9 +256,20 @@ export default function DeliveryDetailPage() {
     interface DeliveryListItem {
       id: string;
       orderId: string;
+      orderNumber?: string;
       retailerName?: string;
       customerPhone?: string;
       retailerPhone?: string;
+      deliveryAddress?: string;
+      total?: number;
+      subtotal?: number;
+      deliveryFee?: number;
+      paymentMethod?: string;
+      orderStatus?: string;
+      notes?: string;
+      createdAt?: string;
+      updatedAt?: string;
+      items?: { id: string; productId: string; productName: string; quantity: number; unitPrice: number; totalPrice: number }[];
     }
     async function fetchDeliveryId() {
       try {
@@ -265,14 +280,28 @@ export default function DeliveryDetailPage() {
         const found = deliveries.find((d) => d.orderId === id || d.id === id);
         if (found) {
           setDeliveryId(found.id);
-          // Populate order data from list response if the API includes retailer fields
-          if (found.retailerName || found.customerPhone || found.retailerPhone) {
-            setOrderData({
-              retailerName: found.retailerName,
-              customerPhone: found.customerPhone,
-              retailerPhone: found.retailerPhone,
-            });
-          }
+          setOrderData({
+            retailerName: found.retailerName,
+            customerPhone: found.customerPhone,
+            retailerPhone: found.retailerPhone,
+          });
+          // Build the full order from the API so the page renders + can complete
+          // the delivery without depending on the (empty) client store.
+          setApiOrder({
+            id: found.orderId,
+            orderNumber: found.orderNumber ?? found.orderId,
+            status: found.orderStatus ?? "out_for_delivery",
+            paymentMethod: found.paymentMethod ?? "cod",
+            total: found.total ?? 0,
+            subtotal: found.subtotal ?? 0,
+            deliveryFee: found.deliveryFee ?? 0,
+            deliveryAddress: found.deliveryAddress ?? "",
+            notes: found.notes ?? "",
+            createdAt: found.createdAt ?? new Date().toISOString(),
+            updatedAt: found.updatedAt ?? new Date().toISOString(),
+            items: (found.items ?? []).map((it) => ({ ...it, status: "fulfilled", fulfilledQty: it.quantity })),
+            fulfillmentEvents: [],
+          } as unknown as (typeof MOCK_ORDERS)[number]);
         }
       } catch {
         // deliveryId remains null — API calls will be skipped (local-only fallback)
@@ -727,7 +756,7 @@ export default function DeliveryDetailPage() {
               <div key={item.id} className="py-2.5 first:pt-0 last:pb-0 flex items-start justify-between gap-3">
                 <div className="min-w-0 flex-1">
                   <p className="text-sm text-foreground font-semibold leading-snug">
-                    {PRODUCT_NAME_MAP[item.productId] ?? item.productId}
+                    {(item as { productName?: string }).productName ?? PRODUCT_NAME_MAP[item.productId] ?? item.productId}
                   </p>
                   <div className="flex items-center gap-2 mt-0.5">
                     <span className="text-xs font-bold text-brand-700 dark:text-brand-400 tabular-nums">

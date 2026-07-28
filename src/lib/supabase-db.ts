@@ -797,28 +797,52 @@ export async function getDriverLocation(driverId: string): Promise<{
 
 export async function getDriverDeliveries(driverId: string): Promise<{
   id: string; orderId: string; orderNumber: string; status: string;
-  retailerName: string; deliveryAddress: string; codAmount: number; codCollected?: number;
-  routePosition: number;
+  retailerName: string; retailerPhone?: string; deliveryAddress: string;
+  codAmount: number; codCollected?: number; routePosition: number;
+  // Full order fields so the driver's delivery-detail page can render + complete
+  // a delivery straight from the API (it must NOT depend on a client-side store,
+  // which is empty on the driver's device).
+  total: number; subtotal: number; deliveryFee: number; paymentMethod: string;
+  orderStatus: string; notes?: string; createdAt?: string; updatedAt?: string;
+  items: { id: string; productId: string; productName: string; quantity: number; unitPrice: number; totalPrice: number }[];
 }[]> {
   const { data } = await supabaseAdmin
     .from("deliveries")
-    .select("*, order:orders(order_number, total, delivery_address, retailer:users!retailer_id(name, store_name))")
+    .select("*, order:orders(order_number, total, subtotal, delivery_fee, payment_method, status, notes, delivery_address, created_at, updated_at, retailer:users!retailer_id(name, store_name, phone), items:order_items(id, product_id, product_name, qty, unit_price, subtotal))")
     .eq("driver_id", driverId)
     .not("status", "in", '("delivered","returned")')
     .order("route_position");
   return (data ?? []).map((d) => {
-    const o = d.order as Record<string, unknown>;
-    const retailer = o?.retailer as Record<string, unknown>;
+    const o = (d.order ?? {}) as Record<string, unknown>;
+    const retailer = (o.retailer ?? {}) as Record<string, unknown>;
+    const items = ((o.items ?? []) as Record<string, unknown>[]).map((i) => ({
+      id: i.id as string,
+      productId: i.product_id as string,
+      productName: i.product_name as string,
+      quantity: Number(i.qty ?? 0),
+      unitPrice: Number(i.unit_price ?? 0),
+      totalPrice: Number(i.subtotal ?? 0),
+    }));
     return {
       id: d.id,
       orderId: d.order_id,
-      orderNumber: o?.order_number as string,
+      orderNumber: o.order_number as string,
       status: d.status,
-      retailerName: (retailer?.store_name ?? retailer?.name) as string,
-      deliveryAddress: o?.delivery_address as string,
+      retailerName: (retailer.store_name ?? retailer.name) as string,
+      retailerPhone: retailer.phone as string | undefined,
+      deliveryAddress: o.delivery_address as string,
       codAmount: Number(d.cod_amount ?? 0),
       codCollected: d.cod_collected ? Number(d.cod_collected) : undefined,
       routePosition: Number(d.route_position ?? 0),
+      total: Number(o.total ?? 0),
+      subtotal: Number(o.subtotal ?? 0),
+      deliveryFee: Number(o.delivery_fee ?? 0),
+      paymentMethod: (o.payment_method as string) ?? "cod",
+      orderStatus: (o.status as string) ?? "out_for_delivery",
+      notes: o.notes as string | undefined,
+      createdAt: o.created_at as string | undefined,
+      updatedAt: o.updated_at as string | undefined,
+      items,
     };
   });
 }
