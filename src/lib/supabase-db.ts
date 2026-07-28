@@ -455,7 +455,7 @@ export async function getAllOrders(opts: {
 export async function getOrderById(id: string): Promise<DBOrder | null> {
   const { data } = await supabaseAdmin
     .from("orders")
-    .select("*, retailer:users!retailer_id(name, store_name, phone), driver:users!driver_id(name, phone), items:order_items(*, product:products(name, image_url))")
+    .select("*, retailer:users!retailer_id(name, store_name, phone), driver:users!driver_id(id, name, phone, vehicle_plate, vehicle_type, area), items:order_items(*, product:products(name, image_url))")
     .eq("id", id)
     .single();
   if (!data) return null;
@@ -473,6 +473,13 @@ export async function getOrderById(id: string): Promise<DBOrder | null> {
       subtotal: Number(i.subtotal),
     }));
   }
+  // Attach the assigned driver (from orders.driver_id) so the customer's
+  // tracking page can show the REAL person delivering, not a placeholder.
+  const dr = d.driver as Record<string, unknown> | null;
+  (order as unknown as { driver?: unknown }).driver = dr ? {
+    id: dr.id, name: dr.name, phone: dr.phone,
+    vehiclePlate: dr.vehicle_plate, vehicleType: dr.vehicle_type, area: dr.area,
+  } : null;
   return order;
 }
 

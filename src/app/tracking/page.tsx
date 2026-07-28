@@ -44,7 +44,7 @@ const STOPS = [
 
 const INITIAL_UPDATES = [
   { time: "9:15 AM",  text: "Order dispatched from NCR Hub, Valenzuela",    type: "info"      as const },
-  { time: "10:20 AM", text: "Driver Rodrigo picked up your order",           type: "info"      as const },
+  { time: "10:20 AM", text: "Driver picked up your order",                   type: "info"      as const },
   { time: "10:45 AM", text: "Delivered Stop 1 — Santos Store, Caloocan ✓",  type: "success"   as const },
   { time: "10:52 AM", text: "Now delivering at Stop 2 — Dela Cruz Tindahan",type: "info"      as const },
   { time: "11:02 AM", text: "Your store is next! ETA ~33 minutes",          type: "highlight" as const },
@@ -303,7 +303,7 @@ function EtaCard({ estimatedDelivery = ORDER.estimatedDelivery }: { estimatedDel
 
 // ── Driver Card ───────────────────────────────────────────────────────────────
 
-function DriverCard({ driver = DRIVER }: { driver?: typeof DRIVER }) {
+function DriverCard({ driver = DRIVER }: { driver?: { name: string; phone: string; whatsapp: string; vehicle: string; rating?: number; deliveries?: number } }) {
   const [called, setCalled] = useState(false);
   const waLink = `https://wa.me/${driver.whatsapp}?text=Hi%20po%2C%20waiting%20po%20sa%20delivery.`;
 
@@ -320,10 +320,12 @@ function DriverCard({ driver = DRIVER }: { driver?: typeof DRIVER }) {
           <div className="flex-1 min-w-0">
             <p className="font-semibold text-foreground">{driver.name}</p>
             <p className="text-xs text-muted-foreground">{driver.vehicle}</p>
-            <div className="flex items-center gap-2 mt-0.5">
-              <span className="text-xs text-warning-700 dark:text-warning-500 font-medium">★ {driver.rating}</span>
-              <span className="text-[11px] text-muted-foreground">{driver.deliveries} deliveries</span>
-            </div>
+            {driver.rating != null && (
+              <div className="flex items-center gap-2 mt-0.5">
+                <span className="text-xs text-warning-700 dark:text-warning-500 font-medium">★ {driver.rating}</span>
+                {driver.deliveries != null && <span className="text-[11px] text-muted-foreground">{driver.deliveries} deliveries</span>}
+              </div>
+            )}
           </div>
         </div>
 
@@ -427,7 +429,7 @@ function StopsBreakdown() {
 
 // ── Live Updates ──────────────────────────────────────────────────────────────
 
-function LiveUpdates({ extraUpdates = [] }: { extraUpdates?: typeof INITIAL_UPDATES }) {
+function LiveUpdates({ extraUpdates = [], driverName }: { extraUpdates?: typeof INITIAL_UPDATES; driverName?: string | null }) {
   const [updates, setUpdates] = useState(INITIAL_UPDATES);
   const absorbedLen = useRef(0);
 
@@ -439,6 +441,18 @@ function LiveUpdates({ extraUpdates = [] }: { extraUpdates?: typeof INITIAL_UPDA
     }
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [extraUpdates.length]);
+
+  // Name the real assigned driver in the pickup line once it's loaded, so the
+  // feed matches the driver card instead of showing a generic/placeholder name.
+  useEffect(() => {
+    if (!driverName) return;
+    const first = driverName.split(" ")[0];
+    setUpdates((prev) => prev.map((u) =>
+      u.text === "Driver picked up your order"
+        ? { ...u, text: `Driver ${first} picked up your order` }
+        : u
+    ));
+  }, [driverName]);
 
   // Real status updates come from the Supabase Realtime channel subscription below
 
@@ -531,6 +545,7 @@ export default function TrackingPage() {
   const [orderData, setOrderData] = useState<{
     number: string; estimatedDelivery: string;
     items: typeof ORDER.items; total: number; paymentMethod: string;
+    driver: { name: string; phone: string; whatsapp: string; vehicle: string } | null;
   } | null>(null);
 
   // Resolve URL params: ?orderId=...&driverId=...
@@ -554,6 +569,7 @@ export default function TrackingPage() {
           setLiveStatus(d.order.status);
           setLiveOrderNum(d.order.orderNumber ?? d.order.order_number ?? null);
           const rawItems = d.order.items as Array<{ productName?: string; name?: string; quantity?: number; qty?: number; unit?: string }> | undefined;
+          const drv = d.order.driver as { name?: string; phone?: string; vehiclePlate?: string; vehicleType?: string } | null | undefined;
           setOrderData({
             number: d.order.orderNumber ?? d.order.order_number ?? ORDER.number,
             estimatedDelivery: ORDER.estimatedDelivery,
@@ -562,6 +578,16 @@ export default function TrackingPage() {
               : ORDER.items,
             total: Number(d.order.total) || ORDER.total,
             paymentMethod: d.order.paymentMethod ?? d.order.payment_method ?? ORDER.paymentMethod,
+            driver: drv && drv.name ? {
+              name: drv.name,
+              phone: drv.phone ?? "",
+              // Normalize PH mobile (09XXXXXXXXX) to wa.me's country-code form (639XXXXXXXXX).
+              whatsapp: (() => {
+                const dg = (drv.phone ?? "").replace(/\D/g, "");
+                return dg.startsWith("0") ? "63" + dg.slice(1) : dg;
+              })(),
+              vehicle: [drv.vehicleType, drv.vehiclePlate].filter(Boolean).join(" · ") || "Delivery vehicle",
+            } : null,
           });
         }
       })
@@ -672,9 +698,16 @@ export default function TrackingPage() {
 
         <RouteMap />
         <EtaCard estimatedDelivery={(orderData ?? ORDER).estimatedDelivery} />
-        <DriverCard />
+        {orderData?.driver ? (
+          <DriverCard driver={orderData.driver} />
+        ) : (
+          <div className="mx-4 rounded-2xl border border-border bg-card shadow-card p-4">
+            <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wide mb-1">Your Driver</p>
+            <p className="text-sm text-muted-foreground">A driver will be assigned once your order is dispatched.</p>
+          </div>
+        )}
         <StopsBreakdown />
-        <LiveUpdates extraUpdates={realtimeUpdates} />
+        <LiveUpdates extraUpdates={realtimeUpdates} driverName={orderData?.driver?.name} />
         <StatusTracker liveStatus={liveStatus} />
 
         {/* Order summary */}

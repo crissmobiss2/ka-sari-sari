@@ -110,7 +110,7 @@ export async function PATCH(
         });
       }
 
-      await updateOrderStatus(id, "out_for_delivery");
+      await updateOrderStatus(id, "out_for_delivery", { driverId });
 
       // Notify retailer
       if (order.retailerId) {
