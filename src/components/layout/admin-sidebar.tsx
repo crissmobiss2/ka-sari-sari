@@ -6,7 +6,7 @@ import {
   Warehouse, Truck, CreditCard, Settings,
   ClipboardList, Tag, ChevronRight, Map,
   Banknote, Building2, FileText, Monitor,
-  PackageCheck, Boxes, ScanLine, TrendingUp, Brain, MessageCircle, UserCog, Landmark,
+  PackageCheck, Boxes, ScanLine, TrendingUp, Brain, MessageCircle, UserCog, Landmark, ShieldCheck,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { ThemeToggle } from "@/components/ui/theme-toggle";
@@ -50,6 +50,7 @@ const navGroups = [
     label: "Business",
     items: [
       { href: "/admin/retailers",       label: "Retailers",       icon: Users },
+      { href: "/admin/verifications",   label: "Verifications",   icon: ShieldCheck },
       { href: "/admin/suppliers",       label: "Suppliers",       icon: Building2 },
       { href: "/admin/purchase-orders", label: "Purchase Orders", icon: FileText },
       { href: "/admin/promotions",      label: "Promotions",      icon: Tag },

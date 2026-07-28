@@ -57,6 +57,32 @@ function WelcomeBanner() {
   );
 }
 
+// Shows store owners their verification state until they're approved.
+function VerificationBanner() {
+  const [status, setStatus] = useState<string | null>(null);
+  useEffect(() => {
+    fetch("/api/onboarding").then((r) => (r.ok ? r.json() : null)).then((d) => { if (d) setStatus(d.verificationStatus); }).catch(() => {});
+  }, []);
+  if (!status || status === "approved") return null;
+  const cfg = status === "rejected"
+    ? { cls: "bg-danger-50 dark:bg-danger-500/10 border-danger-500/25 text-danger-700 dark:text-foreground", icon: AlertTriangle, title: "Your store needs attention", sub: "Tap to see what to fix.", cta: "View" }
+    : status === "under_review"
+    ? { cls: "bg-brand-50 dark:bg-brand-500/10 border-brand-200 text-brand-700 dark:text-foreground", icon: Clock, title: "Your store is under review", sub: "Browse now — ordering unlocks once approved.", cta: "Status" }
+    : { cls: "bg-warning-50 dark:bg-warning-500/10 border-warning-500/25 text-warning-700 dark:text-foreground", icon: AlertTriangle, title: "Finish setting up your store", sub: "Complete onboarding to start ordering.", cta: "Finish" };
+  const Icon = cfg.icon;
+  const href = status === "pending" ? "/register" : "/onboarding/status";
+  return (
+    <Link href={href} className={cn("mx-4 flex items-center gap-3 rounded-2xl border px-4 py-3", cfg.cls)}>
+      <Icon className="h-5 w-5 shrink-0" />
+      <div className="min-w-0 flex-1">
+        <p className="text-sm font-semibold">{cfg.title}</p>
+        <p className="text-xs opacity-80">{cfg.sub}</p>
+      </div>
+      <span className="text-xs font-semibold flex items-center gap-1 shrink-0">{cfg.cta}<ArrowRight className="h-3.5 w-3.5" /></span>
+    </Link>
+  );
+}
+
 function getGreeting() {
   const h = new Date().getHours();
   if (h < 12) return "Magandang umaga";
@@ -144,6 +170,7 @@ export default function DashboardPage() {
 
       <div className="py-5 space-y-6">
         <Suspense fallback={null}><WelcomeBanner /></Suspense>
+        <VerificationBanner />
 
         {/* Greeting + wallet */}
         <div className="px-4 flex items-start justify-between">

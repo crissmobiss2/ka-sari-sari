@@ -38,7 +38,9 @@ export async function POST(req: NextRequest) {
       if (existing) {
         return NextResponse.json({ error: "Phone number already registered" }, { status: 409 });
       }
-      const user = await createUser({ phone, password, name, role: "retailer", storeName, address, city, province });
+      // New store owners start pending — they must complete onboarding and be
+      // approved by an admin before they can order.
+      const user = await createUser({ phone, password, name, role: "retailer", storeName, address, city, province, verificationStatus: "pending" });
       userId = user.id;
       role = user.role;
       userName = user.name;
@@ -64,7 +66,10 @@ export async function POST(req: NextRequest) {
     }
 
     const token = await signToken({ userId, role, name: userName, phone });
-    const res = NextResponse.json({ user: { id: userId, name: userName, role, phone } }, { status: 201 });
+    const res = NextResponse.json(
+      { user: { id: userId, name: userName, role, phone, verificationStatus: useSupabase ? "pending" : "approved" } },
+      { status: 201 }
+    );
     res.cookies.set(COOKIE_NAME, token, {
       httpOnly: true,
       secure: process.env.NODE_ENV === "production",

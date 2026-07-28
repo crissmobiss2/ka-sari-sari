@@ -6,6 +6,7 @@ import {
   getAllOrders as sbGetAll,
   createOrder as sbCreate,
   createNotification,
+  findUserById,
 } from "@/lib/supabase-db";
 import { sendPushToUser } from "@/lib/push";
 import type { Order } from "@/types";
@@ -93,6 +94,23 @@ export async function GET(req: NextRequest) {
 export async function POST(req: NextRequest) {
   const session = await getSessionFromRequest(req);
   if (!session) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+
+  // Store owners must be approved before they can place orders.
+  if (useSupabase && session.role === "retailer") {
+    const me = await findUserById(session.userId);
+    const vs = me?.verificationStatus ?? "approved";
+    if (vs !== "approved") {
+      return NextResponse.json(
+        {
+          error: vs === "rejected"
+            ? "Your store application was not approved. Please contact support."
+            : "Your store account is pending verification. You can order once an admin approves it.",
+          verificationStatus: vs,
+        },
+        { status: 403 }
+      );
+    }
+  }
 
   try {
     const body = await req.json();

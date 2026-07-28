@@ -25,6 +25,8 @@ export interface DBUser {
   subscriptionExpiresAt?: string;
   loyaltyPoints: number;
   walletBalance: number;
+  verificationStatus?: string;
+  verificationNotes?: string;
   createdAt: string;
 }
 
@@ -109,6 +111,8 @@ function rowToUser(row: Record<string, unknown>): DBUser {
     subscriptionExpiresAt: row.subscription_expires_at as string | undefined,
     loyaltyPoints: Number(row.loyalty_points ?? 0),
     walletBalance: Number(row.wallet_balance ?? 0),
+    verificationStatus: (row.verification_status as string | undefined) ?? "approved",
+    verificationNotes: row.verification_notes as string | undefined,
     createdAt: row.created_at as string,
   };
 }
@@ -195,22 +199,30 @@ export async function createUser(user: {
   address?: string;
   city?: string;
   province?: string;
+  verificationStatus?: string;
 }): Promise<DBUser> {
   const passwordHash = await bcrypt.hash(user.password, 10);
-  const { data, error } = await supabaseAdmin
+  const base: Record<string, unknown> = {
+    phone: user.phone,
+    password_hash: passwordHash,
+    name: user.name,
+    role: user.role,
+    store_name: user.storeName,
+    address: user.address,
+    city: user.city,
+    province: user.province,
+  };
+  // Retailers created through onboarding start pending admin review.
+  let { data, error } = await supabaseAdmin
     .from("users")
-    .insert({
-      phone: user.phone,
-      password_hash: passwordHash,
-      name: user.name,
-      role: user.role,
-      store_name: user.storeName,
-      address: user.address,
-      city: user.city,
-      province: user.province,
-    })
+    .insert({ ...base, verification_status: user.verificationStatus ?? "approved" })
     .select()
     .single();
+  // Tolerate a DB that hasn't run migration 009 yet (no verification_status
+  // column): registration must never break while the migration is pending.
+  if (error && /verification_status/i.test(error.message)) {
+    ({ data, error } = await supabaseAdmin.from("users").insert(base).select().single());
+  }
   if (error) throw new Error(error.message);
   return rowToUser(data);
 }
@@ -251,6 +263,139 @@ export async function updateUser(id: string, updates: Partial<{
 export async function getUsersByRole(role: string): Promise<DBUser[]> {
   const { data } = await supabaseAdmin.from("users").select("*").eq("role", role).eq("status", "active");
   return (data ?? []).map(rowToUser);
+}
+
+// ── Retailer onboarding profile + KYC ─────────────────────────────────────────
+
+export interface RetailerProfile {
+  ownerFullName?: string;
+  birthdate?: string;
+  idType?: string;
+  idNumber?: string;
+  storeType?: string;
+  yearsOperating?: number;
+  storeSize?: string;
+  operatingHours?: string;
+  barangay?: string;
+  landmark?: string;
+  latitude?: number;
+  longitude?: number;
+  dtiName?: string;
+  permitNumber?: string;
+  tin?: string;
+  deliveryDays?: string;
+  deliveryWindow?: string;
+  altContactName?: string;
+  altContactPhone?: string;
+  estMonthlySales?: number;
+  currentSuppliers?: string;
+  privacyConsent?: boolean;
+  termsAccepted?: boolean;
+  marketingOptIn?: boolean;
+  consentAt?: string;
+}
+
+// camelCase ↔ snake_case for retailer_profiles columns
+const PROFILE_COLS: Record<keyof RetailerProfile, string> = {
+  ownerFullName: "owner_full_name", birthdate: "birthdate", idType: "id_type", idNumber: "id_number",
+  storeType: "store_type", yearsOperating: "years_operating", storeSize: "store_size", operatingHours: "operating_hours",
+  barangay: "barangay", landmark: "landmark", latitude: "latitude", longitude: "longitude",
+  dtiName: "dti_name", permitNumber: "permit_number", tin: "tin",
+  deliveryDays: "delivery_days", deliveryWindow: "delivery_window", altContactName: "alt_contact_name", altContactPhone: "alt_contact_phone",
+  estMonthlySales: "est_monthly_sales", currentSuppliers: "current_suppliers",
+  privacyConsent: "privacy_consent", termsAccepted: "terms_accepted", marketingOptIn: "marketing_opt_in", consentAt: "consent_at",
+};
+
+function rowToProfile(row: Record<string, unknown>): RetailerProfile & { userId: string } {
+  const out: Record<string, unknown> = { userId: row.user_id };
+  for (const [camel, snake] of Object.entries(PROFILE_COLS)) out[camel] = row[snake] ?? undefined;
+  return out as unknown as RetailerProfile & { userId: string };
+}
+
+export async function getRetailerProfile(userId: string): Promise<(RetailerProfile & { userId: string }) | null> {
+  const { data } = await supabaseAdmin.from("retailer_profiles").select("*").eq("user_id", userId).single();
+  return data ? rowToProfile(data) : null;
+}
+
+export async function upsertRetailerProfile(userId: string, patch: Partial<RetailerProfile>): Promise<void> {
+  const row: Record<string, unknown> = { user_id: userId, updated_at: new Date().toISOString() };
+  for (const [camel, snake] of Object.entries(PROFILE_COLS)) {
+    const v = (patch as Record<string, unknown>)[camel];
+    if (v !== undefined) row[snake] = v === "" ? null : v;
+  }
+  const { error } = await supabaseAdmin.from("retailer_profiles").upsert(row, { onConflict: "user_id" });
+  if (error) throw new Error(error.message);
+}
+
+export interface KycDoc { id: string; docType: string; storagePath: string; status: string; createdAt: string }
+
+export async function addKycDocument(userId: string, docType: string, storagePath: string): Promise<void> {
+  const { error } = await supabaseAdmin.from("kyc_documents").insert({ user_id: userId, doc_type: docType, storage_path: storagePath });
+  if (error) throw new Error(error.message);
+}
+
+export async function getKycDocuments(userId: string): Promise<KycDoc[]> {
+  const { data } = await supabaseAdmin.from("kyc_documents").select("*").eq("user_id", userId).order("created_at", { ascending: true });
+  return (data ?? []).map((d: Record<string, unknown>) => ({
+    id: d.id as string, docType: d.doc_type as string, storagePath: d.storage_path as string,
+    status: d.status as string, createdAt: d.created_at as string,
+  }));
+}
+
+export async function setVerificationStatus(
+  userId: string,
+  status: "pending" | "under_review" | "approved" | "rejected",
+  opts: { notes?: string; verifiedBy?: string } = {}
+): Promise<void> {
+  const row: Record<string, unknown> = { verification_status: status, updated_at: new Date().toISOString() };
+  if (status === "under_review") row.submitted_at = new Date().toISOString();
+  if (status === "approved" || status === "rejected") {
+    row.verified_at = new Date().toISOString();
+    if (opts.verifiedBy) row.verified_by = opts.verifiedBy;
+  }
+  if (opts.notes !== undefined) row.verification_notes = opts.notes;
+  const { error } = await supabaseAdmin.from("users").update(row).eq("id", userId);
+  if (error) throw new Error(error.message);
+}
+
+/** Retailers awaiting review (pending or under_review), with profile + doc summary. */
+export async function listRetailersForReview(statuses = ["pending", "under_review"]): Promise<Record<string, unknown>[]> {
+  const { data } = await supabaseAdmin
+    .from("users")
+    .select("id, name, phone, store_name, city, province, verification_status, submitted_at, created_at, profile:retailer_profiles(*), docs:kyc_documents(id, doc_type, status)")
+    .eq("role", "retailer")
+    .in("verification_status", statuses)
+    .order("submitted_at", { ascending: true });
+  return data ?? [];
+}
+
+// ── KYC file storage (private bucket, served via signed URLs) ─────────────────
+
+const KYC_BUCKET = "kyc";
+let _kycBucketReady = false;
+
+async function ensureKycBucket(): Promise<void> {
+  if (_kycBucketReady) return;
+  const { data } = await supabaseAdmin.storage.getBucket(KYC_BUCKET);
+  if (!data) {
+    await supabaseAdmin.storage.createBucket(KYC_BUCKET, { public: false, fileSizeLimit: "10485760" });
+  }
+  _kycBucketReady = true;
+}
+
+export async function uploadKycFile(
+  userId: string, docType: string, bytes: ArrayBuffer | Uint8Array, contentType: string, ext: string
+): Promise<string> {
+  await ensureKycBucket();
+  const path = `${userId}/${docType}-${Date.now()}.${ext}`;
+  const { error } = await supabaseAdmin.storage.from(KYC_BUCKET).upload(path, bytes, { contentType, upsert: true });
+  if (error) throw new Error(error.message);
+  return path;
+}
+
+export async function createSignedKycUrl(path: string, expiresIn = 3600): Promise<string | null> {
+  const { data } = await supabaseAdmin.storage.from(KYC_BUCKET).createSignedUrl(path, expiresIn);
+  return data?.signedUrl ?? null;
 }
 
 // ── OTP ───────────────────────────────────────────────────────────────────────
